@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Main {
     public static String BOT_TOKEN = "";   //DiscordBOTのトークン
@@ -92,7 +93,7 @@ public class Main {
     }
 
     public static void LOG_OUT(String TEXT){
-
+        System.out.println("\n" + TEXT);
     }
 }
 
@@ -104,12 +105,28 @@ class Console extends Thread{
             Scanner sc = new Scanner(System.in);
             String cons_input = sc.nextLine();
 
+            if(cons_input.split(" ")[0].equals("send")){
+                Main.jda.getTextChannelById(cons_input.split(" ")[1]).sendMessage(cons_input.split(" ")[2]).queue();
+                Main.LOG_OUT("[ CMD ]Send:" + cons_input.split(" ")[1] + "/" + cons_input.split(" ")[2]);
+
+                Console console = new Console();
+                console.start();
+                break;
+            }
+
             switch (cons_input){
+                case "":
+                    break;
+
                 case "help":
                     Main.LOG_OUT("stop => BOT Shutdown");
                     break;
                 case "stop":
                     Main.SHUTDOWN();
+                    break;
+
+                default:
+                    Main.LOG_OUT("COMMAND GA NAI!!!!!!!!!!!!");
                     break;
             }
         }
