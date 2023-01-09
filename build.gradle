@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
@@ -7,11 +8,28 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'm2-dv8tion'
+        url = 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation("net.dv8tion:JDA:4.4.0_350")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
+
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.rumisystem.rumiabot.Main'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 test {
