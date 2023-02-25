@@ -1,6 +1,9 @@
 package com.rumisystem.rumiabot;
 
+import com.rumisystem.rumiabot.Command.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -15,14 +18,19 @@ public class DiscordEvent extends ListenerAdapter {
         if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
             System.out.println("[ INFO ]Sent msg:" + msg);
             if(msg.equals("r.test")){
-                // Create the EmbedBuilder instance
-                EmbedBuilder eb = new EmbedBuilder();   //埋め込みのやつを簡単に作れるツール(Discord.JSにはない！！神！！JAVA先生一生ついていきます！！)
-                eb.setTitle("サーバー", null);     //タイトル
-                eb.setColor(Main.RUND_COLOR());   //色設定
-                eb.setDescription("正常なのだ！");
-
-                e.getTextChannel().sendMessage(eb.build()).queue();
+                test.main(e);
             }
+            if(msg.equals("r.help")){
+                help.main(e);
+            }
+            if(msg.equals("r.tanzania")){
+                tanzania.main(e);
+            }
+            if(msg.equals("r.setch")){
+                setch.main(e);
+            }
+
+            System.out.println(e.getChannel().getHistory().getMessageById(e.getMessageId()));
         }
     }
 }

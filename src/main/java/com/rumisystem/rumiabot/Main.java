@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
@@ -29,7 +30,7 @@ public class Main {
             ConfigLoder.main();
 
             //JDAをこねくり回す
-            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES)
+            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING)
                     .setRawEventsEnabled(true)
                     .addEventListeners(new DiscordEvent()) //追加部分
                     .setActivity(Activity.playing("そーなのかー"))
@@ -51,7 +52,7 @@ public class Main {
         Color color = null;
 
         Random rand = new Random();
-        int num = (int)Math.ceil(Math.random() * 9);
+        int num = (int)Math.ceil(Math.random() * 8);
 
         switch (num){
             case 1:
@@ -75,11 +76,8 @@ public class Main {
             case 7:
                 color = new Color(0x2FFF00);
                 break;
-            case 8:
-                color = new Color(0xBF00FF);
-                break;
             case 9:
-                color = new Color(0xC35FFF);
+                color = new Color(0xCE81FF);
                 break;
         }
 
