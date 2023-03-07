@@ -32,7 +32,7 @@ public class setch {
                 return;
             }
 
-            URL url = new URL("http://192.168.0.3/sinch/RUMIA_BOT/SETCH.php?CID=" + e.getChannel().getId() + "&TYPE=" + COMMAND_MODE[1]);
+            URL url = new URL("http://192.168.0.3/sinch/RUMIA_BOT/SETCH.php?CID=" + e.getChannel().getId() + "&GID=" + e.getGuild().getId() + "&TYPE=" + COMMAND_MODE[1]);
 
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
@@ -50,6 +50,9 @@ public class setch {
                         switch (COMMAND_MODE[1]){
                             case "TALK":
                                 CHTYPE_NAME = "会話";
+                                break;
+                            case "LOG":
+                                CHTYPE_NAME = "ログ出力";
                                 break;
                         }
                         e.getChannel().sendMessage("チャンネルID「" + e.getChannel().getId() + "」を、" + CHTYPE_NAME + "チャンネルとして設定したのだ～").queue();

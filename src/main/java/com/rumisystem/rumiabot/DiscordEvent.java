@@ -18,7 +18,7 @@ public class DiscordEvent extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent e) {
         String msg = e.getMessage().getContentRaw(); //入力されたメッセージを取得
         if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
-            Main.LOG_OUT(e.getChannel().getId());
+            Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName());
             System.out.println("[ INFO ]Sent msg:" + msg);
             if(msg.equals("r.test")){
                 test.main(e);
@@ -40,6 +40,7 @@ public class DiscordEvent extends ListenerAdapter {
     @Override
     public void onTextChannelDelete(TextChannelDeleteEvent e) {
         String deletedChannelName = e.getChannel().getName();
-        System.out.println("Channel " + deletedChannelName + " was deleted.");
+        System.out.println("Channel [" + deletedChannelName + "] was deleted.");
+        System.out.println("Server id:" + e.getChannel().getGuild().getId());
     }
 }
