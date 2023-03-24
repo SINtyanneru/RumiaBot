@@ -4,16 +4,13 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class Main {
     public static String BOT_TOKEN = "";   //DiscordBOTのトークン
@@ -30,9 +27,9 @@ public class Main {
             ConfigLoder.main();
 
             //JDAをこねくり回す
-            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING)
+            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS)
                     .setRawEventsEnabled(true)
-                    .addEventListeners(new DiscordEvent()) //追加部分
+                    .addEventListeners(new DiscordEvent())
                     .setActivity(Activity.playing("そーなのかー"))
                     .setStatus(OnlineStatus.valueOf("ONLINE"))
                     .build();
@@ -51,34 +48,17 @@ public class Main {
     public static Color RUND_COLOR(){
         Color color = null;
 
-        Random rand = new Random();
         int num = (int)Math.ceil(Math.random() * 8);
 
-        switch (num){
-            case 1:
-                color = new Color(0xFFFC00);
-                break;
-            case 2:
-                color = new Color(0x00FFA6);
-                break;
-            case 3:
-                color = new Color(0x00FFFF);
-                break;
-            case 4:
-                color = new Color(0x008CFF);
-                break;
-            case 5:
-                color = new Color(0xFF0000);
-                break;
-            case 6:
-                color = new Color(0xFF8000);
-                break;
-            case 7:
-                color = new Color(0x2FFF00);
-                break;
-            case 9:
-                color = new Color(0xCE81FF);
-                break;
+        switch (num) {
+            case 1 -> color = new Color(0xFFFC00);
+            case 2 -> color = new Color(0x00FFA6);
+            case 3 -> color = new Color(0x00FFFF);
+            case 4 -> color = new Color(0x008CFF);
+            case 5 -> color = new Color(0xFF0000);
+            case 6 -> color = new Color(0xFF8000);
+            case 7 -> color = new Color(0x2FFF00);
+            case 9 -> color = new Color(0xCE81FF);
         }
 
         return color;
