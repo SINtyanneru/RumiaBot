@@ -38,6 +38,9 @@ public class DiscordEvent extends ListenerAdapter {
             if(msg.startsWith("r.backup")){
                 backup.main(e);
             }
+            if(msg.startsWith("r.vc")){
+                vc.Main(e);
+            }
 
             //System.out.println(e.getChannel().getHistory().getMessageById(e.getMessageId()));
         }
