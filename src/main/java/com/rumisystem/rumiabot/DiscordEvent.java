@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
+import java.io.IOException;
 
 import static com.rumisystem.rumiabot.Main.LOG_OUT;
 import static com.rumisystem.rumiabot.Main.jda;
@@ -40,6 +41,12 @@ public class DiscordEvent extends ListenerAdapter {
             }
             if(msg.startsWith("r.vc")){
                 vc.Main(e);
+            }
+            if(msg.startsWith("r.info")){
+                info.Main(e);
+            }
+            if(msg.startsWith("r.ws")){
+                ws.Main(e);
             }
 
             //System.out.println(e.getChannel().getHistory().getMessageById(e.getMessageId()));

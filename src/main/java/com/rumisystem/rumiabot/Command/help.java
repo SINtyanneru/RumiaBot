@@ -36,7 +36,7 @@ public class help {
         eb.setDescription("プレフィクスは「r.」です\n\n\n\n");
         eb.addField("test", "テストコマンドです。\n使い方：r.test", false);
         eb.addField("setch", "実行したチャンネルを、会話チャンネルやログチャンネル、挨拶チャンネルとして設定します。\n使い方：r.setch [チャンネルタイプ]\n詳細は「r.help setch」で御覧ください。", false);
-        e.getChannel().sendMessage(eb.build()).queue();
+        e.getMessage().replyEmbeds(eb.build()).queue();
     }
 
     public static void HELP_SETCH(MessageReceivedEvent e){
@@ -47,6 +47,6 @@ public class help {
         eb.setDescription("setchコマンドのヘルプです。\nこのコマンドは、実行したチャンネルを、会話チャンネルやログチャンネル、挨拶チャンネルとして設定します。\n使い方：r.setch [チャンネルタイプ]\n以下がチャンネルタイプです。\n\n\n\n");
         eb.addField("TALK", "会話チャンネルです、ルーミアちゃんが反応してくれます(いろいろ回数制限等掛けてます)", false);
         eb.addField("LOG", "ログ出力ちゃんねるです、チャンネルを消したりメッセージを消すとログを出してくれます。", false);
-        e.getChannel().sendMessage(eb.build()).queue();
+        e.getMessage().replyEmbeds(eb.build()).queue();
     }
 }

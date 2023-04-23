@@ -14,13 +14,16 @@ repositories {
     }
 }
 
-dependencies {
+dependencies {//ライブラリだらけだ！！まあしゃーないか、、、、
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation("net.dv8tion:JDA:4.4.0_350")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
     implementation ('com.google.code.gson:gson:2.10.1')
-
+    // Selenium WebDriver
+    implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    // Chromeドライバー
+    implementation 'io.github.bonigarcia:webdrivermanager:5.1.1'
 }
 
 jar {
