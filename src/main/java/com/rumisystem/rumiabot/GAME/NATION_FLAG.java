@@ -12,9 +12,26 @@ public class NATION_FLAG {
     public static List<NATION_FLAG_SAVE> SAVE = new ArrayList<>();//セーブデータの配列
     public static List<NATION_FLAG_LIST> NATION_LIST = new ArrayList<>() {{//国のリスト
         //初期化と同時に国を追加
+        //レベル1 メジャーな国
         add(NATION_LIST_ADD("JP", "日本国", List.of("日本", "Japan", "japan"), 1, "日本国は、東アジアに位置する議会制民主主義国家!\n首都は無いけど、事実上の首都は東京だよ。\n公用語もないけど、事実上日本語が公用語だよ！\nあと日本に有る消滅危機言語は「アイヌ語/沖縄語/八丈語/奄美語/国頭語/宮古語/八重山語/与那国語」だよ！"));
         add(NATION_LIST_ADD("USA", "アメリカ合衆国", List.of("アメリカ", "America", "america"), 1, "アメリカ合衆国は、北アメリカに位置する連邦共和制国家！\n首都はワシントンD.Cだよ！"));
         add(NATION_LIST_ADD("RUS", "ロシア連邦", List.of("ロシア", "Russia", "russia"), 1, "ロシア連邦は、ユーラシア大陸北部に位置する連邦共和制国家！\n首都はモスクワ！公用語はロシア語！\n意外と知られてないけど、ロシアは連邦国家だよ〜\nあと間違われがちだけどソ連とロシアは全くの別物！強いて言うならロシア・ソビエト社会主義共和国が今のロシアに近いかな？"));
+        add(NATION_LIST_ADD("USSR", "ソビエト社会主義共和国連邦", List.of("ソ連", "ソビエト", "ソビエト連邦"), 1, "ソビエト連邦は、共産主義国家！"));
+        add(NATION_LIST_ADD("THAI", "タイ王国", List.of("タイ"), 1, "ราชอาณาจักรไทย!"));
+        add(NATION_LIST_ADD("GERMAN", "ドイツ連邦共和国", List.of("ドイツ", "ドイチュ"), 1, "ドイツが連邦という驚き"));
+        add(NATION_LIST_ADD("TURKIYE", "トルコ共和国", List.of("トルコ"), 1, "Türkiye!"));
+        add(NATION_LIST_ADD("ENGLAND", "グレートブリテン及び北アイルランド連合王国", List.of("イギリス", "英国"), 1, "アイルランドのイメージしかねえ、、、、"));
+        add(NATION_LIST_ADD("CHA", "中華人民共和国", List.of("中国"), 1, "グレートファイアウォールがある国、言論統制が恐ろしい"));
+        //レベル2 すこしマイナーな国
+        add(NATION_LIST_ADD("BELAU", "パラオ共和国", List.of("パラオ"), 2, "新日国家パラオ！"));
+        add(NATION_LIST_ADD("NAURU", "ナウル共和国", List.of("ナウル"), 2, "ナウル、ナウル"));
+        //レベル3 マイナーな国
+        add(NATION_LIST_ADD("TANZANIA", "タンザニア連合共和国", List.of("タンザニア"), 3, "東アフリカの国家！"));
+        add(NATION_LIST_ADD("CENTER_AFRIKA", "中央アフリカ共和国", List.of("中央アフリカ"), 3, "中央アフリカの国家！"));
+        //レベル4 マイナーすぎる国
+        add(NATION_LIST_ADD("HAKAS", "ハカス共和国", List.of("ハカス"), 4, "ロシア連邦の構成国の一つ！"));
+        //レベル5 オタクしか知らない国
+        add(NATION_LIST_ADD("BENIN", "ベニン王国", List.of("ベニン"), 5, "ベニン王国12世紀から1897年までナイジェリア南部の海岸地帯に存在した王国！\nイギリスによって滅亡させられた()\nしかも経済は奴隷貿易に依存しているという始末、\nなにより国旗がやばい"));
     }};
     public static void Main(MessageReceivedEvent e) throws NoSuchAlgorithmException {
         String[] cmd = e.getMessage().getContentRaw().split(" ");
@@ -24,6 +41,11 @@ public class NATION_FLAG {
         }
         //ゲーム自体の処理
         if(cmd[1].equals("START")){//スタート
+            if(!(Integer.parseInt(cmd[2]) <= 5 && Integer.parseInt(cmd[2]) >= 0)){
+                e.getMessage().reply("レベルは1〜5です！").queue();
+                return;
+            }
+
             // 現在の時刻を取得
             Date now = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
