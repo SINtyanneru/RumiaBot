@@ -1,6 +1,7 @@
 package com.rumisystem.rumiabot;
 
 import com.rumisystem.rumiabot.Command.*;
+import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -53,7 +54,12 @@ public class DiscordEvent extends ListenerAdapter {
                     msgc.Main(e);
                 }
 
-                URL_GET.Main(e);
+                //ゲーム
+                if(msg.startsWith("r.国旗当てゲーム")){
+                    NATION_FLAG.Main(e);
+                }
+
+                //URL_GET.Main(e);
 
                 //System.out.println(e.getChannel().getHistory().getMessageById(e.getMessageId()));
             }
