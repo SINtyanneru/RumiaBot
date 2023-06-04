@@ -16,6 +16,7 @@ public class test {
         eb.setColor(Main.RUND_COLOR());   //色設定
         eb.setDescription("正常なのだ！");
 
-        e.getChannel().sendMessage(eb.build()).queue();
+        //送信
+        e.getMessage().reply(eb.build()).queue();
     }
 }

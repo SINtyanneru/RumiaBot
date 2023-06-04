@@ -9,6 +9,10 @@ import java.util.Objects;
 public class help {
     public static void main(MessageReceivedEvent e){
         try{
+            if(e.getMessage().getContentRaw().split(" ").length == 1){
+                //JAVAの仕様で無い配列を指定するとエラルので、ここでヘルプのホームを出す
+                HELP_HOME(e);
+            }
             String HELP_MODE = e.getMessage().getContentRaw().split(" ")[1];
             System.out.println(HELP_MODE);
             switch (HELP_MODE.toUpperCase()){
@@ -23,8 +27,7 @@ public class help {
                     break;
             }
         }catch(Exception ex){
-            //JAVAの仕様で無い配列を指定するとエラルので、ここでヘルプのホームを出す
-            HELP_HOME(e);
+
         }
     }
 

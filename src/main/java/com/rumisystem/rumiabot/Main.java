@@ -27,7 +27,7 @@ public class Main {
             ConfigLoder.main();
 
             //JDAをこねくり回す
-            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS)
+            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS)
                     .setRawEventsEnabled(true)
                     .addEventListeners(new DiscordEvent())
                     .setActivity(Activity.playing("そーなのかー"))

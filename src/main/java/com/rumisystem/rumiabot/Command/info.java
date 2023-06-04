@@ -2,6 +2,7 @@ package com.rumisystem.rumiabot.Command;
 
 import com.rumisystem.rumiabot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -12,7 +13,7 @@ import static com.rumisystem.rumiabot.Main.jda;
 public class info {
     public static void Main(MessageReceivedEvent e){
         String[] cmd = e.getMessage().getContentRaw().split(" ");
-        if(cmd[1] == null){
+        if(cmd.length == 1){
             e.getMessage().reply("使い方が違う").queue();
             return;
         }
@@ -25,25 +26,28 @@ public class info {
                 eb.setColor(Main.RUND_COLOR());   //色設定
                 eb.setDescription(e.getGuild().getDescription());
                 eb.setThumbnail(e.getGuild().getIconUrl());
-                if(e.getGuild().getOwner().getUser() != null){
-                    eb.addField("所有者", e.getGuild().getOwner().getUser().getName(), false);//人数
+                if(e.getGuild().getOwner() != null){//所有者かを取得できるか
+                    //できた
+                    eb.addField("所有者", e.getGuild().getOwner().getUser().getName(), false);
                 }else {
-                    eb.addField("所有者", "取得失敗", false);//人数
+                    //出来なかった
+                    eb.addField("所有者", "取得失敗", false);
                 }
                 eb.addField("人数", String.valueOf(e.getGuild().getMemberCount()), false);//人数
-                eb.addField("ブーストレベル", String.valueOf(e.getGuild().getBoostTier().getKey()), false);//人数
-                eb.addField("ブースト回数", String.valueOf(e.getGuild().getBoostCount()), false);//人数
                 eb.addField("チャンネル数", String.valueOf(e.getGuild().getChannels().size()), false);//人数
                 eb.addField("カテゴリ数", String.valueOf(e.getGuild().getCategories().size()), false);//人数
                 eb.addField("デフォルトチャンネル", String.valueOf(e.getGuild().getDefaultChannel()), false);//人数
-                eb.addField("絵文字", String.valueOf(e.getGuild().getEmotes()), false);//人数
+                StringBuilder Emojis = new StringBuilder();
+                for (Emote emoji : e.getGuild().getEmotes()){
+                    Emojis.append("<:" + emoji.getName() + ":" + emoji.getId() + ">");
+                }
+                eb.addField("絵文字", Emojis.toString().substring(0, 1024), false);//人数
+
                 e.getMessage().replyEmbeds(eb.build()).queue();
             }catch (Exception ex){
-                e.getMessage().reply("エラー：" + ex.getMessage()).queue();
+                e.getMessage().reply("エラー：" + ex).queue();
             }
-        }
-
-        if(cmd[1].equalsIgnoreCase("USER")){
+        }else if(cmd[1].equalsIgnoreCase("USER")){
             try{
                 // メッセージ内のメンションを取得する
                 List<User> mentionedUsers = e.getMessage().getMentionedUsers();
@@ -57,6 +61,7 @@ public class info {
                     eb.setTitle(us.getName(), null);     //タイトル
                     eb.setColor(Main.RUND_COLOR());   //色設定
                     eb.setThumbnail(us.getAvatarUrl());
+
                     //eb.addField("この鯖でのニックネーム",e.getGuild().getMember(us).getNickname(), false);
                     eb.addField("ID", us.getId(), false);
                     eb.addField("アイコンのID", us.getAvatarId(), false);
@@ -66,6 +71,8 @@ public class info {
             }catch (Exception ex){
                 e.getMessage().reply("エラー：" + ex.getMessage()).queue();
             }
+        }else{
+            e.getMessage().reply("つかいかたちがう！").queue();
         }
     }
 }
