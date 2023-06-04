@@ -67,7 +67,8 @@ public class NATION_FLAG {
                 SAVE_TEMP.UID = e.getMessage().getAuthor().getId();
                 SAVE.add(SAVE_TEMP);
 
-                e.getMessage().reply(randomObject.ID).queue();
+                //国旗の画像を貼る
+                e.getMessage().reply("国旗だよ\nhttps://rumiserver.com/Asset/FLAGS/" + randomObject.ID + ".png").queue();
             } else {
                 System.out.println("LEVELが1のオブジェクトは存在しません。");
             }
