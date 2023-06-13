@@ -38,6 +38,8 @@ public class Main {
 
             Console console = new Console();
             console.start();
+
+            LOG_OUT("Hello");
         } catch (LoginException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -71,42 +73,49 @@ public class Main {
     }
 
     public static void LOG_OUT(String TEXT){
-        System.out.println("\n" + TEXT);
+        Console.PRINT("[ INFO ]" + TEXT);
     }
 }
 
 class Console extends Thread{
     public void run(){
-        while (true){
-            System.out.print("RUMIABOT>");
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
 
-            Scanner sc = new Scanner(System.in);
-            String cons_input = sc.nextLine();
+        Scanner scanner = new Scanner(System.in);
+        while(true){
 
-            if(cons_input.split(" ")[0].equals("send")){
-                Main.jda.getTextChannelById(cons_input.split(" ")[1]).sendMessage(cons_input.split(" ")[2]).queue();
-                Main.LOG_OUT("[ CMD ]Send:" + cons_input.split(" ")[1] + "/" + cons_input.split(" ")[2]);
+            String CMD = scanner.nextLine();
 
-                Console console = new Console();
-                console.start();
-                break;
+            PRINT(CMD);
+
+            if(CMD.split(" ")[0].equals("send")){
+                Main.jda.getTextChannelById(CMD.split(" ")[1]).sendMessage(CMD.split(" ")[2]).queue();
+                Main.LOG_OUT("Send:" + CMD.split(" ")[1] + "/" + CMD.split(" ")[2]);
             }
 
-            switch (cons_input){
-                case "":
-                    break;
-
-                case "help":
-                    Main.LOG_OUT("stop => BOT Shutdown");
-                    break;
-                case "stop":
+            switch (CMD){
+                case "exit":
                     Main.SHUTDOWN();
-                    break;
-
-                default:
-                    Main.LOG_OUT("COMMAND GA NAI!!!!!!!!!!!!");
+                    scanner.close();
                     break;
             }
         }
     }
+
+    public static void PRINT(String TEXT) {
+        System.out.print("\n"); // 改行
+        System.out.print("\033[1A"); // 1行上に移動
+        System.out.print("\033[2K"); // 現在の行をクリア
+        System.out.flush();//ANSIエスケープシーケンスで必ず出てくる謎の関数
+        System.out.print(TEXT + "\n");
+
+        CONSOLE_TEXT();
+    }
+
+    public static void CONSOLE_TEXT(){
+        System.out.print(">");
+    }
+
+
 }

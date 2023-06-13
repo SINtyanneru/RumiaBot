@@ -24,8 +24,9 @@ public class DiscordEvent extends ListenerAdapter {
         try {
             String msg = e.getMessage().getContentRaw(); //入力されたメッセージを取得
             if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
-                Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName());
-                System.out.println("[ INFO ]Sent msg:" + msg);
+
+                Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
+
                 if(msg.equals("r.test")){
                     test.main(e);
                 }
@@ -60,8 +61,6 @@ public class DiscordEvent extends ListenerAdapter {
                 }
 
                 //URL_GET.Main(e);
-
-                //System.out.println(e.getChannel().getHistory().getMessageById(e.getMessageId()));
             }
         }catch (Exception ex){
             LOG_OUT("[ ERR ]" + ex.getMessage());
