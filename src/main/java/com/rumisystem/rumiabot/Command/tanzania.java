@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -16,6 +17,6 @@ public class tanzania {
         Path p2 = p1.toAbsolutePath();
 
         System.out.println(p2.toString());
-        e.getChannel().sendMessage("Tanzania!")/*.addFile(new File(p2.toString() + "/DATA/MUSIC/TANANIA.mp3"))*/.queue();
+        e.getInteraction().replyFiles(FileUpload.fromData(new File(p2.toString() + "/DATA/MUSIC/TANZANIA.mp3"))).addContent(":flag_tz:Tanzania!:flag_tz:").queue();
     }
 }
