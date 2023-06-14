@@ -3,7 +3,7 @@ package com.rumisystem.rumiabot.Command;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class msgc {
             if(member != null && member.hasPermission(Permission.ADMINISTRATOR)) {//ユーザーが管理者権限を持っているか
                 int messageCount = Integer.parseInt(cmd[2]); //削除したいメッセージの数
                 if(messageCount >= 2 && messageCount <= 100){//消去する範囲をチェック
-                    TextChannel channel = e.getTextChannel(); //メッセージを削除するチャンネル
+                    TextChannel channel = e.getChannel().asTextChannel(); //メッセージを削除するチャンネル
 
                     List<Message> messages = channel.getHistory().retrievePast(messageCount).complete();
                     channel.deleteMessages(messages).queue();

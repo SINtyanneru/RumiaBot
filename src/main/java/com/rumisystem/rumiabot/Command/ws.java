@@ -39,7 +39,7 @@ public class ws {
             // スクリーンショットを送信する
             try {
                 //FileUtils.copyFile(screenshot, new File("screenshot.png"));
-                e.getMessage().reply(screenshot).queue();
+                e.getMessage().reply((CharSequence) screenshot).queue();
             } catch (Exception ex) {
                 e.getMessage().reply("エラー" + ex.getMessage()).queue();
             }

@@ -27,7 +27,7 @@ public class Main {
             ConfigLoder.main();
 
             //JDAをこねくり回す
-            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS)
+            jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
                     .setRawEventsEnabled(true)
                     .addEventListeners(new DiscordEvent())
                     .setActivity(Activity.playing("そーなのかー"))
@@ -40,8 +40,6 @@ public class Main {
             console.start();
 
             LOG_OUT("Hello");
-        } catch (LoginException e) {
-            e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -17,6 +17,6 @@ public class test {
         eb.setDescription("正常なのだ！");
 
         //送信
-        e.getMessage().reply(eb.build()).queue();
+        e.getMessage().replyEmbeds(eb.build()).queue();
     }
 }

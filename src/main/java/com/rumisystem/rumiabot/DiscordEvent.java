@@ -4,10 +4,8 @@ import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -42,9 +40,6 @@ public class DiscordEvent extends ListenerAdapter {
                 if(msg.startsWith("r.backup")){
                     backup.main(e);
                 }
-                if(msg.startsWith("r.vc")){
-                    vc.Main(e);
-                }
                 if(msg.startsWith("r.info")){
                     info.Main(e);
                 }
@@ -62,17 +57,6 @@ public class DiscordEvent extends ListenerAdapter {
 
                 //URL_GET.Main(e);
             }
-        }catch (Exception ex){
-            LOG_OUT("[ ERR ]" + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void onTextChannelDelete(TextChannelDeleteEvent e) {
-        try{
-            String deletedChannelName = e.getChannel().getName();
-            System.out.println("Channel [" + deletedChannelName + "] was deleted.");
-            System.out.println("Server id:" + e.getChannel().getGuild().getId());
         }catch (Exception ex){
             LOG_OUT("[ ERR ]" + ex.getMessage());
         }

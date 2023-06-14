@@ -2,8 +2,8 @@ package com.rumisystem.rumiabot.Command;
 
 import com.rumisystem.rumiabot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class info {
                 eb.addField("カテゴリ数", String.valueOf(e.getGuild().getCategories().size()), false);//人数
                 eb.addField("デフォルトチャンネル", String.valueOf(e.getGuild().getDefaultChannel()), false);//人数
                 StringBuilder Emojis = new StringBuilder();
-                for (Emote emoji : e.getGuild().getEmotes()){
+                for (RichCustomEmoji emoji : e.getGuild().getEmojis()){
                     Emojis.append("<:" + emoji.getName() + ":" + emoji.getId() + ">");
                 }
                 eb.addField("絵文字", Emojis.toString().substring(0, 1024), false);//人数
@@ -50,7 +50,7 @@ public class info {
         }else if(cmd[1].equalsIgnoreCase("USER")){
             try{
                 // メッセージ内のメンションを取得する
-                List<User> mentionedUsers = e.getMessage().getMentionedUsers();
+                List<User> mentionedUsers = e.getMessage().getMentions().getUsers();
 
                 // 各メンションのIDを取得する
                 for (User user : mentionedUsers) {
