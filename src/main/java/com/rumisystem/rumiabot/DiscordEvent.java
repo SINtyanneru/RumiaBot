@@ -49,6 +49,9 @@ public class DiscordEvent extends ListenerAdapter {
                 if(msg.startsWith("r.msg")){
                     msgc.Main(e);
                 }
+                if(msg.startsWith("r.update")){
+                    update.Main(e);
+                }
 
                 //ゲーム
                 if(msg.startsWith("r.国旗当てゲーム")){
