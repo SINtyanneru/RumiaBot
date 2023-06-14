@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -24,16 +25,6 @@ public class DiscordEvent extends ListenerAdapter {
             if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
 
                 Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
-
-                if(msg.equals("r.test")){
-                    test.main(e);
-                }
-                if(msg.startsWith("r.help")){
-                    help.main(e);
-                }
-                if(msg.equals("r.tanzania")){
-                    tanzania.main(e);
-                }
                 if(msg.startsWith("r.setch")){
                     setch.main(e);
                 }
@@ -43,14 +34,8 @@ public class DiscordEvent extends ListenerAdapter {
                 if(msg.startsWith("r.info")){
                     info.Main(e);
                 }
-                if(msg.startsWith("r.ws")){
-                    ws.Main(e);
-                }
                 if(msg.startsWith("r.msg")){
                     msgc.Main(e);
-                }
-                if(msg.startsWith("r.update")){
-                    update.Main(e);
                 }
 
                 //ゲーム
@@ -62,6 +47,27 @@ public class DiscordEvent extends ListenerAdapter {
             }
         }catch (Exception ex){
             LOG_OUT("[ ERR ]" + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
+        switch (e.getName()){
+            case "test":
+                test.Main(e);
+                break;
+            case "help":
+                help.Main(e);
+                break;
+            case "ws":
+                ws.Main(e);
+                break;
+            case "update":
+                update.Main(e);
+                break;
+            case "tanzania":
+                tanzania.Main(e);
+                break;
         }
     }
 
