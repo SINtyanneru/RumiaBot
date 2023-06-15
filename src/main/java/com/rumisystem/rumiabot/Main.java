@@ -46,7 +46,8 @@ public class Main {
                     Commands.slash("help", "ヘルプ")
                             .addOption(OptionType.STRING, "page", "みたい㌻、特に無いなら指定しなくて良い"),
                     Commands.slash("ws", "ウェブサイトのスクショ")
-                            .addOption(OptionType.STRING, "url", "スクショしたいウェブサイトのURL", true),
+                            .addOption(OptionType.STRING, "url", "スクショしたいウェブサイトのURL", true)
+                            .addOption(OptionType.STRING, "browser_name", "ブラウザ名"),
                     Commands.slash("update", "アプデ情報"),
                     Commands.slash("tanzania", "タンザニア！")
             ).queue();

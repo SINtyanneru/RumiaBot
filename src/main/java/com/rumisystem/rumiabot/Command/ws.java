@@ -23,17 +23,48 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class ws {
     public static void Main(SlashCommandInteractionEvent e){
         try{
+            e.deferReply().queue();
+
             String URL;
             if(Objects.isNull(e.getInteraction().getOption("url"))){//Nullチェック、未だにJAVAのNullチェックがわからん
-                e.getInteraction().reply("URLが指定されていないのだ！").queue();
+                e.getHook().editOriginal("URLが指定されていないのだ！").queue();
                 return;
             }else {
                 URL = e.getInteraction().getOption("url").getAsString();
             }
+
+            if (!URL.startsWith("http://") && !URL.startsWith("https://")) {
+                URL = "http://" + URL;
+            }
+
             // WebDriverのインスタンスを作成
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless"); // ヘッドレスモードでブラウザを起動
+
+            String BROWSER_NAME = "";
+
+            if(!Objects.isNull(e.getInteraction().getOption("browser_name"))){//ブラウザ名指定があるか
+                switch (e.getInteraction().getOption("browser_name").getAsString()){
+                    case "FireFox":
+                        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0");
+                        BROWSER_NAME = "ブラウザ名：FireFox";
+                        break;
+                    case "Rumisan":
+                        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/1.0");
+                        BROWSER_NAME = "ブラウザ名：るみさん";
+                        break;
+                    case "Floorp":
+                        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
+                        BROWSER_NAME = "ブラウザ名：Floorp";
+                        break;
+
+                    default:
+                        e.getHook().editOriginal("ブラウザ名が無効です").queue();
+                        return;
+                }
+            }
+
             WebDriver driver = new ChromeDriver(options);
 
             // ウィンドウサイズを設定
@@ -47,15 +78,16 @@ public class ws {
 
             // スクリーンショットを送信する
             try {
-                e.getInteraction().replyFiles(FileUpload.fromData(screenshot)).queue();
+                e.getHook().editOriginal("スクショしたのだ！：「" + driver.getTitle() + "」\n" + BROWSER_NAME).queue();
+                e.getChannel().sendFiles(FileUpload.fromData(screenshot)).queue();
             } catch (Exception ex) {
-                e.getInteraction().reply("エラー" + ex.getMessage()).queue();
+                e.getHook().editOriginal("アップロード時にエラーが発生しましたのだ！").queue();
             }
 
             // ブラウザを閉じる
             driver.quit();
         }catch (Exception ex){
-            e.getInteraction().reply("エラー" + ex.getMessage()).queue();
+            e.getHook().editOriginal("取得時にエラーが発生したのだ！").queue();
         }
     }
 }

@@ -25,6 +25,11 @@ public class DiscordEvent extends ListenerAdapter {
             if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
 
                 Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
+
+                if(msg.startsWith("2時56分です。\n祈ってください") && e.getAuthor().getId().equals("891521181990129675")){
+                    e.getMessage().reply("Namuhihutu(るみ語)").queue();
+                }
+
                 if(msg.startsWith("r.setch")){
                     setch.main(e);
                 }
