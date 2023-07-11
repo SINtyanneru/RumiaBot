@@ -49,7 +49,9 @@ public class Main {
                             .addOption(OptionType.STRING, "url", "スクショしたいウェブサイトのURL", true)
                             .addOption(OptionType.STRING, "browser_name", "ブラウザ名"),
                     Commands.slash("update", "アプデ情報"),
-                    Commands.slash("tanzania", "タンザニア！")
+                    Commands.slash("tanzania", "タンザニア！"),
+                    Commands.slash("shell", "ルーミアシェル")
+                            .addOption(OptionType.STRING, "cmd", "コマンド", true)
             ).queue();
 
 

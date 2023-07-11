@@ -5,6 +5,8 @@ import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -23,6 +25,11 @@ public class DiscordEvent extends ListenerAdapter {
         try {
             String msg = e.getMessage().getContentRaw(); //入力されたメッセージを取得
             if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
+
+                if (!e.getMessage().getReactions().isEmpty()) {
+                    // スタンプが送信されたときの処理
+                    System.out.println("スタンプが送信されました。");
+                }
 
                 Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
 
@@ -73,6 +80,9 @@ public class DiscordEvent extends ListenerAdapter {
             case "tanzania":
                 tanzania.Main(e);
                 break;
+            case "shell":
+                SHELL.Main(e);
+                break;
         }
     }
 
@@ -95,6 +105,14 @@ public class DiscordEvent extends ListenerAdapter {
             System.out.println(e.getMember().getUser().getName() + " left the server.");
         }catch (Exception ex){
             LOG_OUT("[ ERR ]" + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void onGuildJoin(GuildJoinEvent e) {
+        TextChannel defaultChannel = e.getGuild().getSystemChannel();
+        if (defaultChannel != null) {
+            defaultChannel.sendMessage("にゃー\n(スラッシュコマンドを使用できます)\n(るみ鯖アカウントと連携させることができます)").queue();
         }
     }
 }
