@@ -75,6 +75,9 @@ public class Main {
                     .setNameLocalization(DiscordLocale.JAPANESE, "間隔")
                     .setDescriptionLocalization(DiscordLocale.JAPANESE, "どれぐらいの間隔でスパムするか");
             SPAM_CMD.addOptions(SPAM_LAT_OPTION, SPAM_COUNT_OPTION, SPAM_TIME_OPTION);
+            //スパムコマンド停止
+            SlashCommandData SPAM_STOP_CMD = Commands.slash("spam_stop", "スパム停止");
+            SPAM_STOP_CMD.setNameLocalization(DiscordLocale.JAPANESE, "スパム停止").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみさんしか使えない");
 
 
             //コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
@@ -86,7 +89,8 @@ public class Main {
                             .addOption(OptionType.STRING, "cmd", "コマンド", true),
                     WS_CMD,
                     HELP_CMD,
-                    SPAM_CMD
+                    SPAM_CMD,
+                    SPAM_STOP_CMD
             ).queue();
 
 

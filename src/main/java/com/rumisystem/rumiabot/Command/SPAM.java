@@ -30,18 +30,24 @@ public class SPAM {
                 CH.sendMessage(TEXT).queue();
 
                 if (COUNT >= MAX) {
-                    stopTask();
+                    STOP_SPAM();
                 }
             }
         };
 
         // 1000ミリ秒後から5000ミリ秒間隔でタスクを実行します
-        TIMER.schedule(TASK, TIME, TIME);
+        TIMER.schedule(TASK, TIME, TIME + 500);
     }
 
-    private static void stopTask() {
+    public static void STOP_SPAM() {
         TIMER.cancel();
         TASK.cancel();
         CH.sendMessage("完了したのだ！").queue();
+    }
+
+    public static void EMAJEN_STOP(SlashCommandInteractionEvent e){
+        TIMER.cancel();
+        TASK.cancel();
+        e.getInteraction().reply("スパムを停止したのだ！").queue();
     }
 }

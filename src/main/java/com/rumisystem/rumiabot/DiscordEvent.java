@@ -90,6 +90,9 @@ public class DiscordEvent extends ListenerAdapter {
                     e.getInteraction().reply("るみさんしか使えません").queue();
                 }
                 break;
+            case "spam_stop":
+                SPAM.EMAJEN_STOP(e);
+                break;
         }
     }
 
