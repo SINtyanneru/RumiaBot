@@ -83,6 +83,13 @@ public class DiscordEvent extends ListenerAdapter {
             case "shell":
                 SHELL.Main(e);
                 break;
+            case "spam":
+                if(e.getUser().getId().equals("564772363950882816")){
+                    SPAM.Main(e);
+                }else {
+                    e.getInteraction().reply("るみさんしか使えません").queue();
+                }
+                break;
         }
     }
 

@@ -4,9 +4,12 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.DiscordLocale;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
@@ -40,18 +43,50 @@ public class Main {
 
             jda.awaitReady();
 
+            //ウェブサイトスクショ
+            SlashCommandData WS_CMD = Commands.slash("ws", "ウェブサイトのスクショ");
+            WS_CMD.setNameLocalization(DiscordLocale.JAPANESE, "ウェブサイトのスクショ")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "ウェブサイトのスクショ");
+            OptionData WS_URL_OP = new OptionData(OptionType.STRING, "url", "URL", true)
+                    .setNameLocalization(DiscordLocale.JAPANESE, "url")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "撮影先のURL");
+            OptionData WS_BNAME_OP = new OptionData (OptionType.STRING, "browser_name", "ブラウザ名")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "ブラウザ名")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "ブラウザ名を指定します");
+            WS_CMD.addOptions(WS_URL_OP, WS_BNAME_OP);
+
+            //ヘルプコマンド
+            SlashCommandData HELP_CMD = Commands.slash("help", "ヘルプ");
+            HELP_CMD.setNameLocalization(DiscordLocale.JAPANESE, "ヘルプ").setDescriptionLocalization(DiscordLocale.JAPANESE, "コマンドのヘルプです");
+            OptionData HELP_PAGE = new OptionData(OptionType.STRING, "page", "ページ")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "ページ")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "みたい㌻、特に無いなら指定しなくて良い");
+
+            //スパムコマンド
+            SlashCommandData SPAM_CMD = Commands.slash("spam", "ヘルプ");
+            SPAM_CMD.setNameLocalization(DiscordLocale.JAPANESE, "スパム").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみさんしか使えない");
+            OptionData SPAM_LAT_OPTION = new OptionData(OptionType.STRING, "lat", "文字", true)
+                .setNameLocalization(DiscordLocale.JAPANESE, "文字")
+                .setDescriptionLocalization(DiscordLocale.JAPANESE, "スパムする文字");
+            OptionData SPAM_COUNT_OPTION = new OptionData(OptionType.INTEGER, "count", "回数", true)
+                    .setNameLocalization(DiscordLocale.JAPANESE, "回数")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "スパムする回数");
+            OptionData SPAM_TIME_OPTION = new OptionData(OptionType.INTEGER, "time", "感覚", true)
+                    .setNameLocalization(DiscordLocale.JAPANESE, "間隔")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "どれぐらいの間隔でスパムするか");
+            SPAM_CMD.addOptions(SPAM_LAT_OPTION, SPAM_COUNT_OPTION, SPAM_TIME_OPTION);
+
+
             //コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
             jda.updateCommands().addCommands(
                     Commands.slash("test", "テストコマンド"),
-                    Commands.slash("help", "ヘルプ")
-                            .addOption(OptionType.STRING, "page", "みたい㌻、特に無いなら指定しなくて良い"),
-                    Commands.slash("ws", "ウェブサイトのスクショ")
-                            .addOption(OptionType.STRING, "url", "スクショしたいウェブサイトのURL", true)
-                            .addOption(OptionType.STRING, "browser_name", "ブラウザ名"),
                     Commands.slash("update", "アプデ情報"),
                     Commands.slash("tanzania", "タンザニア！"),
                     Commands.slash("shell", "ルーミアシェル")
-                            .addOption(OptionType.STRING, "cmd", "コマンド", true)
+                            .addOption(OptionType.STRING, "cmd", "コマンド", true),
+                    WS_CMD,
+                    HELP_CMD,
+                    SPAM_CMD
             ).queue();
 
 
