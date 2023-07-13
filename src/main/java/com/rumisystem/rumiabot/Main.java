@@ -53,6 +53,13 @@ public class Main {
             OptionData WS_BNAME_OP = new OptionData (OptionType.STRING, "browser_name", "ブラウザ名")
                     .setNameLocalization(DiscordLocale.JAPANESE, "ブラウザ名")
                     .setDescriptionLocalization(DiscordLocale.JAPANESE, "ブラウザ名を指定します");
+            Command.Choice WS_BNAME_FIREFOX_CH = new Command.Choice("FireFox", "FireFox")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "火狐");
+            Command.Choice WS_BNAME_RUMI_CH = new Command.Choice("Rumisan", "Rumisan")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "るみさん㌨Да！");
+            Command.Choice WS_BNAME_FLOORP_CH = new Command.Choice("Floorp", "Floorp")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "Floorp");
+            WS_BNAME_OP.addChoices(WS_BNAME_FIREFOX_CH, WS_BNAME_RUMI_CH, WS_BNAME_FLOORP_CH);
             WS_CMD.addOptions(WS_URL_OP, WS_BNAME_OP);
 
             //ヘルプコマンド
