@@ -21,6 +21,7 @@ public class ConfigLoder {
             System.out.println("[ *** ]Setting Config...");
 
             Main.BOT_TOKEN = json.get("TOKEN").textValue();//トークン
+            Main.BOT_ID = json.get("ID").textValue();
         } catch(IOException ex) {
             ex.printStackTrace();
         }

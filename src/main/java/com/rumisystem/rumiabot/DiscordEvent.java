@@ -3,7 +3,9 @@ package com.rumisystem.rumiabot;
 import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Mentions;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -12,6 +14,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.Route;
 
 import java.awt.*;
 import java.io.IOException;
@@ -42,13 +45,11 @@ public class DiscordEvent extends ListenerAdapter {
                     msgc.Main(e);
                 }
 
-                if(msg.startsWith("にゃーん")){
-                    e.getChannel().sendTyping().queue();
-                }
-
-                //なぜ動かん
-                if(e.getMessage().isPinned()){
-                    e.getMessage().reply("はい").queue();
+                for(User MU : e.getMessage().getMentions().getUsers()){
+                    if(MU.getId().equals(Main.BOT_ID)){
+                        e.getChannel().sendTyping().queue();
+                        e.getMessage().reply("はい").queue();
+                    }
                 }
 
                 //ゲーム
