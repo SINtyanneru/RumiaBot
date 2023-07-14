@@ -42,6 +42,15 @@ public class DiscordEvent extends ListenerAdapter {
                     msgc.Main(e);
                 }
 
+                if(msg.startsWith("にゃーん")){
+                    e.getChannel().sendTyping().queue();
+                }
+
+                //なぜ動かん
+                if(e.getMessage().isPinned()){
+                    e.getMessage().reply("はい").queue();
+                }
+
                 //ゲーム
                 if(msg.startsWith("r.国旗当てゲーム")){
                     NATION_FLAG.Main(e);
