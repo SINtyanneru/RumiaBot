@@ -87,6 +87,20 @@ public class Main {
             SlashCommandData SPAM_STOP_CMD = Commands.slash("spam_stop", "スパム停止");
             SPAM_STOP_CMD.setNameLocalization(DiscordLocale.JAPANESE, "スパム停止").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみさんしか使えない");
 
+            SlashCommandData INFO_CMD = Commands.slash("info", "Infomation");
+            INFO_CMD.setNameLocalization(DiscordLocale.JAPANESE, "情報取得").setDescriptionLocalization(DiscordLocale.JAPANESE, "色んな情報を取得");
+            OptionData INFO_SELECT_OPTION = new OptionData(OptionType.STRING, "select", "You are nani wo get sulu!!", true)
+                    .setNameLocalization(DiscordLocale.JAPANESE, "種類")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "なにを取得するか");
+            OptionData INFO_USER_OPTION = new OptionData(OptionType.USER, "users", "user dao")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "ユーザー")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "取得するユーザー");
+            Command.Choice INFO_SELECT_SERVER_CH = new Command.Choice("Server", "server")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "サーバー");
+            Command.Choice INFO_SELECT_USER_CH = new Command.Choice("User", "user")
+                    .setNameLocalization(DiscordLocale.JAPANESE, "ユーザー");
+            INFO_SELECT_OPTION.addChoices(INFO_SELECT_SERVER_CH, INFO_SELECT_USER_CH);
+            INFO_CMD.addOptions(INFO_SELECT_OPTION, INFO_USER_OPTION);
 
             //コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
             jda.updateCommands().addCommands(
@@ -98,7 +112,8 @@ public class Main {
                     WS_CMD,
                     HELP_CMD,
                     SPAM_CMD,
-                    SPAM_STOP_CMD
+                    SPAM_STOP_CMD,
+                    INFO_CMD
             ).queue();
 
 

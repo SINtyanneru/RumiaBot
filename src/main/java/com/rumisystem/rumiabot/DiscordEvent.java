@@ -38,9 +38,6 @@ public class DiscordEvent extends ListenerAdapter {
                 if(msg.startsWith("r.backup")){
                     backup.main(e);
                 }
-                if(msg.startsWith("r.info")){
-                    info.Main(e);
-                }
                 if(msg.startsWith("r.msg")){
                     msgc.Main(e);
                 }
@@ -94,6 +91,9 @@ public class DiscordEvent extends ListenerAdapter {
                 break;
             case "spam_stop":
                 SPAM.EMAJEN_STOP(e);
+                break;
+            case "info":
+                info.Main(e);
                 break;
         }
     }

@@ -4,21 +4,25 @@ import com.rumisystem.rumiabot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
+import java.util.Objects;
 
+import static com.rumisystem.rumiabot.Main.LOG_OUT;
 import static com.rumisystem.rumiabot.Main.jda;
 
 public class info {
-    public static void Main(MessageReceivedEvent e){
-        String[] cmd = e.getMessage().getContentRaw().split(" ");
-        if(cmd.length == 1){
-            e.getMessage().reply("使い方が違う").queue();
+    public static void Main(SlashCommandInteractionEvent e){
+        e.deferReply().queue();
+
+        if(Objects.isNull(e.getInteraction().getOption("select"))){
+            e.getHook().editOriginal("エラー！").queue();
             return;
         }
 
-        if(cmd[1].equalsIgnoreCase("SERVER")){
+        if(e.getInteraction().getOption("select").getAsString().equalsIgnoreCase("SERVER")){
             try{
                 // Create the EmbedBuilder instance
                 EmbedBuilder eb = new EmbedBuilder();   //埋め込みのやつを簡単に作れるツール(Discord.JSにはない！！神！！JAVA先生一生ついていきます！！)
@@ -43,36 +47,39 @@ public class info {
                 }
                 eb.addField("絵文字", Emojis.toString().substring(0, 1024), false);//人数
 
-                e.getMessage().replyEmbeds(eb.build()).queue();
+                e.getHook().editOriginalEmbeds(eb.build()).queue();
             }catch (Exception ex){
-                e.getMessage().reply("エラー：" + ex).queue();
+                e.getHook().editOriginal("サーバー情報取得時にエラーなのだ").queue();
+                LOG_OUT(ex.getMessage());
             }
-        }else if(cmd[1].equalsIgnoreCase("USER")){
+        }else if(e.getInteraction().getOption("select").getAsString().equalsIgnoreCase("USER")){
             try{
-                // メッセージ内のメンションを取得する
-                List<User> mentionedUsers = e.getMessage().getMentions().getUsers();
-
-                // 各メンションのIDを取得する
-                for (User user : mentionedUsers) {
-                    String userId = user.getId();
-                    User us = jda.getUserById(userId);
-                    // Create the EmbedBuilder instance
-                    EmbedBuilder eb = new EmbedBuilder();   //埋め込みのやつを簡単に作れるツール(Discord.JSにはない！！神！！JAVA先生一生ついていきます！！)
-                    eb.setTitle(us.getName(), null);     //タイトル
-                    eb.setColor(Main.RUND_COLOR());   //色設定
-                    eb.setThumbnail(us.getAvatarUrl());
-
-                    //eb.addField("この鯖でのニックネーム",e.getGuild().getMember(us).getNickname(), false);
-                    eb.addField("ID", us.getId(), false);
-                    eb.addField("アイコンのID", us.getAvatarId(), false);
-                    eb.addField("この鯖の所有者か", String.valueOf(e.getGuild().getMember(us).isOwner()), false);
-                    e.getMessage().replyEmbeds(eb.build()).queue();
+                if(Objects.isNull(e.getInteraction().getOption("users"))){
+                    e.getHook().editOriginal("ユーザーを指定してね").queue();
+                    return;
                 }
+                User user = e.getOption("users").getAsUser();
+
+                String userId = user.getId();
+                User us = jda.getUserById(userId);
+                // Create the EmbedBuilder instance
+                EmbedBuilder eb = new EmbedBuilder();   //埋め込みのやつを簡単に作れるツール(Discord.JSにはない！！神！！JAVA先生一生ついていきます！！)
+                eb.setTitle(us.getName(), null);     //タイトル
+                eb.setColor(Main.RUND_COLOR());   //色設定
+                eb.setThumbnail(us.getAvatarUrl());
+
+                //eb.addField("この鯖でのニックネーム",e.getGuild().getMember(us).getNickname(), false);
+                eb.addField("ID", us.getId(), false);
+                eb.addField("アイコンのID", us.getAvatarId(), false);
+                eb.addField("この鯖の所有者か", String.valueOf(e.getGuild().getMember(us).isOwner()), false);
+
+                e.getHook().editOriginalEmbeds(eb.build()).queue();
             }catch (Exception ex){
-                e.getMessage().reply("エラー：" + ex.getMessage()).queue();
+                e.getHook().editOriginal("ユーザー情報取得時にエラーなのだ").queue();
+                LOG_OUT(ex.getMessage());
             }
         }else{
-            e.getMessage().reply("つかいかたちがう！").queue();
+            e.getHook().editOriginal("使いかやがちがう！").queue();
         }
     }
 }
