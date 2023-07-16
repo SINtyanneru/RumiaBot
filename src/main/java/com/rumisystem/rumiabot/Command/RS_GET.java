@@ -58,15 +58,44 @@ public class RS_GET {
                     ObjectMapper objectMapper = new ObjectMapper();
                     JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
                     if(json.get("STATUS").booleanValue()){
+                        String USER_ID = json.get("DATA").get("ID").textValue();
                         String USER_NAME = BASE64_DECODE(json.get("DATA").get("NAME").textValue());
                         String USER_DESC = BASE64_DECODE(json.get("DATA").get("DESCRIPTION").textValue());
-                        String USER_SEX = BASE64_DECODE(json.get("DATA").get("SEX").textValue());
+                        String USER_SEX = "?";
+                        String USER_REGIST_DATE = json.get("DATA").get("REGIST_DATE").textValue();
+                        String USER_LOCATION = json.get("DATA").get("LOCATION").textValue();
+                        String USER_STATUS = json.get("DATA").get("STATUS").textValue();
+
+                        switch (json.get("DATA").get("SEX").textValue()){
+                            case "MALE":
+                                USER_SEX = "男";
+                                break;
+                            case "FMALE":
+                                USER_SEX = "女";
+                                break;
+                            case "NEUT":
+                                USER_SEX = "中";
+                                break;
+                            case "ASEXU":
+                                USER_SEX = "無";
+                                break;
+                            case "ETC":
+                                USER_SEX = "その他";
+                                break;
+                            case "NONE":
+                                USER_SEX = "秘密";
+                                break;
+                        }
 
                         EmbedBuilder EB = new EmbedBuilder();
                         EB.setThumbnail("https://rumiserver.com/Data/API/user_icon.php?UID=" + e.getInteraction().getOption("uid").getAsString());
                         EB.setTitle(USER_NAME);
                         EB.setDescription(USER_DESC);
+                        EB.addField("内部ユーザーID", USER_ID, false);
                         EB.addField("性別", USER_SEX, false);
+                        EB.addField("登録日", USER_REGIST_DATE, false);
+                        EB.addField("國", USER_LOCATION, false);
+                        EB.addField("ステータス", USER_STATUS, false);
 
                         e.getHook().editOriginalEmbeds(EB.build()).queue();
                     }else {
