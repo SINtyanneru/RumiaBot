@@ -15,8 +15,10 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class Main {
@@ -87,6 +89,7 @@ public class Main {
             SlashCommandData SPAM_STOP_CMD = Commands.slash("spam_stop", "スパム停止");
             SPAM_STOP_CMD.setNameLocalization(DiscordLocale.JAPANESE, "スパム停止").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみさんしか使えない");
 
+            //情報取得
             SlashCommandData INFO_CMD = Commands.slash("info", "Infomation");
             INFO_CMD.setNameLocalization(DiscordLocale.JAPANESE, "情報取得").setDescriptionLocalization(DiscordLocale.JAPANESE, "色んな情報を取得");
             OptionData INFO_SELECT_OPTION = new OptionData(OptionType.STRING, "select", "You are nani wo get sulu!!", true)
@@ -102,6 +105,14 @@ public class Main {
             INFO_SELECT_OPTION.addChoices(INFO_SELECT_SERVER_CH, INFO_SELECT_USER_CH);
             INFO_CMD.addOptions(INFO_SELECT_OPTION, INFO_USER_OPTION);
 
+            //情報取得
+            SlashCommandData RS_GET_CMD = Commands.slash("rsget", "RumiServer Get");
+            INFO_CMD.setNameLocalization(DiscordLocale.JAPANESE, "るみ鯖のユーザー情報取得").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみ鯖でのユーザーの、情報を取得します");
+            OptionData RS_GET_CMD_UID_OPTION = new OptionData(OptionType.STRING, "uid", "user id", true)
+                    .setNameLocalization(DiscordLocale.JAPANESE, "ユーザーアイディー")
+                    .setDescriptionLocalization(DiscordLocale.JAPANESE, "誰を取得するか");
+            RS_GET_CMD.addOptions(RS_GET_CMD_UID_OPTION);
+
             //コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
             jda.updateCommands().addCommands(
                     Commands.slash("test", "テストコマンド"),
@@ -113,7 +124,8 @@ public class Main {
                     HELP_CMD,
                     SPAM_CMD,
                     SPAM_STOP_CMD,
-                    INFO_CMD
+                    INFO_CMD,
+                    RS_GET_CMD
             ).queue();
 
 
@@ -145,6 +157,17 @@ public class Main {
 
         return color;
     }
+
+    public static String BASE64_DECODE(String TEXT){
+        // Base64デコード
+        byte[] decodedBytes = Base64.getDecoder().decode(TEXT);
+
+        // デコードされたバイト列をUTF-8文字列に変換
+        String decodedString = new String(decodedBytes, StandardCharsets.UTF_8);
+
+        return decodedString;
+    }
+
 
     public static void SHUTDOWN(){
         System.out.println("[ *** ]APP Shutdowned...");

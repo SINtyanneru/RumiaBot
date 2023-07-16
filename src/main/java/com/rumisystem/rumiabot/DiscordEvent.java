@@ -90,10 +90,17 @@ public class DiscordEvent extends ListenerAdapter {
                 }
                 break;
             case "spam_stop":
-                SPAM.EMAJEN_STOP(e);
+                if(e.getUser().getId().equals("564772363950882816")) {
+                    SPAM.EMAJEN_STOP(e);
+                }else{
+                    e.getInteraction().reply("るみさんしか使えません").queue();
+                }
                 break;
             case "info":
                 info.Main(e);
+                break;
+            case "rsget":
+                RS_GET.Main(e);
                 break;
         }
     }
