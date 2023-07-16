@@ -44,7 +44,7 @@ public class info {
                 eb.addField("人数", String.valueOf(e.getGuild().getMemberCount()), false);//人数
                 eb.addField("チャンネル数", String.valueOf(e.getGuild().getChannels().size()), false);//人数
                 eb.addField("カテゴリ数", String.valueOf(e.getGuild().getCategories().size()), false);//人数
-                eb.addField("デフォルトチャンネル", String.valueOf(e.getGuild().getDefaultChannel()), false);//人数
+                eb.addField("デフォルトチャンネル", "<#" + String.valueOf(e.getGuild().getDefaultChannel().getId()) + ">", false);//人数
 
                 String CREATE_DATE = e.getGuild().getTimeCreated().toString();
 
