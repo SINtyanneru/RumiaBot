@@ -2,16 +2,20 @@ package com.rumisystem.rumiabot.Command;
 
 import com.rumisystem.rumiabot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import static com.rumisystem.rumiabot.Main.LOG_OUT;
 import static com.rumisystem.rumiabot.Main.jda;
+import java.text.SimpleDateFormat;
 
 public class info {
     public static void Main(SlashCommandInteractionEvent e){
@@ -41,10 +45,15 @@ public class info {
                 eb.addField("チャンネル数", String.valueOf(e.getGuild().getChannels().size()), false);//人数
                 eb.addField("カテゴリ数", String.valueOf(e.getGuild().getCategories().size()), false);//人数
                 eb.addField("デフォルトチャンネル", String.valueOf(e.getGuild().getDefaultChannel()), false);//人数
+
+                String CREATE_DATE = e.getGuild().getTimeCreated().toString();
+
+                eb.addField("作成日時", String.valueOf(CREATE_DATE), false);//人数
                 StringBuilder Emojis = new StringBuilder();
                 for (RichCustomEmoji emoji : e.getGuild().getEmojis()){
                     Emojis.append("<:" + emoji.getName() + ":" + emoji.getId() + ">");
                 }
+
                 eb.addField("絵文字", Emojis.toString().substring(0, 1024), false);//人数
 
                 e.getHook().editOriginalEmbeds(eb.build()).queue();
