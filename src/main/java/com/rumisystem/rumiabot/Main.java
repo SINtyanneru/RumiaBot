@@ -113,6 +113,10 @@ public class Main {
                     .setDescriptionLocalization(DiscordLocale.JAPANESE, "誰を取得するか");
             RS_GET_CMD.addOptions(RS_GET_CMD_UID_OPTION);
 
+            //鯖バックアップ
+            SlashCommandData SERVER_BACKUP_CMD = Commands.slash("backup", "backUp");
+            SERVER_BACKUP_CMD.setNameLocalization(DiscordLocale.JAPANESE, "サーバーバックアップ").setDescriptionLocalization(DiscordLocale.JAPANESE, "バックアップするのだ");
+
             //コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
             jda.updateCommands().addCommands(
                     Commands.slash("test", "テストコマンド"),
@@ -125,7 +129,8 @@ public class Main {
                     SPAM_CMD,
                     SPAM_STOP_CMD,
                     INFO_CMD,
-                    RS_GET_CMD
+                    RS_GET_CMD,
+                    SERVER_BACKUP_CMD
             ).queue();
 
 

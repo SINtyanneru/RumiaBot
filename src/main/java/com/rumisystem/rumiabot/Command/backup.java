@@ -5,13 +5,14 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class backup {
-    public static void main(MessageReceivedEvent e){
+    public static void main(SlashCommandInteractionEvent e){
         String TEXT = "";
 
         List<CATEGORY_BACKUP_OBJECT> category_backup_objects = new ArrayList<>();

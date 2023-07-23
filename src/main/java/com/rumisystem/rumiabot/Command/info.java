@@ -8,14 +8,13 @@ import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.TimeZone;
+import java.util.*;
 
 import static com.rumisystem.rumiabot.Main.LOG_OUT;
 import static com.rumisystem.rumiabot.Main.jda;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class info {
     public static void Main(SlashCommandInteractionEvent e){
@@ -49,12 +48,51 @@ public class info {
                 String CREATE_DATE = e.getGuild().getTimeCreated().toString();
 
                 eb.addField("作成日時", String.valueOf(CREATE_DATE), false);//人数
-                StringBuilder Emojis = new StringBuilder();
-                for (RichCustomEmoji emoji : e.getGuild().getEmojis()){
-                    Emojis.append("<:" + emoji.getName() + ":" + emoji.getId() + ">");
+                StringBuilder EMOJIS_STRING = new StringBuilder();
+                for (RichCustomEmoji EMOJI : e.getGuild().getEmojis()){
+                    if(EMOJI.isAvailable()){
+                        if(!EMOJI.isAnimated()){
+                            EMOJIS_STRING.append("<:" + EMOJI.getName() + ":" + EMOJI.getId() + ">");
+                        }else{
+                            EMOJIS_STRING.append("<a:" + EMOJI.getName() + ":" + EMOJI.getId() + ">");
+                        }
+                    }
                 }
 
-                eb.addField("絵文字", Emojis.toString().substring(0, 1024), false);//人数
+                Pattern pattern = Pattern.compile("<.*?>"); // 正規表現パターン
+                Matcher matcher = pattern.matcher(EMOJIS_STRING);
+
+                List<String> EMOJIS = new ArrayList<>();
+
+                int EMOJI_LENGTH = 0;
+                StringBuilder EMOJI_TEMP_STRING = new StringBuilder();
+                while (matcher.find()) {
+                    LOG_OUT(String.valueOf(EMOJI_LENGTH));
+                    String tag = matcher.group();
+                    if(EMOJI_LENGTH <= 1024){
+                        EMOJI_TEMP_STRING.append(tag);
+                        EMOJI_LENGTH = (EMOJI_LENGTH + tag.length());
+                    }else{
+                        EMOJIS.add(EMOJI_TEMP_STRING.toString());
+
+                        LOG_OUT(EMOJIS.toString());
+
+                        EMOJI_TEMP_STRING.delete(0, EMOJI_TEMP_STRING.length());
+
+                        EMOJI_LENGTH = 0;
+                    }
+                }
+
+                if(EMOJI_LENGTH >= 0){
+                    EMOJIS.add(EMOJI_TEMP_STRING.toString());
+                }
+
+                LOG_OUT(EMOJIS.toString());
+
+
+                for(String TEST:EMOJIS){
+                    eb.addField("絵文字", TEST.toString().substring(0, Math.min(TEST.toString().length(), 1024)), false);//人数
+                }
 
                 e.getHook().editOriginalEmbeds(eb.build()).queue();
             }catch (Exception ex){

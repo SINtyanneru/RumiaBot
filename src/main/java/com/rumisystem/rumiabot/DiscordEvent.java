@@ -35,9 +35,6 @@ public class DiscordEvent extends ListenerAdapter {
                 if(msg.startsWith("r.setch")){
                     setch.main(e);
                 }
-                if(msg.startsWith("r.backup")){
-                    backup.main(e);
-                }
                 if(msg.startsWith("r.msg")){
                     msgc.Main(e);
                 }
@@ -101,6 +98,9 @@ public class DiscordEvent extends ListenerAdapter {
                 break;
             case "rsget":
                 RS_GET.Main(e);
+                break;
+            case "backup":
+                backup.main(e);
                 break;
         }
     }
