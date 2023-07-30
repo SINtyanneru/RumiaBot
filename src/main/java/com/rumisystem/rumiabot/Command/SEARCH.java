@@ -34,7 +34,8 @@ public class SEARCH {
 
             e.getMessage().addReaction(Emoji.fromUnicode("\uD83D\uDD04")).queue();
 
-            String RESULT = HTTP_REQ("https://www.googleapis.com/customsearch/v1" +
+            //https://www.googleapis.com/customsearch/v1
+            String RESULT = HTTP_REQ("http://localhost/TEST/GSA_DUMMY.json" +
                     "?key=" + Main.GOOGLE_API_KEY +
                     "&cx=" + Main.GOOGLE_API_ENGINE_ID +
                     "&q=" + Q);
@@ -96,7 +97,7 @@ public class SEARCH {
                         }
                     }
 
-                    EB.addField(TITLE, "[" + SNIPPET + "](" + LINK + ")", false);
+                    EB.addField(TITLE, "[開く](" + LINK + ")```" + SNIPPET + "```", false);
                 }
             }).run();
 
