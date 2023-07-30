@@ -22,6 +22,8 @@ public class ConfigLoder {
 
             Main.BOT_TOKEN = json.get("TOKEN").textValue();//トークン
             Main.BOT_ID = json.get("ID").textValue();
+            Main.GOOGLE_API_KEY = json.get("GOOGLE_API_KEY").textValue();
+            Main.GOOGLE_API_ENGINE_ID = json.get("GOOGLE_API_ENGINE_ID").textValue();
         } catch(IOException ex) {
             ex.printStackTrace();
         }

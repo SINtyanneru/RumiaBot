@@ -24,6 +24,8 @@ import java.util.Scanner;
 public class Main {
     public static String BOT_TOKEN = "";   //DiscordBOTのトークン
     public static String BOT_ID = "";
+    public static String GOOGLE_API_KEY = "";
+    public static String GOOGLE_API_ENGINE_ID = "";
     public static Path AppDir;
     public static JDA jda;
 

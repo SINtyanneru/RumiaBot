@@ -39,6 +39,10 @@ public class DiscordEvent extends ListenerAdapter {
                     msgc.Main(e);
                 }
 
+                if(msg.startsWith("検索 ")){
+                    SEARCH.Main(e);
+                }
+
                 for(User MU : e.getMessage().getMentions().getUsers()){
                     if(MU.getId().equals(Main.BOT_ID)){
                         e.getChannel().sendTyping().queue();
@@ -60,7 +64,7 @@ public class DiscordEvent extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
-        switch (e.getName()){
+        switch(e.getName()){
             case "test":
                 test.Main(e);
                 break;
