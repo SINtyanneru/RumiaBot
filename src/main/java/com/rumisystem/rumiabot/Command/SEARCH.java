@@ -77,7 +77,7 @@ public class SEARCH {
     public static String HTTP_REQ(String URL_TEXT){
         try{
             // URLを作成
-            URL URL_OBJ = new URL(URL_TEXT.replace("\n", "+"));
+            URL URL_OBJ = new URL(URL_TEXT.replace("\n", "+").replace(" ", "+").replace("　", "+"));
 
             // HttpURLConnectionを作成
             HttpURLConnection connection = (HttpURLConnection) URL_OBJ.openConnection();
