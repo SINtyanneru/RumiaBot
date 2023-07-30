@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ import java.util.regex.Pattern;
 import static com.rumisystem.rumiabot.Main.*;
 
 public class SEARCH {
+    public static ArrayList<String> DENIED_URL = new ArrayList<>(){{
+        add("^.*\\.pornhub\\.com$");
+    }};
     public static void Main(MessageReceivedEvent e) throws JsonProcessingException {
         try{
             String Q = e.getMessage().getContentRaw().replace("検索 ", "");
@@ -56,17 +60,45 @@ public class SEARCH {
             EB.setTitle("「" + Q + "」の検索結果");
             EB.setDescription("GoogleのAPIを使用");
 
-            for(int I = 0; I < RESULT_TITLE.size(); I++){
-                String TITLE = RESULT_TITLE.get(I);
-                String LINK = RESULT_LINK.get(I);
-                String SNIPPET = RESULT_SNIPPET.get(I);
+            ((Runnable) () -> {
+                for(int I = 0; I < RESULT_TITLE.size(); I++){
+                    String TITLE = RESULT_TITLE.get(I);
+                    String LINK = RESULT_LINK.get(I);
+                    String SNIPPET = RESULT_SNIPPET.get(I);
 
-                if(RESULT_TITLE.get(I).length() > 253){
-                    TITLE = RESULT_TITLE.get(I).substring(0, 253) + "...";
+                    if(I > 50){
+                        break;
+                    }
+
+                    if(TITLE.length() > 253){//文字数が256をオーバーしたか
+                        //したので切り落とし
+                        TITLE = RESULT_TITLE.get(I).substring(0, 253) + "...";
+                    }
+
+                    for (String HOST:DENIED_URL){
+                        try{
+                            URL url = new URL(LINK);
+                            String HOST_NAME = url.getHost();
+
+                            LOG_OUT(HOST_NAME);
+                            LOG_OUT(HOST);
+
+                            Pattern pattern = Pattern.compile(HOST);
+                            Matcher matcher = pattern.matcher(HOST_NAME);
+
+                            if(matcher.find()){
+                                LOG_OUT("無効化");
+                                return;
+                            }
+                        }catch(MalformedURLException EX) {
+                            EB.addField(TITLE, "ホスト名が無効です", false);
+                            return;
+                        }
+                    }
+
+                    EB.addField(TITLE, "[" + SNIPPET + "](" + LINK + ")", false);
                 }
-
-                EB.addField(TITLE, "[" + SNIPPET + "](" + LINK + ")", false);
-            }
+            }).run();
 
             e.getMessage().replyEmbeds(EB.build()).queue();
         }catch (Exception EX){
