@@ -35,7 +35,7 @@ public class SEARCH {
             e.getMessage().addReaction(Emoji.fromUnicode("\uD83D\uDD04")).queue();
 
             //https://www.googleapis.com/customsearch/v1
-            String RESULT = HTTP_REQ("http://localhost/TEST/GSA_DUMMY.json" +
+            String RESULT = HTTP_REQ("https://www.googleapis.com/customsearch/v1" +
                     "?key=" + Main.GOOGLE_API_KEY +
                     "&cx=" + Main.GOOGLE_API_ENGINE_ID +
                     "&q=" + Q);
