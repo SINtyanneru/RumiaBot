@@ -29,6 +29,10 @@ public class Main {
 	public static String BOT_ID = "";
 	public static String GOOGLE_API_KEY = "";
 	public static String GOOGLE_API_ENGINE_ID = "";
+	public static String SQL_HOST = "";
+	public static String SQL_USER = "";
+	public static String SQL_PASS = "";
+
 	public static Path AppDir;
 	public static JDA jda;
 
@@ -41,6 +45,14 @@ public class Main {
 			//設定ファイル読み込み関数実行
 			ConfigLoder.main();
 
+			LOG_OUT("[ SYSTEM ][ *** ]HTTP Server Stating...");
+			WEB_SERVER WS = new WEB_SERVER();
+			WS.start();
+
+			LOG_OUT("[ SYSTEM ][ *** ]SQL Client Stating...");
+			SQL.Main();
+
+			LOG_OUT("[ SYSTEM ][ *** ]JDA Starting...");
 			//JDAをこねくり回す
 			jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
 					.setRawEventsEnabled(true)
@@ -50,6 +62,7 @@ public class Main {
 					.build();
 
 			jda.awaitReady();
+			LOG_OUT("[ JDA ][ OK ]JDA Started!");
 
 			//ウェブサイトスクショ
 			SlashCommandData WS_CMD = Commands.slash("ws", "ウェブサイトのスクショ");
@@ -137,13 +150,9 @@ public class Main {
 					RS_GET_CMD,
 					SERVER_BACKUP_CMD
 			).queue();
+			LOG_OUT("[ JDA ][ OK ]JDAで、N以上のコマンドを登録しました！");
 
-
-
-			WEB_SERVER WS = new WEB_SERVER();
-			WS.start();
-
-			LOG_OUT("Hello");
+			LOG_OUT("[ SYSTEM ][ OK ]起動完了");
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
