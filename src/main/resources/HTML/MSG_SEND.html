@@ -1,0 +1,29 @@
+<HTML>
+	<HEAD>
+		<TITLE>RumiaBOT</TITLE>
+
+		<LINK REL="stylesheet" HREF="./STYLE/Main.css">
+		<LINK REL="stylesheet" HREF="./STYLE/MSG_SEND.css">
+	</HEAD>
+	<BODY>
+		<DIV CLASS="HEADER">
+			るみBOT
+			<BR>
+			<A HREF="./index.html"><BUTTON>←家</BUTTON></A>
+		</DIV>
+		<INPUT ID="CH_ID" VALUE="1128742498194444298">
+		<TEXTAREA ID="TEXT" PLACEHOLDER="内容"></TEXTAREA>
+		<BUTTON onclick="SEND();"></BUTTON>
+	</BODY>
+</HTML>
+
+<SCRIPT>
+	function SEND(){
+		let AJAX = new XMLHttpRequest();
+		AJAX.open("GET", "/API/MSG_SEND?ID=" + document.getElementById("CH_ID") + "&TEXT=" + document.getElementById("TEXT"));
+		AJAX.addEventListener("load", (E)=>{
+			console.log(AJAX.responseText);
+		});
+		AJAX.send();
+	}
+</SCRIPT>
