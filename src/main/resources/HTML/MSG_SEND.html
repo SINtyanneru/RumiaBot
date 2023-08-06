@@ -20,7 +20,7 @@
 <SCRIPT>
 	function SEND(){
 		let AJAX = new XMLHttpRequest();
-		AJAX.open("GET", "/API/MSG_SEND?ID=" + document.getElementById("CH_ID") + "&TEXT=" + document.getElementById("TEXT"));
+		AJAX.open("GET", "/API/MSG_SEND?ID=" + document.getElementById("CH_ID").value + "&TEXT=" + document.getElementById("TEXT").value);
 		AJAX.addEventListener("load", (E)=>{
 			console.log(AJAX.responseText);
 		});
