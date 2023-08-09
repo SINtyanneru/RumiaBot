@@ -82,6 +82,9 @@ public class DiscordEvent extends ListenerAdapter {
 			case "test":
 				test.Main(e);
 				break;
+			case "ping":
+				PING.Main(e);
+				break;
 			case "invite":
 				e.getInteraction().reply("[招待する](https://discord.com/api/oauth2/authorize?client_id=869887786491183125&permissions=8&scope=bot)").queue();
 				break;

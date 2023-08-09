@@ -92,6 +92,14 @@ public class Main {
 					.setNameLocalization(DiscordLocale.JAPANESE, "ページ")
 					.setDescriptionLocalization(DiscordLocale.JAPANESE, "みたい㌻、特に無いなら指定しなくて良い");
 
+			//ピングコマンド
+			SlashCommandData PING_CMD = Commands.slash("ping", "ping");
+			PING_CMD.setNameLocalization(DiscordLocale.JAPANESE, "ping").setDescriptionLocalization(DiscordLocale.JAPANESE, "pingします");
+			OptionData PING_IP = new OptionData(OptionType.STRING, "ip", "ip", true)
+					.setNameLocalization(DiscordLocale.JAPANESE, "ping先")
+					.setDescriptionLocalization(DiscordLocale.JAPANESE, "どこにpingするか");
+			PING_CMD.addOptions(PING_IP);
+
 			//スパムコマンド
 			SlashCommandData SPAM_CMD = Commands.slash("spam", "ヘルプ");
 			SPAM_CMD.setNameLocalization(DiscordLocale.JAPANESE, "スパム").setDescriptionLocalization(DiscordLocale.JAPANESE, "るみさんしか使えない");
@@ -156,7 +164,8 @@ public class Main {
 					SPAM_STOP_CMD,
 					INFO_CMD,
 					RS_GET_CMD,
-					SERVER_BACKUP_CMD
+					SERVER_BACKUP_CMD,
+					PING_CMD
 			).queue();
 			LOG_OUT("[ JDA ][ OK ]JDAで、N以上のコマンドを登録しました！");
 
