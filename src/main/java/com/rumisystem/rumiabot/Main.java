@@ -54,7 +54,9 @@ public class Main {
 
 			LOG_OUT("[ SYSTEM ][ *** ]JDA Starting...");
 			//JDAをこねくり回す
-			jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
+			jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT,
+							GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS,
+							GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MODERATION)
 					.setRawEventsEnabled(true)
 					.addEventListeners(new DiscordEvent())
 					.setActivity(Activity.playing("そーなのかー"))
@@ -143,6 +145,7 @@ public class Main {
 			//コマンドを追加 参考：https://jda.wiki/using-jda/interactions/#slash-commands
 			jda.updateCommands().addCommands(
 					Commands.slash("test", "テストコマンド"),
+					Commands.slash("invite", "招待コード生成"),
 					Commands.slash("update", "アプデ情報"),
 					Commands.slash("tanzania", "タンザニア！"),
 					Commands.slash("shell", "ルーミアシェル")

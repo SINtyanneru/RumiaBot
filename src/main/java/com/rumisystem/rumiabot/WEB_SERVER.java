@@ -108,16 +108,18 @@ public class WEB_SERVER extends Thread{
 		if(FILE_NAME.startsWith("/API/MSG_SEND")){
 			String MIME = "application/json; charset=UTF-8";
 
-			if ("GET".equals(httpExchange.getRequestMethod())) {
-				// GETリクエストの場合
-				String requestURI = httpExchange.getRequestURI().toString();
-				TextChannel TC = jda.getTextChannelById(URL_PARAM(requestURI, "ID"));
-				if(TC != null){
-					TC.sendMessage(URL_PARAM(requestURI, "TEXT")).queue();
-					HTTP_RES(httpExchange, "{\"STATUS\":true}", MIME, 200);
-				}else {
-					HTTP_RES(httpExchange, "{\"STATUS\":false}", MIME, 200);
-				}
+			String requestURI = httpExchange.getRequestURI().toString();
+
+			// POSTリクエストの場合、リクエストボディを取得します
+			InputStream requestBody = httpExchange.getRequestBody();
+			String postData = inputStreamToString(requestBody);
+
+			TextChannel TC = jda.getTextChannelById(URL_PARAM(requestURI, "ID"));
+			if(TC != null){
+				TC.sendMessage(postData).queue();
+				HTTP_RES(httpExchange, "{\"STATUS\":true}", MIME, 200);
+			}else {
+				HTTP_RES(httpExchange, "{\"STATUS\":false}", MIME, 200);
 			}
 		}else{
 			//APIがないので死ぬ
@@ -125,6 +127,17 @@ public class WEB_SERVER extends Thread{
 			String BODY = FILE_ERR("404");
 			HTTP_RES(httpExchange, BODY, MIME, 404);
 		}
+	}
+
+	// InputStreamから文字列に変換するユーティリティメソッド
+	private static String inputStreamToString(InputStream inputStream) throws IOException {
+		byte[] buffer = new byte[1024];
+		int bytesRead;
+		StringBuilder stringBuilder = new StringBuilder();
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			stringBuilder.append(new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
+		}
+		return stringBuilder.toString();
 	}
 
 	public static String URL_PARAM(String URL, String KEY){

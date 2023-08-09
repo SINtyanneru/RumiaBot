@@ -13,17 +13,20 @@
 		</DIV>
 		<INPUT ID="CH_ID" VALUE="1128742498194444298">
 		<TEXTAREA ID="TEXT" PLACEHOLDER="内容"></TEXTAREA>
-		<BUTTON onclick="SEND();"></BUTTON>
+		<BUTTON onclick="SEND();">送信</BUTTON>
 	</BODY>
 </HTML>
 
 <SCRIPT>
 	function SEND(){
+		let FORMDATA = new FormData();
+		FORMDATA.append("TEXT", document.getElementById("TEXT").value);
+
 		let AJAX = new XMLHttpRequest();
-		AJAX.open("GET", "/API/MSG_SEND?ID=" + document.getElementById("CH_ID").value + "&TEXT=" + document.getElementById("TEXT").value);
+		AJAX.open("POST", "/API/MSG_SEND?ID=" + document.getElementById("CH_ID").value);
 		AJAX.addEventListener("load", (E)=>{
 			console.log(AJAX.responseText);
 		});
-		AJAX.send();
+		AJAX.send(FORMDATA);
 	}
 </SCRIPT>

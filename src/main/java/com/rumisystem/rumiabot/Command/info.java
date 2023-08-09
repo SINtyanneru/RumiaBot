@@ -111,7 +111,8 @@ public class info {
 				jda.retrieveUserById(userId).queue(US -> {
 					if(US != null){
 						// Create the EmbedBuilder instance
-						EmbedBuilder eb = new EmbedBuilder();   //埋め込みのやつを簡単に作れるツール(Discord.JSにはない！！神！！JAVA先生一生ついていきます！！)
+						EmbedBuilder eb = new EmbedBuilder();
+
 						if(e.getGuild().getMemberById(US.getId()) != null){
 							if(e.getGuild().getMemberById(US.getId()).getNickname() != null){
 								eb.setTitle(e.getGuild().getMemberById(US.getId()).getNickname(), null);
