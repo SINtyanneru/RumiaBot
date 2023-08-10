@@ -3,7 +3,9 @@ package com.rumisystem.rumiabot;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.openqa.selenium.json.Json;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -110,14 +112,21 @@ public class MISSKEY {
 					EB.setUrl("https://ussr.rumiserver.com/@" + NOTE.get("user").get("username").textValue());
 					//EB.setTimestamp(NOTE.get("createdAt").deepCopy());
 					if(NOTE.get("text").textValue() == null){
-						EB.setDescription(NOTE.get("user").get("name").textValue() + "がRNしました\n" + NOTE.get("renote").get("text").textValue()
-								+ "\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("renote").get("id").textValue() +
-								")");
+						EB.setDescription("\uD83D\uDD01" + NOTE.get("user").get("name").textValue() + "がRNしました\n"+
+								NOTE.get("renote").get("text").textValue()+
+								"\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("renote").get("id").textValue() + ")");
 					}else{
 						EB.setDescription(NOTE.get("text").textValue() + "\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("id").textValue() + ")");
 					}
 
-					TC.sendMessageEmbeds(EB.build()).queue();
+					Message MSG = TC.sendMessageEmbeds(EB.build()).complete();
+					if(NOTE.get("files") != null){
+						StringBuilder FILE_URL = new StringBuilder();
+						for(JsonNode FILE: NOTE.get("files")){
+							FILE_URL.append(FILE.get("url").textValue() + "\n");
+						}
+						MSG.reply(FILE_URL).queue();
+					}
 				}
 			}
 		}
