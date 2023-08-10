@@ -36,9 +36,12 @@ public class DiscordEvent extends ListenerAdapter {
 				if(msg.startsWith("r.setch")){
 					setch.main(e);
 				}
+				/*
 				if(msg.startsWith("r.msg")){
 					msgc.Main(e);
 				}
+				 */
+
 
 				if(msg.startsWith("検索 ")){
 					SEARCH.Main(e);
