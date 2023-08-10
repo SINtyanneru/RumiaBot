@@ -169,6 +169,8 @@ public class Main {
 			).queue();
 			LOG_OUT("[ JDA ][ OK ]JDAで、N以上のコマンドを登録しました！");
 
+			MISSKEY.Main();
+
 			LOG_OUT("[ SYSTEM ][ OK ]起動完了");
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

@@ -23,7 +23,7 @@ public class DiscordEvent extends ListenerAdapter {
 			if(!e.getAuthor().equals(jda.getSelfUser())) {  //送信されたメッセージがBOTによるものではないか
 
 
-				Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
+				//Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
 
 				if(msg.startsWith("r.setch")){
 					setch.main(e);
