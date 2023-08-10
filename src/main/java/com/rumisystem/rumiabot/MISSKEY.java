@@ -68,9 +68,12 @@ public class MISSKEY {
 						if(REQUEST_RESULT == null){//REQUEST_RESULTが空なら
 							//セット
 							REQUEST_RESULT = RESPONSE_TEXT;
+
 							ObjectMapper objectMapper = new ObjectMapper();
 							JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
-							SEND_MISSKEY_NOTE(json.get(0));
+							if(json.get(0) != null && json.get(0).isObject()){
+								SEND_MISSKEY_NOTE(json.get(0));
+							}
 						}else{
 							if(!REQUEST_RESULT.equals(RESPONSE_TEXT)){
 								LOG_OUT("[ MISSKEY ]NOTES UPDATE");
@@ -78,7 +81,9 @@ public class MISSKEY {
 
 								ObjectMapper objectMapper = new ObjectMapper();
 								JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
-								SEND_MISSKEY_NOTE(json.get(0));
+								if(json.get(0) != null && json.get(0).isObject()){
+									SEND_MISSKEY_NOTE(json.get(0));
+								}
 							}
 						}
 
@@ -90,8 +95,10 @@ public class MISSKEY {
 
 					// 接続を閉じる
 					connection.disconnect();
-				}catch(IOException ex){
-					LOG_OUT("[ ERR ]HTTP REQUEST ERR BY MI API");
+				}catch(IOException EX){
+					LOG_OUT("[ ERR ]HTTP REQUEST ERR BY MI API:" + EX.getMessage());
+				}catch(Exception EX){
+					LOG_OUT("[ ERR ]HTTP REQUEST ERR BY MI API:" + EX.getMessage());
 				}
 			}
 		};
@@ -119,11 +126,11 @@ public class MISSKEY {
 						EB.setDescription(NOTE.get("text").textValue() + "\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("id").textValue() + ")");
 					}
 
-					if(NOTE.get("files") != null){
+					if(NOTE.get("files").get(0) != null){
 						EB.setImage(NOTE.get("files").get(0).get("thumbnailUrl").textValue());
 					}
 
-					Message MSG = TC.sendMessageEmbeds(EB.build()).complete();
+					TC.sendMessageEmbeds(EB.build()).queue();
 				}
 			}
 		}
