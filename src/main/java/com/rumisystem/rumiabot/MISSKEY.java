@@ -119,14 +119,11 @@ public class MISSKEY {
 						EB.setDescription(NOTE.get("text").textValue() + "\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("id").textValue() + ")");
 					}
 
-					Message MSG = TC.sendMessageEmbeds(EB.build()).complete();
 					if(NOTE.get("files") != null){
-						StringBuilder FILE_URL = new StringBuilder();
-						for(JsonNode FILE: NOTE.get("files")){
-							FILE_URL.append(FILE.get("url").textValue() + "\n");
-						}
-						MSG.reply(FILE_URL).queue();
+						EB.setImage(NOTE.get("files").get(0).get("thumbnailUrl").textValue());
 					}
+
+					Message MSG = TC.sendMessageEmbeds(EB.build()).complete();
 				}
 			}
 		}
