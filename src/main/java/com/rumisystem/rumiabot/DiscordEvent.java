@@ -2,12 +2,8 @@ package com.rumisystem.rumiabot;
 
 import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Mentions;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -15,10 +11,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.Route;
-
-import java.awt.*;
-import java.io.IOException;
 
 import static com.rumisystem.rumiabot.Main.LOG_OUT;
 import static com.rumisystem.rumiabot.Main.jda;
@@ -42,6 +34,9 @@ public class DiscordEvent extends ListenerAdapter {
 				}
 				 */
 
+				if(msg.startsWith("r.shell")){
+					SHELL_LINUX.Main(e);
+				}
 
 				if(msg.startsWith("検索 ")){
 					SEARCH.Main(e);
