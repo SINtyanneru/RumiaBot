@@ -58,7 +58,21 @@ public class DiscordEvent extends ListenerAdapter {
 				for(User MU : e.getMessage().getMentions().getUsers()){
 					if(MU.getId().equals(Main.BOT_ID)){
 						e.getChannel().sendTyping().queue();
-						e.getMessage().reply("はい").queue();
+						int RND = (int)Math.ceil(Math.random() * 3);
+						switch(RND){
+							case 1:
+								e.getMessage().reply("はい").queue();
+								break;
+							case 2:
+								e.getMessage().reply("ふーん。。。。").queue();
+								break;
+							case 3:
+								e.getMessage().reply("そうですか。").queue();
+								break;
+							case 4:
+								e.getMessage().reply("へー").queue();
+								break;
+						}
 					}
 				}
 

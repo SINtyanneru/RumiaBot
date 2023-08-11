@@ -158,6 +158,7 @@ public class Main {
 					Commands.slash("tanzania", "タンザニア！"),
 					Commands.slash("shell", "ルーミアシェル")
 							.addOption(OptionType.STRING, "cmd", "コマンド", true),
+					Commands.context(Command.Type.MESSAGE, "テストコマンド"),
 					WS_CMD,
 					HELP_CMD,
 					SPAM_CMD,
