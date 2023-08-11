@@ -58,7 +58,7 @@ public class DiscordEvent extends ListenerAdapter {
 				for(User MU : e.getMessage().getMentions().getUsers()){
 					if(MU.getId().equals(Main.BOT_ID)){
 						e.getChannel().sendTyping().queue();
-						int RND = (int)Math.ceil(Math.random() * 3);
+						int RND = (int)Math.ceil(Math.random() * 4);
 						switch(RND){
 							case 1:
 								e.getMessage().reply("はい").queue();
