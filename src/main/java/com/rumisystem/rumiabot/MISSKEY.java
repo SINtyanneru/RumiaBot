@@ -68,12 +68,6 @@ public class MISSKEY {
 						if(REQUEST_RESULT == null){//REQUEST_RESULTが空なら
 							//セット
 							REQUEST_RESULT = RESPONSE_TEXT;
-
-							ObjectMapper objectMapper = new ObjectMapper();
-							JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
-							if(json.get(0) != null && json.get(0).isObject()){
-								SEND_MISSKEY_NOTE(json.get(0));
-							}
 						}else{
 							if(!REQUEST_RESULT.equals(RESPONSE_TEXT)){
 								LOG_OUT("[ MISSKEY ]NOTES UPDATE");
