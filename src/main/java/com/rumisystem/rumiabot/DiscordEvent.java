@@ -174,6 +174,7 @@ public class DiscordEvent extends ListenerAdapter {
 				EmbedBuilder EB = new EmbedBuilder();
 				EB.setTitle("メッセージが消された");
 				EB.setDescription(E.getRawData().toString());
+				TC.sendMessageEmbeds(EB.build()).queue();
 			}else{
 				LOG_OUT("メッセージの削除を検知:" + E.getRawData());
 			}
