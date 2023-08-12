@@ -65,16 +65,16 @@ public class MISSKEY {
 
 						String RESPONSE_TEXT = response.toString();
 
+						ObjectMapper objectMapper = new ObjectMapper();
+						JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
+
 						if(REQUEST_RESULT == null){//REQUEST_RESULTが空なら
 							//セット
-							REQUEST_RESULT = RESPONSE_TEXT;
+							REQUEST_RESULT = json.get(0).get("id").textValue();
 						}else{
-							if(!REQUEST_RESULT.equals(RESPONSE_TEXT)){
+							if(!json.get(0).get("id").textValue().equals(REQUEST_RESULT)){
 								LOG_OUT("[ MISSKEY ]NOTES UPDATE");
 								REQUEST_RESULT = RESPONSE_TEXT;
-
-								ObjectMapper objectMapper = new ObjectMapper();
-								JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
 								if(json.get(0) != null && json.get(0).isObject()){
 									SEND_MISSKEY_NOTE(json.get(0));
 								}
