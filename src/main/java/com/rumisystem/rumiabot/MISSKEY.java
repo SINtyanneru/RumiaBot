@@ -68,6 +68,12 @@ public class MISSKEY {
 						if(REQUEST_RESULT == null){//REQUEST_RESULTが空なら
 							//セット
 							REQUEST_RESULT = RESPONSE_TEXT;
+
+							ObjectMapper objectMapper = new ObjectMapper();
+							JsonNode json = objectMapper.readTree(RESPONSE_TEXT);
+							if(json.get(0) != null && json.get(0).isObject()){
+								SEND_MISSKEY_NOTE(json.get(0));
+							}
 						}else{
 							if(!REQUEST_RESULT.equals(RESPONSE_TEXT)){
 								LOG_OUT("[ MISSKEY ]NOTES UPDATE");
@@ -112,19 +118,37 @@ public class MISSKEY {
 					EB.setColor(Color.GREEN);
 					EB.setUrl("https://ussr.rumiserver.com/@" + NOTE.get("user").get("username").textValue());
 					//EB.setTimestamp(NOTE.get("createdAt").deepCopy());
-					if(NOTE.get("text").textValue() == null){
-						EB.setDescription("\uD83D\uDD01" + NOTE.get("user").get("name").textValue() + "がRNしました\n"+
-								NOTE.get("renote").get("text").textValue()+
-								"\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("renote").get("id").textValue() + ")");
-					}else{
-						EB.setDescription(NOTE.get("text").textValue() + "\n[見に行く](https://ussr.rumiserver.com/notes/" + NOTE.get("id").textValue() + ")");
+
+					String NOTE_TEXT = NOTE.get("text").textValue();
+					String NOTE_USER = NOTE.get("user").get("name").textValue();
+					String NOTE_ID = NOTE.get("id").textValue();
+					String NOTE_URL = "https://ussr.rumiserver.com/notes/" + NOTE_ID;
+
+					if(NOTE_TEXT != null){//ノートの文字列が有るか
+						EB.setDescription(NOTE_TEXT + "\n[見に行く](" + NOTE_URL + ")");
+					}else{//無いから、リノート
+						String RENOTE_USER = NOTE.get("renote").get("user").get("name").textValue();
+						String RENOTE_TEXT = NOTE.get("renote").get("text").textValue();
+
+						if(RENOTE_TEXT == null){//テキストがnullなら
+							RENOTE_TEXT = "";//空に
+						}
+
+						EB.setDescription("\uD83D\uDD01" + NOTE_USER + "がRNしました\n"+
+								RENOTE_USER + "\n"+
+								RENOTE_TEXT+
+								"\n[見に行く](" + NOTE_URL + ")");
+
+						if(NOTE.get("renote").get("files").get(0) != null){//ファイルがアレば
+							EB.setImage(NOTE.get("renote").get("files").get(0).get("thumbnailUrl").textValue());//最初のファイルをぼーん
+						}
 					}
 
-					if(NOTE.get("files").get(0) != null){
-						EB.setImage(NOTE.get("files").get(0).get("thumbnailUrl").textValue());
+					if(NOTE.get("files").get(0) != null){//ファイルがアレば
+						EB.setImage(NOTE.get("files").get(0).get("thumbnailUrl").textValue());//最初のファイルをぼーん
 					}
 
-					TC.sendMessageEmbeds(EB.build()).queue();
+					TC.sendMessageEmbeds(EB.build()).queue();//送信
 				}
 			}
 		}

@@ -20,8 +20,13 @@ public class SHELL_LINUX {
 			MSG = e.getChannel().sendMessage("実行中").complete();
 
 			try {
+				String command[] = new String[3];
+				command[0] = "sh";
+				command[1] = "-c";
+				command[2] = e.getMessage().getContentRaw().replace("r.shell", "");
+
 				// コマンドを実行しプロセスを取得します
-				Process process = Runtime.getRuntime().exec(e.getMessage().getContentRaw().replace("r.shell", ""));
+				Process process = Runtime.getRuntime().exec(command);
 
 				// コマンドの出力ストリームを取得します
 				InputStream inputStream = process.getInputStream();

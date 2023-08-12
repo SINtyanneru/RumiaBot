@@ -14,7 +14,7 @@ public class PING {
 	public static void Main(SlashCommandInteractionEvent e){
 		e.deferReply().queue();//ちょっとまってねをする
 
-		String IP = e.getOption("ip").getAsString();//IPアドレス
+		String IP = e.getOption("ip").getAsString().replace("&", "").replace(";", "");//IPアドレス
 		StringBuilder LOG = new StringBuilder();//ログ
 
 		CompletableFuture<Void> pingFuture = CompletableFuture.runAsync(() -> {
