@@ -26,6 +26,7 @@ public class SHELL_LINUX {
 		if(e.getAuthor().getId().equals("564772363950882816")){
 			MSG_EVENT = e;
 			MSG = e.getChannel().sendMessage("実行中").complete();
+			int maxLength = 1000;
 
 			OUTPUT = new StringBuilder();//初期化
 			TASK_COMP = false;
@@ -47,6 +48,16 @@ public class SHELL_LINUX {
 					// コマンドの出力を読み取って表示します
 					String line;
 					while ((line = reader.readLine()) != null) {
+						//テキストの長さが指定の最大長を超えた場合、古いテキストを削除
+						if(OUTPUT.length() > maxLength){
+							MSG = e.getChannel().sendMessage("続き").complete();
+
+							int deleteCount = OUTPUT.length() - maxLength;
+							OUTPUT.delete(0, deleteCount + 1);
+
+							LOG_OUT("オーバー" + OUTPUT.length());
+						}
+
 						System.out.println(line);
 						OUTPUT.append(line + "\n");
 					}
