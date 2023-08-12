@@ -2,6 +2,7 @@ package com.rumisystem.rumiabot;
 
 import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -158,6 +160,23 @@ public class DiscordEvent extends ListenerAdapter {
 		try{
 			// ユーザーが離脱したときに実行されるコード
 			System.out.println(e.getMember().getUser().getName() + " left the server.");
+		}catch (Exception ex){
+			LOG_OUT("[ ERR ]" + ex.getMessage());
+		}
+	}
+
+	@Override
+	public void onMessageDelete(MessageDeleteEvent E){
+		try{
+			TextChannel TC = jda.getTextChannelById("1022898785183092807");
+
+			if(TC != null){
+				EmbedBuilder EB = new EmbedBuilder();
+				EB.setTitle("メッセージが消された");
+				EB.setDescription(E.getRawData().toString());
+			}else{
+				LOG_OUT("メッセージの削除を検知:" + E.getRawData());
+			}
 		}catch (Exception ex){
 			LOG_OUT("[ ERR ]" + ex.getMessage());
 		}

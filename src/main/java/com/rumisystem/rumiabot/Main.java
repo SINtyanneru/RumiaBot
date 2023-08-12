@@ -56,8 +56,10 @@ public class Main {
 			//JDAをこねくり回す
 			jda = JDABuilder.createDefault(BOT_TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT,
 							GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.GUILD_MEMBERS,
-							GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MODERATION)
+							GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MODERATION
+					)
 					.setRawEventsEnabled(true)
+					.setEventPassthrough(true)
 					.addEventListeners(new DiscordEvent())
 					.setActivity(Activity.playing("そーなのかー"))
 					.setStatus(OnlineStatus.valueOf("ONLINE"))
