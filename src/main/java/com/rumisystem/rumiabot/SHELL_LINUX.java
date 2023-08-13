@@ -50,8 +50,6 @@ public class SHELL_LINUX {
 					while ((line = reader.readLine()) != null) {
 						//テキストの長さが指定の最大長を超えた場合、古いテキストを削除
 						if(OUTPUT.length() > maxLength){
-							MSG = e.getChannel().sendMessage("続き").complete();
-
 							int deleteCount = OUTPUT.length() - maxLength;
 							OUTPUT.delete(0, deleteCount + 1);
 
