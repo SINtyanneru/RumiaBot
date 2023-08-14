@@ -3,6 +3,7 @@ package com.rumisystem.rumiabot;
 import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -158,8 +159,21 @@ public class DiscordEvent extends ListenerAdapter {
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
 		try{
-			// ユーザーが離脱したときに実行されるコード
-			System.out.println(e.getMember().getUser().getName() + " left the server.");
+			//ユーザーが離脱したときに実行されるコード(実験中)
+			TextChannel TC = jda.getTextChannelById("894185240728322058");
+			if(TC != null){
+				if(e.getGuild().getId().equals("836142496563068929")){
+					EmbedBuilder EB = new EmbedBuilder();
+					EB.setTitle(e.getUser().getName() + "が鯖から抜けたわ");
+					EB.setThumbnail(e.getUser().getAvatarUrl());
+					EB.setDescription("残念だ、彼は自分に私生活が有ることを証明してしまった");
+					TC.sendMessageEmbeds(EB.build()).queue();
+				}else{
+					LOG_OUT("[ G_LEAVE ]しらん鯖だなあ(" + e.getGuild().getName() + ")");
+				}
+			}else {
+				LOG_OUT("[ ERR ]チャンネルが無いと");
+			}
 		}catch (Exception ex){
 			LOG_OUT("[ ERR ]" + ex.getMessage());
 		}
@@ -169,11 +183,15 @@ public class DiscordEvent extends ListenerAdapter {
 	public void onMessageDelete(MessageDeleteEvent E){
 		try{
 			TextChannel TC = jda.getTextChannelById("1022898785183092807");
+			Guild SERVER = E.getGuild();
 
 			if(TC != null){
 				EmbedBuilder EB = new EmbedBuilder();
 				EB.setTitle("メッセージが消された");
 				EB.setDescription(E.getRawData().toString());
+				if(SERVER != null){
+					EB.addField("鯖名", SERVER.getName(), false);
+				}
 				TC.sendMessageEmbeds(EB.build()).queue();
 			}else{
 				LOG_OUT("メッセージの削除を検知:" + E.getRawData());
