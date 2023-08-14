@@ -15,8 +15,7 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import static com.rumisystem.rumiabot.Main.LOG_OUT;
-import static com.rumisystem.rumiabot.Main.jda;
+import static com.rumisystem.rumiabot.Main.*;
 
 public class DiscordEvent extends ListenerAdapter {
 	@Override
@@ -164,6 +163,7 @@ public class DiscordEvent extends ListenerAdapter {
 			if(TC != null){
 				if(e.getGuild().getId().equals("836142496563068929")){
 					EmbedBuilder EB = new EmbedBuilder();
+					EB.setColor(RUND_COLOR());
 					EB.setTitle(e.getUser().getName() + "が鯖から抜けたわ");
 					EB.setThumbnail(e.getUser().getAvatarUrl());
 					EB.setDescription("残念だ、彼は自分に私生活が有ることを証明してしまった");
@@ -187,6 +187,7 @@ public class DiscordEvent extends ListenerAdapter {
 
 			if(TC != null){
 				EmbedBuilder EB = new EmbedBuilder();
+				EB.setColor(RUND_COLOR());
 				EB.setTitle("メッセージが消された");
 				EB.setDescription(E.getRawData().toString());
 				if(SERVER != null){
