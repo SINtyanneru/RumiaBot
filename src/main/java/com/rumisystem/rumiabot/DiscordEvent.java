@@ -184,7 +184,7 @@ public class DiscordEvent extends ListenerAdapter {
 	@Override
 	public void onMessageDelete(MessageDeleteEvent E){
 		try{
-			TextChannel TC = jda.getTextChannelById("1022898785183092807");
+			TextChannel TC = jda.getTextChannelById("1140511350620168192");
 			Guild SERVER = E.getGuild();
 
 			if(TC != null){
