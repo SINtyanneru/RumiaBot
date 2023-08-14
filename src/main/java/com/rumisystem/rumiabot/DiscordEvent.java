@@ -5,6 +5,7 @@ import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import static com.rumisystem.rumiabot.Main.*;
@@ -203,10 +205,16 @@ public class DiscordEvent extends ListenerAdapter {
 	}
 
 	@Override
-	public void onGuildJoin(GuildJoinEvent e) {
+	public void onGuildJoin(GuildJoinEvent e){
 		TextChannel defaultChannel = e.getGuild().getSystemChannel();
 		if (defaultChannel != null) {
 			defaultChannel.sendMessage("にゃー\n(スラッシュコマンドを使用できます)\n(るみ鯖アカウントと連携させることができます)").queue();
 		}
+	}
+
+	@Override
+	public void onMessageUpdate(MessageUpdateEvent E){
+		// メッセージが編集されたときの処理
+		//LOG_OUT(E.getRawData().toString());
 	}
 }
