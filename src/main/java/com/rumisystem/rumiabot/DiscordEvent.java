@@ -3,10 +3,7 @@ package com.rumisystem.rumiabot;
 import com.rumisystem.rumiabot.Command.*;
 import com.rumisystem.rumiabot.GAME.NATION_FLAG;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -54,6 +51,24 @@ public class DiscordEvent extends ListenerAdapter {
 						//自分自身の権限を取得
 						if(selfMember != null){
 							e.getMessage().reply(selfMember.getPermissions().toString()).queue();
+						}
+					}
+				}
+
+				if(msg.startsWith("r.rm")){
+					TextChannel TC = e.getChannel().asTextChannel();
+					if(e.getAuthor().getId().equals("564772363950882816")){
+						if(TC != null){
+							int messageLimit = 100;
+
+							TC.getHistory().retrievePast(messageLimit).queue(MSGS -> {
+								for(Message MSG : MSGS){
+									// Process each message here
+									System.out.println("Author: " + MSG.getAuthor().getName());
+									System.out.println("Content: " + MSG.getContentDisplay());
+									System.out.println("Timestamp: " + MSG.getTimeCreated());
+								}
+							});
 						}
 					}
 				}
