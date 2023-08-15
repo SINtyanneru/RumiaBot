@@ -14,6 +14,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.rumisystem.rumiabot.Main.*;
 
 public class DiscordEvent extends ListenerAdapter {
@@ -25,6 +28,27 @@ public class DiscordEvent extends ListenerAdapter {
 
 
 				//Main.LOG_OUT(e.getGuild().getName() + "/" + e.getChannel().getName() + "\nSent msg:" + msg);
+
+				//twiteterをvxに
+				String twitterPattern = "https?:\\/\\/twitter\\.com\\/\\w+\\/status\\/\\d+";
+				Pattern pattern = Pattern.compile(twitterPattern);
+
+				Matcher matcher = pattern.matcher(e.getMessage().getContentRaw());
+
+				if(matcher.find()){
+					String TEXT = e.getAuthor().getName() + "\n" +  e.getMessage().getContentRaw();
+					String twitterURL = matcher.group();
+					String NEW_URL = twitterURL.replace("twitter.com", "vxtwitter.com");
+
+					LOG_OUT(twitterURL);
+					LOG_OUT(NEW_URL);
+
+					TEXT = TEXT.replace(twitterURL, NEW_URL);
+					e.getChannel().sendMessage(TEXT).queue();
+
+					e.getMessage().delete().queue();
+				}
+
 
 				if(msg.startsWith("r.setch")){
 					setch.main(e);
