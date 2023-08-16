@@ -174,6 +174,8 @@ public class Main {
 
 			MISSKEY.Main();
 
+			RUMISAN_SERVER.Main();
+
 			LOG_OUT("[ SYSTEM ][ OK ]起動完了");
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
