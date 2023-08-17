@@ -25,8 +25,7 @@ public class RUMISAN_SERVER {
 		add("https://まひろ.net");
 		add("https://kurisaba.xyz");
 		add("これは、ぐへへです。: ");
-		add("シコシコはしません、手を添えればピューっと");
-		add("パンパンはしません、挿入すればドピュっと");
+		add("massangoは、「まっさんご」ではなく「まっさんごう」です");
 	}};
 	private static int TIME = 10000;
 	private static Timer TIMER;
