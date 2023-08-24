@@ -9,7 +9,7 @@ ___
 source ./build.sh
 ```
 を実行(LINUXの場合)<BR>
-そして./build/libsに、[Config.json]を作成<BR>
+そして[Config.json]を作成<BR>
 ```json
 {
 	"TOKEN":"Discordのトークン",
@@ -25,7 +25,18 @@ source ./build.sh
 }
 ```
 これでおｋ！<BR>
-あとはjava -jar ./rumiabot-1.0-SNAPSHOT-allできどうするだけ！<BR>
+あとはsource start.shできどうするだけ！<BR>
 あとは楽しんでください()<BR>
+
+## ライブラリ
+fs<BR>
+discord.js(V13)<BR>
+child_process<BR>
+net<BR>
+ws<BR>
+http<BR>
+https<BR>
+selenium-webdriver<BR>
+selenium-webdriver/chrome<BR>
 ## ライセンス
 いつもどおり、「るみしすてむアプリケーションライセンス V1.0」です！
