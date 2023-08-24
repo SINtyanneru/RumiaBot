@@ -1,0 +1,1 @@
+node ./BIN/rumiabot.js
