@@ -12,7 +12,15 @@ source ./build.sh
 そして./build/libsに、[Config.json]を作成<BR>
 ```json
 {
-	"TOKEN":"ここにトークンを"
+	"TOKEN":"Discordのトークン",
+	"ID":"BOTのID",
+	"SQL_HOST":"SQLのホスト",
+	"SQL_USER":"SQLのユーザー名",
+	"SQL_PASS":"SQLのパスワード",
+	"GOOGLE_API_KEY":"GoogleAPIのAPIキー",
+	"GOOGLE_API_ENGINE_ID":"Google検索APIのえんじんDI",
+	"ADMIN_ID":"BOTの管理者のID",
+	"ADMIN_PREFIX":"管理用のプレフィクス"
 }
 ```
 これでおｋ！<BR>
