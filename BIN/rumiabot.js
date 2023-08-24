@@ -74,7 +74,9 @@ class SEARCH{
 		this.SEARCH_WORD = SEARCH_WORD;
 
 		this.DENIED_URL = [
-			"pornhub.com"
+			"pornhub.com",
+			"xvideos.com",
+			"eroterest.net"
 		]
 	}
 
@@ -110,12 +112,13 @@ class SEARCH{
 						return;
 					}
 
+					//埋め込み生成くん
 					let EB = new MessageEmbed();
 					EB.setTitle("検索結果");
 					EB.setDescription(this.SEARCH_WORD);
 					EB.setColor(RND_COLOR());
 	
-					for (let I = 0; I < RESULT.items.length; I++) {
+					for(let I = 0; I < RESULT.items.length; I++){
 						if(I > 5){
 							const SEARCH_DATA = RESULT.items[I];
 							const SEARCH_RESULT_URL = new URL(SEARCH_DATA.link);
@@ -152,6 +155,7 @@ class SEARCH{
 						}
 					}
 	
+					//返答
 					this.E.reply({embeds:[EB]});
 				}catch(EX){
 					console.log("[ ERR ][ SEARCH ]" + EX);
@@ -276,13 +280,13 @@ class MISSKEY{
 	main(){
 		let USER = this.USER;//ユーザー
 
-		// WebSocketサーバーのURL
-		const serverURL = 'wss://ussr.rumiserver.com/streaming?i=0wmcVp8aNuBRZD8lS9E7ArqHNXPZlVtu'; // あなたのサーバーのURLに変更してください
+		//WebSocketサーバーのURL
+		const serverURL = "wss://ussr.rumiserver.com/streaming?i=" + CONFIG.MISSKEY_API_KEY;
 
-		// WebSocket接続を作成
+		//WebSocket接続を作成
 		const socket = new WebSocket(serverURL);
 
-		// 接続が確立された際のイベントハンドラ
+		//接続が確立された際のイベントハンドラ
 		socket.on('open', () => {
 			console.log('WebSocket接続が確立されました。');
 		
@@ -290,7 +294,7 @@ class MISSKEY{
 			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
 		});
 
-		// サーバーからメッセージを受信した際のイベントハンドラ
+		//サーバーからメッセージを受信した際のイベントハンドラ
 		socket.on('message', (DATA) => {
 			const RESULT = JSON.parse(DATA);
 			if(RESULT.body.type === "note"){
@@ -365,12 +369,12 @@ class MISSKEY{
 			}
 		});
 
-		// エラー発生時のイベントハンドラ
+		//エラー発生時のイベントハンドラ
 		socket.on('error', (ERR) => {
 			console.error('エラーが発生しました:', ERR);
 		});
 
-		// 接続が閉じられた際のイベントハンドラ
+		//接続が閉じられた際のイベントハンドラ
 		socket.on('close', (CODE, REASON) => {
 			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE);
 			console.log("[ *** ][ MISSKEY ]Re Connecting...");

@@ -19,6 +19,7 @@ source ./build.sh
 	"SQL_PASS":"SQLのパスワード",
 	"GOOGLE_API_KEY":"GoogleAPIのAPIキー",
 	"GOOGLE_API_ENGINE_ID":"Google検索APIのえんじんDI",
+	"MISSKEY_API_KEY":"MisskeyのAPIキー",
 	"ADMIN_ID":"BOTの管理者のID",
 	"ADMIN_PREFIX":"管理用のプレフィクス"
 }

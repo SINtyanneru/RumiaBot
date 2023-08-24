@@ -11,13 +11,13 @@ class MISSKEY{
 	main(){
 		let USER = this.USER;//ユーザー
 
-		// WebSocketサーバーのURL
-		const serverURL = 'wss://ussr.rumiserver.com/streaming?i=0wmcVp8aNuBRZD8lS9E7ArqHNXPZlVtu'; // あなたのサーバーのURLに変更してください
+		//WebSocketサーバーのURL
+		const serverURL = "wss://ussr.rumiserver.com/streaming?i=" + CONFIG.MISSKEY_API_KEY;
 
-		// WebSocket接続を作成
+		//WebSocket接続を作成
 		const socket = new WebSocket(serverURL);
 
-		// 接続が確立された際のイベントハンドラ
+		//接続が確立された際のイベントハンドラ
 		socket.on('open', () => {
 			console.log('WebSocket接続が確立されました。');
 		
@@ -25,7 +25,7 @@ class MISSKEY{
 			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
 		});
 
-		// サーバーからメッセージを受信した際のイベントハンドラ
+		//サーバーからメッセージを受信した際のイベントハンドラ
 		socket.on('message', (DATA) => {
 			const RESULT = JSON.parse(DATA);
 			if(RESULT.body.type === "note"){
@@ -100,12 +100,12 @@ class MISSKEY{
 			}
 		});
 
-		// エラー発生時のイベントハンドラ
+		//エラー発生時のイベントハンドラ
 		socket.on('error', (ERR) => {
 			console.error('エラーが発生しました:', ERR);
 		});
 
-		// 接続が閉じられた際のイベントハンドラ
+		//接続が閉じられた際のイベントハンドラ
 		socket.on('close', (CODE, REASON) => {
 			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE);
 			console.log("[ *** ][ MISSKEY ]Re Connecting...");
