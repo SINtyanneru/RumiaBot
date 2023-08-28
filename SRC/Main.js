@@ -1,5 +1,5 @@
 const FS = require('fs');
-const { Client, Intents, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed, WebhookClient} = require('discord.js');
 const { exec } = require('child_process');
 const net = require('net');
 const WebSocket = require('ws');
@@ -28,6 +28,8 @@ const client = new Client({
 		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
 		Intents.FLAGS.DIRECT_MESSAGE_TYPING,
 		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_BANS,
+		Intents.FLAGS.GUILD_WEBHOOKS,
 	],
 });
 
@@ -259,6 +261,22 @@ client.on('messageCreate', async (message) => {
 		const SEARCH_WORD = message.content.replace("検索 ", "")
 		new SEARCH(message, SEARCH_WORD).main();
 	}
+
+	//VX
+	if(message.content.startsWith("https://twitter.com/")){
+		let WEB_HOOK = await WebHook_FIND(message.channel);
+		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/");
+
+		//WHでめっせーじを送る
+		WEB_HOOK.send({
+			username: message.author.username,
+			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
+			content:TEXT
+		});
+
+		//元メッセ時を削除
+		message.delete();
+	}
 });
 
 //イントラクション
@@ -351,6 +369,7 @@ client.on('messageDelete', async (deletedMessage) => {
 
 
 client.on('guildMemberRemove', member => {
+	console.log(member);
 	if(member.guild.id === "836142496563068929"){
 		const EB = new MessageEmbed();
 		EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
@@ -394,6 +413,17 @@ function NULLCHECK(VAR){
 		return VAR;
 	}else{
 		return "ぬるぽ";
+	}
+}
+
+async function WebHook_FIND(CHANNEL){
+	let FWH = await CHANNEL.fetchWebhooks();
+	let WH = FWH.find((webhook) => webhook.owner.id === CONFIG.ID);
+	if(WH){
+		return WH;
+	}else{
+		let NEW_WH = CHANNEL.createWebhook("るみBOT");
+		return NEW_WH;
 	}
 }
 
