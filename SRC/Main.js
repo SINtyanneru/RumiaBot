@@ -136,6 +136,7 @@ client.once('ready',async ()=>{
 	new MISSKEY().main();
 });
 
+//メッセージを受信
 client.on('messageCreate', async (message) => {
 	if(message.author.bot){
 		return;
@@ -260,6 +261,7 @@ client.on('messageCreate', async (message) => {
 	}
 });
 
+//イントラクション
 client.on('interactionCreate', async (INTERACTION) => {
 	try{
 		if(!INTERACTION.isCommand()){
@@ -301,6 +303,7 @@ client.on('interactionCreate', async (INTERACTION) => {
 	}
 });
 
+//鯖に参加した
 client.on('guildCreate', async (GUILD) => {
 	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
@@ -321,11 +324,39 @@ client.on('guildCreate', async (GUILD) => {
 });
 
 
+//鯖からキックされた
 client.on('guildDelete', (GUILD) => {
 	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
 	if(LOG_CH !== undefined){
 		LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
+	}
+});
+
+
+client.on('messageDelete', async (deletedMessage) => {
+	const EB = new MessageEmbed();
+	EB.setTitle("メッセージが消されました");
+	EB.setDescription(NULLCHECK(deletedMessage.author.username));
+	EB.setColor(RND_COLOR());
+
+	EB.addFields({
+		name: "ないよう",
+		value: deletedMessage.content,
+		inline: false
+	})
+
+	MSG_SEND("836142496563068929", "1140511350620168192", {embeds:[EB]});
+});
+
+
+client.on('guildMemberRemove', member => {
+	if(member.guild.id === "836142496563068929"){
+		const EB = new MessageEmbed();
+		EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
+		EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
+		EB.setColor(RND_COLOR());
+		MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
 	}
 });
 
