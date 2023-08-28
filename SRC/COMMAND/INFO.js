@@ -75,4 +75,10 @@ class INFO{
 
 		await E.editReply({embeds:[EB]});
 	}
+
+	//るみ鯖情報取得
+	async rsv_main(){
+		let E = this.E;
+		
+	}
 }
