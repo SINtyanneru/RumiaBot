@@ -110,7 +110,7 @@ class MISSKEY{
 			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE);
 			console.log("[ *** ][ MISSKEY ]Re Connecting...");
 			clearInterval(SEND_H);
-			main();//再接続する
+			this.main();//再接続する
 		});
 
 		let SEND_H =  setInterval(() => {
