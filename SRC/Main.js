@@ -301,6 +301,34 @@ client.on('interactionCreate', async (INTERACTION) => {
 	}
 });
 
+client.on('guildCreate', async (GUILD) => {
+	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+
+	if(LOG_CH !== undefined){
+		LOG_CH.send(GUILD.name + "(" + GUILD.id + ")に参加しました");
+	}
+
+	const guildOwner = await GUILD.fetchOwner();
+
+	// Send a DM to the guild owner
+	try{
+		const dmChannel = await guildOwner.createDM();
+		await dmChannel.send("導入ありがと！よろしくね！");
+		console.log("[ INFO ][ GUILD ]Send DM:" + guildOwner.nickname);
+	}catch(error){
+		console.log("[ ERR ][ GUILD ]Send DM:" + guildOwner.nickname);
+	}
+});
+
+
+client.on('guildDelete', (GUILD) => {
+	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+
+	if(LOG_CH !== undefined){
+		LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
+	}
+});
+
 function RND_COLOR(){
 	return "#00ff00";
 }
