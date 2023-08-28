@@ -27,6 +27,7 @@ const client = new Client({
 		Intents.FLAGS.DIRECT_MESSAGES,
 		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
 		Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+		Intents.FLAGS.GUILD_MEMBERS,
 	],
 });
 
@@ -105,6 +106,20 @@ client.once('ready',async ()=>{
 							"value": "rumisan"
 						}
 					]
+				}
+			]
+		},{
+			name: "info_server",
+			description: "鯖の情報を取得"
+		},{
+			name: "info_user",
+			description: "ユーザーの情報を取得",
+			options: [
+				{
+					name: 'user',
+					description: 'ユーザーを指定しろ',
+					type: 'MENTIONABLE',
+					required: true
 				}
 			]
 		},
@@ -260,8 +275,7 @@ client.on('interactionCreate', async (INTERACTION) => {
 		await INTERACTION.deferReply();
 	
 		const CMD = INTERACTION.commandName;
-	
-	
+		
 		switch (CMD) {
 			case 'test':
 				new test(INTERACTION).main();
@@ -274,6 +288,12 @@ client.on('interactionCreate', async (INTERACTION) => {
 				break;
 			case"ws":
 				new WS(INTERACTION).main();
+				break;
+			case"info_server":
+				new INFO(INTERACTION).sv_main();
+				break;
+			case"info_user":
+				new INFO(INTERACTION).usr_main();
 				break;
 		}
 	}catch(EX){
@@ -308,6 +328,14 @@ function RUMI_HAPPY_BIRTHDAY(){
 		yearDifference--;
 	}
 	return yearDifference;
+}
+
+function NULLCHECK(VAR){
+	if(VAR !== undefined && VAR !== null){
+		return VAR;
+	}else{
+		return "ぬるぽ";
+	}
 }
 
 client.login(CONFIG.TOKEN);
