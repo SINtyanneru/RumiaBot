@@ -185,6 +185,8 @@ client.once('ready',async ()=>{
 
 //メッセージを受信
 client.on('messageCreate', async (message) => {
+	console.log("┌" + message.author.username + "\n└" + message.content);
+
 	if(message.author.bot){
 		return;
 	}
@@ -280,6 +282,18 @@ client.on('messageCreate', async (message) => {
 				message.reply("エラー");
 			}
 		}
+
+		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "LV/.")){
+			try{
+				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "LV/.", "");
+				let GUILD = await client.guilds.cache.get(GID);
+				GUILD.leave();
+			}catch(EX){
+				console.log(EX);
+
+				message.reply("エラー");
+			}
+		}
 	}
 
 	if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")){//実験用
@@ -344,8 +358,9 @@ client.on('interactionCreate', async (INTERACTION) => {
 		};
 	
 		console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName+
-					"\n             ├in" + INTERACTION.guild.name+
-					"\n             └in" + INTERACTION.member.nickname + "(" + INTERACTION.member.id + ")");
+					"\n             ├in " + INTERACTION.guild.name+
+					"\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId+
+					"\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
 	
 		//ユーザーに待ってもらう
 		await INTERACTION.deferReply();
@@ -405,6 +420,11 @@ client.on('guildDelete', (GUILD) => {
 
 		if(LOG_CH !== undefined){
 			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
+
+			const SERVERS = client.guilds.cache;
+
+			LOG_CH.send((SERVERS.size + 1) + " са¯ва¯ вэдэне тащ ду¯ма;\n"+
+						"Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
 		}
 	}catch(EX){
 		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
