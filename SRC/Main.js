@@ -271,10 +271,12 @@ client.on('messageCreate', async (message) => {
 			}
 		}
 
+		//招待コード作成
 		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "INV/.")){
 			try{
 				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "INV/.", "");
-				let INV_CODE = await client.guilds.cache.get(GID).systemChannel.createInvite();
+				let INV_CODE = await client.guilds.cache.get(GID).channels.cache.first().createInvite();
+
 				message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
 			}catch(EX){
 				console.log(EX);
@@ -283,11 +285,63 @@ client.on('messageCreate', async (message) => {
 			}
 		}
 
+		//鯖から抜ける
 		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "LV/.")){
 			try{
 				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "LV/.", "");
-				let GUILD = await client.guilds.cache.get(GID);
+				let GUILD = client.guilds.cache.get(GID);
 				GUILD.leave();
+			}catch(EX){
+				console.log(EX);
+
+				message.reply("エラー");
+			}
+		}
+
+		//チャンネル一覧取得
+		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "CH_L/.")){
+			try{
+				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "CH_L/.", "");
+				let GUILD = client.guilds.cache.get(GID);
+
+				if(GUILD !== undefined){
+					let CH = GUILD.channels.cache;
+				
+					let EB = new MessageEmbed()
+						.setTitle(GUILD.name)
+						.setDescription("合計" + CH.size)
+						.setColor(RND_COLOR());
+	
+						CH.forEach(CH_INFO => {
+							EB.addFields({
+								name: CH_INFO.name,
+								value: CH_INFO.id,
+								inline: true
+							});
+						});
+	
+					message.reply({embeds:[EB]})
+				}else{
+					message.reply("鯖がありません")
+				}
+
+			}catch(EX){
+				console.log(EX);
+
+				message.reply("エラー");
+			}
+		}
+
+		//管理者チェック
+		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "PM/.")){//実験用
+			try{
+				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "PM/.", "");
+				let GUILD = client.guilds.cache.get(GID);
+				if(GUILD.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR")){
+					message.reply("はい、それは管理者権限的");
+				}else{
+					message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
+				}
 			}catch(EX){
 				console.log(EX);
 
@@ -431,7 +485,7 @@ client.on('guildDelete', (GUILD) => {
 	}
 });
 
-
+//メッセージが消された
 client.on('messageDelete', async (deletedMessage) => {
 	try{
 		const EB = new MessageEmbed();
@@ -451,7 +505,7 @@ client.on('messageDelete', async (deletedMessage) => {
 	}
 });
 
-
+//メンバーが抜けた
 client.on('guildMemberRemove', async (member) => {
 	try{
 		console.log(member);
@@ -466,6 +520,7 @@ client.on('guildMemberRemove', async (member) => {
 		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
 	}
 });
+
 
 function RND_COLOR(){
 	return "#00ff00";
