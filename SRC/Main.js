@@ -9,6 +9,7 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
 let CONFIG = {};
+let ACTIVE = true;
 
 try {
 	const DATA = FS.readFileSync('./Config.json', 'utf8');
@@ -136,6 +137,50 @@ client.once('ready',async ()=>{
 	}
 
 	new MISSKEY().main();
+
+	//活動期間か？
+	setInterval(() => {
+		//現在の時刻を取得
+		const currentTime = new Date();
+
+		//時刻の取得
+		const currentHour = currentTime.getHours();
+
+		//判定
+		if(currentHour >= 6 && currentHour < 21){
+			ACTIVE = true;
+		}else{
+			ACTIVE = false;
+		}
+	}, 1000);
+
+	let TEMP_ACTIVE = undefined;
+	setInterval(() => {
+		if(TEMP_ACTIVE !== ACTIVE){
+			TEMP_ACTIVE = ACTIVE;
+			if(ACTIVE){
+				client.user.setPresence({
+					status: "online",
+					activities:[
+						{
+							name: "貴様",
+							type: "WATCHING",
+						},
+					],
+				});
+			}else{
+				client.user.setPresence({
+					status: "idle",
+					activities:[
+						{
+							name: "睡眠",
+							type: "PLAYING",
+						},
+					],
+				});
+			}
+		}
+	}, 1000);
 });
 
 //メッセージを受信
@@ -145,12 +190,12 @@ client.on('messageCreate', async (message) => {
 	}
 	
 	if(message.author.id === CONFIG.ADMIN_ID){
-		if(message.content === CONFIG.ADMIN_PREFIX + "sls"){
+		if(message.content === CONFIG.ADMIN_PREFIX + "SLS"){
 			console.log(client.guilds.cache.size);
 			message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 		}
 
-		if(message.content === CONFIG.ADMIN_PREFIX + "sl"){
+		if(message.content === CONFIG.ADMIN_PREFIX + "SL"){
 			const SERVERS = client.guilds.cache;
 			console.log(SERVERS.size);
 
@@ -195,7 +240,6 @@ client.on('messageCreate', async (message) => {
 			}catch(EX){
 				console.log(EX);
 			}
-			
 		}
 
 		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "RV/.")){
@@ -222,6 +266,18 @@ client.on('messageCreate', async (message) => {
 			}catch(EX){
 				console.log(EX);
 				message.reply("失敗");
+			}
+		}
+
+		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "INV/.")){
+			try{
+				const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "INV/.", "");
+				let INV_CODE = await client.guilds.cache.get(GID).systemChannel.createInvite();
+				message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
+			}catch(EX){
+				console.log(EX);
+
+				message.reply("エラー");
 			}
 		}
 	}
@@ -323,20 +379,20 @@ client.on('interactionCreate', async (INTERACTION) => {
 
 //鯖に参加した
 client.on('guildCreate', async (GUILD) => {
-	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
-
-	if(LOG_CH !== undefined){
-		LOG_CH.send(GUILD.name + "(" + GUILD.id + ")に参加しました");
-	}
-
-	const guildOwner = await GUILD.fetchOwner();
-
-	// Send a DM to the guild owner
 	try{
+		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+
+		if(LOG_CH !== undefined){
+			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")に参加しました");
+		}
+	
+		const guildOwner = await GUILD.fetchOwner();
+	
+		// Send a DM to the guild owner
 		const dmChannel = await guildOwner.createDM();
 		await dmChannel.send("導入ありがと！よろしくね！");
 		console.log("[ INFO ][ GUILD ]Send DM:" + guildOwner.nickname);
-	}catch(error){
+	}catch(EX){
 		console.log("[ ERR ][ GUILD ]Send DM:" + guildOwner.nickname);
 	}
 });
@@ -344,38 +400,50 @@ client.on('guildCreate', async (GUILD) => {
 
 //鯖からキックされた
 client.on('guildDelete', (GUILD) => {
-	const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+	try{
+		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
-	if(LOG_CH !== undefined){
-		LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
+		if(LOG_CH !== undefined){
+			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
+		}
+	}catch(EX){
+		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
 	}
 });
 
 
 client.on('messageDelete', async (deletedMessage) => {
-	const EB = new MessageEmbed();
-	EB.setTitle("メッセージが消されました");
-	EB.setDescription(NULLCHECK(deletedMessage.author.username));
-	EB.setColor(RND_COLOR());
-
-	EB.addFields({
-		name: "ないよう",
-		value: deletedMessage.content,
-		inline: false
-	})
-
-	MSG_SEND("836142496563068929", "1140511350620168192", {embeds:[EB]});
+	try{
+		const EB = new MessageEmbed();
+		EB.setTitle("メッセージが消されました");
+		EB.setDescription(NULLCHECK(deletedMessage.author.username));
+		EB.setColor(RND_COLOR());
+	
+		EB.addFields({
+			name: "ないよう",
+			value: deletedMessage.content,
+			inline: false
+		})
+	
+		MSG_SEND("836142496563068929", "1140511350620168192", {embeds:[EB]});
+	}catch(EX){
+		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
+	}
 });
 
 
-client.on('guildMemberRemove', member => {
-	console.log(member);
-	if(member.guild.id === "836142496563068929"){
-		const EB = new MessageEmbed();
-		EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
-		EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
-		EB.setColor(RND_COLOR());
-		MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
+client.on('guildMemberRemove', async (member) => {
+	try{
+		console.log(member);
+		if(member.guild.id === "836142496563068929"){
+			const EB = new MessageEmbed();
+			EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
+			EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
+			EB.setColor(RND_COLOR());
+			MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
+		}
+	}catch(EX){
+		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
 	}
 });
 
