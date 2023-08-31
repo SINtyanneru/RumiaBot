@@ -7,6 +7,7 @@ const http = require('http');
 const https = require('https');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const PATH = require('path');
 
 let CONFIG = {};
 let ACTIVE = true;
@@ -187,9 +188,11 @@ client.once('ready',async ()=>{
 client.on('messageCreate', async (message) => {
 	console.log("┌" + message.author.username + "\n└" + message.content);
 
+	/*
 	if(message.author.bot){
 		return;
 	}
+	*/
 	
 	if(message.author.id === CONFIG.ADMIN_ID){
 		if(message.content === CONFIG.ADMIN_PREFIX + "SLS"){
@@ -400,6 +403,42 @@ client.on('messageCreate', async (message) => {
 
 		//元メッセ時を削除
 		message.delete();
+	}
+
+});
+
+client.on('messageUpdate', (oldMessage, newMessage) => {
+	//Make it a Quote を ダウンロード
+	if(newMessage.author.id === "949479338275913799"){
+		console.log(newMessage.attachments.map(attachment => attachment.url).length);
+		if(newMessage.attachments.map(attachment => attachment.url).length > 0){
+			newMessage.channel.sendTyping();
+
+			const DATE = new Date();//日付取得
+			//日付を文字列に
+			const DATE_TEXT = DATE.getFullYear() + "-" + DATE.getMonth() + "-" + DATE.getDay() + "-" + DATE.getHours() + "-" + DATE.getMinutes() + "-" + DATE.getSeconds();
+
+			//ダウンロード先
+			const DOWNLOAD_URL = newMessage.attachments.map(attachment => attachment.url)[0];
+			//保存先
+			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", newMessage.id + "-" + DATE_TEXT + ".png");
+			
+			//ファイルを作るやつ
+			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
+			
+			//ダウンロード開始
+			console.error("[ *** ][ MIQDL ]Downloading...");
+			https.get(DOWNLOAD_URL, RES => {
+				RES.pipe(FILE_STREAM);
+			
+				RES.on('end', () => {//完了
+					console.error("[ OK ][ MIQDL ]Donwloaded");
+					newMessage.reply("保存しました〜");
+				});
+			}).on('error', EX => {
+				console.error("[ ERR ][ MIQDL ]" + EX);
+			});
+		}
 	}
 });
 
