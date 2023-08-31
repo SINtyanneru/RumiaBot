@@ -177,7 +177,9 @@ class LETTER{
 				"ゑ":"we̞",
 				"を":"wo̞",
 
-				"ん":"n'"
+				"ん":"n'",
+
+				"ー":"ː"
 			},
 			"LATIN":{
 				"A":"A"
@@ -193,7 +195,7 @@ class LETTER{
 			let OLD_LETTER = E.options.getString("old").toUpperCase();
 			let NEW_LETTER = E.options.getString("new").toUpperCase();
 
-			let NEW_TEXT = await this.XEST_LATIN(OLD_TEXT, OLD_LETTER);
+			let NEW_TEXT = await this.XEST_IPA(OLD_TEXT, OLD_LETTER);
 
 			E.editReply("```" + OLD_TEXT + "```\n" + "↓↓↓↓↓↓↓↓↓↓\n"+
 				"```\n" + NEW_TEXT + "\n```");
@@ -203,7 +205,7 @@ class LETTER{
 		}
 	}
 
-	async XEST_LATIN(TEXT, OLD_LETTER){
+	async XEST_IPA(TEXT, OLD_LETTER){
 		let LETTER_JSON = this.LETTER_JSON;
 
 		let LATIN_TEXT = "";
