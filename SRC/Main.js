@@ -38,7 +38,22 @@ const client = new Client({
 });
 
 client.once('ready',async ()=>{
-	console.log("BOT is online!");
+console.log("    ____                  _       ____  ____  ______");
+console.log("   / __ \__  ______ ___  (_)___ _/ __ )/ __ \/_  __/");
+console.log("  / /_/ / / / / __ `__ \/ / __ `/ __  / / / / / /   ");
+console.log(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
+console.log("/_/ |_|\__,_/_/ /_/ /_/_/\__,_/_____/\____/ /_/     ");
+
+
+	console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
+	console.log("⠀⠀⠀⠀⢀⣴⣿⣿⣿⡿⠋⠀⠀⠀⠹⣿⣦⡀");
+	console.log("⠀⠀⢀⣴⣿⣿⣿⣿⣏⠀⠀⠀⠀⠀⠀⢹⣿⣧");
+	console.log("⠀⠀⠙⢿⣿⡿⠋⠻⣿⣿⣦⡀⠀⠀⠀⢸⣿⣿⡆");
+	console.log("⠀⠀⠀⠀⠉⠀⠀⠀⠈⠻⣿⣿⣦⡀⠀⢸⣿⣿⡇");
+	console.log("⠀⠀⠀⠀⢀⣀⣄⡀⠀⠀⠈⠻⣿⣿⣶⣿⣿⣿⠁");
+	console.log("⠀⠀⠀⣠⣿⣿⢿⣿⣶⣶⣶⣶⣾⣿⣿⣿⣿⡁");
+	console.log("⢠⣶⣿⣿⠋⠀⠀⠉⠛⠿⠿⠿⠿⠿⠛⠻⣿⣿⣦⡀");
+	console.log("⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⡿");
 
 	const commandData = [
 		{
@@ -337,6 +352,16 @@ client.on('messageCreate', async (message) => {
 		message.delete();
 	}
 
+	//計算
+	if(message.content.startsWith("計算 ")){
+		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-\+\*\/\(\)]/g, "");
+
+		let RESULT = await new MATH(message.content).main();
+
+		//結果を吐き出す
+		//message.reply("多分結果は：「" + RESULT.toString() + "」です");
+	}
+
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
@@ -344,7 +369,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(newMessage.author.id === "949479338275913799"){
 		console.log(newMessage.attachments.map(attachment => attachment.url).length);
 		if(newMessage.attachments.map(attachment => attachment.url).length > 0){
-			newMessage.channel.sendTyping();
+			//newMessage.channel.sendTyping();
 
 			//ダウンロード先
 			const DOWNLOAD_URL = newMessage.attachments.map(attachment => attachment.url)[0];
@@ -361,7 +386,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 			
 				RES.on('end', () => {//完了
 					console.error("[ OK ][ MIQDL ]Donwloaded");
-					newMessage.reply("保存しました〜");
+					//newMessage.reply("保存しました〜"); うるさい
 				});
 			}).on('error', EX => {
 				console.error("[ ERR ][ MIQDL ]" + EX);
