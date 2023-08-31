@@ -1,5 +1,7 @@
 const FS = require('fs');
 const { Client, Intents, MessageEmbed, WebhookClient} = require('discord.js');
+const { ApplicationCommandType } = require('discord-api-types/v9');
+const { ContextMenuCommandBuilder } = require('@discordjs/builders');
 const { exec } = require('child_process');
 const net = require('net');
 const WebSocket = require('ws');
@@ -126,9 +128,37 @@ client.once('ready',async ()=>{
 					required: true
 				}
 			]
+		},{
+			//本当はコンテキストメニューを実装する予定だったんだ、
+			//だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
+			name: "kanji",
+			description: "漢字を変換します",
+			options: [
+				{
+					name: 'text',
+					description: '文字列',
+					type: 'STRING',
+					required: true
+				},{
+					name: 'mode',
+					description: 'モード',
+					type: 'STRING',
+					required: true,
+					choices: [
+						{
+							"name": "新 => 旧",
+							"value": "n_o"
+						},
+						{
+							"name": "旧 => 新",
+							"value": "o_n"
+						}
+					]
+				}
+			]
 		},
 	];
-	
+
 	try{
 		//グローバルスラッシュコマンドを登録
 		await client.application.commands.set(commandData);
@@ -273,14 +303,10 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 		if(newMessage.attachments.map(attachment => attachment.url).length > 0){
 			newMessage.channel.sendTyping();
 
-			const DATE = new Date();//日付取得
-			//日付を文字列に
-			const DATE_TEXT = DATE.getFullYear() + "-" + DATE.getMonth() + "-" + DATE.getDay() + "-" + DATE.getHours() + "-" + DATE.getMinutes() + "-" + DATE.getSeconds();
-
 			//ダウンロード先
 			const DOWNLOAD_URL = newMessage.attachments.map(attachment => attachment.url)[0];
 			//保存先
-			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", newMessage.id + "-" + DATE_TEXT + ".png");
+			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", newMessage.id + ".png");
 			
 			//ファイルを作るやつ
 			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
@@ -337,6 +363,9 @@ client.on('interactionCreate', async (INTERACTION) => {
 				break;
 			case"info_user":
 				new INFO(INTERACTION).usr_main();
+				break;
+			case "kanji":
+				new KANJI(INTERACTION).main();
 				break;
 		}
 	}catch(EX){
