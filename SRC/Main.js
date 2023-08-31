@@ -131,6 +131,8 @@ client.once('ready',async ()=>{
 		},{
 			//本当はコンテキストメニューを実装する予定だったんだ、
 			//だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
+			//ExpectedConstraintError: Invalid string format
+			//意味がわからないね、ローカライズとは
 			name: "kanji",
 			description: "漢字を変換します",
 			options: [
@@ -152,6 +154,47 @@ client.once('ready',async ()=>{
 						{
 							"name": "旧 => 新",
 							"value": "o_n"
+						}
+					]
+				}
+			]
+		},{
+			name: "letter",
+			description: "文字を色々変換してくれます、たぶん",
+			options: [
+				{
+					name: 'text',
+					description: '文字列',
+					type: 'STRING',
+					required: true
+				},{
+					name: 'old',
+					description: '変換前',
+					type: 'STRING',
+					required: true,
+					choices: [
+						{
+							"name": "ひらがな",
+							"value": "hilagana"
+						},
+						{
+							"name": "ラテン文字",
+							"value": "latin"
+						}
+					]
+				},{
+					name: 'new',
+					description: '変換後',
+					type: 'STRING',
+					required: true,
+					choices: [
+						{
+							"name": "ひらがな",
+							"value": "hilagana"
+						},
+						{
+							"name": "ラテン文字",
+							"value": "latin"
 						}
 					]
 				}
@@ -366,6 +409,8 @@ client.on('interactionCreate', async (INTERACTION) => {
 				break;
 			case "kanji":
 				new KANJI(INTERACTION).main();
+				break;
+			case "letter":
 				break;
 		}
 	}catch(EX){
