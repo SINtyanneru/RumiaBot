@@ -214,6 +214,27 @@ console.log("/_/ |_|\__,_/_/ /_/ /_/_/\__,_/_____/\____/ /_/     ");
 					]
 				}
 			]
+		},{
+			name: "help",
+			description: "ヘルプコマンド、作るのめんどいやつ",
+			options: [
+				{
+					name: 'mode',
+					description: 'どれを見るか',
+					type: 'STRING',
+					required: true,
+					choices: [
+						{
+							"name": "スラッシュコマンド",
+							"value": "slash"
+						},
+						{
+							"name": "メッセージコマンド",
+							"value": "message"
+						}
+					]
+				}
+			]
 		},
 	];
 
@@ -416,6 +437,9 @@ client.on('interactionCreate', async (INTERACTION) => {
 		switch (CMD) {
 			case 'test':
 				new test(INTERACTION).main();
+				break;
+			case 'help':
+				new HELP(INTERACTION).main();
 				break;
 			case 'ping':
 				new PING(INTERACTION).main();
