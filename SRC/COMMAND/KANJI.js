@@ -21,7 +21,7 @@ class KANJI{
 				this.O_N_XEST(E, KANJI_JSON, TEXT);
 			}
 		}catch(EX){
-
+			E.editReply("変換時にエラーが発生したよ☆");
 		}
 	}
 

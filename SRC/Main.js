@@ -411,6 +411,7 @@ client.on('interactionCreate', async (INTERACTION) => {
 				new KANJI(INTERACTION).main();
 				break;
 			case "letter":
+				new LETTER(INTERACTION).main();
 				break;
 		}
 	}catch(EX){
