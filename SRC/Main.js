@@ -186,20 +186,35 @@ client.once('ready',async ()=>{
 
 //メッセージを受信
 client.on('messageCreate', async (message) => {
-	console.log("┌" + message.author.username + "\n└" + message.content);
+	//ログを出す
+	let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
+	const LOG_TEXT_SPLIT = message.content.split("\n");
+	for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
+		const TEXT = LOG_TEXT_SPLIT[I];
+		if(LOG_TEXT_SPLIT[I + 1] !== undefined){
+			LOG_TEXT += "├" + TEXT + "\n";
+		}else{
+			LOG_TEXT += "└" + TEXT + "\n";
+		}
+	}
+	console.log(LOG_TEXT);
 
 	/*
+	//BOTの場合は処理しない
 	if(message.author.bot){
 		return;
 	}
 	*/
 	
+	//BOT所有者専用のコマンド
 	if(message.author.id === CONFIG.ADMIN_ID){
+		//参加済みサーバーの数を表示
 		if(message.content === CONFIG.ADMIN_PREFIX + "SLS"){
 			console.log(client.guilds.cache.size);
 			message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 		}
 
+		//参加済みサーバーを表示
 		if(message.content === CONFIG.ADMIN_PREFIX + "SL"){
 			const SERVERS = client.guilds.cache;
 			console.log(SERVERS.size);
@@ -219,6 +234,8 @@ client.on('messageCreate', async (message) => {
 
 			message.reply({embeds:[EB]})
 		}
+
+		//シェルコマンド実行
 		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")){
 			try{
 				const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "");
@@ -238,39 +255,13 @@ client.on('messageCreate', async (message) => {
 			}
 		}
 
+		//任意コード実行
 		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "EXEC/.")){
 			try{
 				const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
 				eval(CMD);
 			}catch(EX){
 				console.log(EX);
-			}
-		}
-
-		if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "RV/.")){
-			try{
-				const USER_ID = message.content.replace(CONFIG.ADMIN_PREFIX + "RV/.", "");
-				const ROLE_1 = message.guild.roles.cache.get("965185875778609184");//性別
-				const ROLE_2 = message.guild.roles.cache.get("1005417446171222047");//国
-				const ROLE_3 = message.guild.roles.cache.get("847108353691746354");//一般
-				if(ROLE_1 && ROLE_2 && ROLE_3){
-					try{
-						const MEMBER = message.guild.members.cache.get(USER_ID);
-						MEMBER.roles.add(ROLE_1);
-						MEMBER.roles.add(ROLE_2);
-						MEMBER.roles.add(ROLE_3);
-	
-						message.reply("付与");
-					}catch(EX){
-						console.log(EX);
-						message.reply("失敗");
-					}
-				}else{
-					message.reply("ロールが見つかりません");
-				}
-			}catch(EX){
-				console.log(EX);
-				message.reply("失敗");
 			}
 		}
 
@@ -353,11 +344,12 @@ client.on('messageCreate', async (message) => {
 		}
 	}
 
+	//てすとこまんど
 	if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")){//実験用
 		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
 	}
 
-
+	//テストコマンド
 	if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")){
 		message.reply(
 			"ping -c5 \"" + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-\.]/g, '') + "\""+
@@ -390,7 +382,7 @@ client.on('messageCreate', async (message) => {
 	}
 
 	//VX
-	if(message.content.startsWith("https://twitter.com/")){
+	if(message.content.includes("https://twitter.com/")){
 		let WEB_HOOK = await WebHook_FIND(message.channel);
 		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/");
 
