@@ -1,6 +1,3 @@
-/**
- * JSがクソなので実装できず、封印
- */
 class MATH{
 	constructor(TEXT){
 		this.TEXT = TEXT;
@@ -19,6 +16,54 @@ class MATH{
 
 		let RESULT = this.FORMULA_PARSE(TEXT);
 		console.log(RESULT);
+		
+		for (let I = 0; I < RESULT.length; I++) {
+			const NUM = RESULT[I];
+			if(!isNaN(Number(NUM))){//数字か？
+				if(I === 0){//1回目なので
+					//初期値を設定
+					MATH_RESULT = parseInt(NUM);
+				}else{//2回目移行なので
+					console.log(RESULT[I]);
+				}
+			}else{
+				//数字ではない
+				switch(RESULT[I]){
+					case "+":
+						//足し算
+						if(!isNaN(Number(RESULT[I + 1]))){//数字か？
+							MATH_RESULT = MATH_RESULT + parseInt(RESULT[I + 1]);
+						}else{
+							return "計算式がおかしいぞ";
+						}
+						break;
+					case "-":
+						//引き算
+						if(!isNaN(Number(RESULT[I + 1]))){//数字か？
+							MATH_RESULT = MATH_RESULT - parseInt(RESULT[I + 1]);
+						}else{
+							return "計算式がおかしいぞ";
+						}
+						break;
+					case "*":
+						//掛け算
+						if(!isNaN(Number(RESULT[I + 1]))){//数字か？
+							MATH_RESULT = MATH_RESULT * parseInt(RESULT[I + 1]);
+						}else{
+							return "計算式がおかしいぞ";
+						}
+						break;
+					case "/":
+						//割り算
+						if(!isNaN(Number(RESULT[I + 1]))){//数字か？
+							MATH_RESULT = MATH_RESULT / parseInt(RESULT[I + 1]);
+						}else{
+							return "計算式がおかしいぞ";
+						}
+						break;
+				}
+			}
+		}
 		
 		return MATH_RESULT;
 	}

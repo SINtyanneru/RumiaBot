@@ -325,7 +325,7 @@ client.on('messageCreate', async (message) => {
 	//てすとこまんど
 	if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")){//実験用
 		message.react("✅");
-		
+
 		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
 	}
 
@@ -389,7 +389,7 @@ client.on('messageCreate', async (message) => {
 		let RESULT = await new MATH(message.content).main();
 
 		//結果を吐き出す
-		//message.reply("多分結果は：「" + RESULT.toString() + "」です");
+		message.reply("多分結果は：「" + RESULT.toString() + "」です");
 	}
 
 	//MIQ
@@ -408,6 +408,7 @@ client.on('messageCreate', async (message) => {
 		}catch(EX){
 			console.log(EX);
 			message.reply("エラー");
+			return;
 		}
 	}
 
@@ -440,6 +441,23 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 			}).on('error', EX => {
 				console.error("[ ERR ][ MIQDL ]" + EX);
 			});
+		}else{
+			try{
+				const MSG_ID = newMessage.id;
+				const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
+	
+				newMessage.react("✅");
+		
+				if (FS.existsSync(DWN_PATH)) {
+					newMessage.reply({
+						content: "🇨🇳🇨🇳🇨🇳削除を検知！！！！🇨🇳🇨🇳🇨🇳",
+						files:[DWN_PATH]
+					})
+				}
+			}catch(EX){
+				console.log("[ ERR ][ MIQ ]" + EX);
+				return;
+			}
 		}
 	}
 });
@@ -493,6 +511,7 @@ client.on('interactionCreate', async (INTERACTION) => {
 		}
 	}catch(EX){
 		console.log("[ ERR ][ DJS ]" + EX);
+		return;
 	}
 });
 
@@ -513,6 +532,7 @@ client.on('guildCreate', async (GUILD) => {
 		console.log("[ INFO ][ GUILD ]Send DM:" + guildOwner.nickname);
 	}catch(EX){
 		console.log("[ ERR ][ GUILD ]Send DM:" + guildOwner.nickname);
+		return;
 	}
 });
 
@@ -532,6 +552,7 @@ client.on('guildDelete', (GUILD) => {
 		}
 	}catch(EX){
 		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
+		return;
 	}
 });
 
@@ -545,13 +566,14 @@ client.on('messageDelete', async (deletedMessage) => {
 	
 		EB.addFields({
 			name: "ないよう",
-			value: deletedMessage.content,
+			value: NULLCHECK(deletedMessage.content),
 			inline: false
 		})
 	
 		MSG_SEND("836142496563068929", "1140511350620168192", {embeds:[EB]});
 	}catch(EX){
 		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
+		return;
 	}
 });
 
@@ -568,6 +590,7 @@ client.on('guildMemberRemove', async (member) => {
 		}
 	}catch(EX){
 		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
+		return;
 	}
 });
 
