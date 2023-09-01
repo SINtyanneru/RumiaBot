@@ -324,6 +324,8 @@ client.on('messageCreate', async (message) => {
 
 	//てすとこまんど
 	if(message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")){//実験用
+		message.react("✅");
+		
 		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
 	}
 
@@ -356,6 +358,9 @@ client.on('messageCreate', async (message) => {
 	//検索
 	if(message.content.startsWith("検索 ")){
 		const SEARCH_WORD = message.content.replace("検索 ", "")
+
+		message.react("✅");
+
 		new SEARCH(message, SEARCH_WORD).main();
 	}
 
@@ -379,10 +384,31 @@ client.on('messageCreate', async (message) => {
 	if(message.content.startsWith("計算 ")){
 		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-\+\*\/\(\)]/g, "");
 
+		message.react("✅");
+
 		let RESULT = await new MATH(message.content).main();
 
 		//結果を吐き出す
 		//message.reply("多分結果は：「" + RESULT.toString() + "」です");
+	}
+
+	//MIQ
+	if(message.content.startsWith("MIQ")){
+		try{
+			const MSG_ID = message.content.replace("MIQ ", "").replace(/[^0-9]/g, "");
+			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
+
+			message.react("✅");
+	
+			if (FS.existsSync(DWN_PATH)) {
+				message.reply({files:[DWN_PATH]})
+			} else {
+				message.reply("そのQuoteは保存されていません");
+			}
+		}catch(EX){
+			console.log(EX);
+			message.reply("エラー");
+		}
 	}
 
 });

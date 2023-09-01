@@ -15,53 +15,58 @@ class MATH{
 	}
 
 	async CALC(TEXT){
-		let TEXT_SPLIT = TEXT.split("");
 		let MATH_RESULT = 0;
+
+		let RESULT = this.FORMULA_PARSE(TEXT);
+		console.log(RESULT);
 		
-		for (let I = 0; I < TEXT_SPLIT.length; I++) {
-			const NUM = TEXT_SPLIT[I];
-			switch(NUM){
-				case "+":
-					I++;
-					var RESULT = this.IS_INT(TEXT_SPLIT, I);
-
-					MATH_RESULT = parseInt(MATH_RESULT + RESULT.RESULT);
-					I = RESULT.I;
-					break;
-				case "-":
-					I++;
-					var RESULT = this.IS_INT(TEXT_SPLIT, I);
-	
-					MATH_RESULT = parseInt(MATH_RESULT - RESULT.RESULT);
-					I = RESULT.I;
-					break;
-				default:
-					var RESULT = this.IS_INT(TEXT_SPLIT, I);
-
-					MATH_RESULT = parseInt(MATH_RESULT + RESULT.RESULT);
-					I = RESULT.I;
-					break;
-			}
-		}
-
 		return MATH_RESULT;
 	}
 
-	//数字かをチェックする
-	IS_INT(TEXT, I){
-		let REGEX = /^\d+$/;
-		let RESULT_TEXT = "";
+	//計算式を解析する(ChatGPT作)
+	FORMULA_PARSE(FORMULA){
+		const RESULT = [];
+		let currentToken = "";
 
-		for (; I < TEXT.length; I++) {
-			const NUM = TEXT[I];
-			if(REGEX.test(NUM)){
-				RESULT_TEXT += NUM;
+		for (let i = 0; i < FORMULA.length; i++) {
+			const TEXT = FORMULA[i];
+
+			if (TEXT === " ") {
+				continue;
+			}else if (TEXT.match(/[0-9]/)){
+				currentToken += TEXT;
+			}else if (TEXT.match(/[+\-*/]/)){
+				if (currentToken !== "") {
+					RESULT.push(currentToken);
+					currentToken = "";
+				}
+				RESULT.push(TEXT);
+			}else if (TEXT === "("){
+				let SUB_FORMILA = "";
+				let parenthesesCount = 1;
+				i++;
+
+				while (i < FORMULA.length) {
+					if (FORMULA[i] === "(") {
+						parenthesesCount++;
+					}else if (FORMULA[i] === ")"){
+						parenthesesCount--;
+						if (parenthesesCount === 0) {
+							break;
+						}
+					}
+
+					SUB_FORMILA += FORMULA[i];
+					i++;
+				}
+
+				RESULT.push(this.FORMULA_PARSE(SUB_FORMILA));
 			}
 		}
 
-		return {
-			RESULT:parseInt(RESULT_TEXT),
-			I:I
-		};
+		if (currentToken !== "") {
+			RESULT.push(currentToken);
+		}
+		return RESULT;
 	}
 }
