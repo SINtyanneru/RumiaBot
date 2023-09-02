@@ -382,14 +382,14 @@ client.on('messageCreate', async (message) => {
 
 	//計算
 	if(message.content.startsWith("計算 ")){
-		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-\+\*\/\(\)]/g, "");
+		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-\+\*\/\(\)\.]/g, "");
 
 		message.react("✅");
 
 		let RESULT = await new MATH(message.content).main();
 
 		//結果を吐き出す
-		message.reply("多分結果は：「" + RESULT.toString() + "」です");
+		message.reply(RESULT);
 	}
 
 	//MIQ

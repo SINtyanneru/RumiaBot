@@ -65,7 +65,7 @@ class MATH{
 			}
 		}
 		
-		return MATH_RESULT;
+		return "計算式：" + RESULT.join(" ") + "\n" + "多分結果は：「" + MATH_RESULT.toString()  + "」です";
 	}
 
 	//計算式を解析する(ChatGPT作)
