@@ -348,6 +348,10 @@ client.on('messageCreate', async (message) => {
 					if(message.reference){
 						message.reply("そうですか。");
 					}else{
+						if(message.content.replace("<@" + client.user.id + ">", "").endsWith("お")){
+							message.reply("...")
+							return;
+						}
 						message.reply("なに？");
 					}
 				}
@@ -367,7 +371,7 @@ client.on('messageCreate', async (message) => {
 	//VX
 	if(message.content.includes("https://twitter.com/")){
 		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/");
+		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/").replaceAll("@everyone", "[全体メンション]").replaceAll("@here", "[全体メンション]").replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
 
 		//WHでめっせーじを送る
 		WEB_HOOK.send({
@@ -385,6 +389,7 @@ client.on('messageCreate', async (message) => {
 		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-\+\*\/\(\)\.]/g, "");
 
 		message.react("✅");
+		console.log(MATH_TEXT);
 
 		let RESULT = await new MATH(message.content).main();
 
@@ -411,6 +416,29 @@ client.on('messageCreate', async (message) => {
 			return;
 		}
 	}
+
+	/*
+	//猫モード(無かったことにする)
+	if(message.author.id === "564772363950882816"){
+		let TEXT = message.content;
+		TEXT = TEXT.replace("な", "にゃ");
+		TEXT = TEXT.replace("ぬ", "にゅ");
+		TEXT = TEXT.replace("ね", "にぇ");
+		TEXT = TEXT.replace("の", "にょ");
+
+		//元メッセージを消す
+		message.delete();
+
+		let WEB_HOOK = await WebHook_FIND(message.channel);
+
+		//WHでめっせーじを送る
+		WEB_HOOK.send({
+			username: message.author.username,
+			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
+			content:TEXT
+		});
+	}
+	*/
 
 });
 
@@ -556,26 +584,11 @@ client.on('guildDelete', (GUILD) => {
 	}
 });
 
+/*
 //メッセージが消された
 client.on('messageDelete', async (deletedMessage) => {
-	try{
-		const EB = new MessageEmbed();
-		EB.setTitle("メッセージが消されました");
-		EB.setDescription(NULLCHECK(deletedMessage.author.username));
-		EB.setColor(RND_COLOR());
-	
-		EB.addFields({
-			name: "ないよう",
-			value: NULLCHECK(deletedMessage.content),
-			inline: false
-		})
-	
-		MSG_SEND("836142496563068929", "1140511350620168192", {embeds:[EB]});
-	}catch(EX){
-		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
-		return;
-	}
 });
+*/
 
 //メンバーが抜けた
 client.on('guildMemberRemove', async (member) => {
@@ -628,7 +641,7 @@ function NULLCHECK(VAR){
 	if(VAR !== undefined && VAR !== null){
 		return VAR;
 	}else{
-		return "ぬるぽ";
+		return "Error:NullPointerException";
 	}
 }
 

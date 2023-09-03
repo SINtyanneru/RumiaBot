@@ -32,7 +32,7 @@ class KANJI{
 			TEXT = TEXT.replaceAll(KANJI_TEXT.new, KANJI_TEXT.old);
 		}
 
-		E.editReply(TEXT);
+		E.editReply("```" + TEXT + "```");
 	}
 
 	//旧漢字を新漢字へ変換する
@@ -42,6 +42,6 @@ class KANJI{
 			TEXT = TEXT.replaceAll(KANJI_TEXT.old, KANJI_TEXT.new);
 		}
 
-		E.editReply(TEXT);
+		E.editReply("```" + TEXT + "```");
 	}
 }
