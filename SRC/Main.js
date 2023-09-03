@@ -436,6 +436,11 @@ client.on('messageCreate', async (message) => {
 		}
 	}
 
+	if(message.content === "今日は何の日？"){
+		message.react("✅");
+		new WHAT_NOW_DAY().main(message);
+	}
+
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
