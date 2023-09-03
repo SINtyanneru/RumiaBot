@@ -567,6 +567,10 @@ client.on('guildMemberRemove', async (member) => {
 			EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
 			EB.setColor(RND_COLOR());
 			MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
+
+			if(member.bannable){
+				member.ban();
+			}
 		}
 	}catch(EX){
 		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
