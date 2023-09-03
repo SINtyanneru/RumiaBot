@@ -369,7 +369,8 @@ client.on('messageCreate', async (message) => {
 	}
 
 	//VX
-	if(message.content.includes("https://twitter.com/")){
+	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
+	if(message.content.match(VX_REGEX)){
 		let WEB_HOOK = await WebHook_FIND(message.channel);
 		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/").replaceAll("@everyone", "[全体メンション]").replaceAll("@here", "[全体メンション]").replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
 
@@ -397,26 +398,6 @@ client.on('messageCreate', async (message) => {
 		message.reply(RESULT);
 	}
 
-	//MIQ
-	if(message.content.startsWith("MIQ")){
-		try{
-			const MSG_ID = message.content.replace("MIQ ", "").replace(/[^0-9]/g, "");
-			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
-
-			message.react("✅");
-	
-			if (FS.existsSync(DWN_PATH)) {
-				message.reply({files:[DWN_PATH]})
-			} else {
-				message.reply("そのQuoteは保存されていません");
-			}
-		}catch(EX){
-			console.log(EX);
-			message.reply("エラー");
-			return;
-		}
-	}
-
 	/*
 	//猫モード(無かったことにする)
 	if(message.author.id === "564772363950882816"){
@@ -440,6 +421,21 @@ client.on('messageCreate', async (message) => {
 	}
 	*/
 
+	//あずさ
+	if(message.author.id === "867187372026232833"){
+		if(message.content.includes("きしょ") && message.content.includes("死ね") && message.content.includes("kisyo") && message.content.includes("やめろ") && message.content.includes("死ね")){
+			message.reply("黙れ");
+		}
+
+		if(message.content.includes("おい")){
+			message.reply("あ？");
+		}
+		
+		if(message.content.includes("天安門")){
+			message.reply("気をつけな、あんた、中華人民共和国当局に、見られてるぜ");
+		}
+	}
+
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
@@ -447,45 +443,9 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(newMessage.author.id === "949479338275913799"){
 		console.log(newMessage.attachments.map(attachment => attachment.url).length);
 		if(newMessage.attachments.map(attachment => attachment.url).length > 0){
-			//newMessage.channel.sendTyping();
-
-			//ダウンロード先
-			const DOWNLOAD_URL = newMessage.attachments.map(attachment => attachment.url)[0];
-			//保存先
-			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", newMessage.id + ".png");
-			
-			//ファイルを作るやつ
-			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
-			
-			//ダウンロード開始
-			console.error("[ *** ][ MIQDL ]Downloading...");
-			https.get(DOWNLOAD_URL, RES => {
-				RES.pipe(FILE_STREAM);
-			
-				RES.on('end', () => {//完了
-					console.error("[ OK ][ MIQDL ]Donwloaded");
-					//newMessage.reply("保存しました〜"); うるさい
-				});
-			}).on('error', EX => {
-				console.error("[ ERR ][ MIQDL ]" + EX);
-			});
+			new MIQ().save_miq(newMessage);
 		}else{
-			try{
-				const MSG_ID = newMessage.id;
-				const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
-	
-				newMessage.react("✅");
-		
-				if (FS.existsSync(DWN_PATH)) {
-					newMessage.reply({
-						content: "🇨🇳🇨🇳🇨🇳削除を検知！！！！🇨🇳🇨🇳🇨🇳",
-						files:[DWN_PATH]
-					})
-				}
-			}catch(EX){
-				console.log("[ ERR ][ MIQ ]" + EX);
-				return;
-			}
+			new MIQ().load_miq(newMessage);
 		}
 	}
 });
@@ -584,11 +544,13 @@ client.on('guildDelete', (GUILD) => {
 	}
 });
 
-/*
+
 //メッセージが消された
 client.on('messageDelete', async (deletedMessage) => {
+	if(deletedMessage.author.bot && deletedMessage.webhookId !== null){
+		new MIQ().load_miq(deletedMessage);
+	}
 });
-*/
 
 //メンバーが抜けた
 client.on('guildMemberRemove', async (member) => {
