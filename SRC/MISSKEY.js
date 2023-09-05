@@ -1,11 +1,15 @@
 class MISSKEY{
 	constructor(){
 		this.USER = {
-			"9i642yz0h7":{
+			"9i642yz0h7":{//わたし
 				"GID":"836142496563068929",
 				"CID":"1128742498194444298"
 			},
-			"9j2aq1l739":{
+			"9j2aq1l739":{//PNTS
+				"GID":"836142496563068929",
+				"CID":"1128742498194444298"
+			},
+			"9j0c17mljb":{//ソ連
 				"GID":"836142496563068929",
 				"CID":"1128742498194444298"
 			}
@@ -26,7 +30,7 @@ class MISSKEY{
 			console.log('WebSocket接続が確立されました。');
 		
 			//メッセージをサーバーに送信
-			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
+			socket.send('{"type":"connect","body":{"channel":"globalTimeline","id":"1","params":{"withReplies":false}}}');
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ

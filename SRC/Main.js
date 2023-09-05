@@ -346,6 +346,10 @@ client.on('messageCreate', async (message) => {
 			MENTION_USERS.forEach((USER) => {
 				if(USER.id === CONFIG.ID){
 					if(message.reference){
+						if(message.author.id === "867187372026232833"){
+							message.reply("そうですか(笑)");
+							return;
+						}
 						message.reply("そうですか。");
 					}else{
 						if(message.content.replace("<@" + client.user.id + ">", "").endsWith("お")){
@@ -423,7 +427,7 @@ client.on('messageCreate', async (message) => {
 
 	//あずさ
 	if(message.author.id === "867187372026232833"){
-		if(message.content.includes("きしょ") && message.content.includes("死ね") && message.content.includes("kisyo") && message.content.includes("やめろ") && message.content.includes("死ね")){
+		if(message.content.includes("きしょ") || message.content.includes("死ね") || message.content.includes("kisyo")|| message.content.includes("やめろ") || message.content.includes("死ね")){
 			message.reply("黙れ");
 		}
 
@@ -569,11 +573,16 @@ client.on('guildMemberRemove', async (member) => {
 			MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
 
 			if(member.bannable){
+				console.log("[ OK ][ AUTO BAN ]" + member.displayName + "が脱退したため、自動的にBANしました");
+				MSG_SEND("836142496563068929", "894185240728322058", "脱退したため、BANしました");
 				member.ban();
+			}else{
+				console.log("[ ERR ][ AUTO BAN ]" + member.displayName + "が脱退しましたが、BANできませんでした");
+				MSG_SEND("836142496563068929", "894185240728322058", "脱退しましたが、BANできませんでした");
 			}
 		}
 	}catch(EX){
-		console.log("[ ERR ][ DELMSG ]Send MSG:" + EX);
+		console.log("[ ERR ][ AUTO BAN ]BAN失敗：" + EX);
 		return;
 	}
 });
