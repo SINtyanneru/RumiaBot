@@ -576,6 +576,9 @@ client.on('guildMemberRemove', async (member) => {
 				console.log("[ OK ][ AUTO BAN ]" + member.displayName + "が脱退したため、自動的にBANしました");
 				MSG_SEND("836142496563068929", "894185240728322058", "脱退したため、BANしました");
 				member.ban();
+
+				const USER = client.users.cache.get(member.id);
+				USER.send("あなたは「るみさんのサーバー」から脱退したため、BANされました。\nBAN解除はるみさんのDMまでお願いします");
 			}else{
 				console.log("[ ERR ][ AUTO BAN ]" + member.displayName + "が脱退しましたが、BANできませんでした");
 				MSG_SEND("836142496563068929", "894185240728322058", "脱退しましたが、BANできませんでした");
