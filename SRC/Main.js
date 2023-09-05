@@ -298,17 +298,22 @@ console.log("V1.0");
 //メッセージを受信
 client.on('messageCreate', async (message) => {
 	//ログを出す
-	let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
-	const LOG_TEXT_SPLIT = message.content.split("\n");
-	for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
-		const TEXT = LOG_TEXT_SPLIT[I];
-		if(LOG_TEXT_SPLIT[I + 1] !== undefined){
-			LOG_TEXT += "├" + TEXT + "\n";
-		}else{
-			LOG_TEXT += "└" + TEXT + "\n";
+	try{
+		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
+		const LOG_TEXT_SPLIT = message.content.split("\n");
+		for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
+			const TEXT = LOG_TEXT_SPLIT[I];
+			if(LOG_TEXT_SPLIT[I + 1] !== undefined){
+				LOG_TEXT += "├" + TEXT + "\n";
+			}else{
+				LOG_TEXT += "└" + TEXT + "\n";
+			}
 		}
+		console.log(LOG_TEXT);
+	}catch(EX){
+		console.log("[ ERR ][ LOG ]Send LOG ERR" + EX);
+		return;
 	}
-	console.log(LOG_TEXT);
 
 	/*
 	//BOTの場合は処理しない
@@ -570,22 +575,103 @@ client.on('guildMemberRemove', async (member) => {
 			EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
 			EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
 			EB.setColor(RND_COLOR());
-			MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]})
+			MSG_SEND("836142496563068929", "894185240728322058", {embeds:[EB]});
 
-			if(member.bannable){
-				console.log("[ OK ][ AUTO BAN ]" + member.displayName + "が脱退したため、自動的にBANしました");
-				MSG_SEND("836142496563068929", "894185240728322058", "脱退したため、BANしました");
-				member.ban();
-
-				const USER = client.users.cache.get(member.id);
-				USER.send("あなたは「るみさんのサーバー」から脱退したため、BANされました。\nBAN解除はるみさんのDMまでお願いします");
-			}else{
-				console.log("[ ERR ][ AUTO BAN ]" + member.displayName + "が脱退しましたが、BANできませんでした");
-				MSG_SEND("836142496563068929", "894185240728322058", "脱退しましたが、BANできませんでした");
-			}
+			//独自のBANリスト
+			const fileName = "./TEMP/RS_LEAVE.json";
+			FS.access(fileName, FS.constants.F_OK, (ERR) => {
+				if(ERR){
+					FS.writeFile(fileName, JSON.stringify([
+						{
+							"ID":member.id,
+							"DATE":new Date().toDateString()
+						}
+					]), (ERR) => {
+						if(ERR){
+							console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
+						}else{
+							console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
+						}
+					});
+				}else{
+					FS.readFile(fileName, 'utf8', (ERR, DATA) => {
+						if(ERR){
+							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
+						}else{
+							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
+							const RESULT = JSON.parse(DATA);
+							if(!RESULT.some((ROW) => ROW.ID === member.id)){
+								RESULT.push(
+									{
+										"ID":member.id,
+										"DATE":new Date().toISOString()
+									}
+								);
+								FS.writeFile(fileName, JSON.stringify(RESULT), (ERR) => {
+									if(ERR){
+										console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
+									}else{
+										console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
+									}
+								});
+							}
+						}
+					});
+				}
+			});
 		}
 	}catch(EX){
-		console.log("[ ERR ][ AUTO BAN ]BAN失敗：" + EX);
+		console.log("[ ERR ][ AUTO BAN ]" + EX);
+		return;
+	}
+});
+
+//メンバーが入った
+client.on('guildMemberAdd', (member) => {
+	try{
+		if(member.guild.id === "836142496563068929"){
+			//独自のBANリストでチェックする
+			const fileName = "./TEMP/RS_LEAVE.json";
+			FS.access(fileName, FS.constants.F_OK, (ERR) => {
+				if(!ERR){
+					FS.readFile(fileName, 'utf8', (ERR, DATA) => {
+						if(ERR){
+							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
+						}else{
+							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
+							const RESULT = JSON.parse(DATA);
+							const BAN_INFO = RESULT.find((ROW) => ROW.ID === member.id);
+							if(BAN_INFO !== undefined && BAN_INFO !== null){
+								const USER = client.users.cache.get(member.id);
+
+								//地獄計算
+								const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
+								const DATE = new Date(BAN_INFO.DATE);
+
+								USER.send("あなたは、"+
+											DATE.getFullYear().toString() + "年 "+
+											(DATE.getMonth() + 1).toString() + "月 "+
+											DATE.getDate().toString() + "日 "+
+											DAY_FORMAT[DATE.getDay()] + "曜日 "+
+											DATE.getHours().toString() + "時 "+
+											DATE.getMinutes().toString() + "分 "+
+											DATE.getSeconds().toString() + "秒 "+
+											DATE.getMilliseconds().toString() + "ミリ秒\n"+
+										"に、るみさんの鯖から脱退しています。\n"+
+										"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n"+
+										"\n"+
+										"1・なぜ抜けたのか\n"+
+										"2・なぜ戻ってきたのか\n"+
+										"\n"+
+										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()");
+							}
+						}
+					});
+				}
+			});
+		}
+	}catch(EX){
+		console.log("[ ERR ][ AUTO BAN ]" + EX);
 		return;
 	}
 });
