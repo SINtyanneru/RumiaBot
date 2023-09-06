@@ -355,10 +355,18 @@ client.on('messageCreate', async (message) => {
 							message.reply("そうですか(笑)");
 							return;
 						}
+						if(message.author.id === "564772363950882816" || message.author.id === "811143522212118528" || message.author.id === "980604083851390976"){
+							message.reply("そーなのかー");
+							return;
+						}
 						message.reply("そうですか。");
 					}else{
 						if(message.content.replace("<@" + client.user.id + ">", "").endsWith("お")){
 							message.reply("...")
+							return;
+						}
+						if(message.author.id === "564772363950882816" || message.author.id === "811143522212118528" || message.author.id === "980604083851390976"){
+							message.reply("なんなのだー？");
 							return;
 						}
 						message.reply("なに？");
