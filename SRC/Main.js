@@ -240,6 +240,34 @@ console.log("V1.0");
 		},
 	];
 
+	//ActivityPub
+	let SC_ActivityPub_CHOICES = [];
+	CONFIG.MISSKEY.forEach(DATA => {
+		SC_ActivityPub_CHOICES.push(
+			{
+				"name": DATA.NAME,
+				"value": DATA.ID
+			}
+		)
+	});
+
+	commandData.push(
+		{
+			name: "sns_set",
+			description: "SNSを",
+			options: [
+				{
+					name: 'type',
+					description: 'どのSNSか',
+					type: 'STRING',
+					required: true,
+					choices: SC_ActivityPub_CHOICES
+				}
+			]
+		}
+	)
+
+	//コマンドを登録する
 	try{
 		//グローバルスラッシュコマンドを登録
 		await client.application.commands.set(commandData);
@@ -351,6 +379,9 @@ client.on('messageCreate', async (message) => {
 			MENTION_USERS.forEach((USER) => {
 				if(USER.id === CONFIG.ID){
 					if(message.reference){
+						if(message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")){
+							message.reply("きもい")
+						}
 						if(message.author.id === "867187372026232833"){
 							message.reply("そうですか(笑)");
 							return;
@@ -361,6 +392,9 @@ client.on('messageCreate', async (message) => {
 						}
 						message.reply("そうですか。");
 					}else{
+						if(message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")){
+							message.reply("きっしょ死ね")
+						}
 						if(message.content.replace("<@" + client.user.id + ">", "").endsWith("お")){
 							message.reply("...")
 							return;

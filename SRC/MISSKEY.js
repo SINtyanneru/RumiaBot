@@ -12,6 +12,10 @@ class MISSKEY{
 			"9j0c17mljb":{//ソ連
 				"GID":"836142496563068929",
 				"CID":"1128742498194444298"
+			},
+			"9i64svbnk0":{//変態
+				"GID":"836142496563068929",
+				"CID":"1128742498194444298"
 			}
 		};
 	}
@@ -45,9 +49,9 @@ class MISSKEY{
 				let RENOTE_ID = RESULT.body.body.renoteId;
 				let RENOTE_NOTE = RESULT.body.body.renote;
 				
-				console.log("[ INFO ][ MISSKEY ]Note res:" +NOTE_ID);
-
 				if(IT_DIS_USER !== undefined){
+					console.log("[ INFO ][ MISSKEY ]Note res:" +NOTE_ID);//ログを吐く
+
 					const EB = new MessageEmbed();
 					//ユーザー名
 					EB.setTitle(IT_MIS_USER.name);
