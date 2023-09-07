@@ -69,7 +69,9 @@ class MISSKEY{
 					EB.setURL("https://ussr.rumiserver.com/@" + IT_MIS_USER.id);
 
 					if(NOTE_FILES[0] !== undefined && NOTE_FILES[0] !== null){
-						EB.setImage(NOTE_FILES[0].thumbnailUrl);
+						if(!RENOTE_NOTE.files[0].isSensitive){
+							EB.setImage(NOTE_FILES[0].thumbnailUrl);
+						}
 					}
 
 					//リノート関連
@@ -93,7 +95,9 @@ class MISSKEY{
 						if(NOTE_FILES[0] === undefined){//既に画像が有るか
 							//リノート元に画像は有るか
 							if(RENOTE_NOTE.files[0] !== undefined && RENOTE_NOTE.files[0] !== null){
-								EB.setImage(RENOTE_NOTE.files[0].thumbnailUrl);
+								if(!RENOTE_NOTE.files[0].isSensitive){
+									EB.setImage(RENOTE_NOTE.files[0].thumbnailUrl);
+								}
 							}
 						}
 					}
