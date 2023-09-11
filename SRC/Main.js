@@ -4,6 +4,7 @@ import { ApplicationCommandType } from 'discord-api-types/v9';
 import { ContextMenuCommandBuilder } from '@discordjs/builders';
 import { exec } from 'child_process';
 import net from 'net';
+import RUMI_HAPPY_BIRTHDAY from "./MODULES/RUMI_HAPPY_BIRTHDAY.js"
 import WebSocket from 'ws';
 import http from 'http';
 import https from 'https';
@@ -737,26 +738,7 @@ function MSG_SEND(GID, CID, TEXT){
 	client.guilds.cache.get(GID).channels.cache.get(CID).send(TEXT);
 }
 
-function RUMI_HAPPY_BIRTHDAY(){
-	//2007年10月29日の日付を作成
-	const targetDate = new Date(2007, 9, 29); //月は0から始まるため、9は10月を表す
-		
-	//今日の日付を取得
-	const today = new Date();
-		
-	//年数の差を計算
-	let yearDifference = today.getFullYear() - targetDate.getFullYear();
-		
-	//10月29日以前の場合、1年引く
-	if(
-		today.getMonth() < targetDate.getMonth() ||
-		(today.getMonth() === targetDate.getMonth() &&
-		today.getDate() < targetDate.getDate())
-	){
-		yearDifference--;
-	}
-	return yearDifference;
-}
+
 
 function NULLCHECK(VAR){
 	if(VAR !== undefined && VAR !== null){

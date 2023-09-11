@@ -1,3 +1,5 @@
+import { RND_COLOR } from "../MODULES/RND_COLOR";
+import { MessageEmbed } from "discord.js";
 export class HELP{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -66,7 +68,7 @@ export class HELP{
 			EB.setTitle("るみさんBOTのヘルプ");
 			EB.setDescription("メッセージコマンド");
 			EB.setColor(RND_COLOR());
-	
+
 			EB.addFields({
 				name: "検索",
 				value: "ググります、\nЭрйлйки：検索 検索キーワード",

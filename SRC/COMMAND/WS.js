@@ -1,3 +1,7 @@
+import { Builder } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
+import FS from 'fs';
+import RUMI_HAPPY_BIRTHDAY from "../MODULES/RUMI_HAPPY_BIRTHDAY.js"
 export class WS{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
