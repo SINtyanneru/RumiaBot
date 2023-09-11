@@ -1,4 +1,4 @@
-import { RND_COLOR } from "../MODULES/RND_COLOR";
+import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { MessageEmbed } from "discord.js";
 export class HELP{
 	constructor(INTERACTION) {
