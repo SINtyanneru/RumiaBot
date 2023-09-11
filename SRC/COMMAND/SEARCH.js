@@ -1,4 +1,4 @@
-class SEARCH{
+export class SEARCH{
 	constructor(MSG, SEARCH_WORD){
 		this.E = MSG;
 		this.SEARCH_WORD = SEARCH_WORD;

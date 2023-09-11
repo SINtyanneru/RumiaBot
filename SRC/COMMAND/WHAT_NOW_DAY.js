@@ -9,7 +9,7 @@ const WND_JSON = {
 		TEXT:"とてもクソです"
 	}
 }
-class WHAT_NOW_DAY{
+export class WHAT_NOW_DAY{
 	main(message){
 		const NOW_DATE = new Date();
 		const WND = WND_JSON[(NOW_DATE.getMonth() + 1) + "/" + NOW_DATE.getDate()];

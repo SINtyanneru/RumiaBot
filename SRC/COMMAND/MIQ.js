@@ -1,4 +1,4 @@
-class MIQ{
+export class MIQ{
 	load_miq(message){
 		try{
 			const MSG_ID = message.id;

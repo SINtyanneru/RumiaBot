@@ -1,15 +1,17 @@
-const FS = require('fs');
-const { Client, Intents, MessageEmbed, WebhookClient} = require('discord.js');
-const { ApplicationCommandType } = require('discord-api-types/v9');
-const { ContextMenuCommandBuilder } = require('@discordjs/builders');
-const { exec } = require('child_process');
-const net = require('net');
-const WebSocket = require('ws');
-const http = require('http');
-const https = require('https');
-const { Builder, By, Key, until } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-const PATH = require('path');
+import FS from 'fs';
+import { Client, Intents, MessageEmbed, WebhookClient} from 'discord.js';
+import { ApplicationCommandType } from 'discord-api-types/v9';
+import { ContextMenuCommandBuilder } from '@discordjs/builders';
+import { exec } from 'child_process';
+import net from 'net';
+import WebSocket from 'ws';
+import http from 'http';
+import https from 'https';
+import { Builder, By, Key, until } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
+import PATH from 'path';
+
+
 
 let CONFIG = {};
 let ACTIVE = true;

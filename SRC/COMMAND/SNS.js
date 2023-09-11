@@ -1,4 +1,4 @@
-class SNS{
+export class SNS{
 	constructor(INTERACTION){
 		this.E = INTERACTION;
 	}

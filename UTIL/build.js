@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 //フォルダのパスと出力ファイル名を指定
 const folderPath = './SRC';

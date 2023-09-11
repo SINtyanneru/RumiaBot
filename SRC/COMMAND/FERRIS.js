@@ -1,4 +1,4 @@
-class FERRIS{
+export class FERRIS{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

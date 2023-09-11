@@ -1,4 +1,4 @@
-class test{
+export class test{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

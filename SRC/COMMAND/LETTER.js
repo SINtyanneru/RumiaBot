@@ -1,4 +1,4 @@
-class LETTER{
+export class LETTER{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 		this.LETTER_JSON = {

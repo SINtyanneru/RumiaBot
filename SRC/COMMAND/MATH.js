@@ -1,4 +1,4 @@
-class MATH{
+export class MATH{
 	constructor(TEXT){
 		this.TEXT = TEXT;
 	}

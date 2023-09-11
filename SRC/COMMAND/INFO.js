@@ -1,4 +1,4 @@
-class INFO{
+export class INFO{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

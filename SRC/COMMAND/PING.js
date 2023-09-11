@@ -1,4 +1,4 @@
-class PING{
+export class PING{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

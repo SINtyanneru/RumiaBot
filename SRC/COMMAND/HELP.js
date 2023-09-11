@@ -1,4 +1,4 @@
-class HELP{
+export class HELP{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

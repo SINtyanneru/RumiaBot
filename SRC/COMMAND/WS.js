@@ -1,4 +1,4 @@
-class WS{
+export class WS{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
