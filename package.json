@@ -1,7 +1,7 @@
 {
   "name": "rumiabot",
   "version": "1.0.0",
-  "description": "",
+  "description": "___ ## なんだこのBOTは？！ 元ルーミアちゃんBOT<BR> このBOTは、わたしがほしいと思った機能を搭載するBOTです()<BR> なので完全に自分用ｗｗ<BR> ## ビルド方法 ```sh source ./build.sh ``` を実行(LINUXの場合)<BR> そして[Config.json]を作成<BR> ```json { \t\"TOKEN\":\"Discordのトークン\", \t\"ID\":\"BOTのID\", \t\"SQL_HOST\":\"SQLのホスト\", \t\"SQL_USER\":\"SQLのユーザー名\", \t\"SQL_PASS\":\"SQLのパスワード\", \t\"GOOGLE_API_KEY\":\"GoogleAPIのAPIキー\", \t\"GOOGLE_API_ENGINE_ID\":\"Google検索APIのえんじんDI\", \t\"MISSKEY_API_KEY\":\"MisskeyのAPIキー\", \t\"ADMIN_ID\":\"BOTの管理者のID\", \t\"ADMIN_PREFIX\":\"管理用のプレフィクス\" } ``` これでおｋ！<BR> あとはsource start.shできどうするだけ！<BR> あとは楽しんでください()<BR>",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
