@@ -1,3 +1,6 @@
+throw new Error("こいつを使うと作業しづらくなるから使うな");
+/*
+
 import fs from "fs";
 import path from "path";
 
@@ -36,3 +39,4 @@ function combineFilesInFolder(folderPath, outputFile) {
 const combinedContent = combineFilesInFolder(folderPath, outputFile);
 fs.writeFileSync(outputFile, combinedContent, "utf-8");
 console.log("[ OK ]BUILD SUCSESFULL!");
+*/

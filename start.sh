@@ -1,1 +1,1 @@
-node ./BIN/rumiabot.js
+node ./SRC/Main.js
