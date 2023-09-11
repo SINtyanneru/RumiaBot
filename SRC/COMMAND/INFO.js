@@ -1,3 +1,8 @@
+import { client } from "../MODULES/loadClient.js";
+import { MessageEmbed } from "discord.js";
+import { NULLCHECK } from "../MODULES/NULLCHECK.js";
+import { RND_COLOR } from "../MODULES/RND_COLOR.js";
+
 export class INFO{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -175,11 +180,5 @@ export class INFO{
 		}
 
 		await E.editReply({embeds:[EB]});
-	}
-
-	//るみ鯖情報取得
-	async rsv_main(){
-		let E = this.E;
-		
 	}
 }

@@ -1,3 +1,6 @@
+import PATH from 'path';
+import FS from 'fs';
+import https from 'https'
 export class MIQ{
 	load_miq(message){
 		try{
