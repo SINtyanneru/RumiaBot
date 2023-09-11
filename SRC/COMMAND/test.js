@@ -1,5 +1,5 @@
-import {MessageEmbed} from 'discord.js';
-import { RND_COLOR } from '../MODULES/RND_COLOR.js';
+import {MessageEmbed} from "discord.js";
+import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 export class test{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;

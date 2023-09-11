@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
-import https from 'https'
+import https from "https"
 export class SEARCH {
 	constructor(MSG, SEARCH_WORD) {
 		this.E = MSG;
@@ -99,7 +99,7 @@ export class SEARCH {
 
 		//エラーハンドリング
 		REQ.on("error", (ERR) => {
-			console.error('エラー:', ERR);
+			console.error("エラー:", ERR);
 		});
 
 		//リクエストを送信

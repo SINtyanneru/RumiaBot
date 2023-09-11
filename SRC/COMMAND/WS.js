@@ -1,41 +1,41 @@
-import { Builder } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
-import FS from 'fs';
+import { Builder } from "selenium-webdriver";
+import chrome from "selenium-webdriver/chrome";
+import FS from "fs";
 import RUMI_HAPPY_BIRTHDAY from "../MODULES/RUMI_HAPPY_BIRTHDAY.js"
-export class WS{
+export class WS {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
 
-	async main(){
+	async main() {
 		let E = this.E;
 
 		let URL = E.options.getString("url");
 		let BROWSER_NAME = E.options.getString("browser_name");
 		let BROWSER_NAME_TEXT = "Chrome";
 
-		if(URL !== undefined && URL !== null){
+		if (URL !== undefined && URL !== null) {
 			//URLの整形
-			if(!URL.startsWith("http")){
+			if (!URL.startsWith("http")) {
 				URL = "http://" + URL;
 			}
 
 			//Chromeのオプションを設定
 			const chromeOptions = new chrome.Options();
-			chromeOptions.addArguments('--headless'); // ヘッドレスモードで実行
-			chromeOptions.addArguments('--window-size=1980,1080'); // ウィンドウのサイズを設定
+			chromeOptions.addArguments("--headless"); // ヘッドレスモードで実行
+			chromeOptions.addArguments("--window-size=1980,1080"); // ウィンドウのサイズを設定
 
-			if(BROWSER_NAME !== undefined && BROWSER_NAME !== null){
-				switch(BROWSER_NAME){
-					case"firefox":
+			if (BROWSER_NAME !== undefined && BROWSER_NAME !== null) {
+				switch (BROWSER_NAME) {
+					case "firefox":
 						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0");
 						BROWSER_NAME_TEXT = "FireFox";
 						break;
-					case"floorp":
+					case "floorp":
 						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
 						BROWSER_NAME_TEXT = "Floorp";
 						break;
-					case"rumisan":
+					case "rumisan":
 						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" + RUMI_HAPPY_BIRTHDAY() + ".0");
 						BROWSER_NAME_TEXT = "るみさん";
 						break;
@@ -45,10 +45,10 @@ export class WS{
 				}
 			}
 
-			try{
+			try {
 				//WebDriverのインスタンスを作成
 				const driver = new Builder()
-					.forBrowser('chrome')
+					.forBrowser("chrome")
 					.setChromeOptions(chromeOptions)
 					.build();
 
@@ -57,14 +57,14 @@ export class WS{
 					//スクリーンショットを撮影
 					return driver.takeScreenshot();
 				}).then(screenshotData => {
-					try{
+					try {
 						FS.writeFileSync("./TEMP/" + E.member.id + ".png", screenshotData, "base64");
-						
+
 						E.editReply({
 							content: "おｋ：" + BROWSER_NAME_TEXT + "で撮影",
 							files: ["./TEMP/" + E.member.id + ".png"]
 						});
-					}catch(EX){
+					} catch (EX) {
 						E.editReply("接続できませんでした！");
 					}
 				}).catch(() => {
@@ -75,10 +75,10 @@ export class WS{
 					//WebDriverを終了
 					driver.quit();
 				});
-			}catch(EX){
+			} catch (EX) {
 				E.editReply("接続できませんでした！");
 			}
-		}else{
+		} else {
 			E.editReply("URLが指定されていません");
 		}
 	}

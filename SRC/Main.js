@@ -1,20 +1,20 @@
-import FS from 'fs';
-import net from 'net';
+import FS from "fs";
+import net from "net";
 import RUMI_HAPPY_BIRTHDAY from "./MODULES/RUMI_HAPPY_BIRTHDAY.js"
-import { client } from './MODULES/loadClient.js';
-import { BOT_ADMIN } from './BOT_ADMIN.js';
-import { NULLCHECK } from './MODULES/NULLCHECK.js';
-import { CONFIG } from './MODULES/CONFIG.js';
+import { client } from "./MODULES/loadClient.js";
+import { BOT_ADMIN } from "./BOT_ADMIN.js";
+import { NULLCHECK } from "./MODULES/NULLCHECK.js";
+import { CONFIG } from "./MODULES/CONFIG.js";
 let ACTIVE = true;
-import * as command from './COMMAND/index.js'
-import { MessageEmbed } from 'discord.js';
-import { RND_COLOR } from './MODULES/RND_COLOR.js';
-import { MSG_SEND } from './MODULES/MSG_SEND.js';
+import * as command from "./COMMAND/index.js"
+import { MessageEmbed } from "discord.js";
+import { RND_COLOR } from "./MODULES/RND_COLOR.js";
+import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 
 
 
 
-client.once('ready', async () => {
+client.once("ready", async () => {
 	console.log(String.raw`    ____                  _       ____  ____  ______`);
 	console.log(String.raw`   / __ \__  ______ ___  (_)___ _/ __ )/ __ \/_  __/`);
 	console.log(String.raw`  / /_/ / / / / __ \`__ \/ / __ \`/ __  / / / / / /   `);
@@ -43,9 +43,9 @@ client.once('ready', async () => {
 			description: "pingします",
 			options: [
 				{
-					name: 'host',
-					description: 'ホスト名',
-					type: 'STRING',
+					name: "host",
+					description: "ホスト名",
+					type: "STRING",
 					required: true
 				}
 			]
@@ -54,9 +54,9 @@ client.once('ready', async () => {
 			description: "ウニ？カニ？ヤドカリ？",
 			options: [
 				{
-					name: 'type',
-					description: 'タイプ',
-					type: 'STRING',
+					name: "type",
+					description: "タイプ",
+					type: "STRING",
 					required: true,
 					choices: [
 						{
@@ -83,14 +83,14 @@ client.once('ready', async () => {
 			description: "ウェブサイトをスクショします",
 			options: [
 				{
-					name: 'url',
-					description: 'ウェブサイトのURLです',
-					type: 'STRING',
+					name: "url",
+					description: "ウェブサイトのURLです",
+					type: "STRING",
 					required: true
 				}, {
-					name: 'browser_name',
-					description: 'ブラウザを指定(UAのみ)',
-					type: 'STRING',
+					name: "browser_name",
+					description: "ブラウザを指定(UAのみ)",
+					type: "STRING",
 					required: false,
 					choices: [
 						{
@@ -116,9 +116,9 @@ client.once('ready', async () => {
 			description: "ユーザーの情報を取得",
 			options: [
 				{
-					name: 'user',
-					description: 'ユーザーを指定しろ',
-					type: 'MENTIONABLE',
+					name: "user",
+					description: "ユーザーを指定しろ",
+					type: "MENTIONABLE",
 					required: true
 				}
 			]
@@ -131,14 +131,14 @@ client.once('ready', async () => {
 			description: "漢字を変換します",
 			options: [
 				{
-					name: 'text',
-					description: '文字列',
-					type: 'STRING',
+					name: "text",
+					description: "文字列",
+					type: "STRING",
 					required: true
 				}, {
-					name: 'mode',
-					description: 'モード',
-					type: 'STRING',
+					name: "mode",
+					description: "モード",
+					type: "STRING",
 					required: true,
 					choices: [
 						{
@@ -157,14 +157,14 @@ client.once('ready', async () => {
 			description: "文字を色々変換してくれます、たぶん",
 			options: [
 				{
-					name: 'text',
-					description: '文字列',
-					type: 'STRING',
+					name: "text",
+					description: "文字列",
+					type: "STRING",
 					required: true
 				}, {
-					name: 'old',
-					description: '変換前',
-					type: 'STRING',
+					name: "old",
+					description: "変換前",
+					type: "STRING",
 					required: true,
 					choices: [
 						{
@@ -177,9 +177,9 @@ client.once('ready', async () => {
 						}
 					]
 				}, {
-					name: 'new',
-					description: '変換後',
-					type: 'STRING',
+					name: "new",
+					description: "変換後",
+					type: "STRING",
 					required: true,
 					choices: [
 						{
@@ -198,9 +198,9 @@ client.once('ready', async () => {
 			description: "ヘルプコマンド、作るのめんどいやつ",
 			options: [
 				{
-					name: 'mode',
-					description: 'どれを見るか',
-					type: 'STRING',
+					name: "mode",
+					description: "どれを見るか",
+					type: "STRING",
 					required: true,
 					choices: [
 						{
@@ -234,15 +234,15 @@ client.once('ready', async () => {
 			description: "SNSを",
 			options: [
 				{
-					name: 'type',
-					description: 'どのインスタンスを？',
-					type: 'STRING',
+					name: "type",
+					description: "どのインスタンスを？",
+					type: "STRING",
 					required: true,
 					choices: SC_ActivityPub_CHOICES
 				}, {
-					name: 'userid',
-					description: '誰を？',
-					type: 'STRING',
+					name: "userid",
+					description: "誰を？",
+					type: "STRING",
 					required: true
 				}
 			]
@@ -253,9 +253,9 @@ client.once('ready', async () => {
 	try {
 		//グローバルスラッシュコマンドを登録
 		await client.application.commands.set(commandData);
-		console.log('Global slash commands registered!');
+		console.log("Global slash commands registered!");
 	} catch (EX) {
-		console.error('Error registering global slash commands:', EX);
+		console.error("Error registering global slash commands:", EX);
 	}
 
 	//new MISSKEY().main();
@@ -306,7 +306,7 @@ client.once('ready', async () => {
 });
 
 //メッセージを受信
-client.on('messageCreate', async (message) => {
+client.on("messageCreate", async (message) => {
 	//ログを出す
 	try {
 		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
@@ -347,7 +347,7 @@ client.on('messageCreate', async (message) => {
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
-			"ping -c5 \"" + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, '') + "\"" +
+			"ping -c5 \"" + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + "\"" +
 			"\nIP?" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
@@ -355,7 +355,7 @@ client.on('messageCreate', async (message) => {
 	//メンションされたユーザーのコレクションを取得
 	const MENTION_USERS = message.mentions.users;
 
-	if (!message.content.includes('@everyone') && !message.content.includes('@here')) {
+	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
 			MENTION_USERS.forEach((USER) => {
@@ -476,7 +476,7 @@ client.on('messageCreate', async (message) => {
 
 });
 
-client.on('messageUpdate', (oldMessage, newMessage) => {
+client.on("messageUpdate", (oldMessage, newMessage) => {
 	//Make it a Quote を ダウンロード
 	if (newMessage.author.id === "949479338275913799") {
 		console.log(newMessage.attachments.map(attachment => attachment.url).length);
@@ -489,7 +489,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 });
 
 //イントラクション
-client.on('interactionCreate', async (INTERACTION) => {
+client.on("interactionCreate", async (INTERACTION) => {
 	try {
 		if (!INTERACTION.isCommand()) {
 			//コマンドが送信されたか確認
@@ -507,13 +507,13 @@ client.on('interactionCreate', async (INTERACTION) => {
 		const CMD = INTERACTION.commandName;
 
 		switch (CMD) {
-			case 'test':
+			case "test":
 				new command.test(INTERACTION).main();
 				break;
-			case 'help':
+			case "help":
 				new command.HELP(INTERACTION).main();
 				break;
-			case 'ping':
+			case "ping":
 				new command.PING(INTERACTION).main();
 				break;
 			case "ferris":
@@ -545,7 +545,7 @@ client.on('interactionCreate', async (INTERACTION) => {
 });
 
 //鯖に参加した
-client.on('guildCreate', async (GUILD) => {
+client.on("guildCreate", async (GUILD) => {
 	try {
 		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
@@ -568,7 +568,7 @@ client.on('guildCreate', async (GUILD) => {
 
 
 //鯖からキックされた
-client.on('guildDelete', (GUILD) => {
+client.on("guildDelete", (GUILD) => {
 	try {
 		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
@@ -588,14 +588,14 @@ client.on('guildDelete', (GUILD) => {
 
 
 //メッセージが消された
-client.on('messageDelete', async (deletedMessage) => {
+client.on("messageDelete", async (deletedMessage) => {
 	if (deletedMessage.author.bot && deletedMessage.webhookId !== null) {
 		new command.MIQ().load_miq(deletedMessage);
 	}
 });
 
 //メンバーが抜けた
-client.on('guildMemberRemove', async (member) => {
+client.on("guildMemberRemove", async (member) => {
 	try {
 		console.log(member);
 		if (member.guild.id === "836142496563068929") {
@@ -622,7 +622,7 @@ client.on('guildMemberRemove', async (member) => {
 						}
 					});
 				} else {
-					FS.readFile(fileName, 'utf8', (ERR, DATA) => {
+					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
 							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
 						} else {
@@ -655,14 +655,14 @@ client.on('guildMemberRemove', async (member) => {
 });
 
 //メンバーが入った
-client.on('guildMemberAdd', (member) => {
+client.on("guildMemberAdd", (member) => {
 	try {
 		if (member.guild.id === "836142496563068929") {
 			//独自のBANリストでチェックする
 			const fileName = "./TEMP/RS_LEAVE.json";
 			FS.access(fileName, FS.constants.F_OK, (ERR) => {
 				if (!ERR) {
-					FS.readFile(fileName, 'utf8', (ERR, DATA) => {
+					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
 							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
 						} else {

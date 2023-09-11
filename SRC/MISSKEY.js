@@ -43,7 +43,7 @@ export class MISSKEY {
 		const socket = new WebSocket(serverURL);
 
 		//接続が確立された際のイベントハンドラ
-		socket.on('open', () => {
+		socket.on("open", () => {
 			console.log("[ OK ][ MISSKEY ]WS Connected!");
 
 			//メッセージをサーバーに送信
@@ -51,7 +51,7 @@ export class MISSKEY {
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ
-		socket.on('message', (DATA) => {
+		socket.on("message", (DATA) => {
 			try {
 				const RESULT = JSON.parse(DATA);
 				if (RESULT.body.type === "note") {
@@ -135,12 +135,12 @@ export class MISSKEY {
 		});
 
 		//エラー発生時のイベントハンドラ
-		socket.on('error', (ERR) => {
-			console.error('エラーが発生しました:', ERR);
+		socket.on("error", (ERR) => {
+			console.error("エラーが発生しました:", ERR);
 		});
 
 		//接続が閉じられた際のイベントハンドラ
-		socket.on('close', (CODE,REASON) => {
+		socket.on("close", (CODE, REASON) => {
 			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE + "REASON:" + REASON);
 			console.log("[ *** ][ MISSKEY ]Re Connecting...");
 			clearInterval(SEND_H);

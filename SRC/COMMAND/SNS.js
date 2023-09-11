@@ -1,4 +1,4 @@
-import { CONFIG } from '../MODULES/CONFIG.js'
+import { CONFIG } from "../MODULES/CONFIG.js"
 export class SNS {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;

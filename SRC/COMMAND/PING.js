@@ -1,4 +1,4 @@
-import { exec } from 'child_process'
+import { exec } from "child_process"
 export class PING {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -15,7 +15,7 @@ export class PING {
 				let OUTPUT = "";//出力を記録
 				let COUNT = 0;//出力した回数を記録
 
-				EXEC.stdout.on('data', (data) => {
+				EXEC.stdout.on("data", (data) => {
 					OUTPUT = OUTPUT + data + "\n";
 					if (COUNT <= 5) {//出力が5以下なら更新する(望んだ動作にするため)
 						//編集
@@ -24,14 +24,14 @@ export class PING {
 					COUNT++;
 				});
 
-				EXEC.stderr.on('data', () => {
+				EXEC.stderr.on("data", () => {
 					//エラーを出す
 					OUTPUT = OUTPUT + "PINGがエラーを吐きやがりました\n";
 					E.editReply("PINGがエラーを吐きやがりました");
 
 				});
 
-				EXEC.on('close', (code) => {
+				EXEC.on("close", (code) => {
 					if (code === 0) {
 						E.editReply(OUTPUT + "\n" +
 							"返り値が0だから成功したんじゃないかな");
