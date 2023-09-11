@@ -4,9 +4,10 @@ ___
 元ルーミアちゃんBOT<BR>
 このBOTは、わたしがほしいと思った機能を搭載するBOTです()<BR>
 なので完全に自分用ｗｗ<BR>
-## ビルド方法
+## セットアップ方法
+まずはNodeJSとnpmを入れてね<BR>
 ```sh
-source ./build.sh
+source ./setup.sh
 ```
 を実行(LINUXの場合)<BR>
 そして[Config.json]を作成<BR>
@@ -19,9 +20,17 @@ source ./build.sh
 	"SQL_PASS":"SQLのパスワード",
 	"GOOGLE_API_KEY":"GoogleAPIのAPIキー",
 	"GOOGLE_API_ENGINE_ID":"Google検索APIのえんじんDI",
-	"MISSKEY_API_KEY":"MisskeyのAPIキー",
 	"ADMIN_ID":"BOTの管理者のID",
-	"ADMIN_PREFIX":"管理用のプレフィクス"
+	"ADMIN_PREFIX":"管理用のプレフィクス",
+	"SNS":[
+		{
+			"ID":"自由にIDを",
+			"NAME":"インスタンス名",
+			"DOMAIN":"ドメイン(httpsを含まない)",
+			"API":"MisskeyやマストドンのAPIキー",
+			"TYPE":"MISSKEYかMASTODON"
+		}
+	]
 }
 ```
 これでおｋ！<BR>
