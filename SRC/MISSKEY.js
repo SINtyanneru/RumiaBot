@@ -3,19 +3,27 @@ class MISSKEY{
 		this.USER = {
 			"9i642yz0h7":{//わたし
 				"GID":"836142496563068929",
-				"CID":"1128742498194444298"
+				"CID": "1128742498194444298",
+				"NSFW_IMG": false,
+				"IMG_ONLY":false
 			},
 			"9j2aq1l739":{//PNTS
 				"GID":"836142496563068929",
-				"CID":"1128742498194444298"
+				"CID":"1128742498194444298",
+				"NSFW_IMG": false,
+				"IMG_ONLY":false
 			},
 			"9j0c17mljb":{//ソ連
 				"GID":"836142496563068929",
-				"CID":"1128742498194444298"
+				"CID":"1128742498194444298",
+				"NSFW_IMG": false,
+				"IMG_ONLY":false
 			},
 			"9i64svbnk0":{//変態
 				"GID":"836142496563068929",
-				"CID":"1128742498194444298"
+				"CID":"1128742498194444298",
+				"NSFW_IMG": false,
+				"IMG_ONLY":false
 			}
 		};
 	}
@@ -31,10 +39,10 @@ class MISSKEY{
 
 		//接続が確立された際のイベントハンドラ
 		socket.on('open', () => {
-			console.log('WebSocket接続が確立されました。');
+			console.log("[ OK ][ MISSKEY ]WS Connected!");
 		
 			//メッセージをサーバーに送信
-			socket.send('{"type":"connect","body":{"channel":"globalTimeline","id":"1","params":{"withReplies":false}}}');
+			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ

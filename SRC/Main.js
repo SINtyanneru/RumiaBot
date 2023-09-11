@@ -242,7 +242,7 @@ console.log("V1.0");
 
 	//ActivityPub
 	let SC_ActivityPub_CHOICES = [];
-	CONFIG.MISSKEY.forEach(DATA => {
+	CONFIG.SNS.forEach(DATA => {
 		SC_ActivityPub_CHOICES.push(
 			{
 				"name": DATA.NAME,
@@ -258,10 +258,15 @@ console.log("V1.0");
 			options: [
 				{
 					name: 'type',
-					description: 'どのSNSか',
+					description: 'どのインスタンスを？',
 					type: 'STRING',
 					required: true,
 					choices: SC_ActivityPub_CHOICES
+				},{
+					name: 'userid',
+					description: '誰を？',
+					type: 'STRING',
+					required: true
 				}
 			]
 		}
@@ -276,7 +281,7 @@ console.log("V1.0");
 		console.error('Error registering global slash commands:', EX);
 	}
 
-	new MISSKEY().main();
+	//new MISSKEY().main();
 
 	//活動期間か？
 	setInterval(() => {
@@ -551,6 +556,9 @@ client.on('interactionCreate', async (INTERACTION) => {
 				break;
 			case "letter":
 				new LETTER(INTERACTION).main();
+				break;
+			case "sns_set":
+				new SNS(INTERACTION).main();
 				break;
 		}
 	}catch(EX){
