@@ -1,6 +1,6 @@
 import FS from "fs";
 import net from "net";
-import RUMI_HAPPY_BIRTHDAY from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
+import { RUMI_HAPPY_BIRTHDAY } from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { client } from "./MODULES/loadClient.js";
 import { BOT_ADMIN } from "./BOT_ADMIN.js";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
