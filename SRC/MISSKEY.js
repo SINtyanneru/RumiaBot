@@ -69,7 +69,7 @@ class MISSKEY{
 						//URL
 						EB.setURL("https://ussr.rumiserver.com/@" + IT_MIS_USER.id);
 	
-						if(NOTE_FILES !== 0){
+						if(NOTE_FILES.length !== 0){
 							if(!NOTE_FILES[0].isSensitive){
 								EB.setImage(NOTE_FILES[0].thumbnailUrl);
 							}
@@ -93,7 +93,7 @@ class MISSKEY{
 							}
 							
 							//リノートじの画像
-							if(NOTE_FILES === 0){//既に画像が有るか
+							if(NOTE_FILES.length === 0){//既に画像が有るか
 								//リノート元に画像は有るか
 								if(RENOTE_NOTE.files !== 0){
 									if(!RENOTE_NOTE.files[0].isSensitive){
