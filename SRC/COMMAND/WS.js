@@ -1,5 +1,5 @@
 import { Builder } from "selenium-webdriver";
-import chrome from "selenium-webdriver/chrome";
+import chrome from "selenium-webdriver/chrome.js";
 import FS from "fs";
 import RUMI_HAPPY_BIRTHDAY from "../MODULES/RUMI_HAPPY_BIRTHDAY.js";
 export class WS {
