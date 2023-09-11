@@ -11,4 +11,4 @@ import { test } from "./test.js";
 import { WHAT_NOW_DAY } from "./WHAT_NOW_DAY.js";
 import { WS } from "./WS.js";
 
-export {FERRIS,HELP,KANJI,LETTER,MATH,MIQ,PING,SEARCH,SNS,test,WHAT_NOW_DAY,WS}
+export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS };

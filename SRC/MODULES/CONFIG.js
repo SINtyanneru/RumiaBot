@@ -1,4 +1,4 @@
-import FS from "fs"
+import FS from "fs";
 
 const DATA = FS.readFileSync("./Config.json", "utf8");
-export const CONFIG = JSON.parse(DATA)
+export const CONFIG = JSON.parse(DATA);

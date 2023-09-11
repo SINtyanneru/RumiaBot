@@ -1,12 +1,12 @@
 import FS from "fs";
 import net from "net";
-import RUMI_HAPPY_BIRTHDAY from "./MODULES/RUMI_HAPPY_BIRTHDAY.js"
+import RUMI_HAPPY_BIRTHDAY from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { client } from "./MODULES/loadClient.js";
 import { BOT_ADMIN } from "./BOT_ADMIN.js";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 import { CONFIG } from "./MODULES/CONFIG.js";
 let ACTIVE = true;
-import * as command from "./COMMAND/index.js"
+import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
@@ -225,7 +225,7 @@ client.once("ready", async () => {
 				"name": DATA.NAME,
 				"value": DATA.ID
 			}
-		)
+		);
 	});
 
 	commandData.push(
@@ -247,7 +247,7 @@ client.once("ready", async () => {
 				}
 			]
 		}
-	)
+	);
 
 	//コマンドを登録する
 	try {
@@ -362,7 +362,7 @@ client.on("messageCreate", async (message) => {
 				if (USER.id === CONFIG.ID) {
 					if (message.reference) {
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
-							message.reply("きもい")
+							message.reply("きもい");
 						}
 						if (message.author.id === "867187372026232833") {
 							message.reply("そうですか(笑)");
@@ -375,10 +375,10 @@ client.on("messageCreate", async (message) => {
 						message.reply("そうですか。");
 					} else {
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
-							message.reply("きっしょ死ね")
+							message.reply("きっしょ死ね");
 						}
 						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
-							message.reply("...")
+							message.reply("...");
 							return;
 						}
 						if (message.author.id === "564772363950882816" || message.author.id === "811143522212118528" || message.author.id === "980604083851390976") {
@@ -394,7 +394,7 @@ client.on("messageCreate", async (message) => {
 
 	//検索
 	if (message.content.startsWith("検索 ")) {
-		const SEARCH_WORD = message.content.replace("検索 ", "")
+		const SEARCH_WORD = message.content.replace("検索 ", "");
 
 		message.react("✅");
 

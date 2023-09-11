@@ -1,4 +1,4 @@
-import { exec } from "child_process"
+import { exec } from "child_process";
 export class PING {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;

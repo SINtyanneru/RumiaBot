@@ -4,18 +4,18 @@
  * 男「まじでごめんて」
  */
 const WND_JSON = {
-	"9/3":{
-		TITLE:"クソ見てえな感じ",
-		TEXT:"とてもクソです"
+	"9/3": {
+		TITLE: "クソ見てえな感じ",
+		TEXT: "とてもクソです"
 	}
-}
-export class WHAT_NOW_DAY{
-	main(message){
+};
+export class WHAT_NOW_DAY {
+	main(message) {
 		const NOW_DATE = new Date();
 		const WND = WND_JSON[(NOW_DATE.getMonth() + 1) + "/" + NOW_DATE.getDate()];
-		if(WND !== null && WND !== undefined){
+		if (WND !== null && WND !== undefined) {
 			message.reply("今日は" + WND.TITLE + "の日です！\n" + WND.TEXT);
-		}else{
+		} else {
 			message.reply("今日は何の日でもありません");
 		}
 	}

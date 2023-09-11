@@ -184,7 +184,7 @@ export class LETTER {
 			"LATIN": {
 				"A": "A"
 			}
-		}
+		};
 	}
 
 	async main() {
@@ -201,7 +201,7 @@ export class LETTER {
 				"```\n" + NEW_TEXT + "\n```");
 		} catch (EX) {
 			E.editReply("変換時にエラーが発生したよ☆");
-			console.log("[ ERR ][ LETTER ]" + EX)
+			console.log("[ ERR ][ LETTER ]" + EX);
 		}
 	}
 

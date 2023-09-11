@@ -2,7 +2,7 @@ import { CONFIG } from "./MODULES/CONFIG.js";
 import { client } from "./MODULES/loadClient.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
-import { exec } from "child_process"
+import { exec } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 
 /**
@@ -34,7 +34,7 @@ export async function BOT_ADMIN(message) {
 			});
 		});
 
-		message.reply({ embeds: [EB] })
+		message.reply({ embeds: [EB] });
 	}
 
 	//シェルコマンド実行
@@ -116,9 +116,9 @@ export async function BOT_ADMIN(message) {
 					});
 				});
 
-				message.reply({ embeds: [EB] })
+				message.reply({ embeds: [EB] });
 			} else {
-				message.reply("鯖がありません")
+				message.reply("鯖がありません");
 			}
 
 		} catch (EX) {

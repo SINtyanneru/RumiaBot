@@ -1,6 +1,6 @@
 import PATH from "path";
 import FS from "fs";
-import https from "https"
+import https from "https";
 export class MIQ {
 	load_miq(message) {
 		try {
@@ -12,7 +12,7 @@ export class MIQ {
 				message.channel.send({
 					content: "🇨🇳🇨🇳🇨🇳削除を検知！！！！🇨🇳🇨🇳🇨🇳",
 					files: [DWN_PATH]
-				})
+				});
 			}
 		} catch (EX) {
 			console.log("[ ERR ][ MIQ ]" + EX);
