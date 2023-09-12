@@ -6,7 +6,8 @@
   "type":"module",
   "scripts": {
     "test": "echo \"Error: そんなもんねえ！\" && exit 1",
-    "start": "sh ./start.sh"
+    "start": "sh ./start.sh",
+    "install": "sh ./setup.sh"
   },
   "keywords": [],
   "author": "",
