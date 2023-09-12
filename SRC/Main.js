@@ -333,7 +333,7 @@ client.on("messageCreate", async (message) => {
 	*/
 
 	//BOT所有者専用のコマンド
-	if (message.author.id === CONFIG.ADMIN_ID) {
+	if (CONFIG.ADMIN_ID.includes(message.author.id)) {
 		await BOT_ADMIN(message);
 	}
 
@@ -425,7 +425,7 @@ client.on("messageCreate", async (message) => {
 		message.react("✅");
 		console.log(MATH_TEXT);
 
-		let RESULT = await new command.MATH(message.content).main();
+		let RESULT = new command.MATH(message.content).main();
 
 		//結果を吐き出す
 		message.reply(RESULT);
