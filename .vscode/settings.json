@@ -8,5 +8,10 @@
 		"[ ]",
 		"[x]",
 		"NOTE"
-	]
+	],
+	"editor.renderWhitespace": "selection",
+	"editor.cursorStyle": "line",
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.comments.insertSpace": true,
 }
