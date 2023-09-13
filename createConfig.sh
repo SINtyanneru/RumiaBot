@@ -70,6 +70,10 @@ select opt in "${options[@]}"; do
 
     # ADMIN_PREFIX (デフォルトはEXEC_)
     ask "ADMIN_PREFIX (デフォルトはEXEC_)" ADMIN_PREFIX "$DEFAULT_ADMIN_PREFIX"
+
+    # DISABLE (スルー)
+    echo "DISABLE: スキップ"
+    echo "無効化機能は普通必要ないため、ここでは処理しません。"
     # 設定ファイルを生成
     cat <<EOL >"$config_file"
 {
@@ -81,7 +85,8 @@ select opt in "${options[@]}"; do
     "GOOGLE_API_ENGINE_ID": "$GOOGLE_API_ENGINE_ID",
     "SNS": [],
     "ADMIN_ID": "$ADMIN_ID",
-    "ADMIN_PREFIX": "$ADMIN_PREFIX"
+    "ADMIN_PREFIX": "$ADMIN_PREFIX",
+    "DISABLE":[]
 }
 EOL
 
@@ -100,7 +105,8 @@ EOL
     "GOOGLE_API_ENGINE_ID": "",
     "SNS": [],
     "ADMIN_ID": ["required"],
-    "ADMIN_PREFIX": "EXEC_"
+    "ADMIN_PREFIX": "EXEC_",
+    "DISABLE":[]
 }
 EOL
     echo "#############################################\n自動で $config_file が作成されました。実際に使用する時に必須の値を埋めてください\n######################################################"
