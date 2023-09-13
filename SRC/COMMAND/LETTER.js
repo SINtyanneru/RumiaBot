@@ -2,7 +2,7 @@ export class LETTER {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 		this.LETTER_JSON = {
-			"HILAGANA": {
+			HILAGANA: {
 				"あ": "ä",
 				"あ゛": "ʕ",
 				"あ゙": "ʕ",
@@ -181,8 +181,8 @@ export class LETTER {
 
 				"ー": "ː"
 			},
-			"LATIN": {
-				"A": "A"
+			LATIN: {
+				A: "A"
 			}
 		};
 	}
@@ -197,8 +197,7 @@ export class LETTER {
 
 			let NEW_TEXT = await this.XEST_IPA(OLD_TEXT, OLD_LETTER);
 
-			E.editReply("```" + OLD_TEXT + "```\n" + "↓↓↓↓↓↓↓↓↓↓\n" +
-				"```\n" + NEW_TEXT + "\n```");
+			E.editReply("```" + OLD_TEXT + "```\n" + "↓↓↓↓↓↓↓↓↓↓\n" + "```\n" + NEW_TEXT + "\n```");
 		} catch (EX) {
 			E.editReply("変換時にエラーが発生したよ☆");
 			console.log("[ ERR ][ LETTER ]" + EX);

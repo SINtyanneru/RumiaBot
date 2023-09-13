@@ -1,11 +1,11 @@
-export class FERRIS{
+export class FERRIS {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
 
-	async main(){
+	async main() {
 		let E = this.E;
-		switch(E.options.getString("type")){
+		switch (E.options.getString("type")) {
 			case "not_compile":
 				await E.editReply("https://rumiserver.com/Asset/RUMI_BOT/RES/does_not_compile.png");
 				break;

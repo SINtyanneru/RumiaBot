@@ -7,7 +7,6 @@ export class MIQ {
 			const MSG_ID = message.id;
 			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
 
-
 			if (FS.existsSync(DWN_PATH)) {
 				message.channel.send({
 					content: "🇨🇳🇨🇳🇨🇳削除を検知！！！！🇨🇳🇨🇳🇨🇳",
@@ -31,14 +30,17 @@ export class MIQ {
 
 		//ダウンロード開始
 		console.error("[ *** ][ MIQDL ]Downloading...");
-		https.get(DOWNLOAD_URL, RES => {
-			RES.pipe(FILE_STREAM);
+		https
+			.get(DOWNLOAD_URL, RES => {
+				RES.pipe(FILE_STREAM);
 
-			RES.on("end", () => {//完了
-				console.error("[ OK ][ MIQDL ]Donwloaded");
+				RES.on("end", () => {
+					//完了
+					console.error("[ OK ][ MIQDL ]Donwloaded");
+				});
+			})
+			.on("error", EX => {
+				console.error("[ ERR ][ MIQDL ]" + EX);
 			});
-		}).on("error", EX => {
-			console.error("[ ERR ][ MIQDL ]" + EX);
-		});
 	}
 }

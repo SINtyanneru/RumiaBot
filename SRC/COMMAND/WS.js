@@ -28,15 +28,23 @@ export class WS {
 			if (BROWSER_NAME !== undefined && BROWSER_NAME !== null) {
 				switch (BROWSER_NAME) {
 					case "firefox":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
+						);
 						BROWSER_NAME_TEXT = "FireFox";
 						break;
 					case "floorp":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0"
+						);
 						BROWSER_NAME_TEXT = "Floorp";
 						break;
 					case "rumisan":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" + RUMI_HAPPY_BIRTHDAY() + ".0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" +
+								RUMI_HAPPY_BIRTHDAY() +
+								".0"
+						);
 						BROWSER_NAME_TEXT = "るみさん";
 						break;
 					default:
@@ -47,34 +55,36 @@ export class WS {
 
 			try {
 				//WebDriverのインスタンスを作成
-				const driver = new Builder()
-					.forBrowser("chrome")
-					.setChromeOptions(chromeOptions)
-					.build();
+				const driver = new Builder().forBrowser("chrome").setChromeOptions(chromeOptions).build();
 
 				//ウェブサイトにアクセス
-				driver.get(URL).then(() => {
-					//スクリーンショットを撮影
-					return driver.takeScreenshot();
-				}).then(screenshotData => {
-					try {
-						FS.writeFileSync("./TEMP/" + E.member.id + ".png", screenshotData, "base64");
+				driver
+					.get(URL)
+					.then(() => {
+						//スクリーンショットを撮影
+						return driver.takeScreenshot();
+					})
+					.then(screenshotData => {
+						try {
+							FS.writeFileSync("./TEMP/" + E.member.id + ".png", screenshotData, "base64");
 
-						E.editReply({
-							content: "おｋ：" + BROWSER_NAME_TEXT + "で撮影",
-							files: ["./TEMP/" + E.member.id + ".png"]
-						});
-					} catch (EX) {
+							E.editReply({
+								content: "おｋ：" + BROWSER_NAME_TEXT + "で撮影",
+								files: ["./TEMP/" + E.member.id + ".png"]
+							});
+						} catch (EX) {
+							E.editReply("接続できませんでした！");
+						}
+					})
+					.catch(() => {
 						E.editReply("接続できませんでした！");
-					}
-				}).catch(() => {
-					E.editReply("接続できませんでした！");
-					//WebDriverを終了
-					driver.quit();
-				}).finally(() => {
-					//WebDriverを終了
-					driver.quit();
-				});
+						//WebDriverを終了
+						driver.quit();
+					})
+					.finally(() => {
+						//WebDriverを終了
+						driver.quit();
+					});
 			} catch (EX) {
 				E.editReply("接続できませんでした！");
 			}

@@ -11,9 +11,6 @@ import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 
-
-
-
 client.once("ready", async () => {
 	console.log(String.raw`    ____                  _       ____  ____  ______`);
 	console.log(String.raw`   / __ \__  ______ ___  (_)___ _/ __ )/ __ \/_  __/`);
@@ -37,8 +34,9 @@ client.once("ready", async () => {
 	const commandData = [
 		{
 			name: "test",
-			description: "テストコマンド",
-		}, {
+			description: "テストコマンド"
+		},
+		{
 			name: "ping",
 			description: "pingします",
 			options: [
@@ -49,7 +47,8 @@ client.once("ready", async () => {
 					required: true
 				}
 			]
-		}, {
+		},
+		{
 			name: "ferris",
 			description: "ウニ？カニ？ヤドカリ？",
 			options: [
@@ -60,25 +59,26 @@ client.once("ready", async () => {
 					required: true,
 					choices: [
 						{
-							"name": "コンパイルできません",
-							"value": "not_compile"
+							name: "コンパイルできません",
+							value: "not_compile"
 						},
 						{
-							"name": "パニックします！",
-							"value": "panic"
+							name: "パニックします！",
+							value: "panic"
 						},
 						{
-							"name": "アンセーフなコードを含みます",
-							"value": "un_safe"
+							name: "アンセーフなコードを含みます",
+							value: "un_safe"
 						},
 						{
-							"name": "求められた振る舞いをしません",
-							"value": "not_desired_behavior"
+							name: "求められた振る舞いをしません",
+							value: "not_desired_behavior"
 						}
 					]
 				}
 			]
-		}, {
+		},
+		{
 			name: "ws",
 			description: "ウェブサイトをスクショします",
 			options: [
@@ -87,31 +87,34 @@ client.once("ready", async () => {
 					description: "ウェブサイトのURLです",
 					type: "STRING",
 					required: true
-				}, {
+				},
+				{
 					name: "browser_name",
 					description: "ブラウザを指定(UAのみ)",
 					type: "STRING",
 					required: false,
 					choices: [
 						{
-							"name": "FireFox",
-							"value": "firefox"
+							name: "FireFox",
+							value: "firefox"
 						},
 						{
-							"name": "Floorp",
-							"value": "floorp"
+							name: "Floorp",
+							value: "floorp"
 						},
 						{
-							"name": "るみさん",
-							"value": "rumisan"
+							name: "るみさん",
+							value: "rumisan"
 						}
 					]
 				}
 			]
-		}, {
+		},
+		{
 			name: "info_server",
 			description: "鯖の情報を取得"
-		}, {
+		},
+		{
 			name: "info_user",
 			description: "ユーザーの情報を取得",
 			options: [
@@ -122,8 +125,9 @@ client.once("ready", async () => {
 					required: true
 				}
 			]
-		}, {
-			//本当はコンテキストメニューを実装する予定だったんだ、
+		},
+		{
+			// NOTE 本当はコンテキストメニューを実装する予定だったんだ、
 			//だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
 			//ExpectedConstraintError: Invalid string format
 			//意味がわからないね、ローカライズとは
@@ -135,24 +139,26 @@ client.once("ready", async () => {
 					description: "文字列",
 					type: "STRING",
 					required: true
-				}, {
+				},
+				{
 					name: "mode",
 					description: "モード",
 					type: "STRING",
 					required: true,
 					choices: [
 						{
-							"name": "新 => 旧",
-							"value": "n_o"
+							name: "新 => 旧",
+							value: "n_o"
 						},
 						{
-							"name": "旧 => 新",
-							"value": "o_n"
+							name: "旧 => 新",
+							value: "o_n"
 						}
 					]
 				}
 			]
-		}, {
+		},
+		{
 			name: "letter",
 			description: "文字を色々変換してくれます、たぶん",
 			options: [
@@ -161,39 +167,42 @@ client.once("ready", async () => {
 					description: "文字列",
 					type: "STRING",
 					required: true
-				}, {
+				},
+				{
 					name: "old",
 					description: "変換前",
 					type: "STRING",
 					required: true,
 					choices: [
 						{
-							"name": "ひらがな",
-							"value": "hilagana"
+							name: "ひらがな",
+							value: "hilagana"
 						},
 						{
-							"name": "ラテン文字",
-							"value": "latin"
+							name: "ラテン文字",
+							value: "latin"
 						}
 					]
-				}, {
+				},
+				{
 					name: "new",
 					description: "変換後",
 					type: "STRING",
 					required: true,
 					choices: [
 						{
-							"name": "ひらがな",
-							"value": "hilagana"
+							name: "ひらがな",
+							value: "hilagana"
 						},
 						{
-							"name": "ラテン文字",
-							"value": "latin"
+							name: "ラテン文字",
+							value: "latin"
 						}
 					]
 				}
 			]
-		}, {
+		},
+		{
 			name: "help",
 			description: "ヘルプコマンド、作るのめんどいやつ",
 			options: [
@@ -204,50 +213,47 @@ client.once("ready", async () => {
 					required: true,
 					choices: [
 						{
-							"name": "スラッシュコマンド",
-							"value": "slash"
+							name: "スラッシュコマンド",
+							value: "slash"
 						},
 						{
-							"name": "メッセージコマンド",
-							"value": "message"
+							name: "メッセージコマンド",
+							value: "message"
 						}
 					]
 				}
 			]
-		},
+		}
 	];
 
 	//ActivityPub
 	let SC_ActivityPub_CHOICES = [];
 	CONFIG.SNS.forEach(DATA => {
-		SC_ActivityPub_CHOICES.push(
-			{
-				"name": DATA.NAME,
-				"value": DATA.ID
-			}
-		);
+		SC_ActivityPub_CHOICES.push({
+			name: DATA.NAME,
+			value: DATA.ID
+		});
 	});
 
-	commandData.push(
-		{
-			name: "sns_set",
-			description: "SNSを",
-			options: [
-				{
-					name: "type",
-					description: "どのインスタンスを？",
-					type: "STRING",
-					required: true,
-					choices: SC_ActivityPub_CHOICES
-				}, {
-					name: "userid",
-					description: "誰を？",
-					type: "STRING",
-					required: true
-				}
-			]
-		}
-	);
+	commandData.push({
+		name: "sns_set",
+		description: "SNSを",
+		options: [
+			{
+				name: "type",
+				description: "どのインスタンスを？",
+				type: "STRING",
+				required: true,
+				choices: SC_ActivityPub_CHOICES
+			},
+			{
+				name: "username",
+				description: "誰を？",
+				type: "STRING",
+				required: true
+			}
+		]
+	});
 
 	//コマンドを登録する
 	try {
@@ -286,9 +292,9 @@ client.once("ready", async () => {
 					activities: [
 						{
 							name: "貴様",
-							type: "WATCHING",
-						},
-					],
+							type: "WATCHING"
+						}
+					]
 				});
 			} else {
 				client.user.setPresence({
@@ -296,9 +302,9 @@ client.once("ready", async () => {
 					activities: [
 						{
 							name: "睡眠",
-							type: "PLAYING",
-						},
-					],
+							type: "PLAYING"
+						}
+					]
 				});
 			}
 		}
@@ -306,7 +312,7 @@ client.once("ready", async () => {
 });
 
 //メッセージを受信
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async message => {
 	//ログを出す
 	try {
 		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
@@ -338,7 +344,8 @@ client.on("messageCreate", async (message) => {
 	}
 
 	//てすとこまんど
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")) {//実験用
+	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")) {
+		//実験用
 		message.react("✅");
 
 		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
@@ -347,8 +354,11 @@ client.on("messageCreate", async (message) => {
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
-			"ping -c5 \"" + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + "\"" +
-			"\nIP?" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+			'ping -c5 "' +
+				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+				'"' +
+				"\nIP?" +
+				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
 
@@ -358,30 +368,46 @@ client.on("messageCreate", async (message) => {
 	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
-			MENTION_USERS.forEach((USER) => {
+			MENTION_USERS.forEach(USER => {
 				if (USER.id === CONFIG.ID) {
 					if (message.reference) {
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+						if (
+							message.content.includes("まんこ") ||
+							message.content.includes("生理") ||
+							message.content.includes("ちんこ")
+						) {
 							message.reply("きもい");
 						}
 						if (message.author.id === "867187372026232833") {
 							message.reply("そうですか(笑)");
 							return;
 						}
-						if (message.author.id === "564772363950882816" || message.author.id === "811143522212118528" || message.author.id === "980604083851390976") {
+						if (
+							message.author.id === "564772363950882816" ||
+							message.author.id === "811143522212118528" ||
+							message.author.id === "980604083851390976"
+						) {
 							message.reply("そーなのかー");
 							return;
 						}
 						message.reply("そうですか。");
 					} else {
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+						if (
+							message.content.includes("まんこ") ||
+							message.content.includes("生理") ||
+							message.content.includes("ちんこ")
+						) {
 							message.reply("きっしょ死ね");
 						}
 						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
 							message.reply("...");
 							return;
 						}
-						if (message.author.id === "564772363950882816" || message.author.id === "811143522212118528" || message.author.id === "980604083851390976") {
+						if (
+							message.author.id === "564772363950882816" ||
+							message.author.id === "811143522212118528" ||
+							message.author.id === "980604083851390976"
+						) {
 							message.reply("なんなのだー？");
 							return;
 						}
@@ -405,7 +431,11 @@ client.on("messageCreate", async (message) => {
 	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
 	if (message.content.match(VX_REGEX)) {
 		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = message.content.replaceAll("https://twitter.com/", "https://vxtwitter.com/").replaceAll("@everyone", "[全体メンション]").replaceAll("@here", "[全体メンション]").replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
+		const TEXT = message.content
+			.replaceAll("https://twitter.com/", "https://vxtwitter.com/")
+			.replaceAll("@everyone", "[全体メンション]")
+			.replaceAll("@here", "[全体メンション]")
+			.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
 
 		//WHでめっせーじを送る
 		WEB_HOOK.send({
@@ -414,13 +444,17 @@ client.on("messageCreate", async (message) => {
 			content: TEXT
 		});
 
-		//元メッセ時を削除
+		//元メッセージを削除
 		message.delete();
 	}
 
 	//計算
 	if (message.content.startsWith("計算 ")) {
-		const MATH_TEXT = message.content.replace("計算 ", "").replace("×", "*").replace("÷", "/").replace(/[^0-9\-+*/().]/g, "");
+		const MATH_TEXT = message.content
+			.replace("計算 ", "")
+			.replace("×", "*")
+			.replace("÷", "/")
+			.replace(/[^0-9\-+*/().]/g, "");
 
 		message.react("✅");
 		console.log(MATH_TEXT);
@@ -456,7 +490,13 @@ client.on("messageCreate", async (message) => {
 
 	//あずさ
 	if (message.author.id === "867187372026232833") {
-		if (message.content.includes("きしょ") || message.content.includes("死ね") || message.content.includes("kisyo") || message.content.includes("やめろ") || message.content.includes("死ね")) {
+		if (
+			message.content.includes("きしょ") ||
+			message.content.includes("死ね") ||
+			message.content.includes("kisyo") ||
+			message.content.includes("やめろ") ||
+			message.content.includes("死ね")
+		) {
 			message.reply("黙れ");
 		}
 
@@ -473,7 +513,6 @@ client.on("messageCreate", async (message) => {
 		message.react("✅");
 		new command.WHAT_NOW_DAY().main(message);
 	}
-
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
@@ -489,17 +528,27 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 });
 
 //イントラクション
-client.on("interactionCreate", async (INTERACTION) => {
+client.on("interactionCreate", async INTERACTION => {
 	try {
 		if (!INTERACTION.isCommand()) {
 			//コマンドが送信されたか確認
 			return;
 		}
 
-		console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName +
-			"\n             ├in " + INTERACTION.guild.name +
-			"\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId +
-			"\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
+		console.log(
+			"[ INFO ][CMD]┌Interaction create:" +
+				INTERACTION.commandName +
+				"\n             ├in " +
+				INTERACTION.guild.name +
+				"\n             ├in " +
+				INTERACTION.channel.name +
+				INTERACTION.channelId +
+				"\n             └in " +
+				INTERACTION.member.user.username +
+				"(" +
+				INTERACTION.member.id +
+				")"
+		);
 
 		//ユーザーに待ってもらう
 		await INTERACTION.deferReply();
@@ -545,7 +594,7 @@ client.on("interactionCreate", async (INTERACTION) => {
 });
 
 //鯖に参加した
-client.on("guildCreate", async (GUILD) => {
+client.on("guildCreate", async GUILD => {
 	try {
 		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
@@ -566,9 +615,8 @@ client.on("guildCreate", async (GUILD) => {
 	}
 });
 
-
 //鯖からキックされた
-client.on("guildDelete", (GUILD) => {
+client.on("guildDelete", GUILD => {
 	try {
 		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
 
@@ -577,8 +625,9 @@ client.on("guildDelete", (GUILD) => {
 
 			const SERVERS = client.guilds.cache;
 
-			LOG_CH.send((SERVERS.size + 1) + " са¯ва¯ вэдэне тащ ду¯ма;\n" +
-				"Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
+			LOG_CH.send(
+				SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!"
+			);
 		}
 	} catch (EX) {
 		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
@@ -586,16 +635,15 @@ client.on("guildDelete", (GUILD) => {
 	}
 });
 
-
 //メッセージが消された
-client.on("messageDelete", async (deletedMessage) => {
+client.on("messageDelete", async deletedMessage => {
 	if (deletedMessage.author.bot && deletedMessage.webhookId !== null) {
 		new command.MIQ().load_miq(deletedMessage);
 	}
 });
 
 //メンバーが抜けた
-client.on("guildMemberRemove", async (member) => {
+client.on("guildMemberRemove", async member => {
 	try {
 		console.log(member);
 		if (member.guild.id === "836142496563068929") {
@@ -607,20 +655,24 @@ client.on("guildMemberRemove", async (member) => {
 
 			//独自のBANリスト
 			const fileName = "./TEMP/RS_LEAVE.json";
-			FS.access(fileName, FS.constants.F_OK, (ERR) => {
+			FS.access(fileName, FS.constants.F_OK, ERR => {
 				if (ERR) {
-					FS.writeFile(fileName, JSON.stringify([
-						{
-							"ID": member.id,
-							"DATE": new Date().toDateString()
+					FS.writeFile(
+						fileName,
+						JSON.stringify([
+							{
+								ID: member.id,
+								DATE: new Date().toDateString()
+							}
+						]),
+						ERR => {
+							if (ERR) {
+								console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
+							} else {
+								console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
+							}
 						}
-					]), (ERR) => {
-						if (ERR) {
-							console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
-						} else {
-							console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
-						}
-					});
+					);
 				} else {
 					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
@@ -628,14 +680,12 @@ client.on("guildMemberRemove", async (member) => {
 						} else {
 							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
 							const RESULT = JSON.parse(DATA);
-							if (!RESULT.some((ROW) => ROW.ID === member.id)) {
-								RESULT.push(
-									{
-										"ID": member.id,
-										"DATE": new Date().toISOString()
-									}
-								);
-								FS.writeFile(fileName, JSON.stringify(RESULT), (ERR) => {
+							if (!RESULT.some(ROW => ROW.ID === member.id)) {
+								RESULT.push({
+									ID: member.id,
+									DATE: new Date().toISOString()
+								});
+								FS.writeFile(fileName, JSON.stringify(RESULT), ERR => {
 									if (ERR) {
 										console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
 									} else {
@@ -655,12 +705,12 @@ client.on("guildMemberRemove", async (member) => {
 });
 
 //メンバーが入った
-client.on("guildMemberAdd", (member) => {
+client.on("guildMemberAdd", member => {
 	try {
 		if (member.guild.id === "836142496563068929") {
 			//独自のBANリストでチェックする
 			const fileName = "./TEMP/RS_LEAVE.json";
-			FS.access(fileName, FS.constants.F_OK, (ERR) => {
+			FS.access(fileName, FS.constants.F_OK, ERR => {
 				if (!ERR) {
 					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
@@ -668,7 +718,7 @@ client.on("guildMemberAdd", (member) => {
 						} else {
 							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
 							const RESULT = JSON.parse(DATA);
-							const BAN_INFO = RESULT.find((ROW) => ROW.ID === member.id);
+							const BAN_INFO = RESULT.find(ROW => ROW.ID === member.id);
 							if (BAN_INFO !== undefined && BAN_INFO !== null) {
 								const USER = client.users.cache.get(member.id);
 
@@ -676,22 +726,32 @@ client.on("guildMemberAdd", (member) => {
 								const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
 								const DATE = new Date(BAN_INFO.DATE);
 
-								USER.send("あなたは、" +
-									DATE.getFullYear().toString() + "年 " +
-									(DATE.getMonth() + 1).toString() + "月 " +
-									DATE.getDate().toString() + "日 " +
-									DAY_FORMAT[DATE.getDay()] + "曜日 " +
-									DATE.getHours().toString() + "時 " +
-									DATE.getMinutes().toString() + "分 " +
-									DATE.getSeconds().toString() + "秒 " +
-									DATE.getMilliseconds().toString() + "ミリ秒\n" +
-									"に、るみさんの鯖から脱退しています。\n" +
-									"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n" +
-									"\n" +
-									"1・なぜ抜けたのか\n" +
-									"2・なぜ戻ってきたのか\n" +
-									"\n" +
-									"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()");
+								USER.send(
+									"あなたは、" +
+										DATE.getFullYear().toString() +
+										"年 " +
+										(DATE.getMonth() + 1).toString() +
+										"月 " +
+										DATE.getDate().toString() +
+										"日 " +
+										DAY_FORMAT[DATE.getDay()] +
+										"曜日 " +
+										DATE.getHours().toString() +
+										"時 " +
+										DATE.getMinutes().toString() +
+										"分 " +
+										DATE.getSeconds().toString() +
+										"秒 " +
+										DATE.getMilliseconds().toString() +
+										"ミリ秒\n" +
+										"に、るみさんの鯖から脱退しています。\n" +
+										"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n" +
+										"\n" +
+										"1・なぜ抜けたのか\n" +
+										"2・なぜ戻ってきたのか\n" +
+										"\n" +
+										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
+								);
 							}
 						}
 					});
@@ -704,12 +764,9 @@ client.on("guildMemberAdd", (member) => {
 	}
 });
 
-
-
-
 async function WebHook_FIND(CHANNEL) {
 	let FWH = await CHANNEL.fetchWebhooks();
-	let WH = FWH.find((webhook) => webhook.owner.id === CONFIG.ID);
+	let WH = FWH.find(webhook => webhook.owner.id === CONFIG.ID);
 	if (WH) {
 		return WH;
 	} else {

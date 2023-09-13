@@ -41,7 +41,7 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")) {
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "");
-			exec("sh -c \"" + CMD + "\"", (error, stdout, stderr) => {
+			exec('sh -c "' + CMD + '"', (error, stdout, stderr) => {
 				if (error) {
 					message.reply("EXECでエラーが発生");
 					return;
@@ -120,7 +120,6 @@ export async function BOT_ADMIN(message) {
 			} else {
 				message.reply("鯖がありません");
 			}
-
 		} catch (EX) {
 			console.log(EX);
 
@@ -129,7 +128,8 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//管理者チェック
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "PM/.")) {//実験用
+	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "PM/.")) {
+		//実験用
 		try {
 			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "PM/.", "");
 			let GUILD = client.guilds.cache.get(GID);

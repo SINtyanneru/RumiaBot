@@ -7,32 +7,32 @@ export class SEARCH {
 		this.E = MSG;
 		this.SEARCH_WORD = SEARCH_WORD;
 
-		this.DENIED_URL = [
-			"pornhub.com",
-			"xvideos.com",
-			"eroterest.net"
-		];
+		this.DENIED_URL = ["pornhub.com", "xvideos.com", "eroterest.net"];
 	}
 
 	async main() {
 		// リクエストのオプションを設定
 		const OPTION = {
 			hostname: "www.googleapis.com",
-			path: "/customsearch/v1" +
-				"?key=" + encodeURIComponent(CONFIG.GOOGLE_API_KEY) +
-				"&cx=" + encodeURIComponent(CONFIG.GOOGLE_API_ENGINE_ID) +
-				"&q=" + encodeURIComponent(this.SEARCH_WORD),
-			method: "GET",
+			path:
+				"/customsearch/v1" +
+				"?key=" +
+				encodeURIComponent(CONFIG.GOOGLE_API_KEY) +
+				"&cx=" +
+				encodeURIComponent(CONFIG.GOOGLE_API_ENGINE_ID) +
+				"&q=" +
+				encodeURIComponent(this.SEARCH_WORD),
+			method: "GET"
 		};
 
 		// リクエストを作成
-		const REQ = https.request(OPTION, (RES) => {
+		const REQ = https.request(OPTION, RES => {
 			//レスポンスを受け取るためのコールバック
 
 			let DATA = "";
 
 			//レスポンスデータを受信したときのイベントハンドラ
-			RES.on("data", (CHUNK) => {
+			RES.on("data", CHUNK => {
 				DATA += CHUNK;
 			});
 
@@ -57,7 +57,7 @@ export class SEARCH {
 							const SEARCH_DATA = RESULT.items[I];
 							const SEARCH_RESULT_URL = new URL(SEARCH_DATA.link);
 
-							let DENIED = false;//禁止URLか
+							let DENIED = false; //禁止URLか
 
 							//禁止されているURLを回す
 							this.DENIED_URL.forEach(ROW => {
@@ -68,7 +68,8 @@ export class SEARCH {
 								}
 							});
 
-							if (!DENIED) {//禁止されていなければ
+							if (!DENIED) {
+								//禁止されていなければ
 								//追加
 								let TITLE = SEARCH_DATA.title;
 								if (TITLE.length > 253) {
@@ -98,7 +99,7 @@ export class SEARCH {
 		});
 
 		//エラーハンドリング
-		REQ.on("error", (ERR) => {
+		REQ.on("error", ERR => {
 			console.error("エラー:", ERR);
 		});
 

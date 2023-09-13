@@ -1,19 +1,19 @@
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { MessageEmbed } from "discord.js";
-export class HELP{
+export class HELP {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
-	
-	async main(){
+
+	async main() {
 		let E = this.E;
 		const CMD = E.options.getString("mode");
-		if(CMD === "slash"){
+		if (CMD === "slash") {
 			const EB = new MessageEmbed();
 			EB.setTitle("RumiBOT help");
 			EB.setDescription("Sla¡sh komand");
 			EB.setColor(RND_COLOR());
-	
+
 			EB.addFields({
 				name: "/ping",
 				value: "Ти а Ping ӱи эру;\nЭрйлйки：/ping host:Hosto Neymu",
@@ -62,8 +62,8 @@ export class HELP{
 				inline: false
 			});
 
-			await E.editReply({embeds:[EB]});
-		}else{
+			await E.editReply({ embeds: [EB] });
+		} else {
 			const EB = new MessageEmbed();
 			EB.setTitle("るみさんBOTのヘルプ");
 			EB.setDescription("メッセージコマンド");
@@ -75,7 +75,7 @@ export class HELP{
 				inline: false
 			});
 
-			await E.editReply({embeds:[EB]});
+			await E.editReply({ embeds: [EB] });
 		}
 	}
 }

@@ -5,15 +5,17 @@ export class MATH {
 
 	main() {
 		let TEXT = this.TEXT;
-		TEXT = TEXT.replace(/[^0-9.+\-*/%()]/g,"");
-		if(TEXT === "") {
-			console.warn("計算をしようとしましたが、計算式に有効な文字列が含まれていませんでした。\n元の計算式:" + this.TEXT);
+		TEXT = TEXT.replace(/[^0-9.+\-*/%()]/g, "");
+		if (TEXT === "") {
+			console.warn(
+				"計算をしようとしましたが、計算式に有効な文字列が含まれていませんでした。\n元の計算式:" + this.TEXT
+			);
 			return "計算式に有効な文字列が含まれていません";
 		}
 		try {
-		let MATH_RESULT = /*this.CALC(TEXT)*/ `多分結果は：「${eval(TEXT)}」です`;
-		return MATH_RESULT;
-		} catch(error) {
+			let MATH_RESULT = /*this.CALC(TEXT)*/ `多分結果は：「${eval(TEXT)}」です`;
+			return MATH_RESULT;
+		} catch (error) {
 			console.log(error);
 			return "計算式がおかしいぞ";
 		}
@@ -27,32 +29,35 @@ export class MATH {
 
 		for (let I = 0; I < RESULT.length; I++) {
 			const NUM = RESULT[I];
-			if (!isNaN(Number(NUM))) {//数字か？
-				if (I === 0) {//1回目なので
+			if (!isNaN(Number(NUM))) {
+				//数字か？
+				if (I === 0) {
+					//1回目なので
 					//初期値を設定
 					MATH_RESULT = parseInt(NUM);
-				} else {//2回目以降なので
+				} else {
+					//2回目以降なので
 					console.log(RESULT[I]);
 				}
 			} else {
 				// 数字ではない
-				if(isNaN(Number(RESULT[I+1]))) return "計算式がおかしいぞ";
+				if (isNaN(Number(RESULT[I + 1]))) return "計算式がおかしいぞ";
 				switch (RESULT[I]) {
 					case "+":
 						//足し算
-							MATH_RESULT = MATH_RESULT + parseInt(RESULT[I + 1]);
+						MATH_RESULT = MATH_RESULT + parseInt(RESULT[I + 1]);
 						break;
 					case "-":
 						//引き算
-							MATH_RESULT = MATH_RESULT - parseInt(RESULT[I + 1]);
+						MATH_RESULT = MATH_RESULT - parseInt(RESULT[I + 1]);
 						break;
 					case "*":
 						//掛け算
-							MATH_RESULT = MATH_RESULT * parseInt(RESULT[I + 1]);
+						MATH_RESULT = MATH_RESULT * parseInt(RESULT[I + 1]);
 						break;
 					case "/":
 						//割り算
-							MATH_RESULT = MATH_RESULT / parseInt(RESULT[I + 1]);
+						MATH_RESULT = MATH_RESULT / parseInt(RESULT[I + 1]);
 						break;
 				}
 			}

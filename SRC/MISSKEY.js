@@ -6,35 +6,39 @@ import { client } from "./MODULES/loadClient.js";
 export class MISSKEY {
 	constructor() {
 		this.USER = {
-			"9i642yz0h7": {//わたし
-				"GID": "836142496563068929",
-				"CID": "1128742498194444298",
-				"NSFW_IMG": false,
-				"IMG_ONLY": false
+			"9i642yz0h7": {
+				//わたし
+				GID: "836142496563068929",
+				CID: "1128742498194444298",
+				NSFW_IMG: false,
+				IMG_ONLY: false
 			},
-			"9j2aq1l739": {//PNTS
-				"GID": "836142496563068929",
-				"CID": "1128742498194444298",
-				"NSFW_IMG": false,
-				"IMG_ONLY": false
+			"9j2aq1l739": {
+				//PNTS
+				GID: "836142496563068929",
+				CID: "1128742498194444298",
+				NSFW_IMG: false,
+				IMG_ONLY: false
 			},
-			"9j0c17mljb": {//ソ連
-				"GID": "836142496563068929",
-				"CID": "1128742498194444298",
-				"NSFW_IMG": false,
-				"IMG_ONLY": false
+			"9j0c17mljb": {
+				//ソ連
+				GID: "836142496563068929",
+				CID: "1128742498194444298",
+				NSFW_IMG: false,
+				IMG_ONLY: false
 			},
-			"9i64svbnk0": {//変態
-				"GID": "836142496563068929",
-				"CID": "1128742498194444298",
-				"NSFW_IMG": false,
-				"IMG_ONLY": false
+			"9i64svbnk0": {
+				//変態
+				GID: "836142496563068929",
+				CID: "1128742498194444298",
+				NSFW_IMG: false,
+				IMG_ONLY: false
 			}
 		};
 	}
 
 	main() {
-		let USER = this.USER;//ユーザー
+		let USER = this.USER; //ユーザー
 
 		//WebSocketサーバーのURL
 		const serverURL = "wss://ussr.rumiserver.com/streaming?i=" + CONFIG.MISSKEY_API_KEY;
@@ -47,11 +51,13 @@ export class MISSKEY {
 			console.log("[ OK ][ MISSKEY ]WS Connected!");
 
 			//メッセージをサーバーに送信
-			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
+			socket.send(
+				'{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}'
+			);
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ
-		socket.on("message", (DATA) => {
+		socket.on("message", DATA => {
 			try {
 				const RESULT = JSON.parse(DATA);
 				if (RESULT.body.type === "note") {
@@ -64,14 +70,15 @@ export class MISSKEY {
 					let RENOTE_NOTE = RESULT.body.body.renote;
 
 					if (IT_DIS_USER !== undefined) {
-						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID);//ログを吐く
+						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
 
 						const EB = new MessageEmbed();
 						//ユーザー名
 						EB.setTitle(IT_MIS_USER.name);
 
 						//本文
-						if (NOTE_TEXT !== undefined && NOTE_TEXT !== null) {//本文が有るか
+						if (NOTE_TEXT !== undefined && NOTE_TEXT !== null) {
+							//本文が有るか
 							//ある
 							EB.setDescription(NOTE_TEXT);
 						}
@@ -89,9 +96,14 @@ export class MISSKEY {
 						}
 
 						//リノート関連
-						if (RENOTE_ID !== null) {//リノートはあるか
+						if (RENOTE_ID !== null) {
+							//リノートはあるか
 							//あるのでリノート元を貼る
-							if (RENOTE_NOTE.text !== undefined && RENOTE_NOTE.text !== null && RENOTE_NOTE.text !== "") {
+							if (
+								RENOTE_NOTE.text !== undefined &&
+								RENOTE_NOTE.text !== null &&
+								RENOTE_NOTE.text !== ""
+							) {
 								EB.addFields({
 									name: "リノート元\n" + RENOTE_NOTE.user.name,
 									value: RENOTE_NOTE.text,
@@ -106,7 +118,8 @@ export class MISSKEY {
 							}
 
 							//リノートじの画像
-							if (NOTE_FILES.length === 0) {//既に画像が有るか
+							if (NOTE_FILES.length === 0) {
+								//既に画像が有るか
 								//リノート元に画像は有るか
 								if (RENOTE_NOTE.files !== 0) {
 									if (!RENOTE_NOTE.files[0].isSensitive) {
@@ -119,7 +132,10 @@ export class MISSKEY {
 						//アクション
 						EB.addFields({
 							name: "ｱクション",
-							value: "[見に行く](https://ussr.rumiserver.com/notes/" + NOTE_ID + ")|" +
+							value:
+								"[見に行く](https://ussr.rumiserver.com/notes/" +
+								NOTE_ID +
+								")|" +
 								"[何もしない](https://google.com)",
 							inline: false
 						});
@@ -135,7 +151,7 @@ export class MISSKEY {
 		});
 
 		//エラー発生時のイベントハンドラ
-		socket.on("error", (ERR) => {
+		socket.on("error", ERR => {
 			console.error("エラーが発生しました:", ERR);
 		});
 
@@ -144,7 +160,7 @@ export class MISSKEY {
 			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE + "REASON:" + REASON);
 			console.log("[ *** ][ MISSKEY ]Re Connecting...");
 			clearInterval(SEND_H);
-			this.main();//再接続する
+			this.main(); //再接続する
 		});
 
 		let SEND_H = setInterval(() => {

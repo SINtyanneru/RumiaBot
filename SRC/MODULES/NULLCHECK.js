@@ -1,7 +1,7 @@
-export function NULLCHECK(VAR){
-	if(VAR !== undefined && VAR !== null){
+export function NULLCHECK(VAR) {
+	if (VAR !== undefined && VAR !== null) {
 		return VAR;
-	}else{
+	} else {
 		return "Error:NullPointerException";
 	}
 }

@@ -1,4 +1,4 @@
-import { Client,Intents } from "discord.js";
+import { Client, Intents } from "discord.js";
 
 export const client = new Client({
 	intents: [
@@ -10,6 +10,6 @@ export const client = new Client({
 		Intents.FLAGS.DIRECT_MESSAGE_TYPING,
 		Intents.FLAGS.GUILD_MEMBERS,
 		Intents.FLAGS.GUILD_BANS,
-		Intents.FLAGS.GUILD_WEBHOOKS,
-	],
+		Intents.FLAGS.GUILD_WEBHOOKS
+	]
 });

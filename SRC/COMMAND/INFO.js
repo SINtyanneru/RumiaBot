@@ -65,7 +65,6 @@ export class INFO {
 			EB.setTitle(NULLCHECK(USER.username));
 		}
 
-
 		EB.setDescription(NULLCHECK(USER.username));
 		EB.setColor(RND_COLOR());
 
@@ -77,22 +76,31 @@ export class INFO {
 			inline: false
 		});
 
-
 		//アカウント作成日
 		const ACCOUNT_CREATE_DATE = new Date(USER.createdAt);
 		EB.addFields({
 			name: "アカウント作成日",
-			value://日本表記
-				ACCOUNT_CREATE_DATE.getFullYear().toString() + "年 " +
-				(ACCOUNT_CREATE_DATE.getMonth() + 1).toString() + "月 " +
-				ACCOUNT_CREATE_DATE.getDate().toString() + "日 " +
-				DAY_FORMAT[ACCOUNT_CREATE_DATE.getDay()] + "曜日 " +
-				ACCOUNT_CREATE_DATE.getHours().toString() + "時 " +
-				ACCOUNT_CREATE_DATE.getMinutes().toString() + "分 " +
-				ACCOUNT_CREATE_DATE.getSeconds().toString() + "秒 " +
-				ACCOUNT_CREATE_DATE.getMilliseconds().toString() + "ミリ秒\n" +
+			//日本表記
+			value:
+				ACCOUNT_CREATE_DATE.getFullYear().toString() +
+				"年 " +
+				(ACCOUNT_CREATE_DATE.getMonth() + 1).toString() +
+				"月 " +
+				ACCOUNT_CREATE_DATE.getDate().toString() +
+				"日 " +
+				DAY_FORMAT[ACCOUNT_CREATE_DATE.getDay()] +
+				"曜日 " +
+				ACCOUNT_CREATE_DATE.getHours().toString() +
+				"時 " +
+				ACCOUNT_CREATE_DATE.getMinutes().toString() +
+				"分 " +
+				ACCOUNT_CREATE_DATE.getSeconds().toString() +
+				"秒 " +
+				ACCOUNT_CREATE_DATE.getMilliseconds().toString() +
+				"ミリ秒\n" +
 				//アメリカ表記
-				Math.floor((NOW_DATE - ACCOUNT_CREATE_DATE) / (1000 * 60 * 60 * 24)).toString() + "日前",
+				Math.floor((NOW_DATE - ACCOUNT_CREATE_DATE) / (1000 * 60 * 60 * 24)).toString() +
+				"日前",
 			inline: false
 		});
 
@@ -100,17 +108,27 @@ export class INFO {
 		const GUILD_JOIN_DATE = new Date(MEMBER.joinedAt);
 		EB.addFields({
 			name: "鯖に参加した日付",
-			value://日本表記
-				GUILD_JOIN_DATE.getFullYear().toString() + "年 " +
-				(GUILD_JOIN_DATE.getMonth() + 1).toString() + "月 " +
-				GUILD_JOIN_DATE.getDate().toString() + "日 " +
-				DAY_FORMAT[GUILD_JOIN_DATE.getDay()] + "曜日 " +
-				GUILD_JOIN_DATE.getHours().toString() + "時 " +
-				GUILD_JOIN_DATE.getMinutes().toString() + "分 " +
-				GUILD_JOIN_DATE.getSeconds().toString() + "秒 " +
-				GUILD_JOIN_DATE.getMilliseconds().toString() + "ミリ秒\n" +
+			//日本表記
+			value:
+				GUILD_JOIN_DATE.getFullYear().toString() +
+				"年 " +
+				(GUILD_JOIN_DATE.getMonth() + 1).toString() +
+				"月 " +
+				GUILD_JOIN_DATE.getDate().toString() +
+				"日 " +
+				DAY_FORMAT[GUILD_JOIN_DATE.getDay()] +
+				"曜日 " +
+				GUILD_JOIN_DATE.getHours().toString() +
+				"時 " +
+				GUILD_JOIN_DATE.getMinutes().toString() +
+				"分 " +
+				GUILD_JOIN_DATE.getSeconds().toString() +
+				"秒 " +
+				GUILD_JOIN_DATE.getMilliseconds().toString() +
+				"ミリ秒\n" +
 				//アメリカ表記
-				Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() + "日前",
+				Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() +
+				"日前",
 			inline: false
 		});
 
@@ -119,17 +137,27 @@ export class INFO {
 			const GUILD_JOIN_DATE = new Date(MEMBER.joinedAt);
 			EB.addFields({
 				name: "ブースト開始日",
-				value://日本表記
-					GUILD_JOIN_DATE.getFullYear().toString() + "年 " +
-					(GUILD_JOIN_DATE.getMonth() + 1).toString() + "月 " +
-					GUILD_JOIN_DATE.getDate().toString() + "日 " +
-					DAY_FORMAT[GUILD_JOIN_DATE.getDay()] + "曜日 " +
-					GUILD_JOIN_DATE.getHours().toString() + "時 " +
-					GUILD_JOIN_DATE.getMinutes().toString() + "分 " +
-					GUILD_JOIN_DATE.getSeconds().toString() + "秒 " +
-					GUILD_JOIN_DATE.getMilliseconds().toString() + "ミリ秒\n" +
+				//日本表記
+				value:
+					GUILD_JOIN_DATE.getFullYear().toString() +
+					"年 " +
+					(GUILD_JOIN_DATE.getMonth() + 1).toString() +
+					"月 " +
+					GUILD_JOIN_DATE.getDate().toString() +
+					"日 " +
+					DAY_FORMAT[GUILD_JOIN_DATE.getDay()] +
+					"曜日 " +
+					GUILD_JOIN_DATE.getHours().toString() +
+					"時 " +
+					GUILD_JOIN_DATE.getMinutes().toString() +
+					"分 " +
+					GUILD_JOIN_DATE.getSeconds().toString() +
+					"秒 " +
+					GUILD_JOIN_DATE.getMilliseconds().toString() +
+					"ミリ秒\n" +
 					//アメリカ表記
-					Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() + "日前",
+					Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() +
+					"日前",
 				inline: false
 			});
 		}

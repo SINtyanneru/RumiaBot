@@ -11,8 +11,7 @@ export function RUMI_HAPPY_BIRTHDAY() {
 	//10月29日以前の場合、1年引く
 	if (
 		today.getMonth() < targetDate.getMonth() ||
-		(today.getMonth() === targetDate.getMonth() &&
-			today.getDate() < targetDate.getDate())
+		(today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())
 	) {
 		yearDifference--;
 	}
