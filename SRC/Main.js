@@ -513,6 +513,8 @@ client.on("messageCreate", async message => {
 		message.react("✅");
 		new command.WHAT_NOW_DAY().main(message);
 	}
+
+	LOCK_NICK_NAME(message.member);
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
@@ -765,30 +767,7 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-	try{
-		//るみ鯖無いでの出来事に適応
-		if(newMember.guild.id === "836142496563068929"){
-			const OLD_NICKNAME = oldMember.nickname;
-			const NEW_NICKNAME = newMember.nickname;
-
-			const NICK_LOCK_USER = {
-				"759410422591389736":{
-					"NAME":"緑霊夢"
-				}
-			};
-
-			if (OLD_NICKNAME !== NEW_NICKNAME) {
-				console.log("[ INFO ][ LOCK NICKNAME ]" + newMember.user.name + "がニックネームを変えました");
-				const NLU = NICK_LOCK_USER[newMember.id];
-				if(NLU){
-					newMember.setNickname(NLU.NAME);
-				}
-			}
-		}
-	}catch(EX){
-		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
-		return;
-	}
+	LOCK_NICK_NAME(newMember);
 });
 
 async function WebHook_FIND(CHANNEL) {
@@ -799,6 +778,47 @@ async function WebHook_FIND(CHANNEL) {
 	} else {
 		let NEW_WH = CHANNEL.createWebhook("るみBOT");
 		return NEW_WH;
+	}
+}
+
+async function LOCK_NICK_NAME(MEMBER){
+	try{
+		//るみ鯖無いでの出来事に適応
+		if(MEMBER.guild.id === "836142496563068929"){
+			const NICK_LOCK_USER = {
+				"759410422591389736":{
+					"NAME":"緑霊夢"
+				},
+				"828569154167767061":{
+					"NAME":"BaGuAr二世"
+				},
+				"997588139235360958":{
+					"NAME":"猫川風緑"
+				},
+				"612479046919520275":{
+					"NAME":"ミント㌨Да！！"
+				},
+				"1059267736049557635":{
+					"NAME":"まっさんご\"う\""
+				}
+			};
+
+			const NLU = NICK_LOCK_USER[MEMBER.id.toString()];
+			if(NLU){
+				if(NLU.NAME !== MEMBER.nickname){
+					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.name + "がニックネームを変えました");
+					if(MEMBER.manageable){
+						MEMBER.setNickname(NLU.NAME);
+					}else{
+						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
+						return;
+					}
+				}
+			}
+		}
+	}catch(EX){
+		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
+		return;
 	}
 }
 
