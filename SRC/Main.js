@@ -764,6 +764,33 @@ client.on("guildMemberAdd", member => {
 	}
 });
 
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+	try{
+		//るみ鯖無いでの出来事に適応
+		if(newMember.guild.id === "836142496563068929"){
+			const OLD_NICKNAME = oldMember.nickname;
+			const NEW_NICKNAME = newMember.nickname;
+
+			const NICK_LOCK_USER = {
+				"759410422591389736":{
+					"NAME":"緑霊夢"
+				}
+			};
+
+			if (OLD_NICKNAME !== NEW_NICKNAME) {
+				console.log("[ INFO ][ LOCK NICKNAME ]" + newMember.user.name + "がニックネームを変えました");
+				const NLU = NICK_LOCK_USER[newMember.id];
+				if(NLU){
+					newMember.setNickname(NLU.NAME);
+				}
+			}
+		}
+	}catch(EX){
+		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
+		return;
+	}
+});
+
 async function WebHook_FIND(CHANNEL) {
 	let FWH = await CHANNEL.fetchWebhooks();
 	let WH = FWH.find(webhook => webhook.owner.id === CONFIG.ID);
