@@ -10,7 +10,7 @@ export class SNS {
 	async main() {
 		let E = this.E;
 		const TYPE = E.options.getString("type");
-		const USER_NAME = E.options.getString("userid");
+		const USER_NAME = E.options.getString("username");
 
 		//インスタンスの設定を取得
 		let SNS_CONFIG = CONFIG.SNS.find((ROW) => ROW.ID === TYPE);
@@ -24,7 +24,7 @@ export class SNS {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({username: USER_NAME})
+					body: JSON.stringify({username:USER_NAME})
 				});
 
 				if (RES.ok) {
@@ -34,9 +34,7 @@ export class SNS {
 					//埋め込みつくるマン
 					const EB = new MessageEmbed();
 					EB.setTitle("このチャンネルに「" + RESULT.name + "」さんの投稿を垂れ流します");
-					EB.setDescription("以下の設定で流すよん\n"+
-										"NSFWを隠します"+
-										"画像もテキストもごっちゃまぜで流します");
+					EB.setDescription("こっち見んな");
 					EB.setColor(RND_COLOR());
 
 					await E.editReply({embeds:[EB]});
