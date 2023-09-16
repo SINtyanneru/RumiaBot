@@ -378,14 +378,15 @@ client.on("messageCreate", async message => {
 						) {
 							message.reply("きもい");
 						}
-						if (message.author.id === "867187372026232833") {
+						if (message.author.id === "867187372026232833" || message.author.id === "997588139235360958") {
 							message.reply("そうですか(笑)");
 							return;
 						}
 						if (
 							message.author.id === "564772363950882816" ||
 							message.author.id === "811143522212118528" ||
-							message.author.id === "980604083851390976"
+							message.author.id === "980604083851390976" ||
+							message.author.id === "945939067961499698"
 						) {
 							message.reply("そーなのかー");
 							return;
@@ -406,7 +407,8 @@ client.on("messageCreate", async message => {
 						if (
 							message.author.id === "564772363950882816" ||
 							message.author.id === "811143522212118528" ||
-							message.author.id === "980604083851390976"
+							message.author.id === "980604083851390976" ||
+							message.author.id === "945939067961499698"
 						) {
 							message.reply("なんなのだー？");
 							return;
@@ -491,7 +493,7 @@ client.on("messageCreate", async message => {
 	*/
 
 	//あずさ
-	if (message.author.id === "867187372026232833") {
+	if (message.author.id === "867187372026232833" || message.author.id === "997588139235360958") {
 		if (
 			message.content.includes("きしょ") ||
 			message.content.includes("死ね") ||
