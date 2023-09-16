@@ -445,7 +445,9 @@ client.on("messageCreate", async message => {
 		});
 
 		//元メッセージを削除
-		message.delete();
+		if(message.content){
+			message.delete();
+		}
 	}
 
 	//計算
