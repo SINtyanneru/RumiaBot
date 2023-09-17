@@ -10,6 +10,22 @@ import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
+import {
+	kazemidori,
+	azusa,
+	minto,
+	rumiserver,
+	rumi,
+	hakurei_win,
+	p_nsk,
+	rumisub,
+	makeitaquote,
+	__four__lkmy,
+	midoriReimuChan,
+	massango,
+	general_channel,
+	exiter_channel
+} from "./MODULES/SYNTAX_SUGER.js";
 import { DENIED_WORD } from "./DENIED_WORD.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
@@ -359,10 +375,10 @@ client.on("messageCreate", async message => {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
 			'ping -c5 "' +
-			message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
-			'"' +
-			"\nIP?" +
-			net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+				'"' +
+				"\nIP?" +
+				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
 
@@ -382,15 +398,15 @@ client.on("messageCreate", async message => {
 						) {
 							message.reply("きもい");
 						}
-						if (message.author.id === "867187372026232833" || message.author.id === "997588139235360958") {
+						if (message.author.id === azusa || message.author.id === kazemidori) {
 							message.reply("そうですか(笑)");
 							return;
 						}
 						if (
-							message.author.id === "564772363950882816" ||
-							message.author.id === "811143522212118528" ||
-							message.author.id === "980604083851390976" ||
-							message.author.id === "945939067961499698"
+							message.author.id === rumi ||
+							message.author.id === hakurei_win ||
+							message.author.id === p_nsk ||
+							message.author.id === rumisub
 						) {
 							message.reply("そーなのかー");
 							return;
@@ -409,10 +425,10 @@ client.on("messageCreate", async message => {
 							return;
 						}
 						if (
-							message.author.id === "564772363950882816" ||
-							message.author.id === "811143522212118528" ||
-							message.author.id === "980604083851390976" ||
-							message.author.id === "945939067961499698"
+							message.author.id === rumi ||
+							message.author.id === hakurei_win ||
+							message.author.id === p_nsk ||
+							message.author.id === rumisub
 						) {
 							message.reply("なんなのだー？");
 							return;
@@ -475,7 +491,7 @@ client.on("messageCreate", async message => {
 
 	/*
 	//猫モード(無かったことにする)
-	if(message.author.id === "564772363950882816"){
+	if(message.author.id === rumi){
 		let TEXT = message.content;
 		TEXT = TEXT.replace("な", "にゃ");
 		TEXT = TEXT.replace("ぬ", "にゅ");
@@ -497,7 +513,7 @@ client.on("messageCreate", async message => {
 	*/
 
 	//あずさ
-	if (message.author.id === "867187372026232833" || message.author.id === "997588139235360958") {
+	if (message.author.id === azusa || message.author.id === kazemidori) {
 		if (
 			message.content.includes("きしょ") ||
 			message.content.includes("死ね") ||
@@ -508,7 +524,7 @@ client.on("messageCreate", async message => {
 			message.reply("黙れ");
 		}
 
-		if (message.content.includes("おい") ||message.content.includes("は？") || message.content.includes("うわ")) {
+		if (message.content.includes("おい") || message.content.includes("は？") || message.content.includes("うわ")) {
 			message.reply("あ？");
 		}
 		if (message.content.includes("天安門")) {
@@ -528,7 +544,7 @@ client.on("messageCreate", async message => {
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	//Make it a Quote を ダウンロード
-	if (newMessage.author.id === "949479338275913799") {
+	if (newMessage.author.id === makeitaquote) {
 		console.log(newMessage.attachments.map(attachment => attachment.url).length);
 		if (newMessage.attachments.map(attachment => attachment.url).length > 0) {
 			new command.MIQ().save_miq(newMessage);
@@ -548,17 +564,17 @@ client.on("interactionCreate", async INTERACTION => {
 
 		console.log(
 			"[ INFO ][CMD]┌Interaction create:" +
-			INTERACTION.commandName +
-			"\n             ├in " +
-			INTERACTION.guild.name +
-			"\n             ├in " +
-			INTERACTION.channel.name +
-			INTERACTION.channelId +
-			"\n             └in " +
-			INTERACTION.member.user.username +
-			"(" +
-			INTERACTION.member.id +
-			")"
+				INTERACTION.commandName +
+				"\n             ├in " +
+				INTERACTION.guild.name +
+				"\n             ├in " +
+				INTERACTION.channel.name +
+				INTERACTION.channelId +
+				"\n             └in " +
+				INTERACTION.member.user.username +
+				"(" +
+				INTERACTION.member.id +
+				")"
 		);
 
 		//ユーザーに待ってもらう
@@ -607,7 +623,7 @@ client.on("interactionCreate", async INTERACTION => {
 //鯖に参加した
 client.on("guildCreate", async GUILD => {
 	try {
-		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+		const LOG_CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 
 		if (LOG_CH !== undefined) {
 			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")に参加しました");
@@ -629,7 +645,7 @@ client.on("guildCreate", async GUILD => {
 //鯖からキックされた
 client.on("guildDelete", GUILD => {
 	try {
-		const LOG_CH = client.guilds.cache.get("836142496563068929").channels.cache.get("1128742498194444298");
+		const LOG_CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 
 		if (LOG_CH !== undefined) {
 			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
@@ -657,12 +673,12 @@ client.on("messageDelete", async deletedMessage => {
 client.on("guildMemberRemove", async member => {
 	try {
 		console.log(member);
-		if (member.guild.id === "836142496563068929") {
+		if (member.guild.id === rumiserver) {
 			const EB = new MessageEmbed();
 			EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
 			EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
 			EB.setColor(RND_COLOR());
-			MSG_SEND(client, "836142496563068929", "894185240728322058", { embeds: [EB] });
+			MSG_SEND(client, rumiserver, exiter_channel, { embeds: [EB] });
 
 			//独自のBANリスト
 			const fileName = "./TEMP/RS_LEAVE.json";
@@ -718,7 +734,7 @@ client.on("guildMemberRemove", async member => {
 //メンバーが入った
 client.on("guildMemberAdd", member => {
 	try {
-		if (member.guild.id === "836142496563068929") {
+		if (member.guild.id === rumiserver) {
 			//独自のBANリストでチェックする
 			const fileName = "./TEMP/RS_LEAVE.json";
 			FS.access(fileName, FS.constants.F_OK, ERR => {
@@ -739,29 +755,31 @@ client.on("guildMemberAdd", member => {
 
 								USER.send(
 									"あなたは、" +
-									DATE.getFullYear().toString() +
-									"年 " +
-									(DATE.getMonth() + 1).toString() +
-									"月 " +
-									DATE.getDate().toString() +
-									"日 " +
-									DAY_FORMAT[DATE.getDay()] +
-									"曜日 " +
-									DATE.getHours().toString() +
-									"時 " +
-									DATE.getMinutes().toString() +
-									"分 " +
-									DATE.getSeconds().toString() +
-									"秒 " +
-									DATE.getMilliseconds().toString() +
-									"ミリ秒\n" +
-									"に、るみさんの鯖から脱退しています。\n" +
-									"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n" +
-									"\n" +
-									"1・なぜ抜けたのか\n" +
-									"2・なぜ戻ってきたのか\n" +
-									"\n" +
-									"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
+										DATE.getFullYear().toString() +
+										"年 " +
+										(DATE.getMonth() + 1).toString() +
+										"月 " +
+										DATE.getDate().toString() +
+										"日 " +
+										DAY_FORMAT[DATE.getDay()] +
+										"曜日 " +
+										DATE.getHours().toString() +
+										"時 " +
+										DATE.getMinutes().toString() +
+										"分 " +
+										DATE.getSeconds().toString() +
+										"秒 " +
+										DATE.getMilliseconds().toString() +
+										"ミリ秒\n" +
+										"に、るみさんの鯖から脱退しています。\n" +
+										"認証をされるには、<@" +
+										rumi +
+										">にDMで以下のことを教えてください。\n" +
+										"\n" +
+										"1・なぜ抜けたのか\n" +
+										"2・なぜ戻ってきたのか\n" +
+										"\n" +
+										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
 								);
 							}
 						}
@@ -793,26 +811,15 @@ async function WebHook_FIND(CHANNEL) {
 async function LOCK_NICK_NAME(MEMBER) {
 	try {
 		//るみ鯖無いでの出来事に適応
-		if (MEMBER.guild.id === "836142496563068929") {
-			const NICK_LOCK_USER = {
-				"759410422591389736": {
-					"NAME": "緑霊夢"
-				},
-				"828569154167767061": {
-					"NAME": "BaGuAr二世"
-				},
-				"997588139235360958": {
-					"NAME": "猫川風緑"
-				},
-				"612479046919520275": {
-					"NAME": "ミント㌨Да！！"
-				},
-				"1059267736049557635": {
-					"NAME": "まっさんご\"う\""
-				}
-			};
+		if (MEMBER.guild.id === rumiserver) {
+			const NICK_LOCK_USER = new Map();
+			NICK_LOCK_USER.set(kazemidori, { NAME: "BaGuAr二世" });
+			NICK_LOCK_USER.set(minto, { NAME: "ミント㌨Да！！" });
+			NICK_LOCK_USER.set(__four__lkmy, { NAME: "BaGuAr二世" });
+			NICK_LOCK_USER.set(midoriReimuChan, { NAME: "緑霊夢" });
+			NICK_LOCK_USER.set(massango, { NAME: 'まっさんご"う"' });
 
-			const NLU = NICK_LOCK_USER[MEMBER.id.toString()];
+			const NLU = NICK_LOCK_USER.get[MEMBER.id.toString()];
 			if (NLU) {
 				if (NLU.NAME !== MEMBER.nickname) {
 					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.name + "がニックネームを変えました");

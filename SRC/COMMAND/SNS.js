@@ -13,7 +13,7 @@ export class SNS {
 		const USER_NAME = E.options.getString("username");
 
 		//インスタンスの設定を取得
-		let SNS_CONFIG = CONFIG.SNS.find((ROW) => ROW.ID === TYPE);
+		let SNS_CONFIG = CONFIG.SNS.find(ROW => ROW.ID === TYPE);
 
 		//設定があるか
 		if (SNS_CONFIG) {
@@ -22,26 +22,26 @@ export class SNS {
 				const RES = await fetch("https://" + SNS_CONFIG.DOMAIN + "/api/users/show", {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/json"
 					},
-					body: JSON.stringify({username:USER_NAME})
+					body: JSON.stringify({ username: USER_NAME })
 				});
 
 				if (RES.ok) {
 					const RESULT = await RES.json();
 					console.log(RESULT);
-	
+
 					//埋め込みつくるマン
 					const EB = new MessageEmbed();
 					EB.setTitle("このチャンネルに「" + RESULT.name + "」さんの投稿を垂れ流します");
 					EB.setDescription("こっち見んな");
 					EB.setColor(RND_COLOR());
 
-					await E.editReply({embeds:[EB]});
-				}else{
-					if(RES.status === 404){
+					await E.editReply({ embeds: [EB] });
+				} else {
+					if (RES.status === 404) {
 						await E.editReply("指定されたアカウントは見つかりませんでした！");
-					}else{
+					} else {
 						await E.editReply("APIがエラーを吐きました");
 					}
 				}
