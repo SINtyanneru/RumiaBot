@@ -788,11 +788,8 @@ async function convert_vxtwitter(message) {
 	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
 	if (message.content.match(VX_REGEX)) {
 		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = message.content
-			.replaceAll("https://twitter.com/", "https://vxtwitter.com/")
-			.replaceAll("@everyone", "[全体メンション]")
-			.replaceAll("@here", "[全体メンション]")
-			.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
+		const TEXT = sanitize(message.content
+		).replaceAll("https://twitter.com/", "https://vxtwitter.com/");
 
 		//WHでめっせーじを送る
 		WEB_HOOK.send({
@@ -856,6 +853,10 @@ async function LOCK_NICK_NAME(MEMBER) {
 		return;
 	}
 }
-
+function sanitize(str) {
+	return str.replaceAll("@everyone", "[全体メンション]")
+		.replaceAll("@here", "[全体メンション]")
+		.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
+}
 // ログインする
 client.login(CONFIG.TOKEN);
