@@ -381,6 +381,7 @@ client.on("messageCreate", async message => {
 							message.content.includes("ちんこ")
 						) {
 							message.reply("きもい");
+							return;
 						}
 						if (message.author.id === "867187372026232833" || message.author.id === "997588139235360958") {
 							message.reply("そうですか(笑)");
@@ -403,6 +404,7 @@ client.on("messageCreate", async message => {
 							message.content.includes("ちんこ")
 						) {
 							message.reply("きっしょ死ね");
+							return;
 						}
 						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
 							message.reply("...");

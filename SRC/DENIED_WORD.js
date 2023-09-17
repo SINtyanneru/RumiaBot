@@ -3,19 +3,19 @@ export class DENIED_WORD{
 		this.DENIED_WORD_LIST = {
 			"836142496563068929":[
 				{
-					WORD:/ちんこ/g,
+					WORD:/ちんこ|チンコ/g,
 					WHITE_LIST:[]
 				},{
-					WORD:/まんこ/g,
+					WORD:/まんこ|マンコ/g,
 					WHITE_LIST:[]
 				},{
-					WORD:/まんちん/g,
+					WORD:/まんちん|マンチン/g,
 					WHITE_LIST:[]
 				},{
-					WORD:/ちん/g,
+					WORD:/ちん|チン/g,
 					WHITE_LIST:[]
 				},{
-					WORD:/(?:ちん){2}/g,
+					WORD:/(?:ちん|チン){2}/g,
 					WHITE_LIST:[]
 				},{
 					WORD:/BGA/g,
