@@ -1,0 +1,14 @@
+export const azusa = "867187372026232833";
+export const kazemidori = "997588139235360958";
+export const minto = "612479046919520275";
+export const rumiserver = "836142496563068929";
+export const rumi = "564772363950882816";
+export const hakurei_win = "811143522212118528";
+export const p_nsk = "980604083851390976";
+export const rumisub = "945939067961499698";
+export const makeitaquote = "949479338275913799";
+export const __four__lkmy = "828569154167767061";
+export const midoriReimuChan = "759410422591389736";
+export const massango = "1059267736049557635";
+export const general_channel = "1128742498194444298";
+export const exiter_channel = "894185240728322058";

@@ -14,4 +14,6 @@
 	"editor.tabSize": 4,
 	"editor.insertSpaces": false,
 	"editor.comments.insertSpace": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 }
