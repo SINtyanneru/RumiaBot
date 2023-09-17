@@ -13,20 +13,20 @@ import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import {
 	kazemidori,
 	azusa,
-	minto,
 	rumiserver,
 	rumi,
 	hakurei_win,
 	p_nsk,
 	rumisub,
 	makeitaquote,
-	__four__lkmy,
-	midoriReimuChan,
-	massango,
 	general_channel,
 	exiter_channel
 } from "./MODULES/SYNTAX_SUGER.js";
 import { DENIED_WORD } from "./DENIED_WORD.js";
+import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
+import { calc } from "./MODULES/calc.js";
+import { search } from "./search.js";
+import { convert_vxtwitter } from "./convert_vxtwitter.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 let DENIED_WORD_OBJ = new DENIED_WORD();
@@ -768,95 +768,5 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	LOCK_NICK_NAME(newMember);
 });
 
-function calc(message) {
-	const MATH_TEXT = message.content
-		.replace("計算 ", "")
-		.replace("×", "*")
-		.replace("÷", "/")
-		.replace(/[^0-9\-+*/().]/g, "");
-
-	message.react("✅");
-	console.log(MATH_TEXT);
-
-	let RESULT = new command.MATH(message.content).main();
-
-	//結果を吐き出す
-	message.reply(RESULT);
-}
-
-async function convert_vxtwitter(message) {
-	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
-	if (message.content.match(VX_REGEX)) {
-		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = sanitize(message.content
-		).replaceAll("https://twitter.com/", "https://vxtwitter.com/");
-
-		//WHでめっせーじを送る
-		WEB_HOOK.send({
-			username: message.author.username,
-			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
-			content: TEXT
-		});
-
-		//元メッセージを削除
-		if (message.content) {
-			message.delete();
-		}
-	}
-}
-
-function search(message) {
-	const SEARCH_WORD = message.content.replace("検索 ", "");
-
-	message.react("✅");
-
-	new command.SEARCH(message, SEARCH_WORD).main();
-}
-
-async function WebHook_FIND(CHANNEL) {
-	let FWH = await CHANNEL.fetchWebhooks();
-	let WH = FWH.find(webhook => webhook.owner.id === CONFIG.ID);
-	if (WH) {
-		return WH;
-	} else {
-		let NEW_WH = CHANNEL.createWebhook("るみBOT");
-		return NEW_WH;
-	}
-}
-
-async function LOCK_NICK_NAME(MEMBER) {
-	try {
-		//るみ鯖無いでの出来事に適応
-		if (MEMBER.guild.id === rumiserver) {
-			const NICK_LOCK_USER = new Map();
-			NICK_LOCK_USER.set(kazemidori, { NAME: "BaGuAr二世" });
-			NICK_LOCK_USER.set(minto, { NAME: "ミント㌨Да！！" });
-			NICK_LOCK_USER.set(__four__lkmy, { NAME: "BaGuAr二世" });
-			NICK_LOCK_USER.set(midoriReimuChan, { NAME: "緑霊夢" });
-			NICK_LOCK_USER.set(massango, { NAME: 'まっさんご"う"' });
-
-			const NLU = NICK_LOCK_USER.get[MEMBER.id.toString()];
-			if (NLU) {
-				if (NLU.NAME !== MEMBER.nickname) {
-					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.name + "がニックネームを変えました");
-					if (MEMBER.manageable) {
-						MEMBER.setNickname(NLU.NAME);
-					} else {
-						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
-						return;
-					}
-				}
-			}
-		}
-	} catch (EX) {
-		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
-		return;
-	}
-}
-function sanitize(str) {
-	return str.replaceAll("@everyone", "[全体メンション]")
-		.replaceAll("@here", "[全体メンション]")
-		.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
-}
 // ログインする
 client.login(CONFIG.TOKEN);
