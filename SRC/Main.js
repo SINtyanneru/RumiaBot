@@ -10,6 +10,7 @@ import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
+import { DENIED_WORD } from "./DENIED_WORD.js";
 
 client.once("ready", async () => {
 	console.log(String.raw`    ____                  _       ____  ____  ______`);
@@ -517,6 +518,7 @@ client.on("messageCreate", async message => {
 	}
 
 	LOCK_NICK_NAME(message.member);
+	new DENIED_WORD().main(message);
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
