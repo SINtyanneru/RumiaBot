@@ -12,6 +12,9 @@ import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { DENIED_WORD } from "./DENIED_WORD.js";
 
+//ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
+let DENIED_WORD_OBJ = new DENIED_WORD();
+
 client.once("ready", async () => {
 	console.log(String.raw`    ____                  _       ____  ____  ______`);
 	console.log(String.raw`   / __ \__  ______ ___  (_)___ _/ __ )/ __ \/_  __/`);
@@ -519,7 +522,8 @@ client.on("messageCreate", async message => {
 	}
 
 	LOCK_NICK_NAME(message.member);
-	new DENIED_WORD().main(message);
+
+	DENIED_WORD_OBJ.main(message);
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
