@@ -3,16 +3,16 @@ export class DENIED_WORD{
 		this.DENIED_WORD_LIST = {
 			"836142496563068929":[
 				{
-					WORD:/ちんこ|チンコ/g,
+					WORD:/ちん(ぽ|こ|ちん)/g,
+					WHITE_LIST:[]
+				},{
+					WORD:/チン(コ|ポ|チン)/g,
 					WHITE_LIST:[]
 				},{
 					WORD:/まんこ|マンコ/g,
 					WHITE_LIST:[]
 				},{
 					WORD:/まんちん|マンチン/g,
-					WHITE_LIST:[]
-				},{
-					WORD:/(?:ちん|チン){2}/g,
 					WHITE_LIST:[]
 				},{
 					WORD:/BGA/g,
