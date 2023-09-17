@@ -148,9 +148,9 @@ client.once("ready", async () => {
 		},
 		{
 			// NOTE 本当はコンテキストメニューを実装する予定だったんだ、
-			//だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
-			//ExpectedConstraintError: Invalid string format
-			//意味がわからないね、ローカライズとは
+			// だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
+			// ExpectedConstraintError: Invalid string format
+			// 意味がわからないね、ローカライズとは
 			name: "kanji",
 			description: "漢字を変換します",
 			options: [
@@ -284,9 +284,9 @@ client.once("ready", async () => {
 		console.error("Error registering global slash commands:", EX);
 	}
 
-	//new MISSKEY().main();
+	// new MISSKEY().main();
 
-	//活動期間か？
+	// 活動期間か？
 	setInterval(() => {
 		//現在の時刻を取得
 		const currentTime = new Date();
@@ -375,10 +375,10 @@ client.on("messageCreate", async message => {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
 			'ping -c5 "' +
-				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
-				'"' +
-				"\nIP?" +
-				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+			message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+			'"' +
+			"\nIP?" +
+			net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
 
@@ -444,51 +444,20 @@ client.on("messageCreate", async message => {
 
 	//検索
 	if (message.content.startsWith("検索 ")) {
-		const SEARCH_WORD = message.content.replace("検索 ", "");
-
-		message.react("✅");
-
-		new command.SEARCH(message, SEARCH_WORD).main();
-	}
-
-	//VX
-	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
-	if (message.content.match(VX_REGEX)) {
-		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = message.content
-			.replaceAll("https://twitter.com/", "https://vxtwitter.com/")
-			.replaceAll("@everyone", "[全体メンション]")
-			.replaceAll("@here", "[全体メンション]")
-			.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
-
-		//WHでめっせーじを送る
-		WEB_HOOK.send({
-			username: message.author.username,
-			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
-			content: TEXT
-		});
-
-		//元メッセージを削除
-		if (message.content) {
-			message.delete();
+		if (!(CONFIG?.DISABLE?.includes("search"))) {
+			search(message);
 		}
 	}
 
+	// vxtwitterのリンクに自動で置換する機能
+	if (!(CONFIG?.DISABLE?.includes("vxtwitter"))) { // もし実行しないと設定してるなら動かさない
+		await convert_vxtwitter(message);
+	}
 	//計算
 	if (message.content.startsWith("計算 ")) {
-		const MATH_TEXT = message.content
-			.replace("計算 ", "")
-			.replace("×", "*")
-			.replace("÷", "/")
-			.replace(/[^0-9\-+*/().]/g, "");
-
-		message.react("✅");
-		console.log(MATH_TEXT);
-
-		let RESULT = new command.MATH(message.content).main();
-
-		//結果を吐き出す
-		message.reply(RESULT);
+		if (!(CONFIG?.DISABLE?.includes("calc"))) { // もし実行しないと設定してるなら動かさない
+			calc(message);
+		}
 	}
 
 	/*
@@ -566,17 +535,17 @@ client.on("interactionCreate", async INTERACTION => {
 
 		console.log(
 			"[ INFO ][CMD]┌Interaction create:" +
-				INTERACTION.commandName +
-				"\n             ├in " +
-				INTERACTION.guild.name +
-				"\n             ├in " +
-				INTERACTION.channel.name +
-				INTERACTION.channelId +
-				"\n             └in " +
-				INTERACTION.member.user.username +
-				"(" +
-				INTERACTION.member.id +
-				")"
+			INTERACTION.commandName +
+			"\n             ├in " +
+			INTERACTION.guild.name +
+			"\n             ├in " +
+			INTERACTION.channel.name +
+			INTERACTION.channelId +
+			"\n             └in " +
+			INTERACTION.member.user.username +
+			"(" +
+			INTERACTION.member.id +
+			")"
 		);
 
 		//ユーザーに待ってもらう
@@ -757,31 +726,31 @@ client.on("guildMemberAdd", member => {
 
 								USER.send(
 									"あなたは、" +
-										DATE.getFullYear().toString() +
-										"年 " +
-										(DATE.getMonth() + 1).toString() +
-										"月 " +
-										DATE.getDate().toString() +
-										"日 " +
-										DAY_FORMAT[DATE.getDay()] +
-										"曜日 " +
-										DATE.getHours().toString() +
-										"時 " +
-										DATE.getMinutes().toString() +
-										"分 " +
-										DATE.getSeconds().toString() +
-										"秒 " +
-										DATE.getMilliseconds().toString() +
-										"ミリ秒\n" +
-										"に、るみさんの鯖から脱退しています。\n" +
-										"認証をされるには、<@" +
-										rumi +
-										">にDMで以下のことを教えてください。\n" +
-										"\n" +
-										"1・なぜ抜けたのか\n" +
-										"2・なぜ戻ってきたのか\n" +
-										"\n" +
-										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
+									DATE.getFullYear().toString() +
+									"年 " +
+									(DATE.getMonth() + 1).toString() +
+									"月 " +
+									DATE.getDate().toString() +
+									"日 " +
+									DAY_FORMAT[DATE.getDay()] +
+									"曜日 " +
+									DATE.getHours().toString() +
+									"時 " +
+									DATE.getMinutes().toString() +
+									"分 " +
+									DATE.getSeconds().toString() +
+									"秒 " +
+									DATE.getMilliseconds().toString() +
+									"ミリ秒\n" +
+									"に、るみさんの鯖から脱退しています。\n" +
+									"認証をされるには、<@" +
+									rumi +
+									">にDMで以下のことを教えてください。\n" +
+									"\n" +
+									"1・なぜ抜けたのか\n" +
+									"2・なぜ戻ってきたのか\n" +
+									"\n" +
+									"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
 								);
 							}
 						}
@@ -798,6 +767,54 @@ client.on("guildMemberAdd", member => {
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	LOCK_NICK_NAME(newMember);
 });
+
+function calc(message) {
+	const MATH_TEXT = message.content
+		.replace("計算 ", "")
+		.replace("×", "*")
+		.replace("÷", "/")
+		.replace(/[^0-9\-+*/().]/g, "");
+
+	message.react("✅");
+	console.log(MATH_TEXT);
+
+	let RESULT = new command.MATH(message.content).main();
+
+	//結果を吐き出す
+	message.reply(RESULT);
+}
+
+async function convert_vxtwitter(message) {
+	const VX_REGEX = /https:\/\/twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/g;
+	if (message.content.match(VX_REGEX)) {
+		let WEB_HOOK = await WebHook_FIND(message.channel);
+		const TEXT = message.content
+			.replaceAll("https://twitter.com/", "https://vxtwitter.com/")
+			.replaceAll("@everyone", "[全体メンション]")
+			.replaceAll("@here", "[全体メンション]")
+			.replaceAll(/<@&[^>]*>/g, "[ロールメンション]");
+
+		//WHでめっせーじを送る
+		WEB_HOOK.send({
+			username: message.author.username,
+			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
+			content: TEXT
+		});
+
+		//元メッセージを削除
+		if (message.content) {
+			message.delete();
+		}
+	}
+}
+
+function search(message) {
+	const SEARCH_WORD = message.content.replace("検索 ", "");
+
+	message.react("✅");
+
+	new command.SEARCH(message, SEARCH_WORD).main();
+}
 
 async function WebHook_FIND(CHANNEL) {
 	let FWH = await CHANNEL.fetchWebhooks();
@@ -840,4 +857,5 @@ async function LOCK_NICK_NAME(MEMBER) {
 	}
 }
 
+// ログインする
 client.login(CONFIG.TOKEN);

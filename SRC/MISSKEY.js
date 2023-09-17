@@ -129,7 +129,7 @@ export class MISSKEY {
 							}
 						}
 
-						//アクション
+						// アクション
 						EB.addFields({
 							name: "ｱクション",
 							value:
