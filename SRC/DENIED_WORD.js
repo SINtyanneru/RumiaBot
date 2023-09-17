@@ -12,9 +12,6 @@ export class DENIED_WORD{
 					WORD:/まんちん|マンチン/g,
 					WHITE_LIST:[]
 				},{
-					WORD:/ちん|チン/g,
-					WHITE_LIST:[]
-				},{
 					WORD:/(?:ちん|チン){2}/g,
 					WHITE_LIST:[]
 				},{
