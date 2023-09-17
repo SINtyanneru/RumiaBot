@@ -355,10 +355,10 @@ client.on("messageCreate", async message => {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
 			'ping -c5 "' +
-				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
-				'"' +
-				"\nIP?" +
-				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+			message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+			'"' +
+			"\nIP?" +
+			net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
 
@@ -447,7 +447,7 @@ client.on("messageCreate", async message => {
 		});
 
 		//元メッセージを削除
-		if(message.content){
+		if (message.content) {
 			message.delete();
 		}
 	}
@@ -504,10 +504,9 @@ client.on("messageCreate", async message => {
 			message.reply("黙れ");
 		}
 
-		if (message.content.includes("おい")) {
+		if (message.content.includes("おい") ||message.content.includes("は？") || message.content.includes("うわ")) {
 			message.reply("あ？");
 		}
-
 		if (message.content.includes("天安門")) {
 			message.reply("気をつけな、あんた、中華人民共和国当局に、見られてるぜ");
 		}
@@ -543,17 +542,17 @@ client.on("interactionCreate", async INTERACTION => {
 
 		console.log(
 			"[ INFO ][CMD]┌Interaction create:" +
-				INTERACTION.commandName +
-				"\n             ├in " +
-				INTERACTION.guild.name +
-				"\n             ├in " +
-				INTERACTION.channel.name +
-				INTERACTION.channelId +
-				"\n             └in " +
-				INTERACTION.member.user.username +
-				"(" +
-				INTERACTION.member.id +
-				")"
+			INTERACTION.commandName +
+			"\n             ├in " +
+			INTERACTION.guild.name +
+			"\n             ├in " +
+			INTERACTION.channel.name +
+			INTERACTION.channelId +
+			"\n             └in " +
+			INTERACTION.member.user.username +
+			"(" +
+			INTERACTION.member.id +
+			")"
 		);
 
 		//ユーザーに待ってもらう
@@ -734,29 +733,29 @@ client.on("guildMemberAdd", member => {
 
 								USER.send(
 									"あなたは、" +
-										DATE.getFullYear().toString() +
-										"年 " +
-										(DATE.getMonth() + 1).toString() +
-										"月 " +
-										DATE.getDate().toString() +
-										"日 " +
-										DAY_FORMAT[DATE.getDay()] +
-										"曜日 " +
-										DATE.getHours().toString() +
-										"時 " +
-										DATE.getMinutes().toString() +
-										"分 " +
-										DATE.getSeconds().toString() +
-										"秒 " +
-										DATE.getMilliseconds().toString() +
-										"ミリ秒\n" +
-										"に、るみさんの鯖から脱退しています。\n" +
-										"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n" +
-										"\n" +
-										"1・なぜ抜けたのか\n" +
-										"2・なぜ戻ってきたのか\n" +
-										"\n" +
-										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
+									DATE.getFullYear().toString() +
+									"年 " +
+									(DATE.getMonth() + 1).toString() +
+									"月 " +
+									DATE.getDate().toString() +
+									"日 " +
+									DAY_FORMAT[DATE.getDay()] +
+									"曜日 " +
+									DATE.getHours().toString() +
+									"時 " +
+									DATE.getMinutes().toString() +
+									"分 " +
+									DATE.getSeconds().toString() +
+									"秒 " +
+									DATE.getMilliseconds().toString() +
+									"ミリ秒\n" +
+									"に、るみさんの鯖から脱退しています。\n" +
+									"認証をされるには、<@564772363950882816>にDMで以下のことを教えてください。\n" +
+									"\n" +
+									"1・なぜ抜けたのか\n" +
+									"2・なぜ戻ってきたのか\n" +
+									"\n" +
+									"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
 								);
 							}
 						}
@@ -785,42 +784,42 @@ async function WebHook_FIND(CHANNEL) {
 	}
 }
 
-async function LOCK_NICK_NAME(MEMBER){
-	try{
+async function LOCK_NICK_NAME(MEMBER) {
+	try {
 		//るみ鯖無いでの出来事に適応
-		if(MEMBER.guild.id === "836142496563068929"){
+		if (MEMBER.guild.id === "836142496563068929") {
 			const NICK_LOCK_USER = {
-				"759410422591389736":{
-					"NAME":"緑霊夢"
+				"759410422591389736": {
+					"NAME": "緑霊夢"
 				},
-				"828569154167767061":{
-					"NAME":"BaGuAr二世"
+				"828569154167767061": {
+					"NAME": "BaGuAr二世"
 				},
-				"997588139235360958":{
-					"NAME":"猫川風緑"
+				"997588139235360958": {
+					"NAME": "猫川風緑"
 				},
-				"612479046919520275":{
-					"NAME":"ミント㌨Да！！"
+				"612479046919520275": {
+					"NAME": "ミント㌨Да！！"
 				},
-				"1059267736049557635":{
-					"NAME":"まっさんご\"う\""
+				"1059267736049557635": {
+					"NAME": "まっさんご\"う\""
 				}
 			};
 
 			const NLU = NICK_LOCK_USER[MEMBER.id.toString()];
-			if(NLU){
-				if(NLU.NAME !== MEMBER.nickname){
+			if (NLU) {
+				if (NLU.NAME !== MEMBER.nickname) {
 					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.name + "がニックネームを変えました");
-					if(MEMBER.manageable){
+					if (MEMBER.manageable) {
 						MEMBER.setNickname(NLU.NAME);
-					}else{
+					} else {
 						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
 						return;
 					}
 				}
 			}
 		}
-	}catch(EX){
+	} catch (EX) {
 		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
 		return;
 	}
