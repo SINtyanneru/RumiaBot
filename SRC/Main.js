@@ -371,7 +371,7 @@ client.on("messageCreate", async message => {
 	*/
 
 	//BOT所有者専用のコマンド
-	if (CONFIG.ADMIN_ID.find((ROW) => ROW === message.author.id)) {
+	if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 		await BOT_ADMIN(message);
 	}
 
