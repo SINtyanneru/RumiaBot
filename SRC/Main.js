@@ -523,8 +523,9 @@ client.on("messageCreate", async message => {
 	}
 
 	LOCK_NICK_NAME(message.member);
-
-	DENIED_WORD_OBJ.main(message);
+	if (!CONFIG?.DISABLE?.includes("automod")) {
+		DENIED_WORD_OBJ.main(message);
+	}
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
