@@ -25,7 +25,7 @@ import {
 import { DENIED_WORD } from "./DENIED_WORD.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
-import { search } from "./search.js";
+import { search } from "./MODULES/search.js";
 import { convert_vxtwitter } from "./convert_vxtwitter.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。

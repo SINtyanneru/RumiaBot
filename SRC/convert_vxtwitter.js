@@ -1,4 +1,4 @@
-import { WebHook_FIND } from "./WebHook_FIND.js";
+import { WebHook_FIND } from "./MODULES/WebHook_FIND.js";
 import { sanitize } from "./MODULES/sanitize.js";
 
 export async function convert_vxtwitter(message) {

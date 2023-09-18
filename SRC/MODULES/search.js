@@ -1,4 +1,4 @@
-import * as command from "./COMMAND/index.js";
+import * as command from "../COMMAND/index.js";
 
 export function search(message) {
 	const SEARCH_WORD = message.content.replace("検索 ", "");

@@ -1,4 +1,4 @@
-import { CONFIG } from "./MODULES/CONFIG.js";
+import { CONFIG } from "./CONFIG.js";
 
 export async function WebHook_FIND(CHANNEL) {
 	let FWH = await CHANNEL.fetchWebhooks();
