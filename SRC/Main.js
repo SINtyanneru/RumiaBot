@@ -147,6 +147,18 @@ client.once("ready", async () => {
 			]
 		},
 		{
+			name: "info_mine",
+			description: "マイクラのユーザーの情報を盗みます",
+			options: [
+				{
+					name: "mcid",
+					description: "マイクラのID",
+					type: "STRING",
+					required: true
+				}
+			]
+		},
+		{
 			// NOTE 本当はコンテキストメニューを実装する予定だったんだ、
 			// だけど、DiscordJSのローカライズ機能がローカライズを履き違えてるから無理だったよ
 			// ExpectedConstraintError: Invalid string format
@@ -583,6 +595,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "sns_set":
 				new command.SNS(INTERACTION).main();
+				break;
+			case "info_mine":
+				new command.INFO(INTERACTION).MINECRAFT();
 				break;
 		}
 	} catch (EX) {

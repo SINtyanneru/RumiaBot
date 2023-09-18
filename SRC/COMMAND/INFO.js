@@ -209,4 +209,76 @@ export class INFO {
 
 		await E.editReply({ embeds: [EB] });
 	}
+
+	async MINECRAFT(){
+		let E = this.E;
+		try{
+			const MCID = E.options.getString("mcid");
+
+			const RES_GET_UUID = await fetch("https://api.mojang.com/users/profiles/minecraft/" + MCID, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+
+			if (RES_GET_UUID.ok) {
+				const RESULT_GET_UUID = await RES_GET_UUID.json();
+
+				const RES_GET_BASE64 = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json"
+					}
+				});
+
+				if (RES_GET_BASE64.ok) {
+					const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
+
+					const RESULT_JSON = JSON.parse(atob(RESULT_GET_BASE64.properties[0].value));
+
+					//埋め込み
+					const EB = new MessageEmbed();
+
+					//ユーザー名とスキン
+					EB.setTitle("マイクラユーザーの情報");
+					EB.setDescription(RESULT_GET_BASE64.name);
+					EB.setColor(RND_COLOR());
+					EB.setThumbnail(RESULT_JSON.textures.SKIN.url);
+
+					//UUID
+					EB.addFields({
+						name: "UUID",
+						value: RESULT_GET_BASE64.id,
+						inline: false
+					});
+
+					//プロフィールID
+					EB.addFields({
+						name: "PFID",
+						value: RESULT_JSON.profileId,
+						inline: false
+					});
+
+					//結果を出力
+					await E.editReply({ embeds: [EB] });
+				}else{
+					await E.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
+				}
+			}else{//エラーを返されたので
+				switch(RES_GET_UUID.status){
+					case 404:
+						await E.editReply("そんなユーザー居ないらしいよ");
+						return;
+
+					default:
+						await E.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
+						return;
+				}
+			}
+		}catch(EX){
+			console.log("[ ERR ][ MINE ]" + EX)
+			await E.editReply("エラー");
+		}
+	}
 }
