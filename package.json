@@ -1,39 +1,39 @@
 {
-  "name": "rumiabot",
-  "version": "1.0.1",
-  "description": "___ ## なんだこのBOTは？！ 元ルーミアちゃんBOT<BR> このBOTは、わたしがほしいと思った機能を搭載するBOTです()<BR> なので完全に自分用ｗｗ<BR> ## ビルド方法 ```sh source ./build.sh ``` を実行(LINUXの場合)<BR> そして[Config.json]を作成<BR> ```json { \t\"TOKEN\":\"Discordのトークン\", \t\"ID\":\"BOTのID\", \t\"SQL_HOST\":\"SQLのホスト\", \t\"SQL_USER\":\"SQLのユーザー名\", \t\"SQL_PASS\":\"SQLのパスワード\", \t\"GOOGLE_API_KEY\":\"GoogleAPIのAPIキー\", \t\"GOOGLE_API_ENGINE_ID\":\"Google検索APIのえんじんDI\", \t\"MISSKEY_API_KEY\":\"MisskeyのAPIキー\", \t\"ADMIN_ID\":\"BOTの管理者のID\", \t\"ADMIN_PREFIX\":\"管理用のプレフィクス\" } ``` これでおｋ！<BR> あとはsource start.shできどうするだけ！<BR> あとは楽しんでください()<BR>",
-  "main": "/SRC/Main.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: そんなもんねえ！\" && exit 1",
-    "start": "sh ./autoexec.sh",
-    "install": "sh ./setup.sh",
-    "postinstall": "husky install",
-    "prepare": "husky install",
-    "lint": "prettier -w ./ && eslint -fix"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "chromedriver": "^116.0.0",
-    "discord.js": "^13.16.0",
-    "moji": "^0.5.1",
-    "node-fetch": "^3.3.2",
-    "selenium-webdriver": "^4.11.1",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
-    "discord-api-types": "^0.37.56",
-    "eslint": "^8.48.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^14.0.1",
-    "prettier": "^3.0.3"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  }
+	"name": "rumiabot",
+	"version": "1.0.1",
+	"description": "___ ## なんだこのBOTは？！ 元ルーミアちゃんBOT<BR> このBOTは、わたしがほしいと思った機能を搭載するBOTです()<BR> なので完全に自分用ｗｗ<BR> ## ビルド方法 ```sh source ./build.sh ``` を実行(LINUXの場合)<BR> そして[Config.json]を作成<BR> ```json { \t\"TOKEN\":\"Discordのトークン\", \t\"ID\":\"BOTのID\", \t\"SQL_HOST\":\"SQLのホスト\", \t\"SQL_USER\":\"SQLのユーザー名\", \t\"SQL_PASS\":\"SQLのパスワード\", \t\"GOOGLE_API_KEY\":\"GoogleAPIのAPIキー\", \t\"GOOGLE_API_ENGINE_ID\":\"Google検索APIのえんじんDI\", \t\"MISSKEY_API_KEY\":\"MisskeyのAPIキー\", \t\"ADMIN_ID\":\"BOTの管理者のID\", \t\"ADMIN_PREFIX\":\"管理用のプレフィクス\" } ``` これでおｋ！<BR> あとはsource start.shできどうするだけ！<BR> あとは楽しんでください()<BR>",
+	"main": "/SRC/Main.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: そんなもんねえ！\" && exit 1",
+		"start": "sh ./autoexec.sh",
+		"install": "sh ./setup.sh",
+		"postinstall": "husky install",
+		"prepare": "husky install",
+		"lint": "prettier -w ./"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"chromedriver": "^116.0.0",
+		"discord.js": "^13.16.0",
+		"moji": "^0.5.1",
+		"node-fetch": "^3.3.2",
+		"selenium-webdriver": "^4.11.1",
+		"ws": "^8.13.0"
+	},
+	"devDependencies": {
+		"discord-api-types": "^0.37.56",
+		"eslint": "^8.48.0",
+		"husky": "^8.0.0",
+		"lint-staged": "^14.0.1",
+		"prettier": "^3.0.3"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	}
 }
