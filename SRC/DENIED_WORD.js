@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Message } from "discord.js";
 import moji from "moji";
-import { rumiserver } from "./MODULES/SYNTAX_SUGER";
+import { rumiserver } from "./MODULES/SYNTAX_SUGER.js";
 export class DENIED_WORD {
 	static DENIED_WORD_LIST = {
 		"836142496563068929": [
