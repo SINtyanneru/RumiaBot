@@ -210,9 +210,9 @@ export class INFO {
 		await E.editReply({ embeds: [EB] });
 	}
 
-	async MINECRAFT(){
+	async MINECRAFT() {
 		let E = this.E;
-		try{
+		try {
 			const MCID = E.options.getString("mcid");
 
 			const RES_GET_UUID = await fetch("https://api.mojang.com/users/profiles/minecraft/" + MCID, {
@@ -225,12 +225,15 @@ export class INFO {
 			if (RES_GET_UUID.ok) {
 				const RESULT_GET_UUID = await RES_GET_UUID.json();
 
-				const RES_GET_BASE64 = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
+				const RES_GET_BASE64 = await fetch(
+					"https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
 					}
-				});
+				);
 
 				if (RES_GET_BASE64.ok) {
 					const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
@@ -262,11 +265,12 @@ export class INFO {
 
 					//結果を出力
 					await E.editReply({ embeds: [EB] });
-				}else{
+				} else {
 					await E.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
 				}
-			}else{//エラーを返されたので
-				switch(RES_GET_UUID.status){
+			} else {
+				//エラーを返されたので
+				switch (RES_GET_UUID.status) {
 					case 404:
 						await E.editReply("そんなユーザー居ないらしいよ");
 						return;
@@ -276,8 +280,8 @@ export class INFO {
 						return;
 				}
 			}
-		}catch(EX){
-			console.log("[ ERR ][ MINE ]" + EX)
+		} catch (EX) {
+			console.log("[ ERR ][ MINE ]" + EX);
 			await E.editReply("エラー");
 		}
 	}

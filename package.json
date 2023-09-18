@@ -8,7 +8,9 @@
     "test": "echo \"Error: そんなもんねえ！\" && exit 1",
     "start": "sh ./autoexec.sh",
     "install": "sh ./setup.sh",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "prepare": "husky install",
+    "lint": "prettier -w ./ && eslint -fix"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
   "dependencies": {
     "chromedriver": "^116.0.0",
     "discord.js": "^13.16.0",
+    "moji": "^0.5.1",
     "node-fetch": "^3.3.2",
     "selenium-webdriver": "^4.11.1",
     "ws": "^8.13.0"
@@ -23,7 +26,7 @@
   "devDependencies": {
     "discord-api-types": "^0.37.56",
     "eslint": "^8.48.0",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3"
   },

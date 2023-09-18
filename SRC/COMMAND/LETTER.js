@@ -190,10 +190,8 @@ export class LETTER {
 	async main() {
 		let E = this.E;
 		try {
-			// let LETTER_JSON = this.LETTER_JSON; // TODO 消せ
 			let OLD_TEXT = E.options.getString("text");
 			let OLD_LETTER = E.options.getString("old").toUpperCase();
-			// let NEW_LETTER = E.options.getString("new").toUpperCase(); // TODO 消せ
 
 			let NEW_TEXT = await this.XEST_IPA(OLD_TEXT, OLD_LETTER);
 

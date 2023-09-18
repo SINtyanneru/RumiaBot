@@ -1,9 +1,4 @@
-import {
-	kazemidori, minto,
-	rumiserver, __four__lkmy,
-	midoriReimuChan,
-	massango
-} from "./SYNTAX_SUGER.js";
+import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango } from "./SYNTAX_SUGER.js";
 
 export async function LOCK_NICK_NAME(MEMBER) {
 	try {
