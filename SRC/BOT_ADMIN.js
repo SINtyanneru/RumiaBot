@@ -61,7 +61,7 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "EXEC/.")) {
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
-			eval(CMD);
+			message.reply(JSON.stringify(eval(CMD)));
 		} catch (EX) {
 			console.log(EX);
 		}
