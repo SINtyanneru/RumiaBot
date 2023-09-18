@@ -411,10 +411,6 @@ client.on("messageCreate", async message => {
 							message.reply("きもい");
 							return;
 						}
-						if (message.author.id === azusa || message.author.id === kazemidori) {
-							message.reply("そうですか(笑)");
-							return;
-						}
 						if (
 							message.author.id === rumi ||
 							message.author.id === hakurei_win ||
@@ -496,26 +492,6 @@ client.on("messageCreate", async message => {
 		});
 	}
 	*/
-
-	//あずさ
-	if (message.author.id === azusa || message.author.id === kazemidori) {
-		if (
-			message.content.includes("きしょ") ||
-			message.content.includes("死ね") ||
-			message.content.includes("kisyo") ||
-			message.content.includes("やめろ") ||
-			message.content.includes("死ね")
-		) {
-			message.reply("黙れ");
-		}
-
-		if (message.content.includes("おい") || message.content.includes("は？") || message.content.includes("うわ")) {
-			message.reply("あ？");
-		}
-		if (message.content.includes("天安門")) {
-			message.reply("気をつけな、あんた、中華人民共和国当局に、見られてるぜ");
-		}
-	}
 
 	if (message.content === "今日は何の日？") {
 		message.react("✅");
