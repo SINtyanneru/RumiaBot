@@ -387,10 +387,10 @@ client.on("messageCreate", async message => {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
 		message.reply(
 			'ping -c5 "' +
-			message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
-			'"' +
-			"\nIP?" +
-			net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+				'"' +
+				"\nIP?" +
+				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
 		);
 	}
 
@@ -549,17 +549,17 @@ client.on("interactionCreate", async INTERACTION => {
 
 		console.log(
 			"[ INFO ][CMD]┌Interaction create:" +
-			INTERACTION.commandName +
-			"\n             ├in " +
-			INTERACTION.guild.name +
-			"\n             ├in " +
-			INTERACTION.channel.name +
-			INTERACTION.channelId +
-			"\n             └in " +
-			INTERACTION.member.user.username +
-			"(" +
-			INTERACTION.member.id +
-			")"
+				INTERACTION.commandName +
+				"\n             ├in " +
+				INTERACTION.guild.name +
+				"\n             ├in " +
+				INTERACTION.channel.name +
+				INTERACTION.channelId +
+				"\n             └in " +
+				INTERACTION.member.user.username +
+				"(" +
+				INTERACTION.member.id +
+				")"
 		);
 
 		//ユーザーに待ってもらう
@@ -743,31 +743,31 @@ client.on("guildMemberAdd", member => {
 
 								USER.send(
 									"あなたは、" +
-									DATE.getFullYear().toString() +
-									"年 " +
-									(DATE.getMonth() + 1).toString() +
-									"月 " +
-									DATE.getDate().toString() +
-									"日 " +
-									DAY_FORMAT[DATE.getDay()] +
-									"曜日 " +
-									DATE.getHours().toString() +
-									"時 " +
-									DATE.getMinutes().toString() +
-									"分 " +
-									DATE.getSeconds().toString() +
-									"秒 " +
-									DATE.getMilliseconds().toString() +
-									"ミリ秒\n" +
-									"に、るみさんの鯖から脱退しています。\n" +
-									"認証をされるには、<@" +
-									rumi +
-									">にDMで以下のことを教えてください。\n" +
-									"\n" +
-									"1・なぜ抜けたのか\n" +
-									"2・なぜ戻ってきたのか\n" +
-									"\n" +
-									"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
+										DATE.getFullYear().toString() +
+										"年 " +
+										(DATE.getMonth() + 1).toString() +
+										"月 " +
+										DATE.getDate().toString() +
+										"日 " +
+										DAY_FORMAT[DATE.getDay()] +
+										"曜日 " +
+										DATE.getHours().toString() +
+										"時 " +
+										DATE.getMinutes().toString() +
+										"分 " +
+										DATE.getSeconds().toString() +
+										"秒 " +
+										DATE.getMilliseconds().toString() +
+										"ミリ秒\n" +
+										"に、るみさんの鯖から脱退しています。\n" +
+										"認証をされるには、<@" +
+										rumi +
+										">にDMで以下のことを教えてください。\n" +
+										"\n" +
+										"1・なぜ抜けたのか\n" +
+										"2・なぜ戻ってきたのか\n" +
+										"\n" +
+										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
 								);
 							}
 						}
