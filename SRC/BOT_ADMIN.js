@@ -151,7 +151,7 @@ export async function BOT_ADMIN(message) {
 			message.reply(JSON.stringify(CONFIG.BLOCK_LIST));
 		} catch (EX) {
 			console.log(EX);
-			
+
 			message.reply("エラー");
 		}
 	}
