@@ -2,41 +2,38 @@
 import { Message } from "discord.js";
 import moji from "moji";
 import { rumiserver } from "./MODULES/SYNTAX_SUGER.js";
+import { WebHook_FIND } from "./MODULES/WebHook_FIND.js";
+
 export class DENIED_WORD {
 	static DENIED_WORD_LIST = {
 		"836142496563068929": [
 			// るみサーバーにて
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,
-				WHITE_LIST: [],
-				WH:true
+				WHITE_LIST: []
 			},
 			{
 				WORD: /(?:(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)){2}/g,
-				WHITE_LIST: [],
-				WH:true
+				WHITE_LIST: []
 			},
 			{
 				WORD: /まんこ|マンコ/g,
-				WHITE_LIST: [],
-				WH:true
+				WHITE_LIST: []
 			},
 			{
 				WORD: /まんちん|マンチン/g,
-				WHITE_LIST: [],
-				WH:true
+				WHITE_LIST: []
 			},
 			{
 				WORD: /BGA/g,
-				WHITE_LIST: [],
-				WH:true
+				WHITE_LIST: []
 			}
 		]
 	};
 	/**
 	 * @param {Message} MESSAGE
 	 */
-	main(MESSAGE) {
+	async main(MESSAGE) {
 		try {
 			if (MESSAGE.guild.id === rumiserver) {
 				// HACK 合理的じゃないから後でなんとかして(しろ)
@@ -53,6 +50,15 @@ export class DENIED_WORD {
 						//元メッセージを削除
 						if (MESSAGE.content) {
 							MESSAGE.delete();
+
+							let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
+
+							//WHでめっせーじを送る
+							WEB_HOOK.send({
+								username: MESSAGE.author.username,
+								avatarURL: "https://cdn.discordapp.com/avatars/" + MESSAGE.author.id + "/" + MESSAGE.author.avatar + ".png",
+								content: "[自主規制]"
+							});
 						}
 					}
 				}
