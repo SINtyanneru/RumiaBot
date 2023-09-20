@@ -1,6 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 import { GuildMember } from "discord.js";
-import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango, rumisub, p_nsk } from "./SYNTAX_SUGER.js";
+import {
+	kazemidori,
+	minto,
+	rumiserver,
+	__four__lkmy,
+	midoriReimuChan,
+	massango,
+	rumisub,
+	p_nsk
+} from "./SYNTAX_SUGER.js";
 /** @param {GuildMember} MEMBER */
 export async function LOCK_NICK_NAME(MEMBER) {
 	try {
