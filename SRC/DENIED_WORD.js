@@ -10,23 +10,33 @@ export class DENIED_WORD {
 			// るみサーバーにて
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /(?:(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)){2}/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /まんこ|マンコ/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /まんちん|マンチン/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /BGA/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
+			},
+			{
+				WORD: /lolbeans\.io/g,
+				WHITE_LIST: [],
+				WH:false
 			}
 		]
 	};
@@ -43,27 +53,29 @@ export class DENIED_WORD {
 					const hiragana_content = moji(MESSAGE.content)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
-					const ISDETECTED = DWL.some(ROW => ROW.WORD.test(hiragana_content));
+					const ISDETECTED = DWL.find(ROW => ROW.WORD.test(hiragana_content));
 
 					//禁止ワードだったか
 					if (ISDETECTED) {
 						//元メッセージを削除
 						if (MESSAGE.content) {
+							if(ISDETECTED.WH){
+								let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
+								let TEXT = this.OVERWRITE_REGEX_MATCH(MESSAGE.content, ISDETECTED.WORD, "○");
+
+								//WHでめっせーじを送る
+								WEB_HOOK.send({
+									username: MESSAGE.author.username,
+									avatarURL:
+										"https://cdn.discordapp.com/avatars/" +
+										MESSAGE.author.id +
+										"/" +
+										MESSAGE.author.avatar +
+										".png",
+									content: TEXT
+								});
+							}
 							MESSAGE.delete();
-
-							let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
-
-							//WHでめっせーじを送る
-							WEB_HOOK.send({
-								username: MESSAGE.author.username,
-								avatarURL:
-									"https://cdn.discordapp.com/avatars/" +
-									MESSAGE.author.id +
-									"/" +
-									MESSAGE.author.avatar +
-									".png",
-								content: "[自主規制]"
-							});
 						}
 					}
 				}
@@ -72,5 +84,14 @@ export class DENIED_WORD {
 			console.log("[ ERR ][ DEN_WORD ]" + EX);
 			return;
 		}
+	}
+
+	OVERWRITE_REGEX_MATCH(inputString, regexPattern, overwriteText) {
+		return inputString.replace(regexPattern, (match) => {
+			const middle = Math.floor(match.length / 2);
+			const leftPart = match.substring(0, middle);
+			const rightPart = match.substring(middle + overwriteText.length); // 上書きするテキストの長さ分を右側から削除
+			return leftPart + overwriteText + rightPart;
+		});
 	}
 }
