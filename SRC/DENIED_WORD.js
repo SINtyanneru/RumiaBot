@@ -56,7 +56,12 @@ export class DENIED_WORD {
 							//WHでめっせーじを送る
 							WEB_HOOK.send({
 								username: MESSAGE.author.username,
-								avatarURL: "https://cdn.discordapp.com/avatars/" + MESSAGE.author.id + "/" + MESSAGE.author.avatar + ".png",
+								avatarURL:
+									"https://cdn.discordapp.com/avatars/" +
+									MESSAGE.author.id +
+									"/" +
+									MESSAGE.author.avatar +
+									".png",
 								content: "[自主規制]"
 							});
 						}
