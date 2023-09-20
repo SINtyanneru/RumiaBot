@@ -31,7 +31,7 @@ import { SQL } from "./SQL.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 let DENIED_WORD_OBJ = new DENIED_WORD();
-let SQL_OBJ = new SQL();
+export let SQL_OBJ = new SQL();
 
 client.once("ready", async () => {
 	console.log("    ____                  _       ____  ____  ______");

@@ -5,6 +5,7 @@ import { MessageEmbed, Message } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { exec } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
+import { SQL_OBJ } from "./Main.js";
 
 /**
  * BOT管理者が使う奴
@@ -157,6 +158,28 @@ export async function BOT_ADMIN(message) {
 			console.log(EX);
 
 			message.reply("エラー");
+		}
+	}
+
+	//好感度
+	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "LIKE/.")) {
+		try {
+			const UID = message.content.replace(CONFIG.ADMIN_PREFIX + "LIKE/.", "");
+			SQL_OBJ.SCRIPT_RUN("SELECT * FROM `LIKABILITY` WHERE `UID` = ?;", [UID]).then((RESULT) => {
+				if(RESULT.length !== 0){
+					let RESULT_ODIN = RESULT[0];
+
+					message.reply("ID:" + RESULT_ODIN.ID + "\n"+
+								  "DiscordID" + RESULT_ODIN.UID + "\n"+
+								  "好感度:" + RESULT_ODIN.LIKABILITY);
+				}else{
+					message.reply("誰ですかそれ");
+				}
+			}).catch((EX) => {
+				message.reply(JSON.stringify(EX));
+			});
+		} catch (EX) {
+			console.log(EX);
 		}
 	}
 }
