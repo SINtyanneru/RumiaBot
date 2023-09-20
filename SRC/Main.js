@@ -27,9 +27,11 @@ import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
 import { search } from "./MODULES/search.js";
 import { convert_vxtwitter } from "./convert_vxtwitter.js";
+import { SQL } from "./SQL.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 let DENIED_WORD_OBJ = new DENIED_WORD();
+let SQL_OBJ = new SQL();
 
 client.once("ready", async () => {
 	console.log("    ____                  _       ____  ____  ______");
@@ -38,6 +40,8 @@ client.once("ready", async () => {
 	console.log(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
 	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 	console.log("V1.1");
+
+	
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
