@@ -8,23 +8,28 @@ export class DENIED_WORD {
 			// るみサーバーにて
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /(?:(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)){2}/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /まんこ|マンコ/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /まんちん|マンチン/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			},
 			{
 				WORD: /BGA/g,
-				WHITE_LIST: []
+				WHITE_LIST: [],
+				WH:true
 			}
 		]
 	};
@@ -41,9 +46,6 @@ export class DENIED_WORD {
 					const hiragana_content = moji(MESSAGE.content)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
-					// someは、Boolを返す、どれか一つがtrueを返したらtrueになる関数
-					// 読んで理解できたら消してね
-					// わからなかったら https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/some
 					const ISDETECTED = DWL.some(ROW => ROW.WORD.test(hiragana_content));
 
 					//禁止ワードだったか
