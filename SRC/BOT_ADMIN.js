@@ -165,19 +165,28 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "LIKE/.")) {
 		try {
 			const UID = message.content.replace(CONFIG.ADMIN_PREFIX + "LIKE/.", "");
-			SQL_OBJ.SCRIPT_RUN("SELECT * FROM `LIKABILITY` WHERE `UID` = ?;", [UID]).then((RESULT) => {
-				if(RESULT.length !== 0){
-					let RESULT_ODIN = RESULT[0];
+			SQL_OBJ.SCRIPT_RUN("SELECT * FROM `LIKABILITY` WHERE `UID` = ?;", [UID])
+				.then(RESULT => {
+					if (RESULT.length !== 0) {
+						let RESULT_ODIN = RESULT[0];
 
-					message.reply("ID:" + RESULT_ODIN.ID + "\n"+
-									"DiscordID" + RESULT_ODIN.UID + "\n"+
-									"好感度:" + RESULT_ODIN.LIKABILITY);
-				}else{
-					message.reply("誰ですかそれ");
-				}
-			}).catch((EX) => {
-				message.reply(JSON.stringify(EX));
-			});
+						message.reply(
+							"ID:" +
+								RESULT_ODIN.ID +
+								"\n" +
+								"DiscordID" +
+								RESULT_ODIN.UID +
+								"\n" +
+								"好感度:" +
+								RESULT_ODIN.LIKABILITY
+						);
+					} else {
+						message.reply("誰ですかそれ");
+					}
+				})
+				.catch(EX => {
+					message.reply(JSON.stringify(EX));
+				});
 		} catch (EX) {
 			console.log(EX);
 		}
