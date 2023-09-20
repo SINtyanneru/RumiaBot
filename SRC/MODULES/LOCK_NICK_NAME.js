@@ -25,18 +25,18 @@ export async function LOCK_NICK_NAME(MEMBER) {
 				[rumisub]: "Rumi hat alonaaaaaaaaaa",
 				[p_nsk]: "プヌスク㌨"
 			};
-			console.log(MEMBER);
+
 			const NLU = NICK_LOCK_USER[MEMBER.user.id.toString()];
 			if (NLU) {
-				if (NLU.NAME !== MEMBER.nickname) {
+				if (NLU !== MEMBER.nickname) {
 					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
-					//if (MEMBER.manageable) {
-					console.log("わーわーわーわーわーわーわーわーわーわー");
-					console.log(await MEMBER.setNickname(NLU.NAME));
-					//} else {
-					//	console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
-					//	return;
-					//}
+					if (MEMBER.manageable) {
+						console.log("わーわーわーわーわーわーわーわーわーわー");
+						await MEMBER.setNickname(NLU);
+					} else {
+						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
+						return;
+					}
 				}
 			}
 		}
