@@ -1,27 +1,33 @@
-import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango, rumisub } from "./SYNTAX_SUGER.js";
-
+// eslint-disable-next-line no-unused-vars
+import { GuildMember } from "discord.js";
+import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango, rumisub, p_nsk } from "./SYNTAX_SUGER.js";
+/** @param {GuildMember} MEMBER */
 export async function LOCK_NICK_NAME(MEMBER) {
 	try {
 		//るみ鯖無いでの出来事に適応
 		if (MEMBER.guild.id === rumiserver) {
+			console.log("動くはず");
 			const NICK_LOCK_USER = {
 				[kazemidori]: "ねこかわ",
 				[minto]: "ミント㌨Да！！",
 				[__four__lkmy]: "BaGuAr二世",
 				[midoriReimuChan]: "ベジタリアン霊夢",
 				[massango]: 'まっさんこ"う"',
-				[rumisub]: "Rumi hat alonaaaaaaaaaa"
+				[rumisub]: "Rumi hat alonaaaaaaaaaa",
+				[p_nsk]: "プヌスク㌨"
 			};
-			const NLU = NICK_LOCK_USER[MEMBER.id.toString()];
+			console.log(MEMBER);
+			const NLU = NICK_LOCK_USER[MEMBER.user.id.toString()];
 			if (NLU) {
 				if (NLU.NAME !== MEMBER.nickname) {
-					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.name + "がニックネームを変えました");
-					if (MEMBER.manageable) {
-						MEMBER.setNickname(NLU.NAME);
-					} else {
-						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
-						return;
-					}
+					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
+					//if (MEMBER.manageable) {
+					console.log("わーわーわーわーわーわーわーわーわーわー");
+					console.log(await MEMBER.setNickname(NLU.NAME));
+					//} else {
+					//	console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
+					//	return;
+					//}
 				}
 			}
 		}
