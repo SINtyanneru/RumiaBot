@@ -11,8 +11,6 @@ import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import {
-	kazemidori,
-	azusa,
 	rumiserver,
 	rumi,
 	hakurei_win,
@@ -30,6 +28,7 @@ import { convert_vxtwitter } from "./convert_vxtwitter.js";
 import { SQL } from "./SQL.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
+// ↑インスタンスのことですか？
 let DENIED_WORD_OBJ = new DENIED_WORD();
 let SQL_OBJ = new SQL();
 
