@@ -1,13 +1,14 @@
 import { CONFIG } from "./MODULES/CONFIG.js";
 import { client } from "./MODULES/loadClient.js";
-import { MessageEmbed } from "discord.js";
+// eslint-disable-next-line no-unused-vars
+import { MessageEmbed, Message } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { exec } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 
 /**
  * BOT管理者が使う奴
- * @param {*} message メッセージ
+ * @param {Message} message メッセージ
  */
 export async function BOT_ADMIN(message) {
 	//参加済みサーバーの数を表示
@@ -61,7 +62,10 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "EXEC/.")) {
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
-			message.reply(JSON.stringify(eval(CMD)));
+			console.log(CMD);
+			const result = eval(CMD);
+			console.log(result);
+			message.reply(JSON.stringify(result).toString() || "内容が返されませんでした！！");
 		} catch (EX) {
 			console.log(EX);
 		}
