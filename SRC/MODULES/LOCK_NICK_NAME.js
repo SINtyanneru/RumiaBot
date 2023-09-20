@@ -10,6 +10,8 @@ export async function LOCK_NICK_NAME(MEMBER) {
 			NICK_LOCK_USER.set(__four__lkmy, { NAME: "BaGuAr二世" });
 			NICK_LOCK_USER.set(midoriReimuChan, { NAME: "緑霊夢" });
 			NICK_LOCK_USER.set(massango, { NAME: 'まっさんご"う"' });
+			NICK_LOCK_USER.set(kazemidori, { NAME: "風緑" });
+			NICK_LOCK_USER.set("945939067961499698", { NAME: "Rumi hat alonaaaaaaaaaa" });
 
 			const NLU = NICK_LOCK_USER.get[MEMBER.id.toString()];
 			if (NLU) {
