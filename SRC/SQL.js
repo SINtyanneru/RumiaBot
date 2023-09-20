@@ -16,7 +16,7 @@ export class SQL{
 				database: CONFIG.SQL_DB
 			});
 
-			this.main();
+			this.main()
 		}
 	}
 

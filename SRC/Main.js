@@ -41,8 +41,6 @@ client.once("ready", async () => {
 	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 	console.log("V1.1");
 
-	
-
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
 		console.log("⠀⠀⠀⠀⢀⣴⣿⣿⣿⡿⠋⠀⠀⠀⠹⣿⣦⡀");
@@ -527,7 +525,7 @@ client.on("interactionCreate", async INTERACTION => {
 			//コマンドが送信されたか確認
 			return;
 		}
-		try{
+		try {
 			console.log(
 				"[ INFO ][CMD]┌Interaction create:" +
 					INTERACTION.commandName +
@@ -542,7 +540,7 @@ client.on("interactionCreate", async INTERACTION => {
 					INTERACTION.member.id +
 					")"
 			);
-		}catch(EX){
+		} catch (EX) {
 			INTERACTION.reply("エラー");
 			return;
 		}
