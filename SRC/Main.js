@@ -523,21 +523,25 @@ client.on("interactionCreate", async INTERACTION => {
 			//コマンドが送信されたか確認
 			return;
 		}
-
-		console.log(
-			"[ INFO ][CMD]┌Interaction create:" +
-				INTERACTION.commandName +
-				"\n             ├in " +
-				INTERACTION.guild.name +
-				"\n             ├in " +
-				INTERACTION.channel.name +
-				INTERACTION.channelId +
-				"\n             └in " +
-				INTERACTION.member.user.username +
-				"(" +
-				INTERACTION.member.id +
-				")"
-		);
+		try{
+			console.log(
+				"[ INFO ][CMD]┌Interaction create:" +
+					INTERACTION.commandName +
+					"\n             ├in " +
+					INTERACTION.guild.name +
+					"\n             ├in " +
+					INTERACTION.channel.name +
+					INTERACTION.channelId +
+					"\n             └in " +
+					INTERACTION.member.user.username +
+					"(" +
+					INTERACTION.member.id +
+					")"
+			);
+		}catch(EX){
+			INTERACTION.reply("エラー");
+			return;
+		}
 
 		//ユーザーに待ってもらう
 		await INTERACTION.deferReply();
