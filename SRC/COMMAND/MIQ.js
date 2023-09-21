@@ -5,7 +5,7 @@ export class MIQ {
 	load_miq(message) {
 		try {
 			const MSG_ID = message.id;
-			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", MSG_ID + ".png");
+			const DWN_PATH = PATH.join("DOWNLOAD", "MIQ", "quote_" + MSG_ID + ".png");
 
 			if (FS.existsSync(DWN_PATH)) {
 				message.channel.send({
