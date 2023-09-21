@@ -50,7 +50,7 @@ export class DENIED_WORD {
 				const DWL = DENIED_WORD.DENIED_WORD_LIST[rumiserver];
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
-					const hiragana_content = moji(MESSAGE.content)
+					const hiragana_content = moji(MESSAGE.content.replace("\u0000", "").replace("\u200C", "").replace("\u2061", ""))
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
 					const ISDETECTED = DWL.find(ROW => ROW.WORD.test(hiragana_content));
