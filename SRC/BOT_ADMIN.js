@@ -201,14 +201,14 @@ export async function BOT_ADMIN(message) {
 					"Content-Type": "application/json"
 				}
 			});
-			if(RES.ok){
+			if (RES.ok) {
 				const RESULT = await RES.json();
-				if(RESULT.STATUS){
+				if (RESULT.STATUS) {
 					message.reply("るみさんのお金は" + RESULT.MONEY + "円だよ");
-				}else{
+				} else {
 					message.reply("エラー" + RESULT.ERR);
 				}
-			}else{
+			} else {
 				message.reply("取得に失敗" + RES.status);
 			}
 		} catch (EX) {

@@ -11,32 +11,32 @@ export class DENIED_WORD {
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,
 				WHITE_LIST: [],
-				WH:true
+				WH: true
 			},
 			{
 				WORD: /(?:(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)){2}/g,
 				WHITE_LIST: [],
-				WH:true
+				WH: true
 			},
 			{
 				WORD: /まんこ|マンコ/g,
 				WHITE_LIST: [],
-				WH:true
+				WH: true
 			},
 			{
 				WORD: /まんちん|マンチン/g,
 				WHITE_LIST: [],
-				WH:true
+				WH: true
 			},
 			{
 				WORD: /BGA/g,
 				WHITE_LIST: [],
-				WH:true
+				WH: true
 			},
 			{
 				WORD: /lolbeans\.io/g,
 				WHITE_LIST: [],
-				WH:false
+				WH: false
 			}
 		]
 	};
@@ -50,7 +50,9 @@ export class DENIED_WORD {
 				const DWL = DENIED_WORD.DENIED_WORD_LIST[rumiserver];
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
-					const hiragana_content = moji(MESSAGE.content.replace("\u0000", "").replace("\u200C", "").replace("\u2061", ""))
+					const hiragana_content = moji(
+						MESSAGE.content.replace("\u0000", "").replace("\u200C", "").replace("\u2061", "")
+					)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
 					const ISDETECTED = DWL.find(ROW => ROW.WORD.test(hiragana_content));
@@ -59,7 +61,7 @@ export class DENIED_WORD {
 					if (ISDETECTED) {
 						//元メッセージを削除
 						if (MESSAGE.content) {
-							if(ISDETECTED.WH){
+							if (ISDETECTED.WH) {
 								let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
 								let TEXT = this.OVERWRITE_REGEX_MATCH(MESSAGE.content, ISDETECTED.WORD, "○");
 
@@ -87,7 +89,7 @@ export class DENIED_WORD {
 	}
 
 	OVERWRITE_REGEX_MATCH(inputString, regexPattern, overwriteText) {
-		return inputString.replace(regexPattern, (match) => {
+		return inputString.replace(regexPattern, match => {
 			const middle = Math.floor(match.length / 2);
 			const leftPart = match.substring(0, middle);
 			const rightPart = match.substring(middle + overwriteText.length); // 上書きするテキストの長さ分を右側から削除
