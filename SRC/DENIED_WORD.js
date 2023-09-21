@@ -56,29 +56,38 @@ export class DENIED_WORD {
 					)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
-					const ISDETECTED = DWL.find(ROW => ROW.WORD.test(hiragana_content));
+					//filterとかいうよくわからん関数で、禁止ワードを検知する
+					const ISDETECTEDS = DWL.filter(ROW => ROW.WORD.test(hiragana_content));
 
-					//禁止ワードだったか
-					if (ISDETECTED) {
-						//元メッセージを削除
+					//禁止ワードがあったか
+					if (ISDETECTEDS.length !== 0) {
+						//元メッセージの文字列を入れる
+						let TEXT = MESSAGE.content;
+
+						//検出された全ての禁止ワードを置き換える
+						for (let I = 0; I < ISDETECTEDS.length; I++) {
+							const ISDETECTED = ISDETECTEDS[I];
+							TEXT = sanitize(this.OVERWRITE_REGEX_MATCH(TEXT, ISDETECTED.WORD, "○"));
+						}
+
+						//メッセージが有るか
 						if (MESSAGE.content) {
-							if (ISDETECTED.WH) {
-								let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
-								let TEXT = sanitize(this.OVERWRITE_REGEX_MATCH(MESSAGE.content, ISDETECTED.WORD, "○"));
-
-								//WHでめっせーじを送る
-								WEB_HOOK.send({
-									username: MESSAGE.author.username,
-									avatarURL:
-										"https://cdn.discordapp.com/avatars/" +
-										MESSAGE.author.id +
-										"/" +
-										MESSAGE.author.avatar +
-										".png",
-									content: TEXT
-								});
-							}
+							//元メッセージを消す
 							MESSAGE.delete();
+
+							//WHを準部
+							let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
+							//WHでメッセージを送る
+							WEB_HOOK.send({
+								username: MESSAGE.author.username,
+								avatarURL:
+									"https://cdn.discordapp.com/avatars/" +
+									MESSAGE.author.id +
+									"/" +
+									MESSAGE.author.avatar +
+									".png",
+								content: TEXT
+							});
 						}
 					}
 				}
@@ -90,7 +99,7 @@ export class DENIED_WORD {
 	}
 
 	OVERWRITE_REGEX_MATCH(inputString, regexPattern, overwriteText) {
-		return inputString.replace(regexPattern, match => {
+		return inputString.replaceAll(regexPattern, match => {
 			const middle = Math.floor(match.length / 2);
 			const leftPart = match.substring(0, middle);
 			const rightPart = match.substring(middle + overwriteText.length); // 上書きするテキストの長さ分を右側から削除
