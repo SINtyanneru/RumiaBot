@@ -612,26 +612,6 @@ client.on("guildCreate", async GUILD => {
 	}
 });
 
-//鯖からキックされた
-client.on("guildDelete", GUILD => {
-	try {
-		const LOG_CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
-
-		if (LOG_CH !== undefined) {
-			LOG_CH.send(GUILD.name + "(" + GUILD.id + ")から叩き出されました；；");
-
-			const SERVERS = client.guilds.cache;
-
-			LOG_CH.send(
-				SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!"
-			);
-		}
-	} catch (EX) {
-		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
-		return;
-	}
-});
-
 //メッセージが消された
 client.on("messageDelete", async deletedMessage => {
 	if (deletedMessage.author.bot && deletedMessage.webhookId !== null) {
