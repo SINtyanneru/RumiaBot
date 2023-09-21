@@ -191,4 +191,30 @@ export async function BOT_ADMIN(message) {
 			console.log(EX);
 		}
 	}
+
+	//私のお金
+	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "MONEY/.")) {
+		try {
+			let RES = await fetch("https://rumiserver.com/API/Rumisan/money.php", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json"
+				}
+			});
+			if(RES.ok){
+				const RESULT = await RES.json();
+				if(RESULT.STATUS){
+					message.reply("るみさんのお金は" + RESULT.MONEY + "円だよ");
+				}else{
+					message.reply("エラー" + RESULT.ERR);
+				}
+			}else{
+				message.reply("取得に失敗" + RES.status);
+			}
+		} catch (EX) {
+			console.log(EX);
+
+			message.reply("エラー");
+		}
+	}
 }
