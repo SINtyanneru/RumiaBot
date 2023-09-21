@@ -16,7 +16,7 @@ export async function LOCK_NICK_NAME(MEMBER) {
 		//るみ鯖無いでの出来事に適応
 		if (MEMBER.guild.id === rumiserver) {
 			const NICK_LOCK_USER = {
-				[kazemidori]: "ねこかわ",
+				[kazemidori]: "もふもふ風緑",
 				[minto]: "ミント㌨Да！！",
 				[__four__lkmy]: "BaGuAr二世",
 				[midoriReimuChan]: "ベジタリアン霊夢",
