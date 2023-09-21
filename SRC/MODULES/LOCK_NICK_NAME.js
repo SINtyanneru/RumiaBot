@@ -20,7 +20,7 @@ export async function LOCK_NICK_NAME(MEMBER) {
 				[minto]: "ミント㌨Да！！",
 				[__four__lkmy]: "BaGuAr二世",
 				[midoriReimuChan]: "ベジタリアン霊夢",
-				[massango]: 'まっさんこ"う"',
+				[massango]: 'もふもふまっさんこ"う"',
 				[rumisub]: "Rumi hat alonaaaaaaaaaa",
 				[p_nsk]: "プヌスク㌨"
 			};
