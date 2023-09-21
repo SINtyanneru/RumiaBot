@@ -1,6 +1,5 @@
 {
 	"todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO", "XXX", "[ ]", "[x]", "// NOTE"],
-	"editor.renderWhitespace": "selection",
 	"editor.cursorStyle": "line",
 	"editor.tabSize": 4,
 	"editor.insertSpaces": false,
