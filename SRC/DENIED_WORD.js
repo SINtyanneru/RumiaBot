@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import moji from "moji";
 import { rumiserver } from "./MODULES/SYNTAX_SUGER.js";
 import { WebHook_FIND } from "./MODULES/WebHook_FIND.js";
+import { sanitize } from "./MODULES/sanitize.js";
 
 export class DENIED_WORD {
 	static DENIED_WORD_LIST = {
@@ -63,7 +64,7 @@ export class DENIED_WORD {
 						if (MESSAGE.content) {
 							if (ISDETECTED.WH) {
 								let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
-								let TEXT = this.OVERWRITE_REGEX_MATCH(MESSAGE.content, ISDETECTED.WORD, "○");
+								let TEXT = sanitize(this.OVERWRITE_REGEX_MATCH(MESSAGE.content, ISDETECTED.WORD, "○"));
 
 								//WHでめっせーじを送る
 								WEB_HOOK.send({
