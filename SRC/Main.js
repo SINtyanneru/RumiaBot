@@ -768,5 +768,61 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 	LOCK_NICK_NAME(newMember);
 });
 
+//ロール変更を検知
+client.on("roleUpdate", (oldRole, newRole) => {
+	//まぞくロール
+	if (newRole.id === "1130723739349291089") {
+		const OLD_ROLE_PM = oldRole.permissions.toArray();
+		const NEW_ROLE_PM = newRole.permissions.toArray();
+
+		const CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
+		if (CH) {
+			let PM_UPDATE_LIST = [];
+			//旧ロール設定からの比較
+			OLD_ROLE_PM.forEach(OLD_PM => {
+				if (NEW_ROLE_PM.find(PM => PM === OLD_PM)) {
+					PM_UPDATE_LIST.push({
+						NAME: OLD_PM,
+						TYPE: "EX"
+					});
+				} else {
+					PM_UPDATE_LIST.push({
+						NAME: OLD_PM,
+						TYPE: "LOST"
+					});
+				}
+			});
+			//新ロール設定からの比較
+			NEW_ROLE_PM.forEach(OLD_PM => {
+				if (!OLD_ROLE_PM.find(PM => PM === OLD_PM)) {
+					PM_UPDATE_LIST.push({
+						NAME: OLD_PM,
+						TYPE: "NEW"
+					});
+				}
+			});
+
+			//diffは神です
+			let PM_UPDATE_TEXT = "```diff\n";
+			//文字化する
+			for (let I = 0; I < PM_UPDATE_LIST.length; I++) {
+				const PM_UPDATE = PM_UPDATE_LIST[I];
+				if (PM_UPDATE.TYPE === "EX") {
+					PM_UPDATE_TEXT += PM_UPDATE.NAME + "\n";
+				} else if (PM_UPDATE.TYPE === "LOST") {
+					PM_UPDATE_TEXT += "- " + PM_UPDATE.NAME + "\n";
+				} else if (PM_UPDATE.TYPE === "NEW") {
+					PM_UPDATE_TEXT += "+ " + PM_UPDATE.NAME + "\n";
+				}
+			}
+			//THE END
+			PM_UPDATE_TEXT += "```";
+
+			//作った文字列をおくりつける
+			CH.send("まぞくロールの権限が変更されました\n" + PM_UPDATE_TEXT);
+		}
+	}
+});
+
 // ログインする
 client.login(CONFIG.TOKEN);
