@@ -819,7 +819,7 @@ client.on("roleUpdate", (oldRole, newRole) => {
 			PM_UPDATE_TEXT += "```";
 
 			//作った文字列をおくりつける
-			CH.send("まぞくロールの権限が変更されました\n" + PM_UPDATE_TEXT);
+			CH.send("まぞくロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
 		}
 	}
 });
