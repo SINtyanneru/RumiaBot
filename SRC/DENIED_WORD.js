@@ -52,7 +52,7 @@ export class DENIED_WORD {
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
 					const hiragana_content = moji(
-						MESSAGE.content.replace("\u0000", "").replace("\u200C", "").replace("\u2061", "")
+						MESSAGE.content.replaceAll("\u0000", "").replaceAll("\u200C", "").replaceAll("\u2061", "")
 					)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
