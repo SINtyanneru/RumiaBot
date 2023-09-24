@@ -153,7 +153,7 @@ export async function BOT_ADMIN(message) {
 	//ブロックリスト
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "BL/.")) {
 		try {
-			message.reply(JSON.stringify(CONFIG.BLOCK_LIST));
+			message.reply("以下の人がブロックされてます\n" + JSON.stringify(CONFIG.BLOCK_LIST));
 		} catch (EX) {
 			console.log(EX);
 

@@ -23,7 +23,7 @@ export async function LOCK_NICK_NAME(MEMBER) {
 				[massango]: 'もふもふまっさんこ"う"',
 				[rumisub]: "Rumi hat alonaaaaaaaaaa",
 				[p_nsk]: "プヌスク㌨",
-				["933278317778464769"]: "梓がもふもふするペット"
+				["933278317778464769"]: " もふもふhassyTK"
 			};
 
 			const NLU = NICK_LOCK_USER[MEMBER.user.id.toString()];
