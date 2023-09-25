@@ -506,7 +506,7 @@ client.on("messageCreate", async message => {
 	}
 
 	if (message.content.startsWith("ルーレット")) {
-		const CHOISE_LIST = sanitize(message.content.replace("ルーレット ").split(","));
+		const CHOISE_LIST = message.content.replace("ルーレット ").split(",");
 		const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
 		if (CHOISE_LIST[RANDOM]) {
 			message.reply(sanitize(CHOISE_LIST[RANDOM]));
