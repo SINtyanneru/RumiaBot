@@ -509,7 +509,7 @@ client.on("messageCreate", async message => {
 		const CHOISE_LIST = message.content.replace("ルーレット ").split(",");
 		const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
 		if (CHOISE_LIST[RANDOM]) {
-			message.reply(sanitize(CHOISE_LIST[RANDOM]));
+			message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM]));
 		}
 	}
 });
