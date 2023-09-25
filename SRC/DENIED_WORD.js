@@ -40,7 +40,7 @@ export class DENIED_WORD {
 				WH: false
 			},
 			{
-				WORD: /恒心教/g,
+				WORD: /恒心/g,
 				WHITE_LIST: ["1155798824472805476"],
 				WH: false
 			}
