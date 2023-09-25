@@ -56,9 +56,7 @@ export class DENIED_WORD {
 				const DWL = DENIED_WORD.DENIED_WORD_LIST[rumiserver];
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
-					const hiragana_content = moji(
-						MESSAGE.content.replaceAll("\u0000", "").replaceAll("\u200C", "").replaceAll("\u2061", "")
-					)
+					const hiragana_content = moji(MESSAGE.content)
 						.convert("KK", "HG")
 						.toString(); /* カタカナをひらがなに */
 					//filterとかいうよくわからん関数で、禁止ワードを検知する
@@ -73,7 +71,7 @@ export class DENIED_WORD {
 						//ホワイトリストになければ処理する
 						if (!(WHITE_LIST_DETECT === MESSAGE.channel.id)) {
 							//元メッセージの文字列を入れる
-							let TEXT = MESSAGE.content;
+							let TEXT = this.NULL_REP(MESSAGE.content);
 							//検出された全ての禁止ワードを置き換える
 							for (let I = 0; I < ISDETECTEDS.length; I++) {
 								const ISDETECTED = ISDETECTEDS[I];
@@ -119,5 +117,13 @@ export class DENIED_WORD {
 			const rightPart = match.substring(middle + overwriteText.length); // 上書きするテキストの長さ分を右側から削除
 			return leftPart + overwriteText + rightPart;
 		});
+	}
+
+	NULL_REP(TEXT) {
+		let RESULT = TEXT;
+		RESULT.replaceAll("\u0000", "");
+		RESULT.replaceAll("\u200C", "");
+		RESULT.replaceAll("\u2061", "");
+		return RESULT;
 	}
 }
