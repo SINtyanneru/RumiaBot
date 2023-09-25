@@ -38,6 +38,11 @@ export class DENIED_WORD {
 				WORD: /lolbeans\.io/g,
 				WHITE_LIST: [],
 				WH: false
+			},
+			{
+				WORD: /恒心教/g,
+				WHITE_LIST: ["1155798824472805476"],
+				WH: false
 			}
 		]
 	};
@@ -61,33 +66,42 @@ export class DENIED_WORD {
 
 					//禁止ワードがあったか
 					if (ISDETECTEDS.length !== 0) {
-						//元メッセージの文字列を入れる
-						let TEXT = MESSAGE.content;
+						const WHITE_LIST_DETECT = ISDETECTEDS[0].WHITE_LIST.filter(
+							CID => CID === MESSAGE.channel.id
+						)[0];
 
-						//検出された全ての禁止ワードを置き換える
-						for (let I = 0; I < ISDETECTEDS.length; I++) {
-							const ISDETECTED = ISDETECTEDS[I];
-							TEXT = sanitize(this.OVERWRITE_REGEX_MATCH(TEXT, ISDETECTED.WORD, "○"));
-						}
+						//ホワイトリストになければ処理する
+						if (!(WHITE_LIST_DETECT === MESSAGE.channel.id)) {
+							//元メッセージの文字列を入れる
+							let TEXT = MESSAGE.content;
+							//検出された全ての禁止ワードを置き換える
+							for (let I = 0; I < ISDETECTEDS.length; I++) {
+								const ISDETECTED = ISDETECTEDS[I];
+								TEXT = sanitize(this.OVERWRITE_REGEX_MATCH(TEXT, ISDETECTED.WORD, "○"));
+							}
 
-						//メッセージが有るか
-						if (MESSAGE.content) {
-							//元メッセージを消す
-							MESSAGE.delete();
+							//メッセージが有るか
+							if (MESSAGE.content) {
+								//元メッセージを消す
+								MESSAGE.delete();
 
-							//WHを準部
-							let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
-							//WHでメッセージを送る
-							WEB_HOOK.send({
-								username: MESSAGE.author.username,
-								avatarURL:
-									"https://cdn.discordapp.com/avatars/" +
-									MESSAGE.author.id +
-									"/" +
-									MESSAGE.author.avatar +
-									".png",
-								content: TEXT
-							});
+								//伏せ字にして再投稿するか
+								if (ISDETECTEDS[0].WH) {
+									//WHを準部
+									let WEB_HOOK = await WebHook_FIND(MESSAGE.channel);
+									//WHでメッセージを送る
+									WEB_HOOK.send({
+										username: MESSAGE.author.username,
+										avatarURL:
+											"https://cdn.discordapp.com/avatars/" +
+											MESSAGE.author.id +
+											"/" +
+											MESSAGE.author.avatar +
+											".png",
+										content: TEXT
+									});
+								}
+							}
 						}
 					}
 				}
