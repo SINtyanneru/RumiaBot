@@ -66,14 +66,14 @@ export class WS {
 					})
 					.then(screenshotData => {
 						try {
-							FS.writeFileSync("./TEMP/" + E.member.id + ".png", screenshotData, "base64");
+							FS.writeFileSync("./DOWNLOAD/" + E.member.id + ".png", screenshotData, "base64");
 
 							E.editReply({
 								content: "おｋ：" + BROWSER_NAME_TEXT + "で撮影",
-								files: ["./TEMP/" + E.member.id + ".png"]
+								files: ["./DOWNLOAD/" + E.member.id + ".png"]
 							});
 						} catch (EX) {
-							E.editReply("接続できませんでした！");
+							E.editReply("接続できませんでした！" + EX);
 						}
 					})
 					.catch(() => {
