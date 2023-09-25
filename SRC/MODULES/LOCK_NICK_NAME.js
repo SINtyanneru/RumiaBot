@@ -32,7 +32,6 @@ export async function LOCK_NICK_NAME(MEMBER) {
 				if (NLU !== MEMBER.nickname) {
 					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
 					if (MEMBER.manageable) {
-						console.log("わーわーわーわーわーわーわーわーわーわー");
 						await MEMBER.setNickname(NLU);
 					} else {
 						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
