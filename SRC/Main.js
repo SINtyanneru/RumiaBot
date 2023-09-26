@@ -257,6 +257,10 @@ client.once("ready", async () => {
 					]
 				}
 			]
+		},
+		{
+			name: "ip",
+			description: "るみBOTのIPを表示します"
 		}
 	];
 
@@ -591,6 +595,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "info_mine":
 				new command.INFO(INTERACTION).MINECRAFT();
+				break;
+			case "ip":
+				new command.IP(INTERACTION).main();
 				break;
 		}
 	} catch (EX) {
