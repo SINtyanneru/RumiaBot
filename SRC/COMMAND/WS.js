@@ -2,6 +2,7 @@ import { Builder } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 import FS from "fs";
 import { RUMI_HAPPY_BIRTHDAY } from "../MODULES/RUMI_HAPPY_BIRTHDAY.js";
+import { CONFIG } from "../MODULES/CONFIG.js";
 export class WS {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -9,7 +10,9 @@ export class WS {
 
 	async main() {
 		let E = this.E;
-
+		if (CONFIG.DISABLE?.includes("ws")) {
+			return E.editReply("運営者の意向により、この機能は無効化されています！");
+		}
 		let URL = E.options.getString("url");
 		let BROWSER_NAME = E.options.getString("browser_name");
 		let BROWSER_NAME_TEXT = "Chrome";
@@ -28,15 +31,23 @@ export class WS {
 			if (BROWSER_NAME !== undefined && BROWSER_NAME !== null) {
 				switch (BROWSER_NAME) {
 					case "firefox":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
+						);
 						BROWSER_NAME_TEXT = "FireFox";
 						break;
 					case "floorp":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0"
+						);
 						BROWSER_NAME_TEXT = "Floorp";
 						break;
 					case "rumisan":
-						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" + RUMI_HAPPY_BIRTHDAY() + ".0");
+						chromeOptions.addArguments(
+							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" +
+								RUMI_HAPPY_BIRTHDAY() +
+								".0"
+						);
 						BROWSER_NAME_TEXT = "るみさん";
 						break;
 					default:

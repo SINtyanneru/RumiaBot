@@ -13,7 +13,7 @@ import { readFileSync } from "fs";
  * @prop {string} ADMIN_PREFIX
  * @prop {Commands[]} [DISABLE]
  *
- * @typedef {"vxtwitter" | "search" | "automod"} Commands
+ * @typedef { "vxtwitter" | "search" | "automod" | "ws" | "ip" } Commands
  *
  * @typedef {Object} SNS
  * 	@prop {string} ID
