@@ -41,7 +41,7 @@ export class SNS {
 
 		//接続が確立された際のイベントハンドラ
 		socket.on("open", () => {
-			console.log("[ OK ][ MISSKEY ]WS Connected!");
+			console.log("[ OK ][ MISSKEY ][ " + DOMAIN + " ]WS Connected!");
 
 			//メッセージをサーバーに送信
 			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
