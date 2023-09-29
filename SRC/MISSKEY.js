@@ -3,6 +3,7 @@ import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { client } from "./MODULES/loadClient.js";
+import { WebSocket } from "ws";
 export class MISSKEY {
 	constructor() {
 		this.USER = {

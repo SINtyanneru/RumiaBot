@@ -27,6 +27,7 @@ import { search } from "./MODULES/search.js";
 import { convert_vxtwitter } from "./convert_vxtwitter.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
+import { MISSKEY } from "./MISSKEY.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？
@@ -302,7 +303,7 @@ client.once("ready", async () => {
 		console.error("Error registering global slash commands:", EX);
 	}
 
-	// new MISSKEY().main();
+	new MISSKEY().main();
 
 	// 活動期間か？
 	setInterval(() => {
