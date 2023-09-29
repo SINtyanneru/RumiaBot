@@ -14,14 +14,7 @@ export class SEARCH {
 		// リクエストのオプションを設定
 		const OPTION = {
 			hostname: "www.googleapis.com",
-			path:
-				"/customsearch/v1" +
-				"?key=" +
-				encodeURIComponent(CONFIG.GOOGLE_API_KEY) +
-				"&cx=" +
-				encodeURIComponent(CONFIG.GOOGLE_API_ENGINE_ID) +
-				"&q=" +
-				encodeURIComponent(this.SEARCH_WORD),
+			path: "/customsearch/v1" + "?key=" + encodeURIComponent(CONFIG.GOOGLE_API_KEY) + "&cx=" + encodeURIComponent(CONFIG.GOOGLE_API_ENGINE_ID) + "&q=" + encodeURIComponent(this.SEARCH_WORD),
 			method: "GET"
 		};
 

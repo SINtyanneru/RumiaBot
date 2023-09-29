@@ -53,9 +53,7 @@ export class MISSKEY {
 			console.log("[ OK ][ MISSKEY ]WS Connected!");
 
 			//メッセージをサーバーに送信
-			socket.send(
-				'{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}'
-			);
+			socket.send('{"type":"connect","body":{"channel":"localTimeline","id":"1","params":{"withReplies":false}}}');
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ
@@ -101,11 +99,7 @@ export class MISSKEY {
 						if (RENOTE_ID !== null) {
 							//リノートはあるか
 							//あるのでリノート元を貼る
-							if (
-								RENOTE_NOTE.text !== undefined &&
-								RENOTE_NOTE.text !== null &&
-								RENOTE_NOTE.text !== ""
-							) {
+							if (RENOTE_NOTE.text !== undefined && RENOTE_NOTE.text !== null && RENOTE_NOTE.text !== "") {
 								EB.addFields({
 									name: "リノート元\n" + RENOTE_NOTE.user.name,
 									value: RENOTE_NOTE.text,
@@ -134,11 +128,7 @@ export class MISSKEY {
 						// アクション
 						EB.addFields({
 							name: "ｱクション",
-							value:
-								"[見に行く](https://ussr.rumiserver.com/notes/" +
-								NOTE_ID +
-								")|" +
-								"[何もしない](https://google.com)",
+							value: "[見に行く](https://ussr.rumiserver.com/notes/" + NOTE_ID + ")|" + "[何もしない](https://google.com)",
 							inline: false
 						});
 

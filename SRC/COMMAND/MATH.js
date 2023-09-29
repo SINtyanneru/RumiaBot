@@ -7,9 +7,7 @@ export class MATH {
 		let TEXT = this.TEXT;
 		TEXT = TEXT.replace(/[^0-9.+\-*/%()]/g, "");
 		if (TEXT === "") {
-			console.warn(
-				"計算をしようとしましたが、計算式に有効な文字列が含まれていませんでした。\n元の計算式:" + this.TEXT
-			);
+			console.warn("計算をしようとしましたが、計算式に有効な文字列が含まれていませんでした。\n元の計算式:" + this.TEXT);
 			return "計算式に有効な文字列が含まれていません";
 		}
 		try {

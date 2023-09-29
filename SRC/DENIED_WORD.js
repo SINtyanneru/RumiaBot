@@ -56,17 +56,13 @@ export class DENIED_WORD {
 				const DWL = DENIED_WORD.DENIED_WORD_LIST[rumiserver];
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
-					const hiragana_content = moji(MESSAGE.content)
-						.convert("KK", "HG")
-						.toString(); /* カタカナをひらがなに */
+					const hiragana_content = moji(MESSAGE.content).convert("KK", "HG").toString(); /* カタカナをひらがなに */
 					//filterとかいうよくわからん関数で、禁止ワードを検知する
 					const ISDETECTEDS = DWL.filter(ROW => ROW.WORD.test(hiragana_content));
 
 					//禁止ワードがあったか
 					if (ISDETECTEDS.length !== 0) {
-						const WHITE_LIST_DETECT = ISDETECTEDS[0].WHITE_LIST.filter(
-							CID => CID === MESSAGE.channel.id
-						)[0];
+						const WHITE_LIST_DETECT = ISDETECTEDS[0].WHITE_LIST.filter(CID => CID === MESSAGE.channel.id)[0];
 
 						//ホワイトリストになければ処理する
 						if (!(WHITE_LIST_DETECT === MESSAGE.channel.id)) {
@@ -90,12 +86,7 @@ export class DENIED_WORD {
 									//WHでメッセージを送る
 									WEB_HOOK.send({
 										username: MESSAGE.author.username,
-										avatarURL:
-											"https://cdn.discordapp.com/avatars/" +
-											MESSAGE.author.id +
-											"/" +
-											MESSAGE.author.avatar +
-											".png",
+										avatarURL: "https://cdn.discordapp.com/avatars/" + MESSAGE.author.id + "/" + MESSAGE.author.avatar + ".png",
 										content: TEXT
 									});
 								}

@@ -28,23 +28,15 @@ export class WS {
 			if (BROWSER_NAME !== undefined && BROWSER_NAME !== null) {
 				switch (BROWSER_NAME) {
 					case "firefox":
-						chromeOptions.addArguments(
-							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
-						);
+						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0");
 						BROWSER_NAME_TEXT = "FireFox";
 						break;
 					case "floorp":
-						chromeOptions.addArguments(
-							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0"
-						);
+						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
 						BROWSER_NAME_TEXT = "Floorp";
 						break;
 					case "rumisan":
-						chromeOptions.addArguments(
-							"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" +
-								RUMI_HAPPY_BIRTHDAY() +
-								".0"
-						);
+						chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0 Rumisan/" + RUMI_HAPPY_BIRTHDAY() + ".0");
 						BROWSER_NAME_TEXT = "るみさん";
 						break;
 					default:

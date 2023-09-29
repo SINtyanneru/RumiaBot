@@ -9,10 +9,7 @@ export function RUMI_HAPPY_BIRTHDAY() {
 	let yearDifference = today.getFullYear() - targetDate.getFullYear();
 
 	//10月29日以前の場合、1年引く
-	if (
-		today.getMonth() < targetDate.getMonth() ||
-		(today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())
-	) {
+	if (today.getMonth() < targetDate.getMonth() || (today.getMonth() === targetDate.getMonth() && today.getDate() < targetDate.getDate())) {
 		yearDifference--;
 	}
 	return yearDifference;

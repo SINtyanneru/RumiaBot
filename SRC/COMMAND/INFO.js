@@ -225,15 +225,12 @@ export class INFO {
 			if (RES_GET_UUID.ok) {
 				const RESULT_GET_UUID = await RES_GET_UUID.json();
 
-				const RES_GET_BASE64 = await fetch(
-					"https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json"
-						}
+				const RES_GET_BASE64 = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json"
 					}
-				);
+				});
 
 				if (RES_GET_BASE64.ok) {
 					const RESULT_GET_BASE64 = await RES_GET_BASE64.json();

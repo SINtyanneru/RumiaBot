@@ -170,16 +170,7 @@ export async function BOT_ADMIN(message) {
 					if (RESULT.length !== 0) {
 						let RESULT_ODIN = RESULT[0];
 
-						message.reply(
-							"ID:" +
-								RESULT_ODIN.ID +
-								"\n" +
-								"DiscordID" +
-								RESULT_ODIN.UID +
-								"\n" +
-								"好感度:" +
-								RESULT_ODIN.LIKABILITY
-						);
+						message.reply("ID:" + RESULT_ODIN.ID + "\n" + "DiscordID" + RESULT_ODIN.UID + "\n" + "好感度:" + RESULT_ODIN.LIKABILITY);
 					} else {
 						message.reply("誰ですかそれ");
 					}
