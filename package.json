@@ -8,8 +8,6 @@
 		"test": "echo \"Error: そんなもんねえ！\" && exit 1",
 		"start": "sh ./autoexec.sh",
 		"install": "sh ./setup.sh",
-		"postinstall": "husky install",
-		"prepare": "husky install",
 		"lint": "prettier -w ./"
 	},
 	"keywords": [],
@@ -30,15 +28,7 @@
 		"@types/mysql": "^2.15.21",
 		"discord-api-types": "^0.37.56",
 		"eslint": "^8.48.0",
-		"husky": "^8.0.0",
-		"lint-staged": "^14.0.1",
 		"prettier": "^3.0.3",
 		"typescript": "^5.2.2"
-	},
-	"lint-staged": {
-		"*.{js,jsx,ts,tsx}": [
-			"eslint --fix",
-			"prettier --write"
-		]
 	}
 }

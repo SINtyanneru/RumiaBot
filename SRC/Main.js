@@ -19,11 +19,17 @@ import { convert_vxtwitter } from "./convert_vxtwitter.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
 import { SNS } from "./SNS.js";
+import { includesAll } from "./MODULES/includesAll.js";
+import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
 export let SQL_OBJ = new SQL();
+// 何も存在しないなら
+if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
+	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
+}
 export let SNS_CONNECTION = new SNS();
 
 client.once("ready", async () => {
@@ -427,19 +433,19 @@ client.on("messageCreate", async message => {
 
 	//検索
 	if (message.content.startsWith("検索 ")) {
-		if (!CONFIG?.DISABLE?.includes("search")) {
+		if (!CONFIG.DISABLE?.includes("search")) {
 			search(message);
 		}
 	}
 
 	// vxtwitterのリンクに自動で置換する機能
-	if (!CONFIG?.DISABLE?.includes("vxtwitter")) {
+	if (!CONFIG.DISABLE?.includes("vxtwitter")) {
 		// もし実行しないと設定してるなら動かさない
 		await convert_vxtwitter(message);
 	}
 	//計算
 	if (message.content.startsWith("計算 ")) {
-		if (!CONFIG?.DISABLE?.includes("calc")) {
+		if (!CONFIG.DISABLE?.includes("calc")) {
 			// もし実行しないと設定してるなら動かさない
 			calc(message);
 		}
@@ -474,7 +480,7 @@ client.on("messageCreate", async message => {
 	}
 
 	LOCK_NICK_NAME(message.member);
-	if (!CONFIG?.DISABLE?.includes("automod")) {
+	if (!CONFIG.DISABLE?.includes("automod")) {
 		DENIED_WORD_OBJ.main(message);
 	}
 
@@ -483,6 +489,14 @@ client.on("messageCreate", async message => {
 		const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
 		if (CHOISE_LIST[RANDOM]) {
 			message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM]));
+		}
+	}
+	if (!CONFIG.DISABLE?.includes("httpcat")) {
+		const { detected, value } = includesAll(message.content, ...HTTP_STATUS_CODE);
+		if (detected) {
+			if (!message.author.bot) {
+				message.channel.send({ content: `http://http.cat/${value}`, flags: ["SUPPRESS_NOTIFICATIONS"] });
+			}
 		}
 	}
 });

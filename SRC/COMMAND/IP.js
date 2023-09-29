@@ -1,3 +1,4 @@
+import { CONFIG } from "../MODULES/CONFIG.js";
 export class IP {
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -5,7 +6,9 @@ export class IP {
 
 	async main() {
 		let E = this.E;
-
+		if (CONFIG.DISABLE?.includes("ip")) {
+			return E.editReply("運営者の意向により、開示できません！");
+		}
 		const RES = await fetch("https://api.ipify.org?format=json", {
 			method: "GET",
 			headers: {
