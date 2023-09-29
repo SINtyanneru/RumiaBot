@@ -4,43 +4,23 @@ import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { client } from "./MODULES/loadClient.js";
 import { WebSocket } from "ws";
+import { SQL_OBJ } from "./Main.js";
 
 export class MISSKEY {
 	constructor() {
-		this.USER = {
-			"9i642yz0h7": {
-				//わたし
-				GID: "836142496563068929",
-				CID: "1128742498194444298",
-				NSFW_IMG: false,
-				IMG_ONLY: false
-			},
-			"9j2aq1l739": {
-				//PNTS
-				GID: "836142496563068929",
-				CID: "1128742498194444298",
-				NSFW_IMG: false,
-				IMG_ONLY: false
-			},
-			"9j0c17mljb": {
-				//ソ連
-				GID: "836142496563068929",
-				CID: "1128742498194444298",
-				NSFW_IMG: false,
-				IMG_ONLY: false
-			},
-			"9i64svbnk0": {
-				//変態
-				GID: "836142496563068929",
-				CID: "1128742498194444298",
-				NSFW_IMG: false,
-				IMG_ONLY: false
-			}
-		};
+		this.USER = [];
 	}
 
 	main() {
-		let USER = this.USER; //ユーザー
+		//VSCさ、勝手にコード変えるのまじでやめてくれん？
+		SQL_OBJ.SCRIPT_RUN("SELECT * FROM `SNS`; ", [])
+			.then(RESULT => {
+				this.USER = RESULT;
+				console.log(RESULT);
+			})
+			.catch(EX => {
+				console.log("[ OK ][ MISSKEY ]SQL ERR:" + EX);
+			});
 
 		//WebSocketサーバーのURL
 		const serverURL = "wss://ussr.rumiserver.com/streaming?i=" + CONFIG.MISSKEY_API_KEY;
@@ -61,15 +41,18 @@ export class MISSKEY {
 			try {
 				const RESULT = JSON.parse(DATA);
 				if (RESULT.body.type === "note") {
+					//投稿者のID
 					let IT_MIS_USER = RESULT.body.body.user;
-					let IT_DIS_USER = USER[IT_MIS_USER.id];
-					let NOTE_TEXT = RESULT.body.body.text;
-					let NOTE_FILES = RESULT.body.body.files;
-					let NOTE_ID = RESULT.body.body.id;
-					let RENOTE_ID = RESULT.body.body.renoteId;
-					let RENOTE_NOTE = RESULT.body.body.renote;
+					//SQLにそのIDがあるか
+					let IT_DIS_USER = this.USER.find(ROW => ROW.SNS_UID === IT_MIS_USER.id && ROW.SNS_ID === "RU_MISSKEY");
 
-					if (IT_DIS_USER !== undefined) {
+					if (IT_DIS_USER) {
+						let NOTE_ID = RESULT.body.body.id; //ノートのID
+						let NOTE_TEXT = RESULT.body.body.text; //ノートのテキスト
+						let NOTE_FILES = RESULT.body.body.files; //ノートのファイル
+						let RENOTE_ID = RESULT.body.body.renoteId; //リノートのID
+						let RENOTE_NOTE = RESULT.body.body.renote; //リノートのデータ
+
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
 
 						const EB = new MessageEmbed();

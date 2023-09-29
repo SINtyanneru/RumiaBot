@@ -39,12 +39,12 @@ export class SNS {
 					EB.setColor(RND_COLOR());
 
 					//既に登録されているかをチェック
-					SQL_OBJ.SCRIPT_RUN("SELECT count(*) FROM `SNS` WHERE `SNS_ID` = ? AND `SNS_UID` = ?; ", [SNS_CONFIG.ID, RESULT.id])
-						.then(async RESULT => {
-							if (RESULT[0]["count(*)"] === 0) {
+					SQL_OBJ.SCRIPT_RUN("SELECT count(*) FROM `SNS` WHERE `SNS_ID` = ? AND `SNS_UID` = ? AND `CID` = ? AND `GID` = ?; ", [SNS_CONFIG.ID, RESULT.id, E.channel.id, E.guild.id])
+						.then(async RESULT_SQL => {
+							if (RESULT_SQL[0]["count(*)"] === 0) {
 								//まだ未登録なので、登録する
-								SQL_OBJ.SCRIPT_RUN("INSERT INTO `SNS` (`ID`, `SNS_ID`, `SNS_UID`, `DID`) VALUES (NULL, ?, ?, ?);", [SNS_CONFIG.ID, RESULT.id, E.member.id])
-									.then(async RESULT => {
+								SQL_OBJ.SCRIPT_RUN("INSERT INTO `SNS` (`ID`, `SNS_ID`, `SNS_UID`, `DID`, `CID`, `GID`) VALUES (NULL, ?, ?, ?, ?, ?);", [SNS_CONFIG.ID, RESULT.id, E.member.id, E.channel.id, E.guild.id])
+									.then(async RESULT_SQL => {
 										//成功
 										await E.editReply({ embeds: [EB] });
 									})
@@ -59,11 +59,8 @@ export class SNS {
 						})
 						.catch(async EX => {
 							//エラー処理
-							await E.editReply("エラー、SQLに登録出来ませんでした\n" + EX);
+							await E.editReply("エラー、SQLにアクセス出来ませんでした\n" + EX);
 						});
-					/*
-
-					*/
 				} else {
 					if (RES.status === 404) {
 						await E.editReply("指定されたアカウントは見つかりませんでした！");
