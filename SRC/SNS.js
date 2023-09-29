@@ -123,7 +123,7 @@ export class SNS {
 						// アクション
 						EB.addFields({
 							name: "ｱクション",
-							value: "[見に行く](https://ussr.rumiserver.com/notes/" + NOTE_ID + ")|" + "[何もしない](https://google.com)",
+							value: "[見に行く](https://" + DOMAIN + "/notes/" + NOTE_ID + ")|" + "[何もしない](https://google.com)",
 							inline: false
 						});
 
