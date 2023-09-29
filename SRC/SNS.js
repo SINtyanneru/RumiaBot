@@ -71,7 +71,7 @@ export class SNS {
 			if (NOTE_FILES.length === 0) {
 				//既に画像が有るか
 				//リノート元に画像は有るか
-				if (RENOTE_FILES !== 0) {
+				if (RENOTE_FILES.length !== 0) {
 					if (!RENOTE_FILES[0].isSensitive) {
 						EB.setImage(RENOTE_FILES[0].thumbnailUrl);
 					}
@@ -175,7 +175,7 @@ export class SNS {
 				const RESULT = JSON.parse(DATA);
 				//トゥートされたら実行する
 				if (RESULT.event === "update") {
-					console.log(JSON.parse(RESULT.payload));
+					const TOOT = JSON.parse(RESULT.payload);
 				}
 			} catch (EX) {
 				console.log("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
