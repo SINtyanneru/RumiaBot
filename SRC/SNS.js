@@ -53,9 +53,11 @@ export class SNS {
 		EB.setDescription(NOTE_TEXT || "テキストなし");
 
 		//ノートのファイル
-		if (NOTE_FILES.length !== 0) {
-			if (!NOTE_FILES[0].isSensitive) {
-				EB.setImage(NOTE_FILES[0].thumbnailUrl);
+		if (NOTE_FILES) {
+			if (NOTE_FILES.length !== 0) {
+				if (!NOTE_FILES[0].isSensitive) {
+					EB.setImage(NOTE_FILES[0].thumbnailUrl);
+				}
 			}
 		}
 
@@ -68,12 +70,16 @@ export class SNS {
 			});
 
 			//リノートじの画像
-			if (NOTE_FILES.length === 0) {
-				//既に画像が有るか
-				//リノート元に画像は有るか
-				if (RENOTE_FILES.length !== 0) {
-					if (!RENOTE_FILES[0].isSensitive) {
-						EB.setImage(RENOTE_FILES[0].thumbnailUrl);
+			if (NOTE_FILES) {
+				if (NOTE_FILES.length === 0) {
+					//既に画像が有るか
+					//リノート元に画像は有るか
+					if (RENOTE_FILES) {
+						if (RENOTE_FILES.length !== 0) {
+							if (!RENOTE_FILES[0].isSensitive) {
+								EB.setImage(RENOTE_FILES[0].thumbnailUrl);
+							}
+						}
 					}
 				}
 			}
@@ -176,6 +182,10 @@ export class SNS {
 				//トゥートされたら実行する
 				if (RESULT.event === "update") {
 					const TOOT = JSON.parse(RESULT.payload);
+					if (TOOT.account.id) {
+						console.log(TOOT);
+						this.SEND_EMBEDED("836142496563068929", "1128742498194444298", "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, null, null, null, null, null);
+					}
 				}
 			} catch (EX) {
 				console.log("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
