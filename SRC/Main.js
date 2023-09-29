@@ -527,7 +527,7 @@ client.on("messageCreate", async message => {
 	if (!CONFIG.DISABLE?.includes("httpcat")) {
 		const { detected, value } = includesAll(
 			message.content
-				.replace(/<@[0-9&#]+>/g, "") // ユーザーとロールのメンションを削除
+				.replace(/<@[0-9&#]+>/g, "") // ユーザーとロールのメンションを削除 あとチャンネルも削除しています
 				.replace(/<:.+?:[0-9]+>/g, "") // 絵文字idも削除
 				.replace(/<\/.+?:[0-9]+>/g, ""), // コマンドidも削除
 			...HTTP_STATUS_CODE
