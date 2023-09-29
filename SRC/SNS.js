@@ -28,8 +28,65 @@ export class SNS {
 		this.SQL_RELOAD();
 
 		CONFIG.SNS.forEach(ROW => {
-			this.misskey(ROW.DOMAIN, ROW.API, ROW.ID);
+			switch (ROW.TYPE) {
+				case "MISSKEY":
+					this.misskey(ROW.DOMAIN, ROW.API, ROW.ID);
+					break;
+				case "MASTODON":
+					this.mastodon(ROW.DOMAIN, ROW.API, ROW.ID);
+					break;
+			}
 		});
+	}
+
+	SEND_EMBEDED(GID, CID, NOTE_URL, USER_NAME, USER_ID, NID, NOTE_TEXT, NOTE_FILES, RENOTE_USER_NAME, RID, RENOTE_TEXT, RENOTE_FILES) {
+		const EB = new MessageEmbed();
+
+		//ユーザー名
+		EB.setTitle(USER_NAME);
+		//色
+		EB.setColor(RND_COLOR());
+		//URL
+		EB.setURL("https://ussr.rumiserver.com/@" + USER_ID);
+
+		//本文
+		EB.setDescription(NOTE_TEXT || "テキストなし");
+
+		//ノートのファイル
+		if (NOTE_FILES.length !== 0) {
+			if (!NOTE_FILES[0].isSensitive) {
+				EB.setImage(NOTE_FILES[0].thumbnailUrl);
+			}
+		}
+
+		//リノートがあるか
+		if (RID) {
+			EB.addFields({
+				name: "リノート元\n" + RENOTE_USER_NAME,
+				value: RENOTE_TEXT || "テキストなし",
+				inline: false
+			});
+
+			//リノートじの画像
+			if (NOTE_FILES.length === 0) {
+				//既に画像が有るか
+				//リノート元に画像は有るか
+				if (RENOTE_FILES !== 0) {
+					if (!RENOTE_FILES[0].isSensitive) {
+						EB.setImage(RENOTE_FILES[0].thumbnailUrl);
+					}
+				}
+			}
+		}
+
+		// アクション
+		EB.addFields({
+			name: "ｱクション",
+			value: "[見に行く](" + NOTE_URL + ")|" + "[何もしない](https://google.com)",
+			inline: false
+		});
+
+		MSG_SEND(client, GID, CID, { embeds: [EB] });
 	}
 
 	misskey(DOMAIN, API_TOKEN, ID) {
@@ -66,73 +123,15 @@ export class SNS {
 						let RENOTE_NOTE = RESULT.body.body.renote; //リノートのデータ
 
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
-
-						const EB = new MessageEmbed();
-						//ユーザー名
-						EB.setTitle(IT_MIS_USER.name);
-
-						//本文
-						if (NOTE_TEXT !== undefined && NOTE_TEXT !== null) {
-							//本文が有るか
-							//ある
-							EB.setDescription(NOTE_TEXT);
+						if (!RENOTE_ID) {
+							this.SEND_EMBEDED(IT_DIS_USER.GID, IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, null, null, null);
+						} else {
+							this.SEND_EMBEDED(IT_DIS_USER.GID, IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, RENOTE_NOTE.user.name, RENOTE_ID, RENOTE_NOTE.text, RENOTE_NOTE.files);
 						}
-
-						//色
-						EB.setColor(RND_COLOR());
-
-						//URL
-						EB.setURL("https://ussr.rumiserver.com/@" + IT_MIS_USER.id);
-
-						if (NOTE_FILES.length !== 0) {
-							if (!NOTE_FILES[0].isSensitive) {
-								EB.setImage(NOTE_FILES[0].thumbnailUrl);
-							}
-						}
-
-						//リノート関連
-						if (RENOTE_ID !== null) {
-							//リノートはあるか
-							//あるのでリノート元を貼る
-							if (RENOTE_NOTE.text !== undefined && RENOTE_NOTE.text !== null && RENOTE_NOTE.text !== "") {
-								EB.addFields({
-									name: "リノート元\n" + RENOTE_NOTE.user.name,
-									value: RENOTE_NOTE.text,
-									inline: false
-								});
-							} else {
-								EB.addFields({
-									name: "リノート元\n" + RENOTE_NOTE.user.name,
-									value: "[テキストナシ]",
-									inline: false
-								});
-							}
-
-							//リノートじの画像
-							if (NOTE_FILES.length === 0) {
-								//既に画像が有るか
-								//リノート元に画像は有るか
-								if (RENOTE_NOTE.files !== 0) {
-									if (!RENOTE_NOTE.files[0].isSensitive) {
-										EB.setImage(RENOTE_NOTE.files[0].thumbnailUrl);
-									}
-								}
-							}
-						}
-
-						// アクション
-						EB.addFields({
-							name: "ｱクション",
-							value: "[見に行く](https://" + DOMAIN + "/notes/" + NOTE_ID + ")|" + "[何もしない](https://google.com)",
-							inline: false
-						});
-
-						//そのまま送りつける
-						MSG_SEND(client, IT_DIS_USER.GID, IT_DIS_USER.CID, { embeds: [EB] });
 					}
 				}
 			} catch (EX) {
-				console.log("[ ERR ][ MISSKEY ]" + EX);
+				console.log("[ ERR ][ MISSKEY ][ " + DOMAIN + " ]" + EX);
 				return;
 			}
 		});
@@ -144,14 +143,56 @@ export class SNS {
 
 		//接続が閉じられた際のイベントハンドラ
 		socket.on("close", (CODE, REASON) => {
-			console.log("[ INFO ][ MISSKEY ]Disconnected!" + CODE + "REASON:" + REASON);
-			console.log("[ *** ][ MISSKEY ]Re Connecting...");
+			console.log("[ INFO ][ MISSKEY ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
+			console.log("[ *** ][ MISSKEY ][ " + DOMAIN + " ]Re Connecting...");
 			clearInterval(SEND_H);
-			this.main(); //再接続する
+			this.misskey(DOMAIN, API_TOKEN, ID); //再接続する
 		});
 
 		let SEND_H = setInterval(() => {
 			socket.send("h");
 		}, 60000);
+	}
+
+	mastodon(DOMAIN, API_TOKEN, ID) {
+		//WebSocketサーバーのURL
+		const serverURL = "wss://" + DOMAIN + "/api/v1/streaming?access_token=" + API_TOKEN;
+
+		//WebSocket接続を作成
+		const socket = new WebSocket(serverURL);
+
+		//接続が確立された際のイベントハンドラ
+		socket.on("open", () => {
+			console.log("[ OK ][ MASTODON ][ " + DOMAIN + " ]WS Connected!");
+
+			//メッセージをサーバーに送信
+			socket.send('{"type":"subscribe","stream":"public:local"}');
+		});
+
+		//サーバーからメッセージを受信した際のイベントハンドラ
+		socket.on("message", DATA => {
+			try {
+				const RESULT = JSON.parse(DATA);
+				//トゥートされたら実行する
+				if (RESULT.event === "update") {
+					console.log(JSON.parse(RESULT.payload));
+				}
+			} catch (EX) {
+				console.log("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
+				return;
+			}
+		});
+
+		//エラー発生時のイベントハンドラ
+		socket.on("error", ERR => {
+			console.error("エラーが発生しました:", ERR);
+		});
+
+		//接続が閉じられた際のイベントハンドラ
+		socket.on("close", (CODE, REASON) => {
+			console.log("[ INFO ][ MASTODON ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
+			console.log("[ *** ][ MASTODON ][ " + DOMAIN + " ]Re Connecting...");
+			this.mastodon(DOMAIN, API_TOKEN, ID); //再接続する
+		});
 	}
 }
