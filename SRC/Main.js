@@ -524,10 +524,12 @@ client.on("messageCreate", async message => {
 			message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM]));
 		}
 	}
-	const { detected, value } = includesAll(message.content, ...HTTP_STATUS_CODE);
-	if (detected) {
-		if (!message.author.bot) {
-			message.channel.send({ content: `http://http.cat/${value}` });
+	if (!CONFIG.DISABLE?.includes("httpcat")) {
+		const { detected, value } = includesAll(message.content, ...HTTP_STATUS_CODE);
+		if (detected) {
+			if (!message.author.bot) {
+				message.channel.send({ content: `http://http.cat/${value}` });
+			}
 		}
 	}
 });
