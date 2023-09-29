@@ -1,7 +1,7 @@
 import { CONFIG } from "../MODULES/CONFIG.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { MessageEmbed } from "discord.js";
-import { SQL_OBJ } from "../Main.js";
+import { SQL_OBJ, SNS_CONNECTION } from "../Main.js";
 
 export class SNS {
 	constructor(INTERACTION) {
@@ -43,10 +43,11 @@ export class SNS {
 						.then(async RESULT_SQL => {
 							if (RESULT_SQL[0]["count(*)"] === 0) {
 								//まだ未登録なので、登録する
-								SQL_OBJ.SCRIPT_RUN("INSERT INTO `SNS` (`ID`, `SNS_ID`, `SNS_UID`, `DID`, `CID`, `GID`) VALUES (NULL, ?, ?, ?, ?, ?);", [SNS_CONFIG.ID, RESULT.id, E.member.id, E.channel.id, E.guild.id])
+								SQL_OBJ.SCRIPT_RUN("INSERT INTO `SNS` (`ID`, `SNS_ID`, `SNS_UID`, `DID`, `CID`, `GID`, `NSFW_IMG`, `IMG_ONLY`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);", [SNS_CONFIG.ID, RESULT.id, E.member.id, E.channel.id, E.guild.id, 0, 0])
 									.then(async RESULT_SQL => {
 										//成功
 										await E.editReply({ embeds: [EB] });
+										SNS_CONNECTION.SQL_RELOAD();
 									})
 									.catch(async EX => {
 										//エラー処理

@@ -18,12 +18,13 @@ import { search } from "./MODULES/search.js";
 import { convert_vxtwitter } from "./convert_vxtwitter.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
-import { MISSKEY } from "./MISSKEY.js";
+import { SNS } from "./SNS.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
-// ↑インスタンスのことですか？
+// ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
 export let SQL_OBJ = new SQL();
+export let SNS_CONNECTION = new SNS();
 
 client.once("ready", async () => {
 	console.log("    ____                  _       ____  ____  ______");
@@ -32,6 +33,8 @@ client.once("ready", async () => {
 	console.log(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
 	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 	console.log("V1.1");
+
+	SNS_CONNECTION.main();
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -293,8 +296,6 @@ client.once("ready", async () => {
 	} catch (EX) {
 		console.error("Error registering global slash commands:", EX);
 	}
-
-	new MISSKEY().main();
 
 	// 活動期間か？
 	setInterval(() => {

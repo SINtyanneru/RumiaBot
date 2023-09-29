@@ -6,24 +6,35 @@ import { client } from "./MODULES/loadClient.js";
 import { WebSocket } from "ws";
 import { SQL_OBJ } from "./Main.js";
 
-export class MISSKEY {
+export class SNS {
 	constructor() {
 		this.USER = [];
 	}
 
-	main() {
+	//SQLを再読込するやつ
+	SQL_RELOAD() {
 		//VSCさ、勝手にコード変えるのまじでやめてくれん？
 		SQL_OBJ.SCRIPT_RUN("SELECT * FROM `SNS`; ", [])
 			.then(RESULT => {
 				this.USER = RESULT;
-				console.log(RESULT);
 			})
 			.catch(EX => {
 				console.log("[ OK ][ MISSKEY ]SQL ERR:" + EX);
 			});
+	}
 
+	//ごちゃごちゃ
+	main() {
+		this.SQL_RELOAD();
+
+		CONFIG.SNS.forEach(ROW => {
+			this.misskey(ROW.DOMAIN, ROW.API, ROW.ID);
+		});
+	}
+
+	misskey(DOMAIN, API_TOKEN, ID) {
 		//WebSocketサーバーのURL
-		const serverURL = "wss://ussr.rumiserver.com/streaming?i=" + CONFIG.MISSKEY_API_KEY;
+		const serverURL = "wss://" + DOMAIN + "/streaming?i=" + API_TOKEN;
 
 		//WebSocket接続を作成
 		const socket = new WebSocket(serverURL);
@@ -43,9 +54,10 @@ export class MISSKEY {
 				if (RESULT.body.type === "note") {
 					//投稿者のID
 					let IT_MIS_USER = RESULT.body.body.user;
-					//SQLにそのIDがあるか
-					let IT_DIS_USER = this.USER.find(ROW => ROW.SNS_UID === IT_MIS_USER.id && ROW.SNS_ID === "RU_MISSKEY");
+					//SQLにそのIDがあるか探す
+					let IT_DIS_USER = this.USER.find(ROW => ROW.SNS_UID === IT_MIS_USER.id && ROW.SNS_ID === ID);
 
+					//Ej! そのIDはあるか？？？
 					if (IT_DIS_USER) {
 						let NOTE_ID = RESULT.body.body.id; //ノートのID
 						let NOTE_TEXT = RESULT.body.body.text; //ノートのテキスト
