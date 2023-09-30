@@ -184,7 +184,8 @@ export class SNS {
 					const TOOT = JSON.parse(RESULT.payload);
 					if (TOOT.account.id) {
 						console.log(TOOT);
-						this.SEND_EMBEDED("836142496563068929", "1128742498194444298", "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, null, null, null, null, null);
+						const FILES = [{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
+						this.SEND_EMBEDED("836142496563068929", "1128742498194444298", "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, FILES, null, null, null, null);
 					}
 				}
 			} catch (EX) {
