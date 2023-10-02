@@ -496,9 +496,10 @@ client.on("messageCreate", async message => {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
 			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
 			if (MATCH) {
-				if (MATCH[0] !== "200") {
+				console.log(MATCH);
+				if (HTTP_STATUS_CODE.some(CODE => MATCH[0] === CODE)) {
 					if (!message.author.bot) {
-						message.channel.send({ content: `http://http.cat/${MATCH}`, flags: ["SUPPRESS_NOTIFICATIONS"] });
+						message.channel.send({ content: `http://http.cat/${MATCH[0]}`, flags: ["SUPPRESS_NOTIFICATIONS"] });
 					}
 				}
 			}
