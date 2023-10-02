@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: そんなもんねえ！\" && exit 1",
-		"start": "pm2 start pm2.config.json",
+		"start": "pm2 start pm2.config.json --watch",
 		"stop": "pm2 stop Rumiabot",
 		"install": "sh ./setup.sh",
 		"lint": "prettier -w ./"
