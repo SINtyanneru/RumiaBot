@@ -3,10 +3,11 @@ import { sanitize } from "./MODULES/sanitize.js";
 
 export async function convert_vxtwitter(message) {
 	const VX_REGEX = /https:\/\/twitter\.com\/([a-zA-Z0-9_]+\/status\/[0-9]+)(\?s=[0-9]*)?/g;
-	const result = message.content.match(VX_REGEX).at(0);
+	let result = message.content.match(VX_REGEX);
 	if (result) {
+		result = result[0];
 		let WEB_HOOK = await WebHook_FIND(message.channel);
-		const TEXT = sanitize(message.content).replace(VX_REGEX, "https://vxtwitter.com/$1 [mobile](https://twitter.com/$1)");
+		const TEXT = sanitize(message.content).replace(VX_REGEX, "https://vxtwitter.com/$1" /* [mobile](https://twitter.com/$1)"*/);
 
 		//WHでめっせーじを送る
 		WEB_HOOK.send({

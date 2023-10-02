@@ -10,16 +10,7 @@ import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
-import {
-	rumiserver,
-	rumi,
-	hakurei_win,
-	p_nsk,
-	rumisub,
-	makeitaquote,
-	general_channel,
-	exiter_channel
-} from "./MODULES/SYNTAX_SUGER.js";
+import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
 import { DENIED_WORD } from "./DENIED_WORD.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
@@ -37,9 +28,7 @@ let DENIED_WORD_OBJ = new DENIED_WORD();
 export let SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
-	throw new Error(
-		"深刻なエラー:設定が初期化されていないので、実行できません"
-	);
+	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
 }
 export let SNS_CONNECTION = new SNS();
 
@@ -363,14 +352,7 @@ client.once("ready", async () => {
 client.on("messageCreate", async message => {
 	//ログを出す
 	try {
-		let LOG_TEXT =
-			"┌[" +
-			message.author.username +
-			"@" +
-			message.guild.name +
-			"/" +
-			message.channel.name +
-			"]\n";
+		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
 		const LOG_TEXT_SPLIT = message.content.split("\n");
 		for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
 			const TEXT = LOG_TEXT_SPLIT[I];
@@ -408,70 +390,37 @@ client.on("messageCreate", async message => {
 
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
-		message.reply(
-			'ping -c5 "' +
-				message.content
-					.replace(CONFIG.ADMIN_PREFIX + "IT/.", "")
-					.replace(/[^A-Za-z0-9\-.]/g, "") +
-				'"' +
-				"\nIP?" +
-				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
-		);
+		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + '"' + "\nIP?" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
 	}
 
 	//メンションされたユーザーのコレクションを取得
 	const MENTION_USERS = message.mentions.users;
 
-	if (
-		!message.content.includes("@everyone") &&
-		!message.content.includes("@here")
-	) {
+	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
 			MENTION_USERS.forEach(USER => {
 				if (USER.id === CONFIG.ID) {
 					if (message.reference) {
-						if (
-							message.content.includes("まんこ") ||
-							message.content.includes("生理") ||
-							message.content.includes("ちんこ")
-						) {
+						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きもい");
 							return;
 						}
-						if (
-							message.author.id === rumi ||
-							message.author.id === hakurei_win ||
-							message.author.id === p_nsk ||
-							message.author.id === rumisub
-						) {
+						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
 							message.reply("そーなのかー");
 							return;
 						}
 						message.reply("そうですか。");
 					} else {
-						if (
-							message.content.includes("まんこ") ||
-							message.content.includes("生理") ||
-							message.content.includes("ちんこ")
-						) {
+						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きっしょ死ね");
 							return;
 						}
-						if (
-							message.content
-								.replace("<@" + client.user.id + ">", "")
-								.endsWith("お")
-						) {
+						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
 							message.reply("...");
 							return;
 						}
-						if (
-							message.author.id === rumi ||
-							message.author.id === hakurei_win ||
-							message.author.id === p_nsk ||
-							message.author.id === rumisub
-						) {
+						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
 							message.reply("なんなのだー？");
 							return;
 						}
@@ -564,12 +513,8 @@ client.on("messageCreate", async message => {
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	//Make it a Quote を ダウンロード
 	if (newMessage.author.id === makeitaquote) {
-		console.log(
-			newMessage.attachments.map(attachment => attachment.url).length
-		);
-		if (
-			newMessage.attachments.map(attachment => attachment.url).length > 0
-		) {
+		console.log(newMessage.attachments.map(attachment => attachment.url).length);
+		if (newMessage.attachments.map(attachment => attachment.url).length > 0) {
 			new command.MIQ().save_miq(newMessage);
 		} else {
 			new command.MIQ().load_miq(newMessage);
@@ -585,20 +530,7 @@ client.on("interactionCreate", async INTERACTION => {
 			return;
 		}
 		try {
-			console.log(
-				"[ INFO ][CMD]┌Interaction create:" +
-					INTERACTION.commandName +
-					"\n             ├in " +
-					INTERACTION.guild.name +
-					"\n             ├in " +
-					INTERACTION.channel.name +
-					INTERACTION.channelId +
-					"\n             └in " +
-					INTERACTION.member.user.username +
-					"(" +
-					INTERACTION.member.id +
-					")"
-			);
+			console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName + "\n             ├in " + INTERACTION.guild.name + "\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId + "\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
 		} catch (EX) {
 			INTERACTION.reply("エラー");
 			return;
@@ -656,14 +588,10 @@ client.on("interactionCreate", async INTERACTION => {
 //鯖に参加した
 client.on("guildCreate", async GUILD => {
 	try {
-		const LOG_CH = client.guilds.cache
-			.get(rumiserver)
-			.channels.cache.get(general_channel);
+		const LOG_CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 
 		if (LOG_CH !== undefined) {
-			LOG_CH.send(
-				sanitize(GUILD.name) + "(" + GUILD.id + ")に参加しました"
-			);
+			LOG_CH.send(sanitize(GUILD.name) + "(" + GUILD.id + ")に参加しました");
 		}
 
 		const guildOwner = await GUILD.fetchOwner();
@@ -682,28 +610,14 @@ client.on("guildCreate", async GUILD => {
 //鯖からキックされた
 client.on("guildDelete", GUILD => {
 	try {
-		const LOG_CH = client.guilds.cache
-			.get(rumiserver)
-			.channels.cache.get(general_channel);
+		const LOG_CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 
 		if (LOG_CH !== undefined) {
-			LOG_CH.send(
-				sanitize(GUILD.name) +
-					"(" +
-					GUILD.id +
-					")から叩き出されました；；"
-			);
+			LOG_CH.send(sanitize(GUILD.name) + "(" + GUILD.id + ")から叩き出されました；；");
 
 			const SERVERS = client.guilds.cache;
 
-			LOG_CH.send(
-				SERVERS.size +
-					1 +
-					" са¯ва¯ вэдэне тащ ду¯ма;\n" +
-					"Иф" +
-					SERVERS.size +
-					" са¯ва¯ вэдэне зад〜! Бля¯д!"
-			);
+			LOG_CH.send(SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
 		}
 	} catch (EX) {
 		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
@@ -743,50 +657,31 @@ client.on("guildMemberRemove", async member => {
 						]),
 						ERR => {
 							if (ERR) {
-								console.error(
-									"[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" +
-										ERR
-								);
+								console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
 							} else {
-								console.error(
-									"[ OK ][ AUTO BAN ]JSONファイルを作成しました"
-								);
+								console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
 							}
 						}
 					);
 				} else {
 					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
-							console.error(
-								"[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" +
-									ERR
-							);
+							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
 						} else {
-							console.error(
-								"[ OK ][ AUTO BAN ]JSONファイルを読み込みました"
-							);
+							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
 							const RESULT = JSON.parse(DATA);
 							if (!RESULT.some(ROW => ROW.ID === member.id)) {
 								RESULT.push({
 									ID: member.id,
 									DATE: new Date().toISOString()
 								});
-								FS.writeFile(
-									fileName,
-									JSON.stringify(RESULT),
-									ERR => {
-										if (ERR) {
-											console.error(
-												"[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" +
-													ERR
-											);
-										} else {
-											console.error(
-												"[ OK ][ AUTO BAN ]JSONファイルを作成しました"
-											);
-										}
+								FS.writeFile(fileName, JSON.stringify(RESULT), ERR => {
+									if (ERR) {
+										console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
+									} else {
+										console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
 									}
-								);
+								});
 							}
 						}
 					});
@@ -809,61 +704,19 @@ client.on("guildMemberAdd", member => {
 				if (!ERR) {
 					FS.readFile(fileName, "utf8", (ERR, DATA) => {
 						if (ERR) {
-							console.error(
-								"[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" +
-									ERR
-							);
+							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
 						} else {
-							console.error(
-								"[ OK ][ AUTO BAN ]JSONファイルを読み込みました"
-							);
+							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
 							const RESULT = JSON.parse(DATA);
-							const BAN_INFO = RESULT.find(
-								ROW => ROW.ID === member.id
-							);
+							const BAN_INFO = RESULT.find(ROW => ROW.ID === member.id);
 							if (BAN_INFO !== undefined && BAN_INFO !== null) {
 								const USER = client.users.cache.get(member.id);
 
 								//地獄計算
-								const DAY_FORMAT = [
-									"日",
-									"月",
-									"火",
-									"水",
-									"木",
-									"金",
-									"土"
-								];
+								const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
 								const DATE = new Date(BAN_INFO.DATE);
 
-								USER.send(
-									"あなたは、" +
-										DATE.getFullYear().toString() +
-										"年 " +
-										(DATE.getMonth() + 1).toString() +
-										"月 " +
-										DATE.getDate().toString() +
-										"日 " +
-										DAY_FORMAT[DATE.getDay()] +
-										"曜日 " +
-										DATE.getHours().toString() +
-										"時 " +
-										DATE.getMinutes().toString() +
-										"分 " +
-										DATE.getSeconds().toString() +
-										"秒 " +
-										DATE.getMilliseconds().toString() +
-										"ミリ秒\n" +
-										"に、るみさんの鯖から脱退しています。\n" +
-										"認証をされるには、<@" +
-										rumi +
-										">にDMで以下のことを教えてください。\n" +
-										"\n" +
-										"1・なぜ抜けたのか\n" +
-										"2・なぜ戻ってきたのか\n" +
-										"\n" +
-										"理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()"
-								);
+								USER.send("あなたは、" + DATE.getFullYear().toString() + "年 " + (DATE.getMonth() + 1).toString() + "月 " + DATE.getDate().toString() + "日 " + DAY_FORMAT[DATE.getDay()] + "曜日 " + DATE.getHours().toString() + "時 " + DATE.getMinutes().toString() + "分 " + DATE.getSeconds().toString() + "秒 " + DATE.getMilliseconds().toString() + "ミリ秒\n" + "に、るみさんの鯖から脱退しています。\n" + "認証をされるには、<@" + rumi + ">にDMで以下のことを教えてください。\n" + "\n" + "1・なぜ抜けたのか\n" + "2・なぜ戻ってきたのか\n" + "\n" + "理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()");
 							}
 						}
 					});
@@ -887,9 +740,7 @@ client.on("roleUpdate", (oldRole, newRole) => {
 		const OLD_ROLE_PM = oldRole.permissions.toArray();
 		const NEW_ROLE_PM = newRole.permissions.toArray();
 
-		const CH = client.guilds.cache
-			.get(rumiserver)
-			.channels.cache.get(general_channel);
+		const CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 		if (CH) {
 			let PM_UPDATE_LIST = [];
 			//旧ロール設定からの比較
@@ -933,10 +784,7 @@ client.on("roleUpdate", (oldRole, newRole) => {
 			PM_UPDATE_TEXT += "```";
 
 			//作った文字列をおくりつける
-			CH.send(
-				"まぞくロールの権限が変更されました\n" +
-					sanitize(PM_UPDATE_TEXT)
-			);
+			CH.send("まぞくロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
 		}
 	}
 });
