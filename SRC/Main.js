@@ -494,16 +494,12 @@ client.on("messageCreate", async message => {
 
 	if (message.guild.id === "836142496563068929") {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
-			const { detected, value } = includesAll(
-				message.content
-					.replace(/<@[0-9&#]+>/g, "") // ユーザーとロールのメンションを削除 あとチャンネルも削除しています
-					.replace(/<:.+?:[0-9]+>/g, "") // 絵文字idも削除
-					.replace(/<\/.+?:[0-9]+>/g, ""), // コマンドidも削除
-				...HTTP_STATUS_CODE
-			);
-			if (detected) {
-				if (!message.author.bot) {
-					message.channel.send({ content: `http://http.cat/${value}`, flags: ["SUPPRESS_NOTIFICATIONS"] });
+			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
+			if (MATCH) {
+				if (MATCH[0] !== "200") {
+					if (!message.author.bot) {
+						message.channel.send({ content: `http://http.cat/${MATCH}`, flags: ["SUPPRESS_NOTIFICATIONS"] });
+					}
 				}
 			}
 		}
