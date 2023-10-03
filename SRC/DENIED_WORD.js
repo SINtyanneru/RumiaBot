@@ -7,7 +7,7 @@ import { sanitize } from "./MODULES/sanitize.js";
 
 export class DENIED_WORD {
 	static DENIED_WORD_LIST = {
-		"836142496563068929": [
+		[rumiserver]: [
 			// るみサーバーにて
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,

@@ -12,3 +12,5 @@ export const midoriReimuChan = "759410422591389736";
 export const massango = "1059267736049557635";
 export const general_channel = "1128742498194444298";
 export const exiter_channel = "894185240728322058";
+export const hassy1216 = "933278317778464769";
+export const rusklabo = "754482249189294240";

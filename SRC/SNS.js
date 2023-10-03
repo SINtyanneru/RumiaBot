@@ -5,6 +5,7 @@ import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { client } from "./MODULES/loadClient.js";
 import { WebSocket } from "ws";
 import { SQL_OBJ } from "./Main.js";
+import { general_channel, rumiserver } from "./MODULES/SYNTAX_SUGER.js";
 
 export class SNS {
 	constructor() {
@@ -185,7 +186,7 @@ export class SNS {
 					if (TOOT.account.id) {
 						console.log(TOOT);
 						const FILES = [{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
-						this.SEND_EMBEDED("836142496563068929", "1128742498194444298", "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, FILES, null, null, null, null);
+						this.SEND_EMBEDED(rumiserver, general_channel, "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, FILES, null, null, null, null);
 					}
 				}
 			} catch (EX) {

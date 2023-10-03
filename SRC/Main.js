@@ -19,7 +19,6 @@ import { convert_vxtwitter } from "./convert_vxtwitter.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
 import { SNS } from "./SNS.js";
-import { includesAll } from "./MODULES/includesAll.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
