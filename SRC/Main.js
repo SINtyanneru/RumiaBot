@@ -491,6 +491,14 @@ client.on("messageCreate", async message => {
 		}
 	}
 
+	if (message.content.startsWith("時間")) {
+		const DATE = new Date();
+		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
+		const DATE_TEXT = DATE.getFullYear() + "年" + DATE.getMonth() + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
+
+		message.reply(DATE_TEXT);
+	}
+
 	if (message.guild.id === rumiserver) {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
 			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
