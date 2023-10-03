@@ -35,7 +35,7 @@ export class SQL {
 	 * SQL文を実行します
 	 * @param {String} SQL_SCRIPT SQL文
 	 * @param {Array} SQL_PARAM SQL文に必要なパラメーター(無い場合は[]でおｋ)
-	 * @returns
+	 * @returns { Promise<string,Error> }
 	 */
 	SCRIPT_RUN(SQL_SCRIPT, SQL_PARAM) {
 		return new Promise((resolve, reject) => {
