@@ -4,6 +4,7 @@
 
 import { SQL_OBJ } from "../Main.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
+import { FUNCTION_SETTING } from "../FUNCTION_SETTING.js";
 
 export class SETTING {
 	constructor(INTERACTION) {

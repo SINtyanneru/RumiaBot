@@ -26,7 +26,6 @@ import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
 export let SQL_OBJ = new SQL();
-export let FUNCTION_SETTING_OBJ = await new FUNCTION_SETTING().LOAD();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
@@ -42,7 +41,6 @@ client.once("ready", async () => {
 	console.log("V1.1");
 
 	SNS_CONNECTION.main();
-	console.log(FUNCTION_SETTING_OBJ);
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -474,10 +472,14 @@ client.on("messageCreate", async message => {
 		}
 	}
 
-	// vxtwitterのリンクに自動で置換する機能
-	if (!CONFIG.DISABLE?.includes("vxtwitter")) {
-		// もし実行しないと設定してるなら動かさない
-		await convert_vxtwitter(message);
+	//その鯖で有効化されているか
+	let FUNCTION_SETTING_OBJ = await new FUNCTION_SETTING().LOAD();
+	if (FUNCTION_SETTING_OBJ.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
+		if (!CONFIG.DISABLE?.includes("vxtwitter")) {
+			// vxtwitterのリンクに自動で置換する機能
+			// もし実行しないと設定してるなら動かさない
+			await convert_vxtwitter(message);
+		}
 	}
 	//計算
 	if (message.content.startsWith("計算 ")) {
