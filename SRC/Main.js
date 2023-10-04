@@ -20,11 +20,13 @@ import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
 import { SNS } from "./SNS.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
+import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
 export let SQL_OBJ = new SQL();
+export let FUNCTION_SETTING_OBJ = await new FUNCTION_SETTING().LOAD();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
@@ -40,6 +42,7 @@ client.once("ready", async () => {
 	console.log("V1.1");
 
 	SNS_CONNECTION.main();
+	console.log(FUNCTION_SETTING_OBJ);
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -261,6 +264,40 @@ client.once("ready", async () => {
 		{
 			name: "ip",
 			description: "るみBOTのIPを表示します"
+		},
+		{
+			name: "setting",
+			description: "設定します",
+			options: [
+				{
+					name: "mode",
+					description: "設定をどうするか",
+					type: "STRING",
+					required: true,
+					choices: [
+						{
+							name: "有効化",
+							value: "true"
+						},
+						{
+							name: "無効化",
+							value: "false"
+						}
+					]
+				},
+				{
+					name: "function",
+					description: "どの機能を？",
+					type: "STRING",
+					required: true,
+					choices: [
+						{
+							name: "VXTwitterに置き換え機能",
+							value: "vxtwitter"
+						}
+					]
+				}
+			]
 		}
 	];
 
@@ -584,6 +621,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "ip":
 				new command.IP(INTERACTION).main();
+				break;
+			case "setting":
+				new command.SETTING(INTERACTION).SET();
 				break;
 		}
 	} catch (EX) {
