@@ -11,7 +11,7 @@ import { readFileSync } from "fs";
  * @prop {SNS[]} [SNS]
  * @prop {string} ADMIN_ID
  * @prop {string} ADMIN_PREFIX
- * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" )[]} [DISABLE]
+ * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat")[]} [DISABLE]
  *
  * @typedef {Object} SNS
  * 	@prop {string} ID
