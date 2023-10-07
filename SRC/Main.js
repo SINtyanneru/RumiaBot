@@ -21,6 +21,8 @@ import { sanitize } from "./MODULES/sanitize.js";
 import { SNS } from "./SNS.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
+import PATH from "path";
+import https from "https";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -552,6 +554,31 @@ client.on("messageCreate", async message => {
 					}
 				}
 			}
+		}
+	}
+
+	if (message.attachments.size !== 0) {
+		const DOWNLOAD_URLS = message.attachments.map(attachment => attachment.url);
+		for (let I = 0; I < DOWNLOAD_URLS.length; I++) {
+			const DOWNLOAD_URL = DOWNLOAD_URLS[I];
+			//保存先
+			const DWN_PATH = PATH.join("DOWNLOAD", "MSG_FILES", message.id + "_" + I + ".png");
+			//ファイルを作るやつ
+			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
+			//ダウンロード開始
+			console.error("[ *** ][ MSG_FILES ]Downloading...");
+			https
+				.get(DOWNLOAD_URL, RES => {
+					RES.pipe(FILE_STREAM);
+
+					RES.on("end", () => {
+						//完了
+						console.error("[ OK ][ MSG_FILES ]Donwloaded");
+					});
+				})
+				.on("error", EX => {
+					console.error("[ ERR ][ MSG_FILES ]" + EX);
+				});
 		}
 	}
 });
