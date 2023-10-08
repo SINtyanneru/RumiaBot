@@ -298,6 +298,62 @@ client.once("ready", async () => {
 					]
 				}
 			]
+		},
+		{
+			name: "num",
+			description: "数字を変換します",
+			options: [
+				{
+					name: "num",
+					description: "数字",
+					type: "STRING",
+					required: true
+				},
+				{
+					name: "input",
+					description: "なに数字？",
+					type: "STRING",
+					required: true,
+					choices: [
+						{
+							name: "アラビア数字",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 日本式区切り",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 アメリカ式区切り",
+							value: "national_arabic_usa"
+						}
+					]
+				},
+				{
+					name: "output",
+					description: "変換先",
+					type: "STRING",
+					required: true,
+					choices: [
+						{
+							name: "アラビア数字",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 日本式区切り",
+							value: "national_arabic_jp"
+						},
+						{
+							name: "アラビア数字 アメリカ式区切り",
+							value: "national_arabic_usa"
+						},
+						{
+							name: "ローマ数字",
+							value: "roma"
+						}
+					]
+				}
+			]
 		}
 	];
 
@@ -535,7 +591,7 @@ client.on("messageCreate", async message => {
 	if (message.content.startsWith("時間")) {
 		const DATE = new Date();
 		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-		const DATE_TEXT = DATE.getFullYear() + "年" + DATE.getMonth() + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
+		const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
 
 		message.reply(DATE_TEXT);
 	}
@@ -562,7 +618,7 @@ client.on("messageCreate", async message => {
 		for (let I = 0; I < DOWNLOAD_URLS.length; I++) {
 			const DOWNLOAD_URL = DOWNLOAD_URLS[I];
 			//保存先
-			const DWN_PATH = PATH.join("DOWNLOAD", "MSG_FILES", message.id + "_" + I + ".png");
+			const DWN_PATH = PATH.join("DOWNLOAD", "MSG_FILES", message.id + "_" + I);
 			//ファイルを作るやつ
 			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
 			//ダウンロード開始
@@ -653,6 +709,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "setting":
 				new command.SETTING(INTERACTION).SET();
+				break;
+			case "num":
+				new command.NUM(INTERACTION).main();
 				break;
 		}
 	} catch (EX) {
