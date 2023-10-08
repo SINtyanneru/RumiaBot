@@ -1,3 +1,5 @@
+//TODO:いつか完成させる
+
 import { sanitize } from "../MODULES/sanitize.js";
 
 export class NUM {
