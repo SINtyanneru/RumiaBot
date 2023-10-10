@@ -18,8 +18,26 @@ export class test {
 		await E.editReply(TEXT);
 
 		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'USER';", []).then(async RESULT => {
-			console.log(RESULT);
-			TEXT += "[OK]SQL TABLE USER\n";
+			TEXT += "[ OK ]SQL TABLE USER\n";
+			await E.editReply(TEXT);
+		}).catch(async (EX) => {
+			TEXT += "[ ERR ]SQL TABLE USER\n";
+			await E.editReply(TEXT);
+		});
+
+		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'CONFIG';", []).then(async RESULT => {
+			TEXT += "[ OK ]SQL TABLE CONFIG\n";
+			await E.editReply(TEXT);
+		}).catch(async (EX) => {
+			TEXT += "[ ERR ]SQL TABLE CONFIG\n";
+			await E.editReply(TEXT);
+		});
+
+		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'SNS';", []).then(async RESULT => {
+			TEXT += "[ OK ]SQL TABLE SNS\n";
+			await E.editReply(TEXT);
+		}).catch(async (EX) => {
+			TEXT += "[ ERR ]SQL TABLE SNS\n";
 			await E.editReply(TEXT);
 		});
 	}
