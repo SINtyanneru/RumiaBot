@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
  * @prop {string} [SQL_HOST]
  * @prop {string} [SQL_USER]
  * @prop {string} [SQL_PASS]
+ * @prop {boolean} [SQL_CONNECT]
  * @prop {string} [GOOGLE_API_KEY]
  * @prop {string} [GOOGLE_API_ENGINE_ID]
  * @prop {SNS[]} [SNS]
