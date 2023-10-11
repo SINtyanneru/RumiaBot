@@ -1,5 +1,5 @@
-import FS from "fs";
-import net from "net";
+import * as FS from "node:fs";
+import * as net from "node:net";
 import { RUMI_HAPPY_BIRTHDAY } from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { client } from "./MODULES/loadClient.js";
 import { BOT_ADMIN } from "./BOT_ADMIN.js";
@@ -21,8 +21,8 @@ import { sanitize } from "./MODULES/sanitize.js";
 import { SNS } from "./SNS.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
-import PATH from "path";
-import https from "https";
+import * as PATH from "node:path";
+import fetch from "node-fetch";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -613,30 +613,24 @@ client.on("messageCreate", async message => {
 		}
 	}
 
-	if (message.attachments.size !== 0) {
-		const DOWNLOAD_URLS = message.attachments.map(attachment => attachment.url);
-		for (let I = 0; I < DOWNLOAD_URLS.length; I++) {
-			const DOWNLOAD_URL = DOWNLOAD_URLS[I];
-			//保存先
-			const DWN_PATH = PATH.join("DOWNLOAD", "MSG_FILES", message.id + "_" + I);
-			//ファイルを作るやつ
-			const FILE_STREAM = FS.createWriteStream(DWN_PATH);
-			//ダウンロード開始
-			console.error("[ *** ][ MSG_FILES ]Downloading...");
-			https
-				.get(DOWNLOAD_URL, RES => {
-					RES.pipe(FILE_STREAM);
-
-					RES.on("end", () => {
-						//完了
-						console.error("[ OK ][ MSG_FILES ]Donwloaded");
-					});
-				})
-				.on("error", EX => {
-					console.error("[ ERR ][ MSG_FILES ]" + EX);
-				});
-		}
-	}
+	message.attachments
+		.map(a => a)
+		.forEach((attachment, key) => {
+			const targetUrl = attachment.url;
+			const fileExtension = attachment.name.match(/\.[^.]+$/)[0];
+			const targetPath = PATH.join("DOWNLOAD", "MSG_FILES", message.guildId);
+			if (!FS.existsSync(targetPath)) {
+				// ディレクトリが存在しない場合、作成
+				FS.mkdirSync(targetPath, { recursive: true });
+			}
+			const FileStream = FS.createWriteStream(PATH.join(targetPath, message.id + "_" + key + fileExtension));
+			console.log(attachment);
+			console.info("[ *** ][ MSG_FILES ]Downloading…");
+			fetch(targetUrl)
+				.then(res => res.body.pipe(FileStream))
+				.then(() => console.info("[ OK ][ MSG_FILES ]Downloaded"))
+				.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
+		});
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {

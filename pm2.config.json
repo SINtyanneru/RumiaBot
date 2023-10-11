@@ -8,5 +8,5 @@
 	"env_production": {
 		"NODE_ENV": "production"
 	},
-	"ignore_watch": ["DOWNLOAD"]
+	"ignore_watch": ["DOWNLOAD", "\\.git", "*.log"]
 }

@@ -13,6 +13,8 @@ export class FUNCTION_SETTING {
 				console.log(EX);
 				return [];
 			}
+		} else {
+			return [];
 		}
 	}
 }
