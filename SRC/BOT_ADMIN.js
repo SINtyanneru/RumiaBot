@@ -49,10 +49,12 @@ export async function BOT_ADMIN(message) {
 					return;
 				}
 				if (stderr) {
-					message.reply("```sh\n" + stderr + "```\nEXIT CODE:NOT 0");
+					message.reply("```ansi\n" + stderr + "```\nEXIT CODE:NOT 0");
 					return;
 				}
-				message.reply("```sh\n" + stdout + "```\nEXIT CODE:0");
+
+				message.reply("```ansi\n" + stdout + "```\nEXIT CODE:0");
+
 			});
 		} catch (EX) {
 			message.reply(EX);
@@ -76,7 +78,7 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "INV/.")) {
 		try {
 			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "INV/.", "");
-			let INV_CODE = await client.guilds.cache.get(GID).channels.cache.first().createInvite();
+			let INV_CODE = await client.guilds.cache.get(GID).channels.cache.find((ROW) => ROW.type === "GUILD_TEXT").createInvite();
 
 			message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
 		} catch (EX) {
