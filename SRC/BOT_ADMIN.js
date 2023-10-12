@@ -52,8 +52,11 @@ export async function BOT_ADMIN(message) {
 					message.reply("```ansi\n" + stderr + "```\nEXIT CODE:NOT 0");
 					return;
 				}
+				
+				let TEXT = stdout;
+				TEXT = TEXT.replace(/\x1b\[[\d;]*(:[0-9;]*[Hf])?[A-GSTJK]/g, "");
 
-				message.reply("```ansi\n" + stdout + "```\nEXIT CODE:0");
+				message.reply("```ansi\n" + TEXT + "```\nEXIT CODE:0");
 
 			});
 		} catch (EX) {
