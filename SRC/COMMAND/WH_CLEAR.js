@@ -1,3 +1,5 @@
+import { sanitize } from "../MODULES/sanitize";
+
 export class WH_CLEAR{
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -19,10 +21,10 @@ export class WH_CLEAR{
 					const WH = FWH[I][1];
 					try{
 						WH.delete();
-						TEXT += "[ OK ]" + WH.name + "(" + WH.id + ")" + "\n";
+						TEXT += "[ OK ]" + sanitize(WH.name) + "(" + WH.id + ")" + "\n";
 						this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
 					}catch(EX){
-						TEXT += "[ ERR ]" + WH.name + "(" + WH.id + ")" + "\n→" + EX + "\n";
+						TEXT += "[ ERR ]" + sanitize(WH.name) + "(" + WH.id + ")" + "\n→" + EX + "\n";
 						this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
 					}
 				}
