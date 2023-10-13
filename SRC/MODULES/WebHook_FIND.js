@@ -1,8 +1,8 @@
-import { CONFIG } from "./CONFIG.js";
+import { client } from "./loadClient.js";
 
 export async function WebHook_FIND(CHANNEL) {
 	let FWH = await CHANNEL.fetchWebhooks();
-	let WH = FWH.find(webhook => webhook.owner.id === CONFIG.ID);
+	let WH = FWH.find(webhook => webhook.owner.id === client.user.id);
 	if (WH) {
 		return WH;
 	} else {
