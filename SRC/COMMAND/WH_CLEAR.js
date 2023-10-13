@@ -1,4 +1,4 @@
-import { sanitize } from "../MODULES/sanitize";
+import { sanitize } from "../MODULES/sanitize.js";
 
 export class WH_CLEAR{
 	constructor(INTERACTION) {
