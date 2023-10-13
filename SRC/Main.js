@@ -266,6 +266,10 @@ client.once("ready", async () => {
 			description: "るみBOTのIPを表示します"
 		},
 		{
+			name: "wh_clear",
+			description: "WHをすべてクリアします"
+		},
+		{
 			name: "setting",
 			description: "設定します",
 			options: [
@@ -706,6 +710,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "num":
 				new command.NUM(INTERACTION).main();
+				break;
+			case "wh_clear":
+				new command.WH_CLEAR(INTERACTION).main();
 				break;
 		}
 	} catch (EX) {
