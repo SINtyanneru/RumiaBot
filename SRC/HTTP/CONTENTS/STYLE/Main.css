@@ -1,0 +1,25 @@
+:root{
+	--HEADER_HTIGHT: 50px;
+}
+
+body{
+	margin: 0px;
+}
+
+.HEADER{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+
+	border-bottom: solid 1px;
+
+	width: 100vw;
+	height: var(--HEADER_HTIGHT);
+
+	backgroud-color: rgba(255, 255, 255, 0.5);
+	backdrop-filter: blur(10px);
+}
+
+.CONTENTS{
+	margin-top: var(--HEADER_HTIGHT);
+}

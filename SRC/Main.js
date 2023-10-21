@@ -23,10 +23,12 @@ import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
 import * as PATH from "node:path";
 import fetch from "node-fetch";
+import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
+let HTTP_SERVER_OBJ = new HTTP_SERVER();
 export let SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
@@ -42,7 +44,11 @@ client.once("ready", async () => {
 	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 	console.log("V1.1");
 
+	//SNSのインスタンスに接続
 	SNS_CONNECTION.main();
+
+	//HTTP鯖を起動
+	HTTP_SERVER_OBJ.main();
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");

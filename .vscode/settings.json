@@ -11,5 +11,13 @@
 	},
 	"[ignore]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features",
+		"editor.formatOnSave": false
+	},
+	"[css]": {
+		"editor.defaultFormatter": "vscode.html-language-features",
+		"editor.formatOnSave": false
 	}
 }
