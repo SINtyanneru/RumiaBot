@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { GuildMember } from "discord.js";
-import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango, rumisub, p_nsk, hassy1216, rusklabo } from "./SYNTAX_SUGER.js";
+import { kazemidori, minto, rumiserver, __four__lkmy, midoriReimuChan, massango, rumisub, p_nsk, hassy1216, rusklabo, azusa } from "./SYNTAX_SUGER.js";
 /** @param {GuildMember} MEMBER */
 export async function LOCK_NICK_NAME(MEMBER) {
 	try {
@@ -15,7 +15,8 @@ export async function LOCK_NICK_NAME(MEMBER) {
 				[rumisub]: "Rumi hat alonaaaaaaaaaa",
 				[p_nsk]: "プヌスク㌨",
 				[hassy1216]: " もふもふhassyTK",
-				[rusklabo]: " もふもふラスクラボ"
+				[rusklabo]: " もふもふラスクラボ",
+				[azusa]: "†行動の代償† もふもふ梓"
 			};
 
 			const NLU = NICK_LOCK_USER[MEMBER.user.id.toString()];

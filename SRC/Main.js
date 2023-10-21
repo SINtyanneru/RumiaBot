@@ -630,7 +630,6 @@ client.on("messageCreate", async message => {
 				FS.mkdirSync(targetPath, { recursive: true });
 			}
 			const FileStream = FS.createWriteStream(PATH.join(targetPath, message.id + "_" + key + fileExtension));
-			console.log(attachment);
 			console.info("[ *** ][ MSG_FILES ]Downloading…");
 			fetch(targetUrl)
 				.then(res => res.body.pipe(FileStream))
