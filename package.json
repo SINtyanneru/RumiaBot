@@ -17,7 +17,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"chromedriver": "^116.0.0",
+		"chromedriver": "^118.0.0",
 		"discord.js": "^13.16.0",
 		"jsdoc": "^4.0.2",
 		"moji": "^0.5.1",
