@@ -580,9 +580,11 @@ client.on("messageCreate", async message => {
 	}
 
 	LOCK_NICK_NAME(message.member);
+	/*
 	if (!CONFIG.DISABLE?.includes("automod")) {
 		DENIED_WORD_OBJ.main(message);
 	}
+	*/
 
 	if (message.content.startsWith("ルーレット")) {
 		const CHOISE_LIST = message.content.replace("ルーレット ").split(",");

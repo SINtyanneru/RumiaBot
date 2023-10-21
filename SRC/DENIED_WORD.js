@@ -1,3 +1,7 @@
+/**
+ * 事実上機能停止
+ */
+
 // eslint-disable-next-line no-unused-vars
 import { Message } from "discord.js";
 import moji from "moji";
