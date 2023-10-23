@@ -14,14 +14,14 @@ import { SQL_OBJ } from "./Main.js";
 export async function BOT_ADMIN(message) {
 	//参加済みサーバーの数を表示
 	if (message.content === CONFIG.ADMIN_PREFIX + "SLS") {
-		console.log(client.guilds.cache.size);
+		console.log("接続済みサーバーの数:", client.guilds.cache.size);
 		message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 	}
 
 	//参加済みサーバーを表示
 	if (message.content === CONFIG.ADMIN_PREFIX + "SL") {
 		const SERVERS = client.guilds.cache;
-		console.log(SERVERS.size);
+		console.log("接続済みサーバーの数:", SERVERS.size);
 
 		let EB = new MessageEmbed()
 			.setTitle("参加済み鯖")
@@ -52,12 +52,11 @@ export async function BOT_ADMIN(message) {
 					message.reply("```ansi\n" + stderr + "```\nEXIT CODE:NOT 0");
 					return;
 				}
-				
+
 				let TEXT = stdout;
 				TEXT = TEXT.replace(/\x1b\[[\d;]*(:[0-9;]*[Hf])?[A-GSTJK]/g, "");
 
 				message.reply("```ansi\n" + TEXT + "```\nEXIT CODE:0");
-
 			});
 		} catch (EX) {
 			message.reply(EX);
@@ -66,14 +65,16 @@ export async function BOT_ADMIN(message) {
 
 	//任意コード実行
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "EXEC/.")) {
+		console.log("任意コードを実行する");
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
 			console.log(CMD);
 			const result = eval(CMD);
-			console.log(result);
-			message.reply(JSON.stringify(result).toString() || "内容が返されませんでした！！");
+			console.log("[ EVAL_RESULT ] ", result);
+			message.reply(JSON.stringify(result)?.toString() || "内容が返されませんでした！！");
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
+			message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
 		}
 	}
 
@@ -81,11 +82,14 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "INV/.")) {
 		try {
 			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "INV/.", "");
-			let INV_CODE = await client.guilds.cache.get(GID).channels.cache.find((ROW) => ROW.type === "GUILD_TEXT").createInvite();
+			let INV_CODE = await client.guilds.cache
+				.get(GID)
+				.channels.cache.find(ROW => ROW.type === "GUILD_TEXT")
+				.createInvite();
 
 			message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
@@ -98,7 +102,7 @@ export async function BOT_ADMIN(message) {
 			let GUILD = client.guilds.cache.get(GID);
 			GUILD.leave();
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
@@ -131,7 +135,7 @@ export async function BOT_ADMIN(message) {
 				message.reply("鯖がありません");
 			}
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
@@ -149,7 +153,7 @@ export async function BOT_ADMIN(message) {
 				message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
 			}
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
@@ -160,7 +164,7 @@ export async function BOT_ADMIN(message) {
 		try {
 			message.reply("以下の人がブロックされてます\n" + JSON.stringify(CONFIG.BLOCK_LIST));
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
@@ -181,10 +185,11 @@ export async function BOT_ADMIN(message) {
 					}
 				})
 				.catch(EX => {
+					console.error(EX);
 					message.reply(JSON.stringify(EX));
 				});
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 		}
 	}
 
@@ -208,7 +213,7 @@ export async function BOT_ADMIN(message) {
 				message.reply("取得に失敗" + RES.status);
 			}
 		} catch (EX) {
-			console.log(EX);
+			console.error(EX);
 
 			message.reply("エラー");
 		}
