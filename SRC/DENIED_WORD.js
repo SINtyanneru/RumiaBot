@@ -100,7 +100,7 @@ export class DENIED_WORD {
 				}
 			}
 		} catch (EX) {
-			console.log("[ ERR ][ DEN_WORD ]" + EX);
+			console.error("[ ERR ][ DEN_WORD ]" + EX);
 			return;
 		}
 	}

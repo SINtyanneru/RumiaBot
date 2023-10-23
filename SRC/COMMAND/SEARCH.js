@@ -86,7 +86,7 @@ export class SEARCH {
 					//返答
 					this.E.reply({ embeds: [EB] });
 				} catch (EX) {
-					console.log("[ ERR ][ SEARCH ]" + EX);
+					console.error("[ ERR ][ SEARCH ]" + EX);
 				}
 			});
 		});
