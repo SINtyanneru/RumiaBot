@@ -17,12 +17,22 @@ body{
 	background-color: #e3e5e8;
 
 	text-align: center;
+
+	overflow-x: scroll;
 }
 
 .GUILD_LIST > button{
 	width: 48px;
 	height: 48px;
+
+	overflow: hidden;
 }
+
+.GUILD_LIST > button > img{
+	width: 100%;
+	height: 100%;
+}
+
 
 .CONTENTS{
 	position: absolute;

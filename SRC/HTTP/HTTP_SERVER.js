@@ -1,5 +1,6 @@
 import * as HTTP from "node:http";
 import * as FS from "node:fs";
+import { client } from "../MODULES/loadClient.js";
 
 export class HTTP_SERVER {
 	constructor() {
@@ -28,14 +29,24 @@ export class HTTP_SERVER {
 			 * API部分
 			 */
 			if (REQ.url.startsWith("/API")) {
-				switch (REQ.url) {
-					case "/API/GUILD_LIST_GET":
+				if (REQ.url === "/API/GUILD_LIST_GET") {
+					let GUILDS = client.guilds.cache;
+					if (GUILDS) {
+						let GUILDS_ARRAY = [];
+						GUILDS.forEach(GUILD => {
+							GUILDS_ARRAY.push({
+								"ID": GUILD.id,
+								"NAME": GUILD.name,
+								"ICON_URL": GUILD.iconURL()
+							});
+						});
 						RES.end(
 							JSON.stringify({
-								STATUS: true
+								"STATUS": true,
+								"GUILDS": GUILDS_ARRAY
 							})
 						);
-						break;
+					}
 				}
 
 				//これ以上処理する必要がないので殺す
