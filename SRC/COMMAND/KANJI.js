@@ -337,6 +337,7 @@ export class KANJI {
 				this.O_N_XEST(E, KANJI_JSON, TEXT);
 			}
 		} catch (EX) {
+			console.error("[ ERR ][ KANJI ]", EX);
 			this.E.editReply("変換時にエラーが発生したよ☆");
 		}
 	}

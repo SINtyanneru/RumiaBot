@@ -76,11 +76,14 @@ export class WS {
 							});
 							return;
 						} catch (EX) {
+							console.error("[ ERR ][ WebScreenShot ]", EX);
 							E.editReply("接続できませんでした！" + EX);
 							return;
 						}
 					})
 					.catch(() => {
+						// FIXME エラーは回収してないっぽいからそのままにしておくけど、大丈夫そ？
+						// console.error("[ ERR ][ WebScreenShot ]", EX);
 						E.editReply("接続できませんでした！");
 						//WebDriverを終了
 						driver.quit();
@@ -92,6 +95,7 @@ export class WS {
 						return;
 					});
 			} catch (EX) {
+				console.error("[ ERR ][ WebScreenShot ]", EX);
 				E.editReply("接続できませんでした！");
 				return;
 			}

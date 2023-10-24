@@ -14,7 +14,7 @@ export class MATH {
 			let MATH_RESULT = /*this.CALC(TEXT)*/ `多分結果は：「${eval(TEXT)}」です`;
 			return MATH_RESULT;
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			return "計算式がおかしいぞ";
 		}
 	}

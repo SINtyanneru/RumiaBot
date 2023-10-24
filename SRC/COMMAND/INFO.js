@@ -278,7 +278,7 @@ export class INFO {
 				}
 			}
 		} catch (EX) {
-			console.log("[ ERR ][ MINE ]" + EX);
+			console.error("[ ERR ][ MINE ]" + EX);
 			await E.editReply("エラー");
 		}
 	}

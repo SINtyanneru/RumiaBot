@@ -10,7 +10,7 @@ export class FUNCTION_SETTING {
 				const RESULT = await SQL_OBJ.SCRIPT_RUN("SELECT * FROM `CONFIG`", []);
 				return RESULT;
 			} catch (EX) {
-				console.log(EX);
+				console.error(EX);
 				return [];
 			}
 		} else {

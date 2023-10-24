@@ -17,28 +17,38 @@ export class test {
 
 		await E.editReply(TEXT);
 
-		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'USER';", []).then(async RESULT => {
-			TEXT += "[ OK ]SQL TABLE USER\n";
-			await E.editReply(TEXT);
-		}).catch(async (EX) => {
-			TEXT += "[ ERR ]SQL TABLE USER\n";
-			await E.editReply(TEXT);
-		});
+		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'USER';", [])
+			.then(async () => {
+				TEXT += "[ OK ]SQL TABLE USER\n";
+				await E.editReply(TEXT);
+			})
+			.catch(async EX => {
+				console.error("[ ERR ][ TEST ][ TABLE USER ]", EX);
+				TEXT += "[ ERR ]SQL TABLE USER\n";
+				await E.editReply(TEXT);
+			});
 
-		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'CONFIG';", []).then(async RESULT => {
-			TEXT += "[ OK ]SQL TABLE CONFIG\n";
-			await E.editReply(TEXT);
-		}).catch(async (EX) => {
-			TEXT += "[ ERR ]SQL TABLE CONFIG\n";
-			await E.editReply(TEXT);
-		});
+		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'CONFIG';", [])
+			.then(async () => {
+				TEXT += "[ OK ]SQL TABLE CONFIG\n";
+				await E.editReply(TEXT);
+			})
+			.catch(async EX => {
+				console.error("[ ERR ][ TEST ][ TABLE CONFIG ]", EX);
 
-		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'SNS';", []).then(async RESULT => {
-			TEXT += "[ OK ]SQL TABLE SNS\n";
-			await E.editReply(TEXT);
-		}).catch(async (EX) => {
-			TEXT += "[ ERR ]SQL TABLE SNS\n";
-			await E.editReply(TEXT);
-		});
+				TEXT += "[ ERR ]SQL TABLE CONFIG\n";
+				await E.editReply(TEXT);
+			});
+
+		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'SNS';", [])
+			.then(async () => {
+				TEXT += "[ OK ]SQL TABLE SNS\n";
+				await E.editReply(TEXT);
+			})
+			.catch(async EX => {
+				console.error("[ ERR ][ TEST ][ TABLE SNS ]", EX);
+				TEXT += "[ ERR ]SQL TABLE SNS\n";
+				await E.editReply(TEXT);
+			});
 	}
 }

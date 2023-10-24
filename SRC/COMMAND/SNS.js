@@ -44,13 +44,14 @@ export class SNS {
 							if (RESULT_SQL[0]["count(*)"] === 0) {
 								//まだ未登録なので、登録する
 								SQL_OBJ.SCRIPT_RUN("INSERT INTO `SNS` (`ID`, `SNS_ID`, `SNS_UID`, `DID`, `CID`, `GID`, `NSFW_IMG`, `IMG_ONLY`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);", [SNS_CONFIG.ID, RESULT.id, E.member.id, E.channel.id, E.guild.id, 0, 0])
-									.then(async RESULT_SQL => {
+									.then(async () => {
 										//成功
 										await E.editReply({ embeds: [EB] });
 										SNS_CONNECTION.SQL_RELOAD();
 									})
 									.catch(async EX => {
 										//エラー処理
+										console.error("[ ERR in Promise ][ SNS ]", EX);
 										await E.editReply("エラー、SQLに登録出来ませんでした\n" + EX);
 									});
 							} else {
@@ -60,6 +61,7 @@ export class SNS {
 						})
 						.catch(async EX => {
 							//エラー処理
+							console.error("[ ERR in Promise ][ SNS ]", EX);
 							await E.editReply("エラー、SQLにアクセス出来ませんでした\n" + EX);
 						});
 				} else {

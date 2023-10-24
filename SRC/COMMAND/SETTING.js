@@ -4,7 +4,7 @@
 
 import { SQL_OBJ } from "../Main.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { FUNCTION_SETTING } from "../FUNCTION_SETTING.js";
+// import { FUNCTION_SETTING } from "../FUNCTION_SETTING.js";
 
 export class SETTING {
 	constructor(INTERACTION) {
@@ -24,6 +24,7 @@ export class SETTING {
 									await this.E.editReply(FUNCTION + "を有効化したとおもいます、たぶん");
 								})
 								.catch(async EX => {
+									console.error("[ ERR in Promise ][ SETTING ]", EX);
 									await this.E.editReply("エラー\n" + EX);
 								});
 						} else {
@@ -31,6 +32,7 @@ export class SETTING {
 						}
 					})
 					.catch(async EX => {
+						console.error("[ ERR in Promise ][ SETTING ]", EX);
 						await this.E.editReply("エラー\n" + EX);
 					});
 			} else {
@@ -43,6 +45,7 @@ export class SETTING {
 									await this.E.editReply(FUNCTION + "を無効化したとおもいます、たぶん");
 								})
 								.catch(async EX => {
+									console.error("[ ERR in Promise ][ SETTING ]", EX);
 									await this.E.editReply("エラー\n" + EX);
 								});
 						} else {
@@ -50,6 +53,7 @@ export class SETTING {
 						}
 					})
 					.catch(async EX => {
+						console.error("[ ERR in Promise ][ SETTING ]", EX);
 						await this.E.editReply("エラー\n" + EX);
 					});
 			}

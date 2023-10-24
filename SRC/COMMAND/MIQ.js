@@ -14,7 +14,7 @@ export class MIQ {
 				});
 			}
 		} catch (EX) {
-			console.log("[ ERR ][ MIQ ]" + EX);
+			console.error("[ ERR ][ MIQ ]" + EX);
 			return;
 		}
 	}

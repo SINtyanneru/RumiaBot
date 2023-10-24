@@ -198,7 +198,7 @@ export class LETTER {
 			E.editReply("```" + OLD_TEXT + "```\n" + "↓↓↓↓↓↓↓↓↓↓\n" + "```\n" + NEW_TEXT + "\n```");
 		} catch (EX) {
 			E.editReply("変換時にエラーが発生したよ☆");
-			console.log("[ ERR ][ LETTER ]" + EX);
+			console.error("[ ERR ][ LETTER ]" + EX);
 		}
 	}
 

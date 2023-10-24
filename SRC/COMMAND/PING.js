@@ -42,6 +42,7 @@ export class PING {
 				E.editReply("ホストの指定がおかしいね！");
 			}
 		} catch (EX) {
+			console.error("[ ERR ][ PING ]", EX);
 			this.E.editReply("エラーだあああ:" + EX);
 		}
 	}

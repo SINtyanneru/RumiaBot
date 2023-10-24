@@ -466,7 +466,7 @@ client.on("messageCreate", async message => {
 		}
 		console.log(LOG_TEXT);
 	} catch (EX) {
-		console.log("[ ERR ][ LOG ]Send LOG ERR" + EX);
+		console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
 		return;
 	}
 
@@ -666,6 +666,7 @@ client.on("interactionCreate", async INTERACTION => {
 		try {
 			console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName + "\n             ├in " + INTERACTION.guild.name + "\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId + "\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
 		} catch (EX) {
+			console.error("[ ERR ][ LOG ]", EX);
 			INTERACTION.reply("エラー");
 			return;
 		}
@@ -723,7 +724,7 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 		}
 	} catch (EX) {
-		console.log("[ ERR ][ DJS ]" + EX);
+		console.error("[ ERR ][ DJS ]" + EX);
 		return;
 	}
 });
@@ -745,7 +746,7 @@ client.on("guildCreate", async GUILD => {
 		console.log("[ INFO ][ GUILD ]Send DM:" + guildOwner.nickname);
 	} catch (EX) {
 		const guildOwner = await GUILD.fetchOwner();
-		console.log("[ ERR ][ GUILD ]Send DM:" + guildOwner.nickname);
+		console.error("[ ERR ][ GUILD ]Send DM:" + guildOwner.nickname, "[STACK]", EX.stack);
 		return;
 	}
 });
@@ -763,7 +764,7 @@ client.on("guildDelete", GUILD => {
 			LOG_CH.send(SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
 		}
 	} catch (EX) {
-		console.log("[ ERR ][ GUILD ]Send MSG:" + EX);
+		console.error("[ ERR ][ GUILD ]Send MSG:" + EX);
 		return;
 	}
 });
@@ -832,7 +833,7 @@ client.on("guildMemberRemove", async member => {
 			});
 		}
 	} catch (EX) {
-		console.log("[ ERR ][ AUTO BAN ]" + EX);
+		console.error("[ ERR ][ AUTO BAN ]" + EX);
 		return;
 	}
 });
@@ -867,7 +868,7 @@ client.on("guildMemberAdd", member => {
 			});
 		}
 	} catch (EX) {
-		console.log("[ ERR ][ AUTO BAN ]" + EX);
+		console.error("[ ERR ][ AUTO BAN ]" + EX);
 		return;
 	}
 });

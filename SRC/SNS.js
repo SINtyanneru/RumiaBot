@@ -20,7 +20,7 @@ export class SNS {
 				this.USER = RESULT;
 			})
 			.catch(EX => {
-				console.log("[ OK ][ MISSKEY ]SQL ERR:" + EX);
+				console.error("[ OK ][ MISSKEY ]SQL ERR:" + EX);
 			});
 	}
 
@@ -138,7 +138,7 @@ export class SNS {
 					}
 				}
 			} catch (EX) {
-				console.log("[ ERR ][ MISSKEY ][ " + DOMAIN + " ]" + EX);
+				console.error("[ ERR ][ MISSKEY ][ " + DOMAIN + " ]" + EX);
 				return;
 			}
 		});
@@ -190,7 +190,7 @@ export class SNS {
 					}
 				}
 			} catch (EX) {
-				console.log("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
+				console.error("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
 				return;
 			}
 		});
