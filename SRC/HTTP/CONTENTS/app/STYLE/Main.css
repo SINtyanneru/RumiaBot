@@ -1,0 +1,34 @@
+:root{
+	--GUILD_LIST_WIDTH: 72px;
+}
+
+body{
+	margin: 0px;
+}
+
+.GUILD_LIST{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+
+	width: var(--GUILD_LIST_WIDTH);
+	height: 100vh;
+
+	background-color: #e3e5e8;
+
+	text-align: center;
+}
+
+.GUILD_LIST > button{
+	width: 48px;
+	height: 48px;
+}
+
+.CONTENTS{
+	position: absolute;
+	top: 0px;
+	left: var(--GUILD_LIST_WIDTH);
+
+	width: calc(100vw - var(--GUILD_LIST_WIDTH));
+	height: 100vh;
+}
