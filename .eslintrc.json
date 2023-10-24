@@ -13,7 +13,7 @@
 			2,
 			"double",
 			{
-				"avoidEscape": true
+				"avoidEscape": false
 			}
 		],
 		"semi": "error"
