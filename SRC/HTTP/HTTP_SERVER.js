@@ -9,7 +9,15 @@ export class HTTP_SERVER {
 
 	main() {
 		const SERVER = HTTP.createServer((REQ, RES) => {
-			let REQ_URI = REQ.url.replaceAll("../", "");
+			let REQ_URI = REQ.url.split("?");
+			let URI_PARAM = {};
+
+			if(REQ_URI[1]){
+				URI_PARAM = this.URI_PARAM_PARSE(REQ_URI[1]);
+			}
+
+			console.log(REQ_URI);
+
 			RES.statusCode = 200;
 
 			/**
@@ -28,9 +36,10 @@ export class HTTP_SERVER {
 			/**
 			 * API部分
 			 */
-			if (REQ.url.startsWith("/API")) {
-				if (REQ.url === "/API/GUILD_LIST_GET") {
-					let GUILDS = client.guilds.cache;
+			if (REQ_URI[0].startsWith("/API")) {
+				//鯖一覧
+				if (REQ_URI[0] === "/API/GUILD_LIST_GET") {
+					const GUILDS = client.guilds.cache;
 					if (GUILDS) {
 						let GUILDS_ARRAY = [];
 						GUILDS.forEach(GUILD => {
@@ -48,6 +57,145 @@ export class HTTP_SERVER {
 						);
 					}
 				}
+				//チャンネル一覧
+				if (REQ_URI[0] === "/API/CHANNEL_LIST_GET") {
+					if(REQ.method === "GET"){
+						if(URI_PARAM["ID"]){
+							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
+							if (GUILD) {
+								const CHANNELS = GUILD.channels.cache;
+								if(CHANNELS.size > 0){
+									let CHANNEL_ARRAY = [];
+
+									CHANNELS.forEach(CHANNEL => {
+										CHANNEL_ARRAY.push({
+											"ID": CHANNEL.id,
+											"NAME": CHANNEL.name,
+											"TYPE": CHANNEL.type,
+											"FORALDER": CHANNEL.parent,
+											"POS": CHANNEL.position
+										});
+									});
+									//成功
+									RES.end(
+										JSON.stringify({
+											"STATUS": true,
+											"CHANNELS": CHANNEL_ARRAY
+										})
+									);
+								}
+							}else{
+								//エラー
+								RES.end(
+									JSON.stringify({
+										"STATUS": false
+									})
+								);
+							}
+						}else{
+							//エラー
+							RES.end(
+								JSON.stringify({
+									"STATUS": false
+								})
+							);
+						}
+					}
+				}
+				//鯖の情報
+				if (REQ_URI[0] === "/API/GUILD_INFO_GET") {
+					if(REQ.method === "GET"){
+						if(URI_PARAM["ID"]){
+							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
+							if (GUILD) {
+								//成功
+								RES.end(
+									JSON.stringify({
+										"STATUS": true,
+										"GUILD": {
+											"ID": GUILD.id,
+											"NAME": GUILD.name
+										}
+									})
+								);
+							}else{
+								//エラー
+								RES.end(
+									JSON.stringify({
+										"STATUS": false
+									})
+								);
+							}
+						}else{
+							//エラー
+							RES.end(
+								JSON.stringify({
+									"STATUS": false
+								})
+							);
+						}
+					}else{
+						//エラー
+						RES.end(
+							JSON.stringify({
+								"STATUS": false
+							})
+						);
+					}
+				}
+				//チャンネルの情報
+				if (REQ_URI[0] === "/API/CHANNEL_INFO_GET") {
+					if(REQ.method === "GET"){
+						if(URI_PARAM["GID"] && URI_PARAM["CID"]){
+							const GUILD = client.guilds.cache.get(URI_PARAM["GID"]);
+							if (GUILD) {
+								const CHANNEL = GUILD.channels.cache.get(URI_PARAM["CID"]);
+								if (CHANNEL) {
+									//成功
+									RES.end(
+										JSON.stringify({
+											"STATUS": true,
+											"CHANNEL": {
+												"ID": CHANNEL.id,
+												"NAME": CHANNEL.name,
+												"MESSAGES": []//TODO:メッセージ履歴をここに入れる
+											}
+										})
+									);
+								}else{
+									//エラー
+									RES.end(
+										JSON.stringify({
+											"STATUS": false
+										})
+									);
+								}
+							}else{
+								//エラー
+								RES.end(
+									JSON.stringify({
+										"STATUS": false
+									})
+								);
+							}
+						}else{
+							//エラー
+							RES.end(
+								JSON.stringify({
+									"STATUS": false
+								})
+							);
+						}
+					}else{
+						//エラー
+						RES.end(
+							JSON.stringify({
+								"STATUS": false
+							})
+						);
+					}
+				}
+
 
 				//これ以上処理する必要がないので殺す
 				return;
@@ -86,5 +234,18 @@ export class HTTP_SERVER {
 		SERVER.listen(this.PORT, "127.0.0.1", () => {
 			console.log("[ OK ][ HTTP ]HTTP Server runing. port " + this.PORT);
 		});
+	}
+
+	URI_PARAM_PARSE(URI){
+		const PARAMS = URI.split("&");
+
+		let RESULT = {};
+
+		for (let I = 0; I < PARAMS.length; I++) {
+			const PARAM = PARAMS[I].split("=");
+			RESULT[PARAM[0]] = PARAM[1];
+		}
+
+		return RESULT;
 	}
 }

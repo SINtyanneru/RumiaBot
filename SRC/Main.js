@@ -24,11 +24,13 @@ import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
 import * as PATH from "node:path";
 import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
+import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
 let DENIED_WORD_OBJ = new DENIED_WORD();
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
+let WS_SERVER_OBJ = new WS_SERVER();
 export let SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
@@ -49,6 +51,8 @@ client.once("ready", async () => {
 
 	//HTTP鯖を起動
 	HTTP_SERVER_OBJ.main();
+	//WS鯖を起動
+	WS_SERVER_OBJ.main();
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -468,6 +472,32 @@ client.on("messageCreate", async message => {
 	} catch (EX) {
 		console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
 		return;
+	}
+
+	//WSに流す
+	for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
+		const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
+		SOCKET.send(JSON.stringify(
+			{
+				"TYPE": "MSG_RESOVE",
+				"MSG": {
+					"ID": message.id,
+					"TEXT": message.content
+				},
+				"GUILD": {
+					"ID": message.guild.id
+				},
+				"CHANNEL": {
+					"ID": message.channel.id
+				},
+				"AUTHOR": {
+					"ID": message.author.id,
+					"NAME": message.author.username,
+					"ICON": message.author.avatarURL(),
+					"DEF_ICON": message.author.defaultAvatarURL
+				}
+			}
+		));
 	}
 
 	/*

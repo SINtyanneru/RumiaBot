@@ -42,3 +42,60 @@ body{
 	width: calc(100vw - var(--GUILD_LIST_WIDTH));
 	height: 100vh;
 }
+
+.GUILD_INFO{
+	width: 240px;
+	height: 48px;
+
+	text-align: center;
+
+	border-bottom: solid 1px #cfd0d1;
+
+	background-color: #f2f3f5;
+}
+
+.CHANNEL_LIST{
+	width: 240px;
+	height: calc(100vh - 48px - 1px);
+
+	background-color: #f2f3f5;
+
+	overflow-x: scroll;
+}
+
+.CHANNEL_INFO{
+	position: absolute;
+	top: 0px;
+	left: 240px;
+
+	width: calc(100vw - 240px - var(--GUILD_LIST_WIDTH));
+	height: 48px;
+
+	border-bottom: solid 1px #cfd0d1;
+
+	background-color: #ffffff;
+
+	font-size: 20px;
+
+	text-align: center;
+}
+
+.MESSAGE_LIST{
+	position: absolute;
+	top: 48px;
+	left: 240px;
+
+	width: calc(100vw - 240px - var(--GUILD_LIST_WIDTH));
+	height: calc(100vh - 68px - 48px);
+
+	overflow-x: scroll;
+}
+
+.MESSAGE_SEND_FORM{
+	position: absolute;
+	bottom: 0px;
+	left: 240px;
+
+	width: calc(100vw - 240px - var(--GUILD_LIST_WIDTH));
+	height: 68px;
+}
