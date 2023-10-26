@@ -506,7 +506,6 @@ client.on("messageCreate", async message => {
 		return;
 	}
 	*/
-
 	//BOT所有者専用のコマンド
 	if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 		await BOT_ADMIN(message);
@@ -522,7 +521,7 @@ client.on("messageCreate", async message => {
 
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
-		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + '"' + "\nIP?" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
+		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + "\"\nIP?\"" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
 	}
 
 	//メンションされたユーザーのコレクションを取得
