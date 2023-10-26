@@ -10,6 +10,7 @@ WS.addEventListener("message", (event) => {
 	console.log(SELECT_CHANNEL_ID);
 	console.log(MESSAGE.CHANNEL.ID);
 
+	//メッセージ受信
 	if(SELECT_CHANNEL_ID === MESSAGE.CHANNEL.ID){
 		let MESSAGE_EL = document.createElement("DIV");
 		MESSAGE_EL.className = "MESSAGE_ITEM";
@@ -29,5 +30,7 @@ WS.addEventListener("message", (event) => {
 		//TODO:画像表示を付ける
 
 		MESSAGE_LIST_EL.appendChild(MESSAGE_EL);
+
+		MESSAGE_LIST_EL.scrollTo(0, MESSAGE_LIST_EL.scrollHeight );
 	}
 });

@@ -5,6 +5,7 @@ let CHANNEL_INFO_EL = document.getElementById("CHANNEL_INFO");
 let MESSAGE_LIST_EL = document.getElementById("MESSAGE_LIST");
 
 let SELECT_CHANNEL_ID = "";
+let SELECT_GUILD_ID = "";
 
 window.addEventListener("load", async (E) => {
 	const GUILD_LIST = await GUILD_LIST_GET();
@@ -36,6 +37,7 @@ async function OPEN_GUILD(ID){
 		const RESULT = await GUILD_AJAX.json();
 		if(RESULT.STATUS){
 			GUILD_INFO_EL.innerText = RESULT.GUILD.NAME;
+			SELECT_GUILD_ID = RESULT.GUILD.ID;
 		}
 	}
 
@@ -130,4 +132,8 @@ function CHANNEL_SELECT(DATA){
 	CHANNEL_INFO_EL.innerText = DATA.CHANNEL.NAME;
 
 	MESSAGE_LIST_EL.innerHTML = "";
+}
+
+async function MSG_SEND(){
+	
 }
