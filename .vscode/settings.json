@@ -1,11 +1,19 @@
 {
-	"todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO", "XXX", "[ ]", "[x]", "// NOTE"],
+	"todo-tree.general.tags": [
+		"BUG",
+		"HACK",
+		"FIXME",
+		"TODO",
+		"XXX",
+		"[ ]",
+		"[x]",
+		"// NOTE"
+	],
 	"editor.cursorStyle": "line",
 	"editor.tabSize": 4,
 	"editor.insertSpaces": false,
 	"editor.comments.insertSpace": true,
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[shellscript]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
@@ -20,12 +28,7 @@
 		"editor.defaultFormatter": "vscode.html-language-features",
 		"editor.formatOnSave": false
 	},
-	"beautify.language": {
-		"js": {
-			"type": ["javascript", "json", "jsonc"],
-			"filename": [".jshintrc", ".jsbeautifyrc"]
-		},
-		"css": ["css", "less", "scss"],
-		"html": ["htm", "html", "ejs"]
+	"[javascript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	}
 }
