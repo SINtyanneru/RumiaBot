@@ -3,6 +3,7 @@ let GUILD_INFO_EL = document.getElementById("GUILD_INFO");
 let CHANNEL_LIST_EL = document.getElementById("CHANNEL_LIST");
 let CHANNEL_INFO_EL = document.getElementById("CHANNEL_INFO");
 let MESSAGE_LIST_EL = document.getElementById("MESSAGE_LIST");
+let MESSAGE_SEND_FORM_TEXT_EL = document.getElementById("MESSAGE_SEND_FORM_TEXT");
 
 let SELECT_CHANNEL_ID = "";
 let SELECT_GUILD_ID = "";
@@ -134,6 +135,25 @@ function CHANNEL_SELECT(DATA){
 	MESSAGE_LIST_EL.innerHTML = "";
 }
 
-async function MSG_SEND(){
-	
+async function MSG_SEND(E){
+	if(E.key === "Enter" && E.ctrlKey){
+		if(MESSAGE_SEND_FORM_TEXT_EL.value !== ""){
+			const AJAX = await fetch("/API/MSG_SEND", {
+				body:JSON.stringify({
+					GID: SELECT_GUILD_ID,
+					CID: SELECT_CHANNEL_ID,
+					TEXT: MESSAGE_SEND_FORM_TEXT_EL.value
+				}),
+				method: "POST"
+			});
+		
+			if (AJAX.ok) {
+				const RESULT = await AJAX.json();
+				if(RESULT.STATUS){
+					//成功
+					MESSAGE_SEND_FORM_TEXT_EL.value = "";
+				}
+			}
+		}
+	}
 }

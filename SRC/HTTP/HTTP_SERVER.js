@@ -196,6 +196,48 @@ export class HTTP_SERVER {
 					}
 				}
 
+				//チャンネルの情報
+				if (REQ_URI[0] === "/API/MSG_SEND") {
+					if(REQ.method === "POST"){
+						let POST_BODY = "";
+
+						REQ.on("data", (chunk) => {
+							POST_BODY += chunk.toString();
+						});
+					
+						REQ.on("end", () => {
+							const POST_RESULT = JSON.parse(POST_BODY);
+							const GUILD = client.guilds.cache.get(POST_RESULT.GID);
+							if(GUILD){
+								const CHANNEL = GUILD.channels.cache.get(POST_RESULT.CID);
+								if(CHANNEL){
+									if(POST_RESULT.TEXT){
+										CHANNEL.send(POST_RESULT.TEXT);
+										RES.end(
+											JSON.stringify({
+												"STATUS": true
+											})
+										);
+										return;
+									}
+								}
+							}
+							//エラー
+							RES.end(
+								JSON.stringify({
+									"STATUS": false
+								})
+							);
+						});
+					}else{
+						//エラー
+						RES.end(
+							JSON.stringify({
+								"STATUS": false
+							})
+						);
+					}
+				}
 
 				//これ以上処理する必要がないので殺す
 				return;
