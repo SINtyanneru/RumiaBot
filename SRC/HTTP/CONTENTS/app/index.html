@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <HTML>
-	<HEAD>
-		<TITLE>Discord</TITLE>
 
-		<LINK REL="stylesheet" HREF="./STYLE/Main.css">
-		<LINK REL="stylesheet" HREF="./STYLE/GUILD_ITEM.css">
-		<LINK REL="stylesheet" HREF="./STYLE/MESSAGE_ITEM.css">
-	</HEAD>
-	<BODY>
-		<DIV CLASS="GUILD_LIST" ID="GUILD_LIST">
-			<BUTTON>
-				家
-			</BUTTON>
-			<HR>
-		</DIV>
-		<DIV CLASS="CONTENTS" ID="CONTENTS">
-			<DIV CLASS="GUILD_INFO" ID="GUILD_INFO">
-				家
-			</DIV>
-			<DIV CLASS="CHANNEL_LIST" ID="CHANNEL_LIST">
+<HEAD>
+	<TITLE>Discord</TITLE>
 
-			</DIV>
-			<DIV CLASS="CHANNEL_INFO" ID="CHANNEL_INFO">
-				はい
-			</DIV>
-			<DIV CLASS="MESSAGE_LIST" ID="MESSAGE_LIST">
-				なに見てんだお前殺すぞ
-			</DIV>
-			<DIV CLASS="MESSAGE_SEND_FORM" ID="MESSAGE_SEND_FORM">
-				<TEXTAREA STYLE="width: calc(100% - 20px); height: calc(100% - 20px); resize: none; margin-left: 5px;" ID="MESSAGE_SEND_FORM_TEXT" onkeydown="MSG_SEND(event);"></TEXTAREA>
-			</DIV>
+	<LINK REL="stylesheet" HREF="./STYLE/Main.css">
+	<LINK REL="stylesheet" HREF="./STYLE/GUILD_ITEM.css">
+	<LINK REL="stylesheet" HREF="./STYLE/MESSAGE_ITEM.css">
+</HEAD>
+
+<BODY>
+	<form name="guild-select-form" CLASS="GUILD_LIST" ID="GUILD_LIST">
+		<input type="radio" name="guild-select" value="home">
+		<HR>
+	</form>
+	<DIV CLASS="CONTENTS" ID="CONTENTS">
+		<DIV CLASS="GUILD_INFO" ID="GUILD_INFO">
+			家(ホーム)
 		</DIV>
-	</BODY>
+		<DIV CLASS="CHANNEL_LIST" ID="CHANNEL_LIST">
+		</DIV>
+		<DIV CLASS="CHANNEL_INFO" ID="CHANNEL_INFO">
+			ここにはチャンネル名が表示されます、おそらく
+		</DIV>
+		<DIV CLASS="MESSAGE_LIST" ID="MESSAGE_LIST">
+			表示する内容がありません；；
+		</DIV>
+		<DIV CLASS="MESSAGE_SEND_FORM" ID="MESSAGE_SEND_FORM">
+			<TEXTAREA STYLE="width: calc(100% - 20px); height: calc(100% - 20px); resize: none; margin-left: 5px;"
+				ID="MESSAGE_SEND_FORM_TEXT"></TEXTAREA>
+		</DIV>
+	</DIV>
+</BODY>
+
 </HTML>
 
-<SCRIPT SRC="./SCRIPT/Main.js"></SCRIPT>
-<SCRIPT SRC="./SCRIPT/WS.js"></SCRIPT>
+<SCRIPT SRC="./SCRIPT/Main.js" type="module"></SCRIPT>
+<!-- Main.jsに統合
+	<SCRIPT SRC="./SCRIPT/WS.js"></SCRIPT> -->

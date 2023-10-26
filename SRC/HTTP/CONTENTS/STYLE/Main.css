@@ -14,9 +14,8 @@ body{
 	border-bottom: solid 1px;
 
 	width: 100vw;
-	height: var(--HEADER_HTIGHT);
-
-	backgroud-color: rgba(255, 255, 255, 0.5);
+	height: var(--HEADER_HTIGHT);;
+	background-color: rgba(255, 255, 255, 0.5);
 	backdrop-filter: blur(10px);
 }
 

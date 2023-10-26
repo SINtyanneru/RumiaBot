@@ -1,6 +1,12 @@
 :root{
 	--GUILD_LIST_WIDTH: 72px;
 }
+/*ユーザーエージェントスタイルシートを消す*/
+* {
+	margin: 0;
+	padding: 0;
+}
+
 
 body{
 	margin: 0px;
@@ -20,12 +26,21 @@ body{
 
 	overflow-x: scroll;
 }
+.GUILD_LIST > label > input[type=radio] {
+	display:none;
+}
 
-.GUILD_LIST > button{
+.GUILD_LIST > label > img{
 	width: 48px;
 	height: 48px;
 
 	overflow: hidden;
+	border: none;
+	border-radius: 25px;
+	transition: 200ms;
+}
+.GUILD_LIST > label > img:hover,.GUILD_LIST > button.selected {
+		border-radius: 15px;
 }
 
 .GUILD_LIST > button > img{

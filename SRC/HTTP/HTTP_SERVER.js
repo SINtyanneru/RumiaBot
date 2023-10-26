@@ -1,7 +1,16 @@
+// @ts-check
 import * as HTTP from "node:http";
 import * as FS from "node:fs";
-import { client } from "../MODULES/loadClient.js";
+import {
+	client
+} from "../MODULES/loadClient.js";
+import { TextChannel } from "discord.js";
 
+
+/**
+ * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | TextChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL
+
+ */
 export class HTTP_SERVER {
 	constructor() {
 		this.PORT = 3000;
@@ -9,14 +18,32 @@ export class HTTP_SERVER {
 
 	main() {
 		const SERVER = HTTP.createServer((REQ, RES) => {
-			let REQ_URI = REQ.url.split("?");
-			let URI_PARAM = {};
-
-			if(REQ_URI[1]){
-				URI_PARAM = this.URI_PARAM_PARSE(REQ_URI[1]);
+			/**@param {{}} payload */
+			function res_send_api(payload) {
+				RES.end(JSON.stringify(payload))
 			}
 
-			console.log(REQ_URI);
+			/**
+			 * @param {string} searchParam
+			 */
+			function parseSearchParams(searchParam) {
+				/** @type {Object.<string, string>} */
+				let retval = {};
+
+				// @ts-ignore
+				[...new URLSearchParams(searchParam).entries()].forEach(([name, value]) => {
+					retval[name] = value
+				})
+				return retval;
+			}
+
+
+
+			if (!REQ.url) throw ("urlがない") // 型チェック通過のため
+			let [REQ_PATH, REQ_QUERY] = REQ.url.split("?");
+			let URI_PARAM = REQ_QUERY ? parseSearchParams(REQ_QUERY) : {}
+
+			console.log(REQ_PATH + REQ_QUERY);
 
 			RES.statusCode = 200;
 
@@ -36,35 +63,36 @@ export class HTTP_SERVER {
 			/**
 			 * API部分
 			 */
-			if (REQ_URI[0].startsWith("/API")) {
+			if (REQ_PATH.startsWith("/API")) {
 				//鯖一覧
-				if (REQ_URI[0] === "/API/GUILD_LIST_GET") {
+				if (REQ_PATH === "/API/GUILD_LIST_GET") {
 					const GUILDS = client.guilds.cache;
 					if (GUILDS) {
+						/**@type {{}[]} */
 						let GUILDS_ARRAY = [];
-						GUILDS.forEach(GUILD => {
-							GUILDS_ARRAY.push({
-								"ID": GUILD.id,
-								"NAME": GUILD.name,
-								"ICON_URL": GUILD.iconURL()
+						GUILDS.forEach(
+							( /** @type {{ id: any; name: any; iconURL: () => any; }} */ GUILD) => {
+								GUILDS_ARRAY.push({
+									"ID": GUILD.id,
+									"NAME": GUILD.name,
+									"ICON_URL": GUILD.iconURL()
+								});
 							});
-						});
-						RES.end(
-							JSON.stringify({
-								"STATUS": true,
-								"GUILDS": GUILDS_ARRAY
-							})
-						);
+						res_send_api({
+							"STATUS": true,
+							"GUILDS": GUILDS_ARRAY
+						})
 					}
 				}
 				//チャンネル一覧
-				if (REQ_URI[0] === "/API/CHANNEL_LIST_GET") {
-					if(REQ.method === "GET"){
-						if(URI_PARAM["ID"]){
+				if (REQ_PATH === "/API/CHANNEL_LIST_GET") {
+					if (REQ.method === "GET") {
+						if (URI_PARAM["ID"]) {
 							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
 							if (GUILD) {
 								const CHANNELS = GUILD.channels.cache;
-								if(CHANNELS.size > 0){
+								if (CHANNELS.size > 0) {
+									/**@type {CHANNEL[]} */
 									let CHANNEL_ARRAY = [];
 
 									CHANNELS.forEach(CHANNEL => {
@@ -72,40 +100,35 @@ export class HTTP_SERVER {
 											"ID": CHANNEL.id,
 											"NAME": CHANNEL.name,
 											"TYPE": CHANNEL.type,
-											"FORALDER": CHANNEL.parent,
-											"POS": CHANNEL.position
+											"PARENT": CHANNEL.parent,
+											// @ts-ignore
+											"POS": CHANNEL.position || null
 										});
 									});
 									//成功
-									RES.end(
-										JSON.stringify({
-											"STATUS": true,
-											"CHANNELS": CHANNEL_ARRAY
-										})
-									);
+									res_send_api({
+										"STATUS": true,
+										"CHANNELS": CHANNEL_ARRAY
+									});
 								}
-							}else{
+							} else {
 								//エラー
-								RES.end(
-									JSON.stringify({
-										"STATUS": false
-									})
-								);
-							}
-						}else{
-							//エラー
-							RES.end(
-								JSON.stringify({
+								res_send_api({
 									"STATUS": false
 								})
-							);
+							}
+						} else {
+							//エラー
+							res_send_api({
+								"STATUS": false
+							})
 						}
 					}
 				}
 				//鯖の情報
-				if (REQ_URI[0] === "/API/GUILD_INFO_GET") {
-					if(REQ.method === "GET"){
-						if(URI_PARAM["ID"]){
+				if (REQ_PATH === "/API/GUILD_INFO_GET") {
+					if (REQ.method === "GET") {
+						if (URI_PARAM["ID"]) {
 							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
 							if (GUILD) {
 								//成功
@@ -118,7 +141,7 @@ export class HTTP_SERVER {
 										}
 									})
 								);
-							}else{
+							} else {
 								//エラー
 								RES.end(
 									JSON.stringify({
@@ -126,7 +149,7 @@ export class HTTP_SERVER {
 									})
 								);
 							}
-						}else{
+						} else {
 							//エラー
 							RES.end(
 								JSON.stringify({
@@ -134,7 +157,7 @@ export class HTTP_SERVER {
 								})
 							);
 						}
-					}else{
+					} else {
 						//エラー
 						RES.end(
 							JSON.stringify({
@@ -144,9 +167,9 @@ export class HTTP_SERVER {
 					}
 				}
 				//チャンネルの情報
-				if (REQ_URI[0] === "/API/CHANNEL_INFO_GET") {
-					if(REQ.method === "GET"){
-						if(URI_PARAM["GID"] && URI_PARAM["CID"]){
+				if (REQ_PATH === "/API/CHANNEL_INFO_GET") {
+					if (REQ.method === "GET") {
+						if (URI_PARAM["GID"] && URI_PARAM["CID"]) {
 							const GUILD = client.guilds.cache.get(URI_PARAM["GID"]);
 							if (GUILD) {
 								const CHANNEL = GUILD.channels.cache.get(URI_PARAM["CID"]);
@@ -158,11 +181,11 @@ export class HTTP_SERVER {
 											"CHANNEL": {
 												"ID": CHANNEL.id,
 												"NAME": CHANNEL.name,
-												"MESSAGES": []//TODO:メッセージ履歴をここに入れる
+												"MESSAGES": [] //TODO:メッセージ履歴をここに入れる
 											}
 										})
 									);
-								}else{
+								} else {
 									//エラー
 									RES.end(
 										JSON.stringify({
@@ -170,7 +193,7 @@ export class HTTP_SERVER {
 										})
 									);
 								}
-							}else{
+							} else {
 								//エラー
 								RES.end(
 									JSON.stringify({
@@ -178,7 +201,7 @@ export class HTTP_SERVER {
 									})
 								);
 							}
-						}else{
+						} else {
 							//エラー
 							RES.end(
 								JSON.stringify({
@@ -186,7 +209,7 @@ export class HTTP_SERVER {
 								})
 							);
 						}
-					}else{
+					} else {
 						//エラー
 						RES.end(
 							JSON.stringify({
@@ -197,21 +220,23 @@ export class HTTP_SERVER {
 				}
 
 				//チャンネルの情報
-				if (REQ_URI[0] === "/API/MSG_SEND") {
-					if(REQ.method === "POST"){
+				if (REQ_PATH === "/API/MSG_SEND") {
+					if (REQ.method === "POST") {
 						let POST_BODY = "";
 
 						REQ.on("data", (chunk) => {
 							POST_BODY += chunk.toString();
 						});
-					
+
 						REQ.on("end", () => {
 							const POST_RESULT = JSON.parse(POST_BODY);
 							const GUILD = client.guilds.cache.get(POST_RESULT.GID);
-							if(GUILD){
+							if (GUILD) {
+								/**@type {TextChannel} */
+								// @ts-ignore
 								const CHANNEL = GUILD.channels.cache.get(POST_RESULT.CID);
-								if(CHANNEL){
-									if(POST_RESULT.TEXT){
+								if (CHANNEL) {
+									if (POST_RESULT.TEXT) {
 										CHANNEL.send(POST_RESULT.TEXT);
 										RES.end(
 											JSON.stringify({
@@ -229,7 +254,7 @@ export class HTTP_SERVER {
 								})
 							);
 						});
-					}else{
+					} else {
 						//エラー
 						RES.end(
 							JSON.stringify({
@@ -243,19 +268,19 @@ export class HTTP_SERVER {
 				return;
 			}
 
-			/**
+			/*
 			 * HTMLとかのファイルを読み込んだり
 			 */
 			//レファラーがあればパスの前に入れる
 			if (REQ.headers.referer) {
 				const REFERAR = new URL(REQ.headers.referer).pathname;
-				REQ_URI = REFERAR + REQ_URI;
+				REQ_PATH = REFERAR + REQ_PATH;
 			}
 			//ファイルを読み込む
-			FS.readFile("./SRC/HTTP/CONTENTS" + REQ_URI, "utf8", (ERR, DATA) => {
+			FS.readFile("./SRC/HTTP/CONTENTS" + REQ_PATH, "utf8", (ERR, DATA) => {
 				if (ERR) {
 					//ファイルがないのでindex.htmlが無いかをチェックする
-					FS.readFile("./SRC/HTTP/CONTENTS/" + REQ_URI + "/index.html", "utf8", (ERR, DATA) => {
+					FS.readFile("./SRC/HTTP/CONTENTS/" + REQ_PATH + "/index.html", "utf8", (ERR, DATA) => {
 						if (ERR) {
 							//無いので死ぬ
 							RES.statusCode = 404;
@@ -276,18 +301,5 @@ export class HTTP_SERVER {
 		SERVER.listen(this.PORT, "127.0.0.1", () => {
 			console.log("[ OK ][ HTTP ]HTTP Server runing. port " + this.PORT);
 		});
-	}
-
-	URI_PARAM_PARSE(URI){
-		const PARAMS = URI.split("&");
-
-		let RESULT = {};
-
-		for (let I = 0; I < PARAMS.length; I++) {
-			const PARAM = PARAMS[I].split("=");
-			RESULT[PARAM[0]] = PARAM[1];
-		}
-
-		return RESULT;
 	}
 }
