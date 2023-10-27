@@ -815,51 +815,6 @@ client.on("guildMemberRemove", async member => {
 			EB.setDescription("彼は自分に私生活が有ることを証明してしまった");
 			EB.setColor(RND_COLOR());
 			MSG_SEND(client, rumiserver, exiter_channel, { embeds: [EB] });
-
-			//独自のBANリスト
-			const fileName = "./TEMP/RS_LEAVE.json";
-			FS.access(fileName, FS.constants.F_OK, ERR => {
-				if (ERR) {
-					FS.writeFile(
-						fileName,
-						JSON.stringify([
-							{
-								ID: member.id,
-								DATE: new Date().toDateString()
-							}
-						]),
-						ERR => {
-							if (ERR) {
-								console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
-							} else {
-								console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
-							}
-						}
-					);
-				} else {
-					FS.readFile(fileName, "utf8", (ERR, DATA) => {
-						if (ERR) {
-							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
-						} else {
-							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
-							const RESULT = JSON.parse(DATA);
-							if (!RESULT.some(ROW => ROW.ID === member.id)) {
-								RESULT.push({
-									ID: member.id,
-									DATE: new Date().toISOString()
-								});
-								FS.writeFile(fileName, JSON.stringify(RESULT), ERR => {
-									if (ERR) {
-										console.error("[ ERR ][ AUTO BAN ]JSONファイルを作成できませんでした:" + ERR);
-									} else {
-										console.error("[ OK ][ AUTO BAN ]JSONファイルを作成しました");
-									}
-								});
-							}
-						}
-					});
-				}
-			});
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ AUTO BAN ]" + EX);
@@ -871,33 +826,15 @@ client.on("guildMemberRemove", async member => {
 client.on("guildMemberAdd", member => {
 	try {
 		if (member.guild.id === rumiserver) {
-			//独自のBANリストでチェックする
-			const fileName = "./TEMP/RS_LEAVE.json";
-			FS.access(fileName, FS.constants.F_OK, ERR => {
-				if (!ERR) {
-					FS.readFile(fileName, "utf8", (ERR, DATA) => {
-						if (ERR) {
-							console.error("[ ERR ][ AUTO BAN ]JSONファイルを読み込めませんでした:" + ERR);
-						} else {
-							console.error("[ OK ][ AUTO BAN ]JSONファイルを読み込みました");
-							const RESULT = JSON.parse(DATA);
-							const BAN_INFO = RESULT.find(ROW => ROW.ID === member.id);
-							if (BAN_INFO !== undefined && BAN_INFO !== null) {
-								const USER = client.users.cache.get(member.id);
-
-								//地獄計算
-								const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-								const DATE = new Date(BAN_INFO.DATE);
-
-								USER.send("あなたは、" + DATE.getFullYear().toString() + "年 " + (DATE.getMonth() + 1).toString() + "月 " + DATE.getDate().toString() + "日 " + DAY_FORMAT[DATE.getDay()] + "曜日 " + DATE.getHours().toString() + "時 " + DATE.getMinutes().toString() + "分 " + DATE.getSeconds().toString() + "秒 " + DATE.getMilliseconds().toString() + "ミリ秒\n" + "に、るみさんの鯖から脱退しています。\n" + "認証をされるには、<@" + rumi + ">にDMで以下のことを教えてください。\n" + "\n" + "1・なぜ抜けたのか\n" + "2・なぜ戻ってきたのか\n" + "\n" + "理由は、無言で戻ってこられると、「なんで抜けたのにもどってきたんだ？」と気になるからです()");
-							}
-						}
-					});
-				}
-			});
+			console.log(member);
+			const EB = new MessageEmbed();
+			EB.setTitle(NULLCHECK(member.displayName) + "さんようこそ地獄へ");
+			EB.setDescription("だれだろう？");
+			EB.setColor(RND_COLOR());
+			MSG_SEND(client, rumiserver, exiter_channel, { embeds: [EB] });
 		}
 	} catch (EX) {
-		console.error("[ ERR ][ AUTO BAN ]" + EX);
+		console.error("[ ERR ][ MEM ADD]" + EX);
 		return;
 	}
 });
