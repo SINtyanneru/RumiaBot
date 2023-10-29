@@ -8,6 +8,7 @@ import { CONFIG } from "./MODULES/CONFIG.js";
 let ACTIVE = true;
 import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
+import { joinVoiceChannel, entersState, VoiceConnectionStatus, createAudioResource, StreamType, createAudioPlayer, AudioPlayerStatus, NoSubscriberBehavior, generateDependencyReport } from "@discordjs/voice";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
@@ -635,6 +636,53 @@ client.on("messageCreate", async message => {
 		const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
 
 		message.reply(DATE_TEXT);
+	}
+
+	if (message.content === "VC") {
+		try {
+			const VCC = message.member.voice.channel;
+			if (VCC) {
+				if (VCC.joinable) {
+					await message.reply("ID:" + VCC.id);
+					const CON = joinVoiceChannel({
+						guildId: VCC.guild.id,
+						channelId: VCC.id,
+						adapterCreator: VCC.guild.voiceAdapterCreator,
+						selfDeaf: false,
+						selfMute: false
+					});
+					const mp3FilePath = "/home/rumisan/source/RumiaBot/自主規制ピー音.mp3"; // MP3ファイルのパス
+
+					const player = createAudioPlayer({
+						behaviors: {
+							noSubscriber: NoSubscriberBehavior.Pause,
+						}
+					});
+
+					player.on('error', (error) => {
+						console.log('音声再生エラー:', error);
+					});
+
+					player.on("debug", (log) => {
+						console.log(log);
+					});
+
+					CON.subscribe(player);
+
+					const resource = createAudioResource(FS.createReadStream(mp3FilePath), {
+						inputType: StreamType.Arbitrary,
+					});
+
+					player.play(resource);
+				} else {
+					await message.reply("権限的に参加できないよ（泣）");
+				}
+			} else {
+				await message.reply("どこのVCだよ");
+			}
+		} catch (EX) {
+			console.log(EX);
+		}
 	}
 
 	if (message.guild.id === rumiserver) {

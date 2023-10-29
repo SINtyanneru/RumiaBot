@@ -17,8 +17,11 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@discordjs/voice": "^0.16.0",
 		"chromedriver": "^118.0.0",
 		"discord.js": "^13.16.0",
+		"ffmpeg-static": "^5.2.0",
+		"fluent-ffmpeg": "^2.1.2",
 		"jsdoc": "^4.0.2",
 		"moji": "^0.5.1",
 		"mysql": "^2.18.1",
