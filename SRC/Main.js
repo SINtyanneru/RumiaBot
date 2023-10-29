@@ -669,7 +669,7 @@ client.on("messageCreate", async message => {
 
 					CON.subscribe(player);
 
-					const resource = createAudioResource(FS.createReadStream(mp3FilePath), {
+					const resource = createAudioResource(mp3FilePath, {
 						inputType: StreamType.Arbitrary,
 					});
 
