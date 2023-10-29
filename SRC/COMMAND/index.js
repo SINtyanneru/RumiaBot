@@ -15,5 +15,6 @@ import { IP } from "./IP.js";
 import { SETTING } from "./SETTING.js";
 import { NUM } from "./NUM.js";
 import { WH_CLEAR } from "./WH_CLEAR.js";
+import { VC_MUSIC } from "./VC_MUSIC.js";
 
-export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, INFO, IP, SETTING, NUM, WH_CLEAR };
+export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, INFO, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC };

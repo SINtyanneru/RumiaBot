@@ -8,7 +8,6 @@ import { CONFIG } from "./MODULES/CONFIG.js";
 let ACTIVE = true;
 import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
-import { joinVoiceChannel, entersState, VoiceConnectionStatus, createAudioResource, StreamType, createAudioPlayer, AudioPlayerStatus, NoSubscriberBehavior, generateDependencyReport } from "@discordjs/voice";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
@@ -372,6 +371,41 @@ client.once("ready", async () => {
 		}
 	];
 
+	//VC-music
+	commandData.push(await (function () {
+		return new Promise((resolve, reject) => {
+			FS.readdir("./DATA/MUSIC", (ERR, FILES) => {
+				if (ERR) {
+					console.error("[ EER ][ FS ]ファイル一覧取得に失敗しました\n", ERR);
+					reject();
+				}
+
+				let SC_VC_MUSIC = [];
+
+				FILES.forEach(FILE => {
+					SC_VC_MUSIC.push({
+						name: FILE,
+						value: FILE
+					});
+				});
+
+				resolve({
+					name: "vc_music",
+					description: "VCに曲を垂れ流します",
+					options: [
+						{
+							name: "file",
+							description: "どの曲",
+							type: "STRING",
+							required: true,
+							choices: SC_VC_MUSIC
+						}
+					]
+				});
+			});
+		});
+	})());
+
 	//ActivityPub
 	let SC_ActivityPub_CHOICES = [];
 	CONFIG.SNS.forEach(DATA => {
@@ -639,50 +673,7 @@ client.on("messageCreate", async message => {
 	}
 
 	if (message.content === "VC") {
-		try {
-			const VCC = message.member.voice.channel;
-			if (VCC) {
-				if (VCC.joinable) {
-					await message.reply("ID:" + VCC.id);
-					const CON = joinVoiceChannel({
-						guildId: VCC.guild.id,
-						channelId: VCC.id,
-						adapterCreator: VCC.guild.voiceAdapterCreator,
-						selfDeaf: false,
-						selfMute: false
-					});
-					const mp3FilePath = "/home/rumisan/source/RumiaBot/自主規制ピー音.mp3"; // MP3ファイルのパス
 
-					const player = createAudioPlayer({
-						behaviors: {
-							noSubscriber: NoSubscriberBehavior.Pause,
-						}
-					});
-
-					player.on('error', (error) => {
-						console.log('音声再生エラー:', error);
-					});
-
-					player.on("debug", (log) => {
-						console.log(log);
-					});
-
-					CON.subscribe(player);
-
-					const resource = createAudioResource(mp3FilePath, {
-						inputType: StreamType.Arbitrary,
-					});
-
-					player.play(resource);
-				} else {
-					await message.reply("権限的に参加できないよ（泣）");
-				}
-			} else {
-				await message.reply("どこのVCだよ");
-			}
-		} catch (EX) {
-			console.log(EX);
-		}
 	}
 
 	if (message.guild.id === rumiserver) {
@@ -798,6 +789,9 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "wh_clear":
 				new command.WH_CLEAR(INTERACTION).main();
+				break;
+			case "vc_music":
+				new command.VC_MUSIC(INTERACTION).main();
 				break;
 		}
 	} catch (EX) {
