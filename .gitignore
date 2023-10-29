@@ -1,6 +1,8 @@
 Config.json
 node_modules/
 DOWNLOAD/
+DATA/MUSIC/*.*
+
 # Logs
 logs
 *.log
