@@ -15,6 +15,7 @@ export class VC_MUSIC {
 					const VCC = this.E.member.voice.channel;
 					if (VCC) {
 						if (VCC.joinable) {
+							//VCに参加するよ
 							const CON = joinVoiceChannel({
 								guildId: VCC.guild.id,
 								channelId: VCC.id,
@@ -22,24 +23,31 @@ export class VC_MUSIC {
 								selfDeaf: false,
 								selfMute: false
 							});
+
+							//音源のパスを指定するよ
 							const mp3FilePath = "./DATA/MUSIC/" + FILE.replaceAll("../", "").replaceAll("./", ""); // MP3ファイルのパス
 
+							//音楽流すやつだと思う多分
 							const player = createAudioPlayer({
 								behaviors: {
 									noSubscriber: NoSubscriberBehavior.Pause,
 								}
 							});
 
+							//エラー時の処理
 							player.on('error', async (error) => {
 								await this.E.editReply(error);
 							});
 
+							//VCへの接続に音楽プレイヤーをサブすくさせる
 							CON.subscribe(player);
 
+							//なんこれ
 							const resource = createAudioResource(mp3FilePath, {
 								inputType: StreamType.Arbitrary,
 							});
 
+							//再生
 							player.play(resource);
 							await this.E.editReply("再生開始したかもしれないし、そうじゃないかもしれない");
 						} else {
