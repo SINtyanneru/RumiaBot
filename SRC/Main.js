@@ -873,7 +873,7 @@ client.on("guildMemberAdd", member => {
 			EB.setTitle(NULLCHECK(member.displayName) + "さんようこそ地獄へ");
 			EB.setDescription("だれだろう？");
 			EB.setColor(RND_COLOR());
-			MSG_SEND(client, rumiserver, exiter_channel, { embeds: [EB] });
+			MSG_SEND(client, rumiserver, "837971226222657536", { embeds: [EB] });
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ MEM ADD]" + EX);
