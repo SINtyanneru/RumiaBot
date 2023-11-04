@@ -66,11 +66,11 @@ export class WS {
 						//スクリーンショットを撮影
 						return driver.takeScreenshot();
 					})
-					.then(screenshotData => {
+					.then(async screenshotData => {
 						try {
 							FS.writeFileSync("./DOWNLOAD/" + E.member.id + ".png", screenshotData, "base64");
 
-							E.editReply({
+							await E.editReply({
 								content: "おｋ：" + BROWSER_NAME_TEXT + "で撮影",
 								files: ["./DOWNLOAD/" + E.member.id + ".png"]
 							});
@@ -81,10 +81,9 @@ export class WS {
 							return;
 						}
 					})
-					.catch(() => {
-						// FIXME エラーは回収してないっぽいからそのままにしておくけど、大丈夫そ？
-						// console.error("[ ERR ][ WebScreenShot ]", EX);
-						E.editReply("接続できませんでした！");
+					.catch(async () => {
+						console.error("[ ERR ][ WebScreenShot ]", EX);
+						await E.editReply("接続できませんでした！");
 						//WebDriverを終了
 						driver.quit();
 						return;
@@ -96,11 +95,11 @@ export class WS {
 					});
 			} catch (EX) {
 				console.error("[ ERR ][ WebScreenShot ]", EX);
-				E.editReply("接続できませんでした！");
+				await E.editReply("接続できませんでした！");
 				return;
 			}
 		} else {
-			E.editReply("URLが指定されていません");
+			await E.editReply("URLが指定されていません");
 			return;
 		}
 	}
