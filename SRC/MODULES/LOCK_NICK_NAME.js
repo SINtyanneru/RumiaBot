@@ -1,35 +1,45 @@
 // eslint-disable-next-line no-unused-vars
 import { GuildMember } from "discord.js";
-import { rumiserver, massango, rumisub, hassy1216, rusklabo, azusa, kazemidori } from "./SYNTAX_SUGER.js";
-/** @param {GuildMember} MEMBER */
-export async function LOCK_NICK_NAME(MEMBER) {
-	try {
-		//るみ鯖無いでの出来事に適応
-		if (MEMBER.guild.id === rumiserver) {
-			const NICK_LOCK_USER = {
-				[massango]: 'もふもふまっさんこ"う"',
-				[rumisub]: "Rumi hat alonaaaaaaaaaa",
-				[hassy1216]: " もふもふhassyTK",
-				[rusklabo]: " もふもふラスクラボ",
-				[azusa]: "†行動の代償† もふもふ梓",
-				[kazemidori]: "もふもふ風綠"
-			};
+import { SQL_OBJ } from "../Main.js";
 
-			const NLU = NICK_LOCK_USER[MEMBER.user.id.toString()];
-			if (NLU) {
-				if (NLU !== MEMBER.nickname) {
+/** @param {GuildMember} MEMBER */
+export class LOCK_NICK_NAME {
+	constructor() {
+		this.NICK_LOCK_USER = {};
+	}
+	//初期化
+	INIT() {
+		let SQL_RESULT = SQL_OBJ.SCRIPT_RUN("SELECT * FROM `NICKNAME_LOCK`; ", []);
+		SQL_RESULT.then(RESULT => {
+			RESULT.forEach(ROW => {
+				if (!this.NICK_LOCK_USER[ROW.GID]) {
+					this.NICK_LOCK_USER[ROW.GID] = {};
+				}
+				this.NICK_LOCK_USER[ROW.GID][ROW.UID] = ROW.NICKNAME;
+			});
+		})
+		SQL_RESULT.catch(EX => {
+			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
+		});
+	}
+	//メイン
+	async main(MEMBER) {
+		try {
+			let NICK_NAME = this.NICK_LOCK_USER[MEMBER.guild.id.toString()][MEMBER.user.id.toString()];
+			if (NICK_NAME) {
+				if (NICK_NAME !== MEMBER.nickname) {
 					console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
 					if (MEMBER.manageable) {
-						await MEMBER.setNickname(NLU);
+						await MEMBER.setNickname(NICK_NAME);
 					} else {
 						console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
 						return;
 					}
 				}
 			}
+		} catch (EX) {
+			console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
+			return;
 		}
-	} catch (EX) {
-		console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
-		return;
 	}
 }

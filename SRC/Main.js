@@ -31,6 +31,7 @@ import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 let DENIED_WORD_OBJ = new DENIED_WORD();
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 let WS_SERVER_OBJ = new WS_SERVER();
+let LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
 export let SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
@@ -53,6 +54,8 @@ client.once("ready", async () => {
 	HTTP_SERVER_OBJ.main();
 	//WS鯖を起動
 	WS_SERVER_OBJ.main();
+
+	LOCK_NICK_NAME_OBJ.INIT();
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -649,7 +652,7 @@ client.on("messageCreate", async message => {
 		new command.WHAT_NOW_DAY().main(message);
 	}
 
-	LOCK_NICK_NAME(message.member);
+	LOCK_NICK_NAME_OBJ.main(message.member);
 	/*
 	if (!CONFIG.DISABLE?.includes("automod")) {
 		DENIED_WORD_OBJ.main(message);
@@ -882,7 +885,7 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-	LOCK_NICK_NAME(newMember);
+	LOCK_NICK_NAME_OBJ.main(newMember);
 });
 
 //ロール変更を検知
