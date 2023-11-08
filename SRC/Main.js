@@ -569,26 +569,32 @@ client.on("messageCreate", async message => {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
 			MENTION_USERS.forEach(USER => {
-				if (USER.id === CONFIG.ID) {
-					if (message.reference) {
+				console.log(USER.id);
+				if (USER.id === client.user.id) {//自分に対するメッセージなら
+					if (message.reference) {//リプライである
+						//しもねた系
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きもい");
 							return;
 						}
+						//特定の人なら
 						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
 							message.reply("そーなのかー");
 							return;
 						}
 						message.reply("そうですか。");
-					} else {
+					} else {//メッセージである
+						//しもねた系
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きっしょ死ね");
 							return;
 						}
+						//お → なに？
 						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
 							message.reply("...");
 							return;
 						}
+						//特定の人なら
 						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
 							message.reply("なんなのだー？");
 							return;
