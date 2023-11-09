@@ -161,6 +161,13 @@ async function OPEN_GUILD(ID) {
 									if (RESULT.STATUS) {
 										console.log(RESULT);
 										CHANNEL_SELECT(RESULT);
+
+										let MESSAGES = RESULT.CHANNEL.MESSAGES.reverse()
+
+										for (let I = 0; I < MESSAGES.length; I++) {
+											const MESSAGE = MESSAGES[I];
+											MSG_ADD(MESSAGE);
+										}
 									}
 								}
 							}
@@ -180,6 +187,11 @@ async function OPEN_GUILD(ID) {
 									if (RESULT.STATUS) {
 										console.log(RESULT);
 										CHANNEL_SELECT(RESULT);
+
+										for (let I = 0; I < RESULT.CHANNEL.MESSAGES.length; I++) {
+											const MESSAGE = RESULT.CHANNEL.MESSAGES[I];
+											MSG_ADD(MESSAGE);
+										}
 									}
 								}
 							}
@@ -276,6 +288,29 @@ function createElement(name, child = null, attribute = {}) {
 	return element;
 }
 
+function MSG_ADD(MESSAGE) {
+	let MESSAGE_EL = document.createElement("DIV");
+	MESSAGE_EL.className = "MESSAGE_ITEM";
+
+	let AUTHOR_EL = document.createElement("DIV");
+	AUTHOR_EL.className = "MESSAGE_AUTHOR";
+	AUTHOR_EL.innerHTML = "<IMG SRC=\"" + MESSAGE.AUTHOR.ICON + "\">" + MESSAGE.AUTHOR.NAME;
+
+	let TEXT_EL = document.createElement("DIV");
+	TEXT_EL.className = "MESSAGE_TEXT";
+	TEXT_EL.innerText = MESSAGE.MSG.TEXT;
+
+
+	MESSAGE_EL.appendChild(AUTHOR_EL);
+	MESSAGE_EL.appendChild(TEXT_EL);
+
+	//TODO:画像表示を付ける
+
+	MESSAGE_LIST.appendChild(MESSAGE_EL);
+
+	MESSAGE_LIST.scrollTo(0, MESSAGE_LIST.scrollHeight);
+}
+
 
 // from WS.js
 const WS = new WebSocket("ws://localhost:3001/");
@@ -292,26 +327,7 @@ WS.addEventListener("message", (event) => {
 
 	//メッセージ受信
 	if (SELECT_CHANNEL_ID === MESSAGE.CHANNEL.ID) {
-		let MESSAGE_EL = document.createElement("DIV");
-		MESSAGE_EL.className = "MESSAGE_ITEM";
-
-		let AUTHOR_EL = document.createElement("DIV");
-		AUTHOR_EL.className = "MESSAGE_AUTHOR";
-		AUTHOR_EL.innerHTML = "<IMG SRC=\"" + MESSAGE.AUTHOR.ICON + "\">" + MESSAGE.AUTHOR.NAME;
-
-		let TEXT_EL = document.createElement("DIV");
-		TEXT_EL.className = "MESSAGE_TEXT";
-		TEXT_EL.innerText = MESSAGE.MSG.TEXT;
-
-
-		MESSAGE_EL.appendChild(AUTHOR_EL);
-		MESSAGE_EL.appendChild(TEXT_EL);
-
-		//TODO:画像表示を付ける
-
-		MESSAGE_LIST.appendChild(MESSAGE_EL);
-
-		MESSAGE_LIST.scrollTo(0, MESSAGE_LIST.scrollHeight);
+		MSG_ADD(MESSAGE);
 	}
 });
 // tscを黙らせる

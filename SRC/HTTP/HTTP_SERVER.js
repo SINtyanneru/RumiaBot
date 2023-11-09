@@ -17,7 +17,7 @@ export class HTTP_SERVER {
 	}
 
 	main() {
-		const SERVER = HTTP.createServer((REQ, RES) => {
+		const SERVER = HTTP.createServer(async (REQ, RES) => {
 			/**@param {{}} payload */
 			function res_send_api(payload) {
 				RES.end(JSON.stringify(payload))
@@ -174,6 +174,23 @@ export class HTTP_SERVER {
 							if (GUILD) {
 								const CHANNEL = GUILD.channels.cache.get(URI_PARAM["CID"]);
 								if (CHANNEL) {
+									let MESSAGE_LOG = [];
+									Array.from(await CHANNEL.messages.fetch({ "limit": 10 })).forEach(MESSAGE => {
+										MESSAGE_LOG.push(
+											{
+												"MSG": {
+													"ID": MESSAGE[1].id,
+													"TEXT": MESSAGE[1].content
+												},
+												"AUTHOR": {
+													"ID": MESSAGE[1].author.id,
+													"NAME": MESSAGE[1].author.username,
+													"ICON": MESSAGE[1].author.avatarURL(),
+													"DEF_ICON": MESSAGE[1].author.defaultAvatarURL
+												}
+											}
+										)
+									});
 									//成功
 									RES.end(
 										JSON.stringify({
@@ -181,7 +198,7 @@ export class HTTP_SERVER {
 											"CHANNEL": {
 												"ID": CHANNEL.id,
 												"NAME": CHANNEL.name,
-												"MESSAGES": [] //TODO:メッセージ履歴をここに入れる
+												"MESSAGES": MESSAGE_LOG
 											}
 										})
 									);
