@@ -568,10 +568,29 @@ client.on("messageCreate", async message => {
 	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
-			MENTION_USERS.forEach(USER => {
+			MENTION_USERS.forEach(async (USER) => {
 				console.log(USER.id);
 				if (USER.id === client.user.id) {//自分に対するメッセージなら
 					if (message.reference) {//リプライである
+						//メッセージインフォ
+						if (message.content.includes("taktud")) {
+							let REPLY_P = await message.fetchReference();
+							let FWH = await message.channel.fetchWebhooks();
+							let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
+							console.log(WH);
+							message.reply(
+								"BOT:" + REPLY_P.author.bot + "\n" +
+								"ID:" + REPLY_P.author.id + "\n" +
+								"WH:" + (function () {
+									if (WH) {
+										return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
+									} else {
+										return "NONE";
+									}
+								})() + "\n"
+							);
+							return;
+						}
 						//しもねた系
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きもい");
