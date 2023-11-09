@@ -131,9 +131,33 @@ export class SNS {
 
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
 						if (!RENOTE_ID) {
-							this.SEND_EMBEDED(IT_DIS_USER.GID, IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, null, null, null);
+							this.SEND_EMBEDED(
+								IT_DIS_USER.GID,
+								IT_DIS_USER.CID,
+								"https://" + DOMAIN + "/notes/" + NOTE_ID,
+								IT_MIS_USER.name,
+								IT_MIS_USER.username,
+								NOTE_ID,
+								NOTE_TEXT,
+								NOTE_FILES,
+								null,
+								null,
+								null
+							);
 						} else {
-							this.SEND_EMBEDED(IT_DIS_USER.GID, IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, RENOTE_NOTE.user.name, RENOTE_ID, RENOTE_NOTE.text, RENOTE_NOTE.files);
+							this.SEND_EMBEDED(
+								IT_DIS_USER.GID,
+								IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID,
+								IT_MIS_USER.name,
+								IT_MIS_USER.username,
+								NOTE_ID,
+								NOTE_TEXT,
+								NOTE_FILES,
+								RENOTE_NOTE.user.name,
+								RENOTE_ID,
+								RENOTE_NOTE.text,
+								RENOTE_NOTE.files
+							);
 						}
 					}
 				}
@@ -185,8 +209,27 @@ export class SNS {
 					const TOOT = JSON.parse(RESULT.payload);
 					if (TOOT.account.id) {
 						console.log(TOOT);
-						const FILES = [{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
-						this.SEND_EMBEDED(rumiserver, general_channel, "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT.content, FILES, null, null, null, null);
+						const FILES = (function () {
+							if (TOOT.media_attachments.length > 0) {
+								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }]
+							} else {
+								return [];
+							}
+						})();
+						this.SEND_EMBEDED(
+							rumiserver,
+							general_channel,
+							"https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id,
+							TOOT.account.display_name,
+							TOOT.account.acct,
+							TOOT.id,
+							TOOT.content,
+							FILES,
+							null,
+							null,
+							null,
+							null
+						);
 					}
 				}
 			} catch (EX) {
