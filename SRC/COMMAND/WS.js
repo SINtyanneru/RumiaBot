@@ -34,7 +34,7 @@ export class WS {
 			try {
 				//Chromeのオプションを設定
 				const chromeOptions = new chrome.Options();
-				//chromeOptions.addArguments("--headless"); // ヘッドレスモードで実行
+				chromeOptions.addArguments("--headless"); // ヘッドレスモードで実行
 				chromeOptions.addArguments("--window-size=1980,1080"); // ウィンドウのサイズを設定
 
 				if (BROWSER_NAME !== undefined && BROWSER_NAME !== null) {
