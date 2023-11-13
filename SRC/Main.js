@@ -692,7 +692,7 @@ client.on("messageCreate", async message => {
 		}
 	}
 
-	if (message.content.startsWith("時間")) {
+	if (message.content === "時間は？") {
 		const DATE = new Date();
 		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
 		const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
