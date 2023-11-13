@@ -915,8 +915,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 //ロール変更を検知
 client.on("roleUpdate", (oldRole, newRole) => {
-	//まぞくロール
-	if (newRole.id === "1130723739349291089") {
+	if (newRole.guild.id === "836142496563068929") {
 		const OLD_ROLE_PM = oldRole.permissions.toArray();
 		const NEW_ROLE_PM = newRole.permissions.toArray();
 
@@ -964,7 +963,11 @@ client.on("roleUpdate", (oldRole, newRole) => {
 			PM_UPDATE_TEXT += "```";
 
 			//作った文字列をおくりつける
-			CH.send("まぞくロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
+			if (oldRole.name === newRole.name) {//名前が同じ
+				CH.send("「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
+			} else {
+				CH.send("「" + sanitize(oldRole.name) + "」→「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
+			}
 		}
 	}
 });
