@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { GuildMember } from "discord.js";
 import { SQL_OBJ } from "../Main.js";
+import { CONFIG } from "./CONFIG.js";
 
 /** @param {GuildMember} MEMBER */
 export class LOCK_NICK_NAME {
@@ -9,6 +10,7 @@ export class LOCK_NICK_NAME {
 	}
 	//初期化
 	INIT() {
+		if (CONFIG.DISABLE.includes("locknick")) return;
 		let SQL_RESULT = SQL_OBJ.SCRIPT_RUN("SELECT * FROM `NICKNAME_LOCK`; ", []);
 		SQL_RESULT.then(RESULT => {
 			RESULT.forEach(ROW => {
@@ -24,6 +26,7 @@ export class LOCK_NICK_NAME {
 	}
 	//メイン
 	async main(MEMBER) {
+		if (CONFIG.DISABLE.includes("locknick")) return;
 		try {
 			let NICK_NAME = this.NICK_LOCK_USER[MEMBER.guild.id.toString()];
 			if (NICK_NAME) {
