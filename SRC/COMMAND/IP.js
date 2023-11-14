@@ -9,7 +9,7 @@ export class IP {
 		if (CONFIG.DISABLE?.includes("ip")) {
 			return E.editReply("運営者の意向により、開示できません！");
 		}
-		const RES = await fetch("https://api.ipify.org?format=json", {
+		const RES = await fetch("https://ifconfig.me/ip", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json"
@@ -17,8 +17,8 @@ export class IP {
 		});
 
 		if (RES.ok) {
-			const RESULT = await RES.json();
-			await E.editReply("私のIPは" + RESULT.ip + "です！");
+			const RESULT = await RES.text();
+			await E.editReply("私のIPは" + RESULT + "です！");
 		} else {
 			await E.editReply("取得失敗");
 		}
