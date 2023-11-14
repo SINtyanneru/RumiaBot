@@ -725,7 +725,7 @@ client.on("messageCreate", async message => {
 		.map(a => a)
 		.forEach((attachment, key) => {
 			const targetUrl = attachment.url;
-			const fileExtension = attachment.name.match(/\.[^.]+$/)[0];
+			const fileExtension = attachment.name.match(/.[^.]+$/)?.[0];
 			const targetPath = PATH.join("DOWNLOAD", "MSG_FILES", message.guildId);
 			if (!FS.existsSync(targetPath)) {
 				// ディレクトリが存在しない場合、作成
