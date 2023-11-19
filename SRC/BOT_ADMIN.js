@@ -43,8 +43,9 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")) {
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "");
-			exec('sh -c "' + CMD + '"', (error, stdout, stderr) => {
+			exec(CMD, (error, stdout, stderr) => {
 				if (error) {
+					console.error(error)
 					message.reply("EXECでエラーが発生");
 					return;
 				}
