@@ -82,7 +82,7 @@ export class WS {
 						}
 					})
 					.catch(async () => {
-						console.error("[ ERR ][ WebScreenShot ]", EX);
+						console.error("[ ERR ][ WebScreenShot ]");
 						await E.editReply("接続できませんでした！");
 						//WebDriverを終了
 						driver.quit();
