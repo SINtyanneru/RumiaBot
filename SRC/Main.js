@@ -494,6 +494,13 @@ client.once("ready", async () => {
 
 //メッセージを受信
 client.on("messageCreate", async message => {
+	//ブロック
+	if (CONFIG.BLOCK) {
+		if (CONFIG.BLOCK.includes(message.author.id)) {
+			return;
+		}
+	}
+
 	//ログを出す
 	try {
 		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
@@ -755,6 +762,13 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 //イントラクション
 client.on("interactionCreate", async INTERACTION => {
 	try {
+		//ブロック
+		if (CONFIG.BLOCK) {
+			if (CONFIG.BLOCK.includes(INTERACTION.user.id)) {
+				return;
+			}
+		}
+
 		if (!INTERACTION.isCommand()) {
 			//コマンドが送信されたか確認
 			return;
