@@ -31,7 +31,7 @@ import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 let DENIED_WORD_OBJ = new DENIED_WORD();
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 let WS_SERVER_OBJ = new WS_SERVER();
-let LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
+export let LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
 export let SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {

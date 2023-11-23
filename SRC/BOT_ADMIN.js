@@ -5,7 +5,7 @@ import { MessageEmbed, Message } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { exec } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
-import { SQL_OBJ } from "./Main.js";
+import { SQL_OBJ, LOCK_NICK_NAME_OBJ } from "./Main.js";
 
 /**
  * BOT管理者が使う奴
@@ -218,5 +218,16 @@ export async function BOT_ADMIN(message) {
 
 			message.reply("エラー");
 		}
+	}
+
+	//再読込
+	if (message.content === CONFIG.ADMIN_PREFIX + "RELOAD") {
+		console.log("[ *** ][ BOT ADMIN ]管理者が設定の再読込を要請しました、再読込を開始します...");
+
+		//ニックネーム強制固定
+		LOCK_NICK_NAME_OBJ.INIT();
+
+		message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
+		console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
 	}
 }
