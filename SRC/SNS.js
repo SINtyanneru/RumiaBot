@@ -119,10 +119,17 @@ export class SNS {
 					//投稿者のID
 					let IT_MIS_USER = RESULT.body.body.user;
 					//SQLにそのIDがあるか探す
-					let IT_DIS_USER = this.USER.find(ROW => ROW.SNS_UID === IT_MIS_USER.id && ROW.SNS_ID === ID);
+					let IT_DIS_USER = [];
+
+					for (let I = 0; I < this.USER.length; I++) {
+						const SNS_USER = this.USER[I];
+						if (SNS_USER.SNS_UID === IT_MIS_USER.id && SNS_USER.SNS_ID === ID) {
+							IT_DIS_USER.push(SNS_USER);
+						}
+					}
 
 					//Ej! そのIDはあるか？？？
-					if (IT_DIS_USER) {
+					if (IT_DIS_USER.length > 0) {
 						let NOTE_ID = RESULT.body.body.id; //ノートのID
 						let NOTE_TEXT = RESULT.body.body.text; //ノートのテキスト
 						let NOTE_FILES = RESULT.body.body.files; //ノートのファイル
@@ -131,33 +138,37 @@ export class SNS {
 
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
 						if (!RENOTE_ID) {
-							this.SEND_EMBEDED(
-								IT_DIS_USER.GID,
-								IT_DIS_USER.CID,
-								"https://" + DOMAIN + "/notes/" + NOTE_ID,
-								IT_MIS_USER.name,
-								IT_MIS_USER.username,
-								NOTE_ID,
-								NOTE_TEXT,
-								NOTE_FILES,
-								null,
-								null,
-								null
-							);
+							IT_DIS_USER.forEach(ROW => {
+								this.SEND_EMBEDED(
+									ROW.GID,
+									ROW.CID,
+									"https://" + DOMAIN + "/notes/" + NOTE_ID,
+									IT_MIS_USER.name,
+									IT_MIS_USER.username,
+									NOTE_ID,
+									NOTE_TEXT,
+									NOTE_FILES,
+									null,
+									null,
+									null
+								);
+							});
 						} else {
-							this.SEND_EMBEDED(
-								IT_DIS_USER.GID,
-								IT_DIS_USER.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID,
-								IT_MIS_USER.name,
-								IT_MIS_USER.username,
-								NOTE_ID,
-								NOTE_TEXT,
-								NOTE_FILES,
-								RENOTE_NOTE.user.name,
-								RENOTE_ID,
-								RENOTE_NOTE.text,
-								RENOTE_NOTE.files
-							);
+							IT_DIS_USER.forEach(ROW => {
+								this.SEND_EMBEDED(
+									ROW.GID,
+									ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID,
+									IT_MIS_USER.name,
+									IT_MIS_USER.username,
+									NOTE_ID,
+									NOTE_TEXT,
+									NOTE_FILES,
+									RENOTE_NOTE.user.name,
+									RENOTE_ID,
+									RENOTE_NOTE.text,
+									RENOTE_NOTE.files
+								);
+							});
 						}
 					}
 				}
