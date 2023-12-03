@@ -846,7 +846,7 @@ client.on("interactionCreate", async INTERACTION => {
 client.on('interactionCreate', async (INTERACTION) => {
 	if (!INTERACTION.isButton()) {
 		return
-	};
+	}
 
 	switch (INTERACTION.customId) {
 		case "test":
