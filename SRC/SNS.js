@@ -175,9 +175,11 @@ export class SNS {
 		//接続が閉じられた際のイベントハンドラ
 		socket.on("close", (CODE, REASON) => {
 			console.log("[ INFO ][ MISSKEY ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
-			console.log("[ *** ][ MISSKEY ][ " + DOMAIN + " ]Re Connecting...");
 			clearInterval(SEND_H);
-			this.misskey(DOMAIN, API_TOKEN, ID); //再接続する
+			setInterval(() => {
+				console.log("[ *** ][ MISSKEY ][ " + DOMAIN + " ]Re Connecting...");
+				this.misskey(DOMAIN, API_TOKEN, ID); //再接続する
+			}, 5000);
 		});
 
 		let SEND_H = setInterval(() => {
@@ -246,8 +248,11 @@ export class SNS {
 		//接続が閉じられた際のイベントハンドラ
 		socket.on("close", (CODE, REASON) => {
 			console.log("[ INFO ][ MASTODON ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
-			console.log("[ *** ][ MASTODON ][ " + DOMAIN + " ]Re Connecting...");
-			this.mastodon(DOMAIN, API_TOKEN, ID); //再接続する
+
+			setInterval(() => {
+				console.log("[ *** ][ MASTODON ][ " + DOMAIN + " ]Re Connecting...");
+				this.mastodon(DOMAIN, API_TOKEN, ID); //再接続する
+			}, 5000);
 		});
 	}
 }
