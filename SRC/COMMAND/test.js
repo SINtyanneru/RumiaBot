@@ -2,6 +2,7 @@
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 */
+import { MessageActionRow, MessageButton } from "discord.js";
 
 import { SQL_OBJ } from "../Main.js";
 
@@ -13,12 +14,24 @@ export class test {
 	async main() {
 		let E = this.E;
 
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('test')
+				.setLabel('こゃーん')
+				.setStyle('PRIMARY')
+		);
+
 		let TEXT = "テストを実行します\n";
 
-		await E.editReply(TEXT);
+		await E.editReply(
+			{
+				content: TEXT,
+				components: [row],
+			}
+		);
 
 		SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'USER';", [])
-			.then(async () => {
+			.then(async (ROW) => {
 				TEXT += "[ OK ]SQL TABLE USER\n";
 				await E.editReply(TEXT);
 			})
@@ -50,5 +63,12 @@ export class test {
 				TEXT += "[ ERR ]SQL TABLE SNS\n";
 				await E.editReply(TEXT);
 			});
+	}
+
+	async button() {
+		await this.E.reply({
+			content: "こゃゃーん",
+			ephemeral: true, // このオプションを true にすると他のユーザーには見えません
+		});
 	}
 }

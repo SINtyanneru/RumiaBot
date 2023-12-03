@@ -759,7 +759,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 	}
 });
 
-//イントラクション
+//スラッシュコマンド
 client.on("interactionCreate", async INTERACTION => {
 	try {
 		//ブロック
@@ -839,6 +839,19 @@ client.on("interactionCreate", async INTERACTION => {
 	} catch (EX) {
 		console.error("[ ERR ][ DJS ]" + EX);
 		return;
+	}
+});
+
+//ボタン
+client.on('interactionCreate', async (INTERACTION) => {
+	if (!INTERACTION.isButton()) {
+		return
+	};
+
+	switch (INTERACTION.customId) {
+		case "test":
+			new command.test(INTERACTION).button();
+			break;
 	}
 });
 
