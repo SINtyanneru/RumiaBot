@@ -187,7 +187,7 @@ export class SNS {
 		socket.on("close", (CODE, REASON) => {
 			console.log("[ INFO ][ MISSKEY ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
 			clearInterval(SEND_H);
-			setInterval(() => {
+			setTimeout(() => {
 				console.log("[ *** ][ MISSKEY ][ " + DOMAIN + " ]Re Connecting...");
 				this.misskey(DOMAIN, API_TOKEN, ID); //再接続する
 			}, 5000);
