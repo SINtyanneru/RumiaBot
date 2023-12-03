@@ -21,7 +21,6 @@ export class SEARCH {
 		// リクエストを作成
 		const REQ = https.request(OPTION, RES => {
 			//レスポンスを受け取るためのコールバック
-
 			let DATA = "";
 
 			//レスポンスデータを受信したときのイベントハンドラ
@@ -30,7 +29,7 @@ export class SEARCH {
 			});
 
 			//レスポンスデータをすべて受信したときのイベントハンドラ
-			RES.on("end", () => {
+			RES.on("end", async () => {
 				try {
 					const RESULT = JSON.parse(DATA);
 					if (RESULT.error != null) {
@@ -41,9 +40,11 @@ export class SEARCH {
 
 					//埋め込み生成くん
 					let EB = new MessageEmbed();
-					EB.setTitle("検索結果");
-					EB.setDescription(this.SEARCH_WORD);
+					EB.setTitle("「" + this.SEARCH_WORD + "」の検索結果");
+					//EB.setDescription();
 					EB.setColor(RND_COLOR());
+
+					let WORD_DESC = null;
 
 					for (let I = 0; I < RESULT.items.length; I++) {
 						if (I > 5) {
@@ -69,7 +70,7 @@ export class SEARCH {
 									TITLE = TITLE.slice(0, 256) + "...";
 								}
 
-								let DESC = SEARCH_DATA.htmlSnippet;
+								let DESC = SEARCH_DATA.snippet;
 								if (DESC.length > 253) {
 									DESC = DESC.slice(0, 256) + "...";
 								}
@@ -79,12 +80,22 @@ export class SEARCH {
 									value: DESC + "\n[見に行く](" + SEARCH_DATA.link + ")",
 									inline: false
 								});
+
+
+								if (!WORD_DESC) {
+									WORD_DESC = DESC;
+								}
 							}
 						}
 					}
 
+					//検索結果の説明を入れる
+					if (WORD_DESC) {
+						EB.setDescription("「" + this.SEARCH_WORD + "」とは↓\n" + WORD_DESC + "\n---------------------");
+					}
+
 					//返答
-					this.E.reply({ embeds: [EB] });
+					await this.E.reply({ embeds: [EB] });
 				} catch (EX) {
 					console.error("[ ERR ][ SEARCH ]" + EX);
 				}
