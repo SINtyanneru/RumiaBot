@@ -29,6 +29,7 @@
 		"editor.formatOnSave": false
 	},
 	"[javascript]": {
-		"editor.defaultFormatter": "vscode.typescript-language-features"
+		// 利便性のためだ、許して
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }
