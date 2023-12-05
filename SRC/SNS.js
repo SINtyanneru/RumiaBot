@@ -260,7 +260,7 @@ export class SNS {
 		socket.on("close", (CODE, REASON) => {
 			console.log("[ INFO ][ MASTODON ][ " + DOMAIN + " ]Disconnected!" + CODE + "REASON:" + REASON);
 
-			setInterval(() => {
+			setTimeout(() => {
 				console.log("[ *** ][ MASTODON ][ " + DOMAIN + " ]Re Connecting...");
 				this.mastodon(DOMAIN, API_TOKEN, ID); //再接続する
 			}, 5000);
