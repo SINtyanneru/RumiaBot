@@ -817,6 +817,9 @@ client.on("interactionCreate", async INTERACTION => {
 			case "info_user":
 				getUserInfo(INTERACTION);
 				break;
+			case "info_mine":
+				getMcInfo(INTERACTION);
+				break;
 			case "kanji":
 				new command.KANJI(INTERACTION).main();
 				break;
@@ -825,9 +828,6 @@ client.on("interactionCreate", async INTERACTION => {
 				break;
 			case "sns_set":
 				new command.SNS(INTERACTION).main();
-				break;
-			case "info_mine":
-				getMcInfo(INTERACTION);
 				break;
 			case "ip":
 				new command.IP(INTERACTION).main();
