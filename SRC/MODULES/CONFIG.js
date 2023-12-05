@@ -10,9 +10,10 @@ import { readFileSync } from "fs";
  * @prop {string} [GOOGLE_API_KEY]
  * @prop {string} [GOOGLE_API_ENGINE_ID]
  * @prop {SNS[]} [SNS]
- * @prop {string} ADMIN_ID
+ * @prop {string[]} ADMIN_ID
  * @prop {string} ADMIN_PREFIX
- * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" | "locknick")[]} [DISABLE]
+ * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" | "locknick" | "calc")[]} [DISABLE]
+ * @prop {string[]} BLOCK
  *
  * @typedef {Object} SNS
  * 	@prop {string} ID

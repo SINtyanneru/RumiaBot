@@ -4,6 +4,10 @@
 import { SQL_OBJ } from "./Main.js";
 import { CONFIG } from "./MODULES/CONFIG.js";
 export class FUNCTION_SETTING {
+	/**
+	 * 暫定
+	 * @returns {Promise<{ GID: string; FUNC_ID: string; }[]>}
+	 */
 	async LOAD() {
 		if (CONFIG.SQL_CONNECT) {
 			try {

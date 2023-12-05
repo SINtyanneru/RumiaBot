@@ -1,350 +1,296 @@
+// @ts-check
 import { client } from "../MODULES/loadClient.js";
-import { MessageEmbed } from "discord.js";
+import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
 import { NULLCHECK } from "../MODULES/NULLCHECK.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 
-export class INFO {
-	constructor(INTERACTION) {
-		this.E = INTERACTION;
-	}
 
-	//鯖情報取得
-	async sv_main() {
-		try {
-			const GLID = client.guilds.cache.get(this.E.guildId);
+//鯖情報取得
+/**
+ * 
+ * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ */
+export async function getServerInfo(interaction) {
+	try {
+		const GLID = client.guilds.cache.get(interaction.guildId);
 
-			const EB = new MessageEmbed();
-			EB.setTitle(GLID.name);
-			if (GLID.description) {
-				EB.setDescription(GLID.description);
-			}
-			EB.setColor(RND_COLOR());
-
-			EB.setThumbnail("https://cdn.discordapp.com/icons/" + GLID.id + "/" + GLID.icon + ".png");
-
-			//鯖のID
-			EB.addFields({
-				name: "ID",
-				value: NULLCHECK(GLID.id),
-				inline: false
-			});
-
-			//認証レベル
-			EB.addFields({
-				name: "認証レベル",
-				value: NULLCHECK(GLID.verificationLevel),
-				inline: false
-			});
-
-			//鯖のオーナー
-			const OWNER = await GLID.fetchOwner();
-			if (OWNER) {
-				EB.addFields({
-					name: "所有者",
-					value: "<@" + OWNER.id + ">",
-					inline: false
-				});
-			}
-
-			//AFK
-			if (GLID.afkChannel) {
-				EB.addFields({
-					name: "AFKチャンネル",
-					value: "<#" + GLID.afkChannel.id.toString() + ">",
-					inline: false
-				});
-			}
-
-			//作成日
-			if (GLID.createdAt) {
-				let DATE = GLID.createdAt;
-				EB.addFields({
-					name: "鯖作成日",
-					value: DATE.getFullYear() + "年" + DATE.getMonth() + "月" + DATE.getDate() + "日" + DATE.getDay() + "曜日" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒",
-					inline: false
-				});
-			}
-
-			//絵文字を配列にするやつ
-			let EMOJIS = Array.from(await GLID.emojis.fetch());
-			let EMOJIS_TEXT = [];
-			let EMOJIS_TEXT_TEMP = "";
-			for (let I = 0; I < EMOJIS.length; I++) {
-				const EMOJI = EMOJIS[I][1];
-				if (!EMOJI.animated) {
-					let TEXT = "<:" + EMOJI.name + ":" + EMOJI.id + ">";
-					if ((EMOJIS_TEXT_TEMP + TEXT).length < 900) {
-						EMOJIS_TEXT_TEMP += TEXT;
-					} else {
-						EMOJIS_TEXT.push(EMOJIS_TEXT_TEMP);
-						EMOJIS_TEXT_TEMP = "";
-						EMOJIS_TEXT_TEMP += TEXT;
-					}
-				} else {
-					let TEXT = "<a:" + EMOJI.name + ":" + EMOJI.id + ">";
-					if ((EMOJIS_TEXT_TEMP + TEXT).length < 900) {
-						EMOJIS_TEXT_TEMP += TEXT;
-					} else {
-						EMOJIS_TEXT.push(EMOJIS_TEXT_TEMP);
-						EMOJIS_TEXT_TEMP = "";
-						EMOJIS_TEXT_TEMP += TEXT;
-					}
-				}
-			}
-
-			console.log(EMOJIS_TEXT);
-
-			for (let I = 0; I < EMOJIS_TEXT.length; I++) {
-				const ROW = EMOJIS_TEXT[I];
-				EB.addFields({
-					name: "絵文字" + (I + 1).toString(),
-					value: ROW,
-					inline: false
-				});
-			}
-
-			await this.E.editReply({ embeds: [EB] });
-		} catch (EX) {
-			console.log("[ ERR ][ INFO ]" + EX)
-			await this.E.editReply("エラー\n" + EX);
+		const embed = new MessageEmbed();
+		embed.setTitle(GLID.name);
+		if (GLID.description) {
+			embed.setDescription(GLID.description);
 		}
-	}
+		embed.setColor(RND_COLOR());
 
-	//ユーザー情報取得
-	async usr_main() {
-		let E = this.E;
+		embed.setThumbnail(`https://cdn.discordapp.com/icons/${GLID.id}/${GLID.icon}.png`);
 
-		const MEMBER = E.options.getMentionable("user");
-		const USER = client.users.cache.get(E.options.getMentionable("user").user.id);
-
-		let NOW_DATE = new Date();
-		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-
-		//埋め込み
-		const EB = new MessageEmbed();
-
-		//ユーザー名
-		if (MEMBER.nickname !== undefined && MEMBER.nickname !== null) {
-			EB.setTitle(NULLCHECK(MEMBER.nickname));
-		} else {
-			EB.setTitle(NULLCHECK(USER.username));
-		}
-
-		EB.setDescription(NULLCHECK(USER.username));
-		EB.setColor(RND_COLOR());
-
-		EB.setThumbnail("https://cdn.discordapp.com/avatars/" + USER.id + "/" + USER.avatar + ".png");
-
-		EB.addFields({
+		//鯖のID
+		embed.addFields({
 			name: "ID",
-			value: NULLCHECK(USER.id),
+			value: NULLCHECK(GLID.id),
 			inline: false
 		});
 
-		//アカウント作成日
-		const ACCOUNT_CREATE_DATE = new Date(USER.createdAt);
-		EB.addFields({
-			name: "アカウント作成日",
-			//日本表記
-			value:
-				ACCOUNT_CREATE_DATE.getFullYear().toString() +
-				"年 " +
-				(ACCOUNT_CREATE_DATE.getMonth() + 1).toString() +
-				"月 " +
-				ACCOUNT_CREATE_DATE.getDate().toString() +
-				"日 " +
-				DAY_FORMAT[ACCOUNT_CREATE_DATE.getDay()] +
-				"曜日 " +
-				ACCOUNT_CREATE_DATE.getHours().toString() +
-				"時 " +
-				ACCOUNT_CREATE_DATE.getMinutes().toString() +
-				"分 " +
-				ACCOUNT_CREATE_DATE.getSeconds().toString() +
-				"秒 " +
-				ACCOUNT_CREATE_DATE.getMilliseconds().toString() +
-				"ミリ秒\n" +
-				//アメリカ表記
-				Math.floor((NOW_DATE - ACCOUNT_CREATE_DATE) / (1000 * 60 * 60 * 24)).toString() +
-				"日前",
+		//認証レベル
+		embed.addFields({
+			name: "認証レベル",
+			value: NULLCHECK(GLID.verificationLevel),
 			inline: false
 		});
 
-		//鯖に参加した日付
-		const GUILD_JOIN_DATE = new Date(MEMBER.joinedAt);
-		EB.addFields({
-			name: "鯖に参加した日付",
-			//日本表記
-			value:
-				GUILD_JOIN_DATE.getFullYear().toString() +
-				"年 " +
-				(GUILD_JOIN_DATE.getMonth() + 1).toString() +
-				"月 " +
-				GUILD_JOIN_DATE.getDate().toString() +
-				"日 " +
-				DAY_FORMAT[GUILD_JOIN_DATE.getDay()] +
-				"曜日 " +
-				GUILD_JOIN_DATE.getHours().toString() +
-				"時 " +
-				GUILD_JOIN_DATE.getMinutes().toString() +
-				"分 " +
-				GUILD_JOIN_DATE.getSeconds().toString() +
-				"秒 " +
-				GUILD_JOIN_DATE.getMilliseconds().toString() +
-				"ミリ秒\n" +
-				//アメリカ表記
-				Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() +
-				"日前",
+		//鯖のオーナー
+		const OWNER = await GLID.fetchOwner();
+		embed.addFields({
+			name: "所有者",
+			value: "<@" + OWNER.id + ">",
 			inline: false
 		});
 
-		//ニトロブースト開始日
-		if (MEMBER.premiumSince !== undefined && MEMBER.premiumSince !== null) {
-			const GUILD_JOIN_DATE = new Date(MEMBER.joinedAt);
-			EB.addFields({
-				name: "ブースト開始日",
-				//日本表記
-				value:
-					GUILD_JOIN_DATE.getFullYear().toString() +
-					"年 " +
-					(GUILD_JOIN_DATE.getMonth() + 1).toString() +
-					"月 " +
-					GUILD_JOIN_DATE.getDate().toString() +
-					"日 " +
-					DAY_FORMAT[GUILD_JOIN_DATE.getDay()] +
-					"曜日 " +
-					GUILD_JOIN_DATE.getHours().toString() +
-					"時 " +
-					GUILD_JOIN_DATE.getMinutes().toString() +
-					"分 " +
-					GUILD_JOIN_DATE.getSeconds().toString() +
-					"秒 " +
-					GUILD_JOIN_DATE.getMilliseconds().toString() +
-					"ミリ秒\n" +
-					//アメリカ表記
-					Math.floor((NOW_DATE - GUILD_JOIN_DATE) / (1000 * 60 * 60 * 24)).toString() +
-					"日前",
+		//AFK
+		if (GLID.afkChannel) {
+			embed.addFields({
+				name: "AFKチャンネル",
+				value: "<#" + GLID.afkChannel.id.toString() + ">",
 				inline: false
 			});
 		}
 
-		//BOTか
-		if (USER.bot) {
-			EB.addFields({
-				name: "BOTか",
-				value: "はい",
-				inline: false
-			});
-		} else {
-			EB.addFields({
-				name: "BOTか",
-				value: "いいえ",
+		//作成日
+		if (GLID.createdAt) {
+			const DATE = GLID.createdAt;
+			embed.addFields({
+				name: "鯖作成日",
+				value: DATE.getFullYear() + "年" + DATE.getMonth() + "月" + DATE.getDate() + "日" + DATE.getDay() + "曜日" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒",
 				inline: false
 			});
 		}
 
-		//キック可能か
-		if (MEMBER.kickable) {
-			EB.addFields({
-				name: "わたしはこのユーザーを",
-				value: "追放できます",
-				inline: false
-			});
-		} else {
-			EB.addFields({
-				name: "わたしはこのユーザーを",
-				value: "追放できません",
-				inline: false
-			});
+		//絵文字を配列にするやつ
+		const fetched_emoji = await GLID.emojis.fetch();
+		/**@type {string[]} */
+		const processed_emojis = [];
+		let i = 0;
+		// 全ての絵文字を列挙したら終わる
+		while (fetched_emoji.size < i) {
+			// ループの初めの旅にtmpは初期化
+			let tmp = "";
+			// 全ての絵文字を列挙したら終わる
+			while (fetched_emoji.size < i) {
+				const emoji = fetched_emoji[i]
+				/**@type {string} */
+				let text;
+				if (emoji.animated) {
+					text = `<a:${emoji.name}:${emoji.id}>`;
+				} else {
+					text = `<:${emoji.name}:${emoji.id}>`
+				}
+				// 上限を超えそうなら
+				if ((tmp + text).length > 1000) {
+					// 配列に追加
+					processed_emojis.push(tmp)
+					break;
+				}
+				// tmpにまだ増やせるから増やす
+				tmp += text;
+				i++;
+			}
 		}
 
-		//BAN可能か
-		if (MEMBER.bannable) {
-			EB.addFields({
-				name: "わたしはこのユーザーを",
-				value: "BANできます",
+		console.log(processed_emojis);
+		processed_emojis.forEach((row, i) => {
+			embed.addFields({
+				name: "絵文字リスト: " + (i + 1) + "番目",
+				value: row,
 				inline: false
 			});
-		} else {
-			EB.addFields({
-				name: "わたしはこのユーザーを",
-				value: "BANできません",
-				inline: false
-			});
-		}
+		});
 
-		await E.editReply({ embeds: [EB] });
+		await interaction.editReply({ embeds: [embed] });
+	} catch (error) {
+		console.log("[ ERR ][ INFO ]" + error)
+		await interaction.editReply("エラー\n" + error);
+	}
+}
+
+/**
+ * ユーザーの情報を取得する(インタラクションを使って)
+ * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ */
+export async function getUserInfo(interaction) {
+	/** @type {GuildMember}*/
+	// @ts-ignore
+	const MEMBER = interaction.options.getMentionable("user");
+	const USER = client.users.cache.get(MEMBER.user.id);
+
+	//埋め込み
+	const embed = new MessageEmbed();
+
+	//ユーザー名
+	if (MEMBER.nickname !== undefined && MEMBER.nickname !== null) {
+		embed.setTitle(NULLCHECK(MEMBER.nickname));
+	} else {
+		embed.setTitle(NULLCHECK(USER.username));
 	}
 
-	async MINECRAFT() {
-		let E = this.E;
-		try {
-			const MCID = E.options.getString("mcid");
+	embed.setDescription(NULLCHECK(USER.username));
+	embed.setColor(RND_COLOR());
 
-			const RES_GET_UUID = await fetch("https://api.mojang.com/users/profiles/minecraft/" + MCID, {
+	embed.setThumbnail(`https://cdn.discordapp.com/avatars/${USER.id}/${USER.avatar}.png`);
+
+	embed.addFields({
+		name: "ID",
+		value: NULLCHECK(USER.id),
+		inline: false
+	});
+
+	//アカウント作成日
+	embed.addFields({
+		name: "アカウント作成日",
+		value: toDateFormatted(USER.createdAt),
+		inline: false
+	});
+
+	//鯖に参加した日付
+	embed.addFields({
+		name: "鯖に参加した日付",
+		value: toDateFormatted(MEMBER.joinedAt),
+		inline: false
+	});
+
+	//ニトロブースト開始日
+	if (MEMBER.premiumSince !== null) {
+		embed.addFields({
+			name: "ブースト開始日",
+			//日本表記
+			value: toDateFormatted(MEMBER.joinedAt),
+			inline: false
+		});
+	}
+
+	//BOTか
+	embed.addFields({
+		name: "BOTか",
+		value: USER.bot ? "はい" : "いいえ",
+		inline: false
+	});
+
+	//キック可能か
+	embed.addFields({
+		name: "わたしはこのユーザーを",
+		value: `追放でき${MEMBER.kickable ? "ます" : "ません"}`,
+		inline: false
+	});
+
+	//BAN可能か
+	embed.addFields({
+		name: "わたしはこのユーザーを",
+		value: `BANでき${MEMBER.bannable ? "ます" : "ません"}`,
+		inline: false
+	});
+
+	await interaction.editReply({ embeds: [embed] });
+}
+/**
+ * minecraftユーザーの情報を取得する(インタラクションを使って)
+ * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ */
+export async function getMcInfo(interaction) {
+	try {
+		const MCID = interaction.options.getString("mcid");
+
+		const RES_GET_UUID = await fetch("https://api.mojang.com/users/profiles/minecraft/" + MCID, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+
+		if (RES_GET_UUID.ok) {
+			const RESULT_GET_UUID = await RES_GET_UUID.json();
+
+			const RES_GET_BASE64 = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json"
 				}
 			});
 
-			if (RES_GET_UUID.ok) {
-				const RESULT_GET_UUID = await RES_GET_UUID.json();
+			if (RES_GET_BASE64.ok) {
+				const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
 
-				const RES_GET_BASE64 = await fetch("https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json"
-					}
+				const RESULT_JSON = JSON.parse(atob(RESULT_GET_BASE64.properties[0].value));
+
+				//埋め込み
+				const EB = new MessageEmbed();
+
+				//ユーザー名とスキン
+				EB.setTitle("マイクラユーザーの情報");
+				EB.setDescription(RESULT_GET_BASE64.name);
+				EB.setColor(RND_COLOR());
+				EB.setThumbnail(RESULT_JSON.textures.SKIN.url);
+
+				//UUID
+				EB.addFields({
+					name: "UUID",
+					value: RESULT_GET_BASE64.id,
+					inline: false
 				});
 
-				if (RES_GET_BASE64.ok) {
-					const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
+				//プロフィールID
+				EB.addFields({
+					name: "PFID",
+					value: RESULT_JSON.profileId,
+					inline: false
+				});
 
-					const RESULT_JSON = JSON.parse(atob(RESULT_GET_BASE64.properties[0].value));
-
-					//埋め込み
-					const EB = new MessageEmbed();
-
-					//ユーザー名とスキン
-					EB.setTitle("マイクラユーザーの情報");
-					EB.setDescription(RESULT_GET_BASE64.name);
-					EB.setColor(RND_COLOR());
-					EB.setThumbnail(RESULT_JSON.textures.SKIN.url);
-
-					//UUID
-					EB.addFields({
-						name: "UUID",
-						value: RESULT_GET_BASE64.id,
-						inline: false
-					});
-
-					//プロフィールID
-					EB.addFields({
-						name: "PFID",
-						value: RESULT_JSON.profileId,
-						inline: false
-					});
-
-					//結果を出力
-					await E.editReply({ embeds: [EB] });
-				} else {
-					await E.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
-				}
+				//結果を出力
+				await interaction.editReply({ embeds: [EB] });
 			} else {
-				//エラーを返されたので
-				switch (RES_GET_UUID.status) {
-					case 404:
-						await E.editReply("そんなユーザー居ないらしいよ");
-						return;
-
-					default:
-						await E.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
-						return;
-				}
+				await interaction.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
 			}
-		} catch (EX) {
-			console.error("[ ERR ][ MINE ]" + EX);
-			await E.editReply("エラー");
+		} else {
+			//エラーを返されたので
+			switch (RES_GET_UUID.status) {
+				case 404:
+					await interaction.editReply("そんなユーザー居ないらしいよ");
+					return;
+
+				default:
+					await interaction.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
+					return;
+			}
 		}
+	} catch (EX) {
+		console.error("[ ERR ][ MINE ]" + EX);
+		await interaction.editReply("エラー");
 	}
+}
+
+
+/**
+ * 
+ * @param {Date} date 
+ * @param {Date} NOW_DATE 
+ * @returns {string}
+ */
+function toDateFormatted(date, NOW_DATE = new Date) {
+	const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
+	return date.getFullYear().toString() +
+		"年 " +
+		(date.getMonth() + 1).toString() +
+		"月 " +
+		date.getDate().toString() +
+		"日 " +
+		DAY_FORMAT[date.getDay()] +
+		"曜日 " +
+		date.getHours().toString() +
+		"時 " +
+		date.getMinutes().toString() +
+		"分 " +
+		date.getSeconds().toString() +
+		"秒 " +
+		date.getMilliseconds().toString() +
+		"ミリ秒\n" +
+		//アメリカ表記
+		Math.floor((NOW_DATE.valueOf() - date.valueOf()) / (1000 * 60 * 60 * 24)).toString() +
+		"日前"
 }

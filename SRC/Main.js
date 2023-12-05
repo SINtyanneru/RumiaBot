@@ -68,7 +68,7 @@ client.once("ready", async () => {
 		console.log("⢠⣶⣿⣿⠋⠀⠀⠉⠛⠿⠿⠿⠿⠿⠛⠻⣿⣿⣦⡀");
 		console.log("⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⡿");
 	*/
-
+	/**@type {import("discord.js").ApplicationCommandData[]} */
 	const commandData = [
 		{
 			name: "test",
