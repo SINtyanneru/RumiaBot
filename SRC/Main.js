@@ -11,7 +11,6 @@ import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
-import { DENIED_WORD } from "./DENIED_WORD.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
 import { search } from "./MODULES/search.js";
@@ -25,19 +24,19 @@ import * as PATH from "node:path";
 import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
+import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
-let DENIED_WORD_OBJ = new DENIED_WORD();
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
-let WS_SERVER_OBJ = new WS_SERVER();
-export let LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
-export let SQL_OBJ = new SQL();
+const WS_SERVER_OBJ = new WS_SERVER();
+export const LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
+export const SQL_OBJ = new SQL();
 // 何も存在しないなら
 if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
 }
-export let SNS_CONNECTION = new SNS();
+export const SNS_CONNECTION = new SNS();
 
 client.once("ready", async () => {
 	console.log("    ____                  _       ____  ____  ______");
@@ -53,7 +52,6 @@ client.once("ready", async () => {
 	//HTTP鯖を起動
 	HTTP_SERVER_OBJ.main();
 	//WS鯖を起動
-	WS_SERVER_OBJ.main();
 
 	LOCK_NICK_NAME_OBJ.INIT();
 
@@ -143,7 +141,8 @@ client.once("ready", async () => {
 						{
 							name: "るみさん",
 							value: "rumisan"
-						}, {
+						},
+						{
 							name: "Chrome",
 							value: "chrome"
 						}
@@ -378,39 +377,41 @@ client.once("ready", async () => {
 	];
 
 	//VC-music
-	commandData.push(await (function () {
-		return new Promise((resolve, reject) => {
-			FS.readdir("./DATA/MUSIC", (ERR, FILES) => {
-				if (ERR) {
-					console.error("[ EER ][ FS ]ファイル一覧取得に失敗しました\n", ERR);
-					reject();
-				}
+	commandData.push(
+		await (function () {
+			return new Promise((resolve, reject) => {
+				FS.readdir("./DATA/MUSIC", (ERR, FILES) => {
+					if (ERR) {
+						console.error("[ EER ][ FS ]ファイル一覧取得に失敗しました\n", ERR);
+						reject();
+					}
 
-				let SC_VC_MUSIC = [];
+					let SC_VC_MUSIC = [];
 
-				FILES.forEach(FILE => {
-					SC_VC_MUSIC.push({
-						name: FILE,
-						value: FILE
+					FILES.forEach(FILE => {
+						SC_VC_MUSIC.push({
+							name: FILE,
+							value: FILE
+						});
+					});
+
+					resolve({
+						name: "vc_music",
+						description: "VCに曲を垂れ流します",
+						options: [
+							{
+								name: "file",
+								description: "どの曲",
+								type: "STRING",
+								required: true,
+								choices: SC_VC_MUSIC
+							}
+						]
 					});
 				});
-
-				resolve({
-					name: "vc_music",
-					description: "VCに曲を垂れ流します",
-					options: [
-						{
-							name: "file",
-							description: "どの曲",
-							type: "STRING",
-							required: true,
-							choices: SC_VC_MUSIC
-						}
-					]
-				});
 			});
-		});
-	})());
+		})()
+	);
 
 	//ActivityPub
 	let SC_ActivityPub_CHOICES = [];
@@ -525,8 +526,8 @@ client.on("messageCreate", async message => {
 	//WSに流す
 	for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
 		const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
-		SOCKET.send(JSON.stringify(
-			{
+		SOCKET.send(
+			JSON.stringify({
 				"TYPE": "MSG_RESOVE",
 				"MSG": {
 					"ID": message.id,
@@ -544,8 +545,8 @@ client.on("messageCreate", async message => {
 					"ICON": message.author.avatarURL(),
 					"DEF_ICON": message.author.defaultAvatarURL
 				}
-			}
-		));
+			})
+		);
 	}
 
 	/*
@@ -569,7 +570,7 @@ client.on("messageCreate", async message => {
 
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
-		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + "\"\nIP?\"" + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
+		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + '"\nIP?"' + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
 	}
 
 	//メンションされたユーザーのコレクションを取得
@@ -578,10 +579,12 @@ client.on("messageCreate", async message => {
 	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
-			MENTION_USERS.forEach(async (USER) => {
+			MENTION_USERS.forEach(async USER => {
 				console.log(USER.id);
-				if (USER.id === client.user.id) {//自分に対するメッセージなら
-					if (message.reference) {//リプライである
+				if (USER.id === client.user.id) {
+					//自分に対するメッセージなら
+					if (message.reference) {
+						//リプライである
 						//メッセージインフォ
 						if (message.content.includes("taktud")) {
 							let REPLY_P = await message.fetchReference();
@@ -589,15 +592,21 @@ client.on("messageCreate", async message => {
 							let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
 							console.log(WH);
 							message.reply(
-								"BOT:" + REPLY_P.author.bot + "\n" +
-								"ID:" + REPLY_P.author.id + "\n" +
-								"WH:" + (function () {
-									if (WH) {
-										return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
-									} else {
-										return "NONE";
-									}
-								})() + "\n"
+								"BOT:" +
+									REPLY_P.author.bot +
+									"\n" +
+									"ID:" +
+									REPLY_P.author.id +
+									"\n" +
+									"WH:" +
+									(function () {
+										if (WH) {
+											return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
+										} else {
+											return "NONE";
+										}
+									})() +
+									"\n"
 							);
 							return;
 						}
@@ -612,7 +621,8 @@ client.on("messageCreate", async message => {
 							return;
 						}
 						message.reply("そうですか。");
-					} else {//メッセージである
+					} else {
+						//メッセージである
 						//しもねた系
 						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
 							message.reply("きっしょ死ね");
@@ -710,10 +720,6 @@ client.on("messageCreate", async message => {
 		message.reply(DATE_TEXT);
 	}
 
-	if (message.content === "VC") {
-
-	}
-
 	if (message.guild.id === rumiserver) {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
 			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
@@ -806,10 +812,10 @@ client.on("interactionCreate", async INTERACTION => {
 				new command.WS(INTERACTION).main();
 				break;
 			case "info_server":
-				new command.INFO(INTERACTION).sv_main();
+				new getServerInfo(INTERACTION);
 				break;
 			case "info_user":
-				new command.INFO(INTERACTION).usr_main();
+				new getUserInfo(INTERACTION);
 				break;
 			case "kanji":
 				new command.KANJI(INTERACTION).main();
@@ -821,7 +827,7 @@ client.on("interactionCreate", async INTERACTION => {
 				new command.SNS(INTERACTION).main();
 				break;
 			case "info_mine":
-				new command.INFO(INTERACTION).MINECRAFT();
+				getMcInfo(INTERACTION);
 				break;
 			case "ip":
 				new command.IP(INTERACTION).main();
@@ -846,9 +852,9 @@ client.on("interactionCreate", async INTERACTION => {
 });
 
 //ボタン
-client.on('interactionCreate', async (INTERACTION) => {
+client.on("interactionCreate", async INTERACTION => {
 	if (!INTERACTION.isButton()) {
-		return
+		return;
 	}
 
 	switch (INTERACTION.customId) {
@@ -993,7 +999,8 @@ client.on("roleUpdate", (oldRole, newRole) => {
 			PM_UPDATE_TEXT += "```";
 
 			//作った文字列をおくりつける
-			if (oldRole.name === newRole.name) {//名前が同じ
+			if (oldRole.name === newRole.name) {
+				//名前が同じ
 				CH.send("「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
 			} else {
 				CH.send("「" + sanitize(oldRole.name) + "」→「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));

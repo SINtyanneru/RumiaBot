@@ -10,11 +10,10 @@ import { SNS } from "./SNS.js";
 import { test } from "./test.js";
 import { WHAT_NOW_DAY } from "./WHAT_NOW_DAY.js";
 import { WS } from "./WS.js";
-import { INFO } from "./INFO.js";
 import { IP } from "./IP.js";
 import { SETTING } from "./SETTING.js";
 import { NUM } from "./NUM.js";
 import { WH_CLEAR } from "./WH_CLEAR.js";
 import { VC_MUSIC } from "./VC_MUSIC.js";
 
-export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, INFO, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC };
+export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC };

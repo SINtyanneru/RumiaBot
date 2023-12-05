@@ -1,14 +1,13 @@
 // @ts-check
 import { client } from "../MODULES/loadClient.js";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { NULLCHECK } from "../MODULES/NULLCHECK.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 
-
 //鯖情報取得
 /**
- * 
- * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ *
+ * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} interaction
  */
 export async function getServerInfo(interaction) {
 	try {
@@ -75,18 +74,18 @@ export async function getServerInfo(interaction) {
 			let tmp = "";
 			// 全ての絵文字を列挙したら終わる
 			while (fetched_emoji.size < i) {
-				const emoji = fetched_emoji[i]
+				const emoji = fetched_emoji[i];
 				/**@type {string} */
 				let text;
 				if (emoji.animated) {
 					text = `<a:${emoji.name}:${emoji.id}>`;
 				} else {
-					text = `<:${emoji.name}:${emoji.id}>`
+					text = `<:${emoji.name}:${emoji.id}>`;
 				}
 				// 上限を超えそうなら
 				if ((tmp + text).length > 1000) {
 					// 配列に追加
-					processed_emojis.push(tmp)
+					processed_emojis.push(tmp);
 					break;
 				}
 				// tmpにまだ増やせるから増やす
@@ -106,17 +105,17 @@ export async function getServerInfo(interaction) {
 
 		await interaction.editReply({ embeds: [embed] });
 	} catch (error) {
-		console.log("[ ERR ][ INFO ]" + error)
+		console.log("[ ERR ][ INFO ]" + error);
 		await interaction.editReply("エラー\n" + error);
 	}
 }
 
 /**
  * ユーザーの情報を取得する(インタラクションを使って)
- * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} interaction
  */
 export async function getUserInfo(interaction) {
-	/** @type {GuildMember}*/
+	/** @type {import("discord.js").GuildMember}*/
 	// @ts-ignore
 	const MEMBER = interaction.options.getMentionable("user");
 	const USER = client.users.cache.get(MEMBER.user.id);
@@ -191,7 +190,7 @@ export async function getUserInfo(interaction) {
 }
 /**
  * minecraftユーザーの情報を取得する(インタラクションを使って)
- * @param {CommandInteraction<import("discord.js").CacheType>} interaction 
+ * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} interaction
  */
 export async function getMcInfo(interaction) {
 	try {
@@ -216,34 +215,33 @@ export async function getMcInfo(interaction) {
 
 			if (RES_GET_BASE64.ok) {
 				const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
-
 				const RESULT_JSON = JSON.parse(atob(RESULT_GET_BASE64.properties[0].value));
 
 				//埋め込み
-				const EB = new MessageEmbed();
+				const embed = new MessageEmbed();
 
 				//ユーザー名とスキン
-				EB.setTitle("マイクラユーザーの情報");
-				EB.setDescription(RESULT_GET_BASE64.name);
-				EB.setColor(RND_COLOR());
-				EB.setThumbnail(RESULT_JSON.textures.SKIN.url);
+				embed.setTitle("マイクラユーザーの情報");
+				embed.setDescription(RESULT_GET_BASE64.name);
+				embed.setColor(RND_COLOR());
+				embed.setThumbnail(RESULT_JSON.textures.SKIN.url);
 
 				//UUID
-				EB.addFields({
+				embed.addFields({
 					name: "UUID",
 					value: RESULT_GET_BASE64.id,
 					inline: false
 				});
 
 				//プロフィールID
-				EB.addFields({
+				embed.addFields({
 					name: "PFID",
 					value: RESULT_JSON.profileId,
 					inline: false
 				});
 
 				//結果を出力
-				await interaction.editReply({ embeds: [EB] });
+				await interaction.editReply({ embeds: [embed] });
 			} else {
 				await interaction.editReply("MojangAPIに拒否られた｡ﾟ･（>Д<）･ﾟ｡");
 			}
@@ -265,16 +263,16 @@ export async function getMcInfo(interaction) {
 	}
 }
 
-
 /**
- * 
- * @param {Date} date 
- * @param {Date} NOW_DATE 
+ *
+ * @param {Date} date
+ * @param {Date} NOW_DATE
  * @returns {string}
  */
-function toDateFormatted(date, NOW_DATE = new Date) {
+function toDateFormatted(date, NOW_DATE = new Date()) {
 	const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-	return date.getFullYear().toString() +
+	return (
+		date.getFullYear().toString() +
 		"年 " +
 		(date.getMonth() + 1).toString() +
 		"月 " +
@@ -293,4 +291,5 @@ function toDateFormatted(date, NOW_DATE = new Date) {
 		//アメリカ表記
 		Math.floor((NOW_DATE.valueOf() - date.valueOf()) / (1000 * 60 * 60 * 24)).toString() +
 		"日前"
+	);
 }
