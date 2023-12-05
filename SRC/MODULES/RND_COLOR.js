@@ -1,5 +1,5 @@
 /**
- * @returns {"#00ff00"}
+ * @returns {`#${string}`}
 
  */
 export function RND_COLOR() {
