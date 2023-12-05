@@ -27,7 +27,7 @@
 		"moji": "^0.5.1",
 		"mysql": "^2.18.1",
 		"node-fetch": "^3.3.2",
-		"selenium-webdriver": "^4.11.1",
+		"selenium-webdriver": "^4.15.0",
 		"ws": "^8.13.0"
 	},
 	"devDependencies": {

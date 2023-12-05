@@ -143,6 +143,9 @@ client.once("ready", async () => {
 						{
 							name: "るみさん",
 							value: "rumisan"
+						}, {
+							name: "Chrome",
+							value: "chrome"
 						}
 					]
 				}
