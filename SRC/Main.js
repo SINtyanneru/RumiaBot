@@ -812,10 +812,10 @@ client.on("interactionCreate", async INTERACTION => {
 				new command.WS(INTERACTION).main();
 				break;
 			case "info_server":
-				new getServerInfo(INTERACTION);
+				getServerInfo(INTERACTION);
 				break;
 			case "info_user":
-				new getUserInfo(INTERACTION);
+				getUserInfo(INTERACTION);
 				break;
 			case "kanji":
 				new command.KANJI(INTERACTION).main();
