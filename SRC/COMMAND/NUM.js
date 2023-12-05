@@ -12,8 +12,6 @@ export class NUM {
 		const INP = this.E.options.getString("input");
 		const OUT = this.E.options.getString("output");
 
-		console.log("はい");
-
 		if (NUM && INP && OUT) {
 			switch (OUT) {
 				case "national_arabic_jp":

@@ -446,9 +446,9 @@ client.once("ready", async () => {
 	try {
 		//グローバルスラッシュコマンドを登録
 		await client.application.commands.set(commandData);
-		console.log("Global slash commands registered!");
+		console.log("[ OK ][ SLASH_COMMAND ]Al Komand wu registera!");
 	} catch (EX) {
-		console.error("Error registering global slash commands:", EX);
+		console.log("[ ERR ][ SLASH_COMMAND ]" + EX);
 	}
 
 	// 活動期間か？
@@ -580,7 +580,6 @@ client.on("messageCreate", async message => {
 		//メンションされたユーザーがいるかチェック
 		if (MENTION_USERS.size > 0) {
 			MENTION_USERS.forEach(async USER => {
-				console.log(USER.id);
 				if (USER.id === client.user.id) {
 					//自分に対するメッセージなら
 					if (message.reference) {
@@ -590,7 +589,6 @@ client.on("messageCreate", async message => {
 							let REPLY_P = await message.fetchReference();
 							let FWH = await message.channel.fetchWebhooks();
 							let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
-							console.log(WH);
 							message.reply(
 								"BOT:" +
 									REPLY_P.author.bot +
@@ -724,7 +722,6 @@ client.on("messageCreate", async message => {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
 			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
 			if (MATCH) {
-				console.log(MATCH);
 				if (HTTP_STATUS_CODE.some(CODE => MATCH[0] === CODE)) {
 					if (!message.author.bot) {
 						message.channel.send({
@@ -759,7 +756,6 @@ client.on("messageCreate", async message => {
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	//Make it a Quote を ダウンロード
 	if (newMessage.author.id === makeitaquote) {
-		console.log(newMessage.attachments.map(attachment => attachment.url).length);
 		if (newMessage.attachments.map(attachment => attachment.url).length > 0) {
 			new command.MIQ().save_miq(newMessage);
 		} else {
@@ -914,7 +910,6 @@ client.on("messageDelete", async deletedMessage => {
 //メンバーが抜けた
 client.on("guildMemberRemove", async member => {
 	try {
-		console.log(member);
 		if (member.guild.id === rumiserver) {
 			const EB = new MessageEmbed();
 			EB.setTitle(NULLCHECK(member.displayName) + "が鯖から抜けたわ");
@@ -932,7 +927,6 @@ client.on("guildMemberRemove", async member => {
 client.on("guildMemberAdd", member => {
 	try {
 		if (member.guild.id === rumiserver) {
-			console.log(member);
 			const EB = new MessageEmbed();
 			EB.setTitle(NULLCHECK(member.displayName) + "さんようこそ地獄へ");
 			EB.setDescription("だれだろう？");

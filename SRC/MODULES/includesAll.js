@@ -7,7 +7,6 @@
 export function includesAll(str, ...words) {
 	for (const word of words) {
 		if (str.includes(word)) {
-			console.log("detected:" + word);
 			return { value: word, detected: true };
 		}
 	}

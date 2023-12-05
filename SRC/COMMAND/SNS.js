@@ -30,7 +30,6 @@ export class SNS {
 
 				if (RES.ok) {
 					const RESULT = await RES.json();
-					console.log(RESULT);
 
 					//埋め込みつくるマン
 					const EB = new MessageEmbed();

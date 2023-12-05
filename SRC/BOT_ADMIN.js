@@ -14,14 +14,12 @@ import { SQL_OBJ, LOCK_NICK_NAME_OBJ } from "./Main.js";
 export async function BOT_ADMIN(message) {
 	//参加済みサーバーの数を表示
 	if (message.content === CONFIG.ADMIN_PREFIX + "SLS") {
-		console.log("接続済みサーバーの数:", client.guilds.cache.size);
 		message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 	}
 
 	//参加済みサーバーを表示
 	if (message.content === CONFIG.ADMIN_PREFIX + "SL") {
 		const SERVERS = client.guilds.cache;
-		console.log("接続済みサーバーの数:", SERVERS.size);
 
 		let EB = new MessageEmbed()
 			.setTitle("参加済み鯖")
@@ -43,18 +41,18 @@ export async function BOT_ADMIN(message) {
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")) {
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "");
-			exec(CMD, (error, stdout, stderr) => {
-				if (error) {
-					console.error(error)
+			exec(CMD, (ERR, STD_OUT, STD_ERR) => {
+				if (ERR) {
+					console.error(ERR);
 					message.reply("EXECでエラーが発生");
 					return;
 				}
-				if (stderr) {
-					message.reply("```ansi\n" + stderr + "```\nEXIT CODE:NOT 0");
+				if (STD_ERR) {
+					message.reply("```ansi\n" + STD_ERR + "```\nEXIT CODE:NOT 0");
 					return;
 				}
 
-				let TEXT = stdout;
+				let TEXT = STD_OUT;
 				TEXT = TEXT.replace(/\x1b\[[\d;]*(:[0-9;]*[Hf])?[A-GSTJK]/g, "");
 
 				message.reply("```ansi\n" + TEXT + "```\nEXIT CODE:0");
@@ -69,7 +67,6 @@ export async function BOT_ADMIN(message) {
 		console.log("任意コードを実行する");
 		try {
 			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
-			console.log(CMD);
 			const result = eval(CMD);
 			console.log("[ EVAL_RESULT ] ", result);
 			message.reply(JSON.stringify(result)?.toString() || "内容が返されませんでした！！");

@@ -94,7 +94,6 @@ export async function getServerInfo(interaction) {
 			}
 		}
 
-		console.log(processed_emojis);
 		processed_emojis.forEach((row, i) => {
 			embed.addFields({
 				name: "絵文字リスト: " + (i + 1) + "番目",

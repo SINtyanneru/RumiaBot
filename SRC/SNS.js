@@ -1,6 +1,5 @@
 import { CONFIG } from "./MODULES/CONFIG.js";
 import { MessageEmbed } from "discord.js";
-import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
 import { client } from "./MODULES/loadClient.js";
 import { WebSocket } from "ws";
@@ -46,7 +45,6 @@ export class SNS {
 		//ユーザー名
 		EB.setTitle(USER_NAME);
 		//SNSによって色をかえる
-		console.log(SNS_TYPE);
 		if(SNS_TYPE === "MISSKEY"){//Misskey
 			EB.setColor("#99FF00");
 		}else if(SNS_TYPE === "MASTODON"){//Mastodon
@@ -233,7 +231,6 @@ export class SNS {
 				if (RESULT.event === "update") {
 					const TOOT = JSON.parse(RESULT.payload);
 					if (TOOT.account.id) {
-						console.log(TOOT);
 						const FILES = (function () {
 							if (TOOT.media_attachments.length > 0) {
 								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }]

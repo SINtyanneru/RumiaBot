@@ -22,7 +22,7 @@ export class LOCK_NICK_NAME {
 				console.error("[ OK ][ LOCK NICKNAME ]次を読み込みました:" + ROW.GID + "/" + ROW.UID + "=" + ROW.NICKNAME);
 			});
 			console.error("[ OK ][ LOCK NICKNAME ]全ての設定を再読込しました!");
-		})
+		});
 		SQL_RESULT.catch(EX => {
 			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
 		});

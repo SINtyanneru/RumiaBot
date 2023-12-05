@@ -33,7 +33,7 @@ export class HTTP_SERVER {
 				// @ts-ignore
 				[...new URLSearchParams(searchParam).entries()].forEach(([name, value]) => {
 					retval[name] = value
-				})
+				});
 				return retval;
 			}
 
@@ -42,8 +42,6 @@ export class HTTP_SERVER {
 			if (!REQ.url) throw ("urlがない") // 型チェック通過のため
 			let [REQ_PATH, REQ_QUERY] = REQ.url.split("?");
 			let URI_PARAM = REQ_QUERY ? parseSearchParams(REQ_QUERY) : {}
-
-			console.log(REQ_PATH + REQ_QUERY);
 
 			RES.statusCode = 200;
 
@@ -81,7 +79,7 @@ export class HTTP_SERVER {
 						res_send_api({
 							"STATUS": true,
 							"GUILDS": GUILDS_ARRAY
-						})
+						});
 					}
 				}
 				//チャンネル一覧
@@ -115,13 +113,13 @@ export class HTTP_SERVER {
 								//エラー
 								res_send_api({
 									"STATUS": false
-								})
+								});
 							}
 						} else {
 							//エラー
 							res_send_api({
 								"STATUS": false
-							})
+							});
 						}
 					}
 				}
@@ -189,7 +187,7 @@ export class HTTP_SERVER {
 													"DEF_ICON": MESSAGE[1].author.defaultAvatarURL
 												}
 											}
-										)
+										);
 									});
 									//成功
 									RES.end(

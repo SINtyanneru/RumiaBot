@@ -23,7 +23,6 @@ export class MATH {
 		let MATH_RESULT = 0;
 
 		let RESULT = this.FORMULA_PARSE(TEXT);
-		console.log(RESULT);
 
 		for (let I = 0; I < RESULT.length; I++) {
 			const NUM = RESULT[I];
@@ -33,9 +32,6 @@ export class MATH {
 					//1回目なので
 					//初期値を設定
 					MATH_RESULT = parseInt(NUM);
-				} else {
-					//2回目以降なので
-					console.log(RESULT[I]);
 				}
 			} else {
 				// 数字ではない
