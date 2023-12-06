@@ -22,8 +22,8 @@ import {
 	exiter_channel
 } from "./MODULES/SYNTAX_SUGER.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
-import { calc } from "./MODULES/calc.js";
-import { search } from "./MODULES/search.js";
+import { calc } from "./FUNCTION/calc.js";
+import { search } from "./FUNCTION/search.js";
 import { convert_vxtwitter } from "./FUNCTION/VXTWITTER_CONVERT.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
