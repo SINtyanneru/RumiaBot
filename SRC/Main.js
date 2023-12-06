@@ -204,12 +204,11 @@ client.on("messageCreate", async message => {
 		LOCK_NICK_NAME_OBJ.main(message.member);
 
 		/*
-		//BOTの場合は処理しない
-		if(message.author.bot){
-			return;
-		}
-		*/
-
+	//BOTの場合は処理しない
+	if(message.author.bot){
+		return;
+	}
+	*/
 		//BOT所有者専用のコマンド
 		if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 			await BOT_ADMIN(message);
