@@ -299,40 +299,12 @@ client.on("messageCreate", async message => {
 		}
 	}
 
-	/*
-	//猫モード(無かったことにする)
-	if(message.author.id === rumi){
-		let TEXT = message.content;
-		TEXT = TEXT.replace("な", "にゃ");
-		TEXT = TEXT.replace("ぬ", "にゅ");
-		TEXT = TEXT.replace("ね", "にぇ");
-		TEXT = TEXT.replace("の", "にょ");
-
-		//元メッセージを消す
-		message.delete();
-
-		let WEB_HOOK = await WebHook_FIND(message.channel);
-
-		//WHでめっせーじを送る
-		WEB_HOOK.send({
-			username: message.author.username,
-			avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
-			content:TEXT
-		});
-	}
-	*/
-
 	if (message.content === "今日は何の日？") {
 		message.react("✅");
 		new command.WHAT_NOW_DAY().main(message);
 	}
 
 	LOCK_NICK_NAME_OBJ.main(message.member);
-	/*
-	if (!CONFIG.DISABLE?.includes("automod")) {
-		DENIED_WORD_OBJ.main(message);
-	}
-	*/
 
 	if (message.content.startsWith("ルーレット")) {
 		const CHOISE_LIST = message.content.replace("ルーレット ", "").split(",");
