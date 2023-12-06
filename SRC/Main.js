@@ -26,6 +26,7 @@ import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
+import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -96,30 +97,27 @@ client.once("ready", async () => {
 		}
 	}, 1000);
 	
-	//参加しているすべてのサーバーのメンバーを計算する
-	let ALL_MEMBERS = 0;
-	let ALL_GUILDS = Array.from(client.guilds.cache);
-	for (let I = 0; I < ALL_GUILDS.length; I++) {
-		const GUILD = ALL_GUILDS[I];
-		ALL_MEMBERS = ALL_MEMBERS + GUILD[1].memberCount;
-	}
+	//参加しているすべてのサーバーのメンバー数
+	const ALL_MEMBERS_COUNT = GET_ALL_MEMBERS_COUNT(client);
 
+	//プレセンツェを設定するやつ
 	let TEMP_ACTIVE = undefined;
 	setInterval(() => {
 		if (TEMP_ACTIVE !== ACTIVE) {
 			TEMP_ACTIVE = ACTIVE;
 			if (ACTIVE) {
-
+				//活動期間である
 				client.user.setPresence({
 					status: "online",
 					activities: [
 						{
-							name: ALL_MEMBERS + "人",
+							name: ALL_MEMBERS_COUNT + "人",
 							type: "WATCHING"
 						}
 					]
 				});
 			} else {
+				//寝てる
 				client.user.setPresence({
 					status: "idle",
 					activities: [
