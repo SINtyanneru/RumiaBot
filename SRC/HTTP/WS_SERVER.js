@@ -7,10 +7,10 @@ export class WS_SERVER {
 		this.SOCKETS = [];
 	}
 
-	main(){
+	main() {
 		this.SERVER = new WebSocketServer({ port: this.PORT });
 
-		this.SERVER.on("connection", (SOCKET) => {
+		this.SERVER.on("connection", SOCKET => {
 			console.log("[ INFO ][ WS_SERVER ]Connected");
 			this.SOCKETS.push(SOCKET);
 
