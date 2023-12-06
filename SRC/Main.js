@@ -36,8 +36,8 @@ import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
-import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
+import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
