@@ -328,7 +328,7 @@ client.on("messageCreate", async message => {
 		}
 	}
 	//計算
-	if (message.content.startsWith("計算 ")) {
+	if (message.content.startsWith("計算 ") || message.content.startsWith("計算　")) {
 		if (!CONFIG.DISABLE?.includes("calc")) {
 			// もし実行しないと設定してるなら動かさない
 			calc(message);
