@@ -14,12 +14,12 @@ import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_ch
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
 import { search } from "./MODULES/search.js";
-import { convert_vxtwitter } from "./convert_vxtwitter.js";
+import { convert_vxtwitter } from "./FUNCTION/VXTWITTER_CONVERT.js";
 import { SQL } from "./SQL.js";
 import { sanitize } from "./MODULES/sanitize.js";
-import { SNS } from "./SNS.js";
+import { SNS } from "./FUNCTION/SNS.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
-import { FUNCTION_SETTING } from "./FUNCTION_SETTING.js";
+import { FUNCTION_SETTING } from "./FUNCTION/FUNCTION_SETTING.js";
 import * as PATH from "node:path";
 import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
@@ -473,7 +473,6 @@ client.once("ready", async () => {
 	for (let I = 0; I < ALL_GUILDS.length; I++) {
 		const GUILD = ALL_GUILDS[I];
 		ALL_MEMBERS = ALL_MEMBERS + GUILD[1].memberCount;
-		console.log(GUILD[1].memberCount);
 	}
 
 	let TEMP_ACTIVE = undefined;

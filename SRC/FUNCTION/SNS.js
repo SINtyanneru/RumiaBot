@@ -1,10 +1,10 @@
-import { CONFIG } from "./MODULES/CONFIG.js";
+import { CONFIG } from "../MODULES/CONFIG.js";
 import { MessageEmbed } from "discord.js";
-import { MSG_SEND } from "./MODULES/MSG_SEND.js";
-import { client } from "./MODULES/loadClient.js";
+import { MSG_SEND } from "../MODULES/MSG_SEND.js";
+import { client } from "../MODULES/loadClient.js";
 import { WebSocket } from "ws";
-import { SQL_OBJ } from "./Main.js";
-import { general_channel, rumiserver } from "./MODULES/SYNTAX_SUGER.js";
+import { SQL_OBJ } from "../Main.js";
+import { general_channel, rumiserver } from "../MODULES/SYNTAX_SUGER.js";
 
 export class SNS {
 	constructor() {

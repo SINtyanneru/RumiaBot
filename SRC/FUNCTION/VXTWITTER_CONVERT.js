@@ -1,5 +1,5 @@
-import { WebHook_FIND } from "./MODULES/WebHook_FIND.js";
-import { sanitize } from "./MODULES/sanitize.js";
+import { WebHook_FIND } from "../MODULES/WebHook_FIND.js";
+import { sanitize } from "../MODULES/sanitize.js";
 
 export async function convert_vxtwitter(message) {
 	const VX_REGEX = /https:\/\/(?:twitter|x)\.com\/([a-zA-Z0-9_]+\/status\/[0-9]+)(\?s=[0-9]*)?/g;

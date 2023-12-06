@@ -1,8 +1,8 @@
 /**
  * 機能設定
  */
-import { SQL_OBJ } from "./Main.js";
-import { CONFIG } from "./MODULES/CONFIG.js";
+import { SQL_OBJ } from "../Main.js";
+import { CONFIG } from "../MODULES/CONFIG.js";
 export class FUNCTION_SETTING {
 	/**
 	 * 暫定
