@@ -3,7 +3,7 @@
  */
 module.exports = {
 	// 設定
-	printWidth: 9999,
+	printWidth: 120,
 	tabWidth: 4,
 	useTabs: true,
 	semi: true,

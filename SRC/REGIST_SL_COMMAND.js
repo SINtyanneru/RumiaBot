@@ -4,8 +4,8 @@
 import * as FS from "node:fs";
 import { CONFIG } from "./MODULES/CONFIG.js";
 
-export async function REGIST_SLASH_COMMAND(){
-	let CMD_DATA = [
+export async function REGIST_SLASH_COMMAND() {
+	const CMD_DATA = [
 		{
 			name: "test",
 			description: "テストコマンド"
@@ -313,7 +313,7 @@ export async function REGIST_SLASH_COMMAND(){
 			]
 		}
 	];
-	
+
 	//VC-music
 	CMD_DATA.push(
 		await (function () {
@@ -323,16 +323,16 @@ export async function REGIST_SLASH_COMMAND(){
 						console.error("[ EER ][ FS ]ファイル一覧取得に失敗しました\n", ERR);
 						reject();
 					}
-	
+
 					let SC_VC_MUSIC = [];
-	
+
 					FILES.forEach(FILE => {
 						SC_VC_MUSIC.push({
 							name: FILE,
 							value: FILE
 						});
 					});
-	
+
 					resolve({
 						name: "vc_music",
 						description: "VCに曲を垂れ流します",
@@ -350,7 +350,7 @@ export async function REGIST_SLASH_COMMAND(){
 			});
 		})()
 	);
-	
+
 	//ActivityPub
 	let SC_ActivityPub_CHOICES = [];
 	CONFIG.SNS.forEach(DATA => {
@@ -359,7 +359,7 @@ export async function REGIST_SLASH_COMMAND(){
 			value: DATA.ID
 		});
 	});
-	
+
 	CMD_DATA.push({
 		name: "sns_set",
 		description: "SNSを",
