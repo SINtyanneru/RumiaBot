@@ -403,6 +403,7 @@ client.on("messageCreate", async message => {
 		});
 });
 
+//メッセージが更新された
 client.on("messageUpdate", (oldMessage, newMessage) => {
 	//Make it a Quote を ダウンロード
 	if (newMessage.author.id === makeitaquote) {
@@ -510,7 +511,7 @@ client.on("interactionCreate", async INTERACTION => {
 	}
 });
 
-//ボタン
+//ボタンのインテラツティオン
 client.on("interactionCreate", async INTERACTION => {
 	if (!INTERACTION.isButton()) {
 		return;
@@ -604,12 +605,15 @@ client.on("guildMemberAdd", member => {
 	}
 });
 
+//メンバーの情報が更新された
 client.on("guildMemberUpdate", (oldMember, newMember) => {
+	//ニックネーム固定
 	LOCK_NICK_NAME_OBJ.main(newMember);
 });
 
 //ロール変更を検知
 client.on("roleUpdate", (oldRole, newRole) => {
+	//るみさん鯖での活動ならうごかす
 	if (newRole.guild.id === "836142496563068929") {
 		const OLD_ROLE_PM = oldRole.permissions.toArray();
 		const NEW_ROLE_PM = newRole.permissions.toArray();
@@ -675,5 +679,5 @@ client.on("roleUpdate", (oldRole, newRole) => {
 	}
 });
 
-// ログインする
+//BOTにログインする
 client.login(CONFIG.TOKEN);
