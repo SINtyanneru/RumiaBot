@@ -219,7 +219,7 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//再読込
-	if (message.content === CONFIG.ADMIN_PREFIX + "RELOAD") {
+	if (message.content === CONFIG.ADMIN_PREFIX + "RELOAD/.") {
 		console.log("[ *** ][ BOT ADMIN ]管理者が設定の再読込を要請しました、再読込を開始します...");
 
 		//ニックネーム強制固定
