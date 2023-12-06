@@ -200,7 +200,6 @@ client.on("messageCreate", async message => {
 		return;
 	}
 	*/
-
 	//BOT所有者専用のコマンド
 	if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 		await BOT_ADMIN(message);
@@ -208,20 +207,12 @@ client.on("messageCreate", async message => {
 
 	//誕生月取得
 	if (message.content === "誕生日") {
+	//誕生月取得
+	if (message.content === "誕生日") {
 		//実験用
 		message.react("✅");
 
 		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
-	}
-
-	//テストコマンド
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
-		message.reply(
-			'ping -c5 "' +
-				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
-				'"\nIP?"' +
-				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
-		);
 	}
 
 	//メンションされたユーザーのコレクションを取得
