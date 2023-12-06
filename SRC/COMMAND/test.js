@@ -15,24 +15,17 @@ export class test {
 		try {
 			let E = this.E;
 
-			const row = new MessageActionRow().addComponents(
-				new MessageButton()
-					.setCustomId('test')
-					.setLabel('こゃーん')
-					.setStyle('PRIMARY')
-			);
+			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId("test").setLabel("こゃーん").setStyle("PRIMARY"));
 
 			let TEXT = "テストを実行します\n";
 
-			await E.editReply(
-				{
-					content: TEXT,
-					components: [row],
-				}
-			);
+			await E.editReply({
+				content: TEXT,
+				components: [row]
+			});
 
 			SQL_OBJ.SCRIPT_RUN("SHOW TABLES LIKE 'USER';", [])
-				.then(async (ROW) => {
+				.then(async () => {
 					TEXT += "[ OK ]SQL TABLE USER\n";
 					await E.editReply(TEXT);
 				})
@@ -81,7 +74,7 @@ export class test {
 
 			await this.E.reply({
 				content: this.E.user.username + "は言った「こゃゃーん」",
-				ephemeral: true, // このオプションを true にすると他のユーザーには見えません
+				ephemeral: true // このオプションを true にすると他のユーザーには見えません
 			});
 		} catch (EX) {
 			console.log("[ ERR ][ TEST ]" + EX);

@@ -10,7 +10,7 @@ export class PING {
 			const CMD = E.options.getString("host").replace(/[^A-Za-z0-9\-.]/g, "");
 			if (CMD != undefined) {
 				//コマンドを実行し、リアルタイムに出力を取得します
-				const EXEC = exec('ping -c5 "' + CMD + '"');
+				const EXEC = exec("ping -c5 \"" + CMD + "\"");
 
 				let OUTPUT = ""; //出力を記録
 				let COUNT = 0; //出力した回数を記録

@@ -115,7 +115,7 @@ export async function getServerInfo(interaction) {
  */
 export async function getUserInfo(interaction) {
 	/** @type {import("discord.js").GuildMember}*/
-	// @ts-ignore
+	// @ts-expect-error 型アサーションができないので、
 	const MEMBER = interaction.options.getMentionable("user");
 	const USER = client.users.cache.get(MEMBER.user.id);
 

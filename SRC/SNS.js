@@ -45,13 +45,16 @@ export class SNS {
 		//ユーザー名
 		EB.setTitle(USER_NAME);
 		//SNSによって色をかえる
-		if(SNS_TYPE === "MISSKEY"){//Misskey
+		if (SNS_TYPE === "MISSKEY") {
+			//Misskey
 			EB.setColor("#99FF00");
-		}else if(SNS_TYPE === "MASTODON"){//Mastodon
+		} else if (SNS_TYPE === "MASTODON") {
+			//Mastodon
 			EB.setColor("#A200FF");
-		}else if(SNS_TYPE === "FIRE_FISH"){//FireFish
+		} else if (SNS_TYPE === "FIRE_FISH") {
+			//FireFish
 			EB.setColor("#FF9900");
-		}else{
+		} else {
 			EB.setColor("#A85100");
 		}
 		//URL
@@ -146,38 +149,11 @@ export class SNS {
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
 						if (!RENOTE_ID) {
 							IT_DIS_USER.forEach(ROW => {
-								this.SEND_EMBEDED(
-									ROW.GID,
-									ROW.CID,
-									"https://" + DOMAIN + "/notes/" + NOTE_ID,
-									IT_MIS_USER.name,
-									IT_MIS_USER.username,
-									NOTE_ID,
-									NOTE_TEXT,
-									NOTE_FILES,
-									null,
-									null,
-									null,
-									null,
-									"MISSKEY"
-								);
+								this.SEND_EMBEDED(ROW.GID, ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, null, null, null, null, "MISSKEY");
 							});
 						} else {
 							IT_DIS_USER.forEach(ROW => {
-								this.SEND_EMBEDED(
-									ROW.GID,
-									ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID,
-									IT_MIS_USER.name,
-									IT_MIS_USER.username,
-									NOTE_ID,
-									NOTE_TEXT,
-									NOTE_FILES,
-									RENOTE_NOTE.user.name,
-									RENOTE_ID,
-									RENOTE_NOTE.text,
-									RENOTE_NOTE.files,
-									"MISSKEY"
-								);
+								this.SEND_EMBEDED(ROW.GID, ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, RENOTE_NOTE.user.name, RENOTE_ID, RENOTE_NOTE.text, RENOTE_NOTE.files, "MISSKEY");
 							});
 						}
 					}
@@ -233,34 +209,20 @@ export class SNS {
 					if (TOOT.account.id) {
 						const FILES = (function () {
 							if (TOOT.media_attachments.length > 0) {
-								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }]
+								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
 							} else {
 								return [];
 							}
 						})();
-						
+
 						let TOOT_TEXT = TOOT.content;
 						//トゥートの文字列を痴漢する
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n");//改行
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, "");//その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">");//その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<");//その他のタグ
+						TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n"); //改行
+						TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, ""); //その他のタグ
+						TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">"); //その他のタグ
+						TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<"); //その他のタグ
 
-						this.SEND_EMBEDED(
-							rumiserver,
-							general_channel,
-							"https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id,
-							TOOT.account.display_name,
-							TOOT.account.acct,
-							TOOT.id,
-							TOOT_TEXT,
-							FILES,
-							null,
-							null,
-							null,
-							null,
-							"MASTODON"
-						);
+						this.SEND_EMBEDED(rumiserver, general_channel, "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT_TEXT, FILES, null, null, null, null, "MASTODON");
 					}
 				}
 			} catch (EX) {

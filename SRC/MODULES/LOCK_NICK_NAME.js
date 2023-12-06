@@ -1,9 +1,7 @@
-// eslint-disable-next-line no-unused-vars
-import { GuildMember } from "discord.js";
 import { SQL_OBJ } from "../Main.js";
 import { CONFIG } from "./CONFIG.js";
 
-/** @param {GuildMember} MEMBER */
+/** @param {import("discord.js").GuildMember} MEMBER */
 export class LOCK_NICK_NAME {
 	constructor() {
 		this.NICK_LOCK_USER = {};

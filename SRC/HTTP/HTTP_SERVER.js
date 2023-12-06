@@ -1,14 +1,10 @@
 // @ts-check
 import * as HTTP from "node:http";
 import * as FS from "node:fs";
-import {
-	client
-} from "../MODULES/loadClient.js";
-import { TextChannel } from "discord.js";
-
+import { client } from "../MODULES/loadClient.js";
 
 /**
- * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | TextChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL
+ * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL
 
  */
 export class HTTP_SERVER {
@@ -20,7 +16,7 @@ export class HTTP_SERVER {
 		const SERVER = HTTP.createServer(async (REQ, RES) => {
 			/**@param {{}} payload */
 			function res_send_api(payload) {
-				RES.end(JSON.stringify(payload))
+				RES.end(JSON.stringify(payload));
 			}
 
 			/**
@@ -30,18 +26,15 @@ export class HTTP_SERVER {
 				/** @type {Object.<string, string>} */
 				let retval = {};
 
-				// @ts-ignore
 				[...new URLSearchParams(searchParam).entries()].forEach(([name, value]) => {
-					retval[name] = value
+					retval[name] = value;
 				});
 				return retval;
 			}
 
-
-
-			if (!REQ.url) throw ("urlがない") // 型チェック通過のため
+			if (!REQ.url) throw "urlがない"; // 型チェック通過のため
 			let [REQ_PATH, REQ_QUERY] = REQ.url.split("?");
-			let URI_PARAM = REQ_QUERY ? parseSearchParams(REQ_QUERY) : {}
+			let URI_PARAM = REQ_QUERY ? parseSearchParams(REQ_QUERY) : {};
 
 			RES.statusCode = 200;
 
@@ -68,14 +61,13 @@ export class HTTP_SERVER {
 					if (GUILDS) {
 						/**@type {{}[]} */
 						let GUILDS_ARRAY = [];
-						GUILDS.forEach(
-							( /** @type {{ id: any; name: any; iconURL: () => any; }} */ GUILD) => {
-								GUILDS_ARRAY.push({
-									"ID": GUILD.id,
-									"NAME": GUILD.name,
-									"ICON_URL": GUILD.iconURL()
-								});
+						GUILDS.forEach((/** @type {{ id: any; name: any; iconURL: () => any; }} */ GUILD) => {
+							GUILDS_ARRAY.push({
+								"ID": GUILD.id,
+								"NAME": GUILD.name,
+								"ICON_URL": GUILD.iconURL()
 							});
+						});
 						res_send_api({
 							"STATUS": true,
 							"GUILDS": GUILDS_ARRAY
@@ -98,8 +90,9 @@ export class HTTP_SERVER {
 											"ID": CHANNEL.id,
 											"NAME": CHANNEL.name,
 											"TYPE": CHANNEL.type,
+											// @ts-expect-error アサーションで着ないので静かにさせた
 											"PARENT": CHANNEL.parent,
-											// @ts-ignore
+											// @ts-expect-error アサーションできない、だるすぎ侍
 											"POS": CHANNEL.position || null
 										});
 									});
@@ -174,20 +167,18 @@ export class HTTP_SERVER {
 								if (CHANNEL) {
 									let MESSAGE_LOG = [];
 									Array.from(await CHANNEL.messages.fetch({ "limit": 10 })).forEach(MESSAGE => {
-										MESSAGE_LOG.push(
-											{
-												"MSG": {
-													"ID": MESSAGE[1].id,
-													"TEXT": MESSAGE[1].content
-												},
-												"AUTHOR": {
-													"ID": MESSAGE[1].author.id,
-													"NAME": MESSAGE[1].author.username,
-													"ICON": MESSAGE[1].author.avatarURL(),
-													"DEF_ICON": MESSAGE[1].author.defaultAvatarURL
-												}
+										MESSAGE_LOG.push({
+											"MSG": {
+												"ID": MESSAGE[1].id,
+												"TEXT": MESSAGE[1].content
+											},
+											"AUTHOR": {
+												"ID": MESSAGE[1].author.id,
+												"NAME": MESSAGE[1].author.username,
+												"ICON": MESSAGE[1].author.avatarURL(),
+												"DEF_ICON": MESSAGE[1].author.defaultAvatarURL
 											}
-										);
+										});
 									});
 									//成功
 									RES.end(
@@ -239,7 +230,7 @@ export class HTTP_SERVER {
 					if (REQ.method === "POST") {
 						let POST_BODY = "";
 
-						REQ.on("data", (chunk) => {
+						REQ.on("data", chunk => {
 							POST_BODY += chunk.toString();
 						});
 
@@ -247,8 +238,8 @@ export class HTTP_SERVER {
 							const POST_RESULT = JSON.parse(POST_BODY);
 							const GUILD = client.guilds.cache.get(POST_RESULT.GID);
 							if (GUILD) {
-								/**@type {TextChannel} */
-								// @ts-ignore
+								/**@type { import("discord.js").TextChannel} */
+								// @ts-expect-error アサーションが(ry
 								const CHANNEL = GUILD.channels.cache.get(POST_RESULT.CID);
 								if (CHANNEL) {
 									if (POST_RESULT.TEXT) {

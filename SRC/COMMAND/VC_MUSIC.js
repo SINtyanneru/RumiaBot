@@ -1,5 +1,5 @@
 import * as FS from "node:fs";
-import { joinVoiceChannel, entersState, VoiceConnectionStatus, createAudioResource, StreamType, createAudioPlayer, AudioPlayerStatus, NoSubscriberBehavior, generateDependencyReport } from "@discordjs/voice";
+import { joinVoiceChannel, createAudioResource, StreamType, createAudioPlayer, NoSubscriberBehavior } from "@discordjs/voice";
 
 export class VC_MUSIC {
 	constructor(INTERACTION) {
@@ -7,7 +7,7 @@ export class VC_MUSIC {
 	}
 	async main() {
 		const FILE = this.E.options.getString("file");
-		FS.access("./DATA/MUSIC/" + FILE.replaceAll("../", "").replaceAll("./", ""), FS.constants.F_OK, async (ERR) => {
+		FS.access("./DATA/MUSIC/" + FILE.replaceAll("../", "").replaceAll("./", ""), FS.constants.F_OK, async ERR => {
 			if (ERR) {
 				await this.E.editReply("その音源はないよ<:blod_sad:1155039115709005885>");
 			} else {
@@ -30,12 +30,12 @@ export class VC_MUSIC {
 							//音楽流すやつだと思う多分
 							const player = createAudioPlayer({
 								behaviors: {
-									noSubscriber: NoSubscriberBehavior.Pause,
+									noSubscriber: NoSubscriberBehavior.Pause
 								}
 							});
 
 							//エラー時の処理
-							player.on('error', async (error) => {
+							player.on("error", async error => {
 								await this.E.editReply(error);
 							});
 
@@ -44,7 +44,7 @@ export class VC_MUSIC {
 
 							//なんこれ
 							const resource = createAudioResource(mp3FilePath, {
-								inputType: StreamType.Arbitrary,
+								inputType: StreamType.Arbitrary
 							});
 
 							//再生
