@@ -199,13 +199,14 @@ client.on("messageCreate", async message => {
 		return;
 	}
 	*/
+
 	//BOT所有者専用のコマンド
 	if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 		await BOT_ADMIN(message);
 	}
 
-	//てすとこまんど
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "HB/.")) {
+	//誕生月取得
+	if (message.content === "誕生日") {
 		//実験用
 		message.react("✅");
 
