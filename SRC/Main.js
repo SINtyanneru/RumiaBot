@@ -185,6 +185,9 @@ client.on("messageCreate", async message => {
 		);
 	}
 
+	//ニックネーム固定
+	LOCK_NICK_NAME_OBJ.main(message.member);
+
 	/*
 	//BOTの場合は処理しない
 	if(message.author.bot){
@@ -303,8 +306,6 @@ client.on("messageCreate", async message => {
 		message.react("✅");
 		new command.WHAT_NOW_DAY().main(message);
 	}
-
-	LOCK_NICK_NAME_OBJ.main(message.member);
 
 	if (message.content.startsWith("ルーレット")) {
 		const CHOISE_LIST = message.content.replace("ルーレット ", "").split(",");
