@@ -1,10 +1,11 @@
-import { Builder, By, until } from "selenium-webdriver";
+import { Builder } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 import firefox from "selenium-webdriver/firefox.js";
 import FS from "fs";
 import { RUMI_HAPPY_BIRTHDAY } from "../MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
 export class WS {
+	/** @param {import("discord.js").CommandInteraction} INTERACTION */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
@@ -94,7 +95,7 @@ export class WS {
 				//ウェブサイトにアクセス
 				await DRIVER.get(REQUEST_URL.toString());
 				//スクショする
-				await DRIVER.takeScreenshot().then(async (SCREENSHOT_DATA) => {
+				await DRIVER.takeScreenshot().then(async SCREENSHOT_DATA => {
 					try {
 						FS.writeFileSync("./DOWNLOAD/" + E.member.id + ".png", SCREENSHOT_DATA, "base64");
 

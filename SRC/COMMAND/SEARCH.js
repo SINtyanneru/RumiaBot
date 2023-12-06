@@ -81,7 +81,6 @@ export class SEARCH {
 									inline: false
 								});
 
-
 								if (!WORD_DESC) {
 									WORD_DESC = DESC;
 								}

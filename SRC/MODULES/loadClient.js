@@ -1,5 +1,5 @@
 import { Client, Intents } from "discord.js";
-
+// prettier-ignore
 export const client = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
