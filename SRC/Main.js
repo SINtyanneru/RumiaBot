@@ -38,6 +38,7 @@ import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
+import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -119,7 +120,7 @@ client.once("ready", async () => {
 		if (TEMP_ACTIVE !== ACTIVE) {
 			TEMP_ACTIVE = ACTIVE;
 			if (ACTIVE) {
-				//活動期間である
+				//活動期間である				//活動期間である
 				client.user.setPresence({
 					status: "online",
 					activities: [
