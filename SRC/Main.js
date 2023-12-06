@@ -276,7 +276,7 @@ client.on("messageCreate", async message => {
 	}
 
 	//検索
-	if (message.content.startsWith("検索 ")) {
+	if (message.content.startsWith("検索 ") || message.content.startsWith("検索　")) {
 		if (!CONFIG.DISABLE?.includes("search")) {
 			search(message);
 		}
