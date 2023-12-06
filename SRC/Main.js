@@ -466,17 +466,27 @@ client.once("ready", async () => {
 			ACTIVE = false;
 		}
 	}, 1000);
+	
+	//参加しているすべてのサーバーのメンバーを計算する
+	let ALL_MEMBERS = 0;
+	let ALL_GUILDS = Array.from(client.guilds.cache);
+	for (let I = 0; I < ALL_GUILDS.length; I++) {
+		const GUILD = ALL_GUILDS[I];
+		ALL_MEMBERS = ALL_MEMBERS + GUILD[1].memberCount;
+		console.log(GUILD[1].memberCount);
+	}
 
 	let TEMP_ACTIVE = undefined;
 	setInterval(() => {
 		if (TEMP_ACTIVE !== ACTIVE) {
 			TEMP_ACTIVE = ACTIVE;
 			if (ACTIVE) {
+
 				client.user.setPresence({
 					status: "online",
 					activities: [
 						{
-							name: "貴様",
+							name: ALL_MEMBERS + "人",
 							type: "WATCHING"
 						}
 					]
