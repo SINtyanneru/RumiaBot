@@ -1,3 +1,4 @@
+// @ts-check
 import * as FS from "node:fs";
 import * as net from "node:net";
 import { RUMI_HAPPY_BIRTHDAY } from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
@@ -10,7 +11,16 @@ import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
-import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
+import {
+	rumiserver,
+	rumi,
+	hakurei_win,
+	p_nsk,
+	rumisub,
+	makeitaquote,
+	general_channel,
+	exiter_channel
+} from "./MODULES/SYNTAX_SUGER.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./FUNCTION/calc.js";
 import { search } from "./FUNCTION/search.js";
@@ -74,9 +84,7 @@ client.once("ready", async () => {
 		console.log("⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⡿");
 	*/
 
-
-	/**@type {import("discord.js").ApplicationCommandData[]} */
-	const COMMAND_DATA = REGIST_SLASH_COMMAND();//スラッシュコマンドのデータを取得する
+	const COMMAND_DATA = await REGIST_SLASH_COMMAND(); //スラッシュコマンドのデータを取得する
 	//取得したやつを登録する
 	try {
 		//グローバルスラッシュコマンドを登録
@@ -101,7 +109,7 @@ client.once("ready", async () => {
 			ACTIVE = false;
 		}
 	}, 1000);
-	
+
 	//参加しているすべてのサーバーのメンバー数
 	const ALL_MEMBERS_COUNT = GET_ALL_MEMBERS_COUNT(client);
 
@@ -139,17 +147,18 @@ client.once("ready", async () => {
 
 //メッセージを受信
 client.on("messageCreate", async message => {
-	try{
+	try {
 		//ブロック
 		if (CONFIG.BLOCK) {
 			if (CONFIG.BLOCK.includes(message.author.id)) {
 				return;
 			}
 		}
-	
+
 		//ログを出す
 		try {
-			let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
+			let LOG_TEXT =
+				"┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
 			const LOG_TEXT_SPLIT = message.content.split("\n");
 			for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
 				const TEXT = LOG_TEXT_SPLIT[I];
@@ -164,7 +173,7 @@ client.on("messageCreate", async message => {
 			console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
 			return;
 		}
-	
+
 		//WSに流す
 		for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
 			const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
@@ -190,33 +199,33 @@ client.on("messageCreate", async message => {
 				})
 			);
 		}
-	
+
 		//ニックネーム固定
 		LOCK_NICK_NAME_OBJ.main(message.member);
-	
+
 		/*
 		//BOTの場合は処理しない
 		if(message.author.bot){
 			return;
 		}
 		*/
-	
+
 		//BOT所有者専用のコマンド
 		if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 			await BOT_ADMIN(message);
 		}
-	
+
 		//誕生月取得
 		if (message.content === "誕生日") {
 			//実験用
 			message.react("✅");
-		
+
 			message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
 		}
-	
+
 		//メンションされたユーザーのコレクションを取得
 		const MENTION_USERS = message.mentions.users;
-	
+
 		if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
 			//メンションされたユーザーがいるかチェック
 			if (MENTION_USERS.size > 0) {
@@ -250,12 +259,21 @@ client.on("messageCreate", async message => {
 								return;
 							}
 							//しもねた系
-							if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+							if (
+								message.content.includes("まんこ") ||
+								message.content.includes("生理") ||
+								message.content.includes("ちんこ")
+							) {
 								message.reply("きもい");
 								return;
 							}
 							//特定の人なら
-							if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+							if (
+								message.author.id === rumi ||
+								message.author.id === hakurei_win ||
+								message.author.id === p_nsk ||
+								message.author.id === rumisub
+							) {
 								message.reply("そーなのかー");
 								return;
 							}
@@ -263,7 +281,11 @@ client.on("messageCreate", async message => {
 						} else {
 							//メッセージである
 							//しもねた系
-							if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+							if (
+								message.content.includes("まんこ") ||
+								message.content.includes("生理") ||
+								message.content.includes("ちんこ")
+							) {
 								message.reply("きっしょ死ね");
 								return;
 							}
@@ -273,7 +295,12 @@ client.on("messageCreate", async message => {
 								return;
 							}
 							//特定の人なら
-							if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+							if (
+								message.author.id === rumi ||
+								message.author.id === hakurei_win ||
+								message.author.id === p_nsk ||
+								message.author.id === rumisub
+							) {
 								message.reply("なんなのだー？");
 								return;
 							}
@@ -283,14 +310,14 @@ client.on("messageCreate", async message => {
 				});
 			}
 		}
-	
+
 		//検索
 		if (message.content.startsWith("検索 ") || message.content.startsWith("検索　")) {
 			if (!CONFIG.DISABLE?.includes("search")) {
 				search(message);
 			}
 		}
-	
+
 		if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
 			if (!CONFIG.DISABLE?.includes("vxtwitter")) {
 				// vxtwitterのリンクに自動で置換する機能
@@ -305,12 +332,12 @@ client.on("messageCreate", async message => {
 				calc(message);
 			}
 		}
-	
+
 		if (message.content === "今日は何の日？") {
 			message.react("✅");
 			new command.WHAT_NOW_DAY().main(message);
 		}
-	
+
 		if (message.content.startsWith("ルーレット")) {
 			const CHOISE_LIST = message.content.replace("ルーレット ", "").split(",");
 			const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
@@ -318,24 +345,40 @@ client.on("messageCreate", async message => {
 				message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM].toString()));
 			}
 		}
-	
+
 		if (message.content === "時間") {
 			const DATE = new Date();
 			const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-			const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
-		
+			const DATE_TEXT =
+				DATE.getFullYear() +
+				"年" +
+				(DATE.getMonth() + 1) +
+				"月" +
+				DATE.getDate() +
+				"日" +
+				DAY_FORMAT[DATE.getDay()] +
+				"曜日" +
+				"\n" +
+				DATE.getHours() +
+				"時" +
+				DATE.getMinutes() +
+				"分" +
+				DATE.getSeconds() +
+				"秒" +
+				DATE.getMilliseconds() +
+				"ミリ秒";
+
 			message.reply(DATE_TEXT);
 		}
-	
+
 		if (message.content === "しおり登録") {
 			new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).SET();
 		}
-	
+
 		if (message.content === "しおり") {
 			new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).LOAD();
 		}
-	
-	
+
 		if (message.guild.id === rumiserver) {
 			if (!CONFIG.DISABLE?.includes("httpcat")) {
 				const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
@@ -351,7 +394,7 @@ client.on("messageCreate", async message => {
 				}
 			}
 		}
-	
+
 		message.attachments
 			.map(a => a)
 			.forEach((attachment, key) => {
@@ -369,7 +412,7 @@ client.on("messageCreate", async message => {
 					.then(() => console.info("[ OK ][ MSG_FILES ]Downloaded"))
 					.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
 			});
-	}catch(EX){
+	} catch (EX) {
 		console.log("[ ERR ][ DJS ]" + EX);
 	}
 });
@@ -401,7 +444,20 @@ client.on("interactionCreate", async INTERACTION => {
 			return;
 		}
 		try {
-			console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName + "\n             ├in " + INTERACTION.guild.name + "\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId + "\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
+			console.log(
+				"[ INFO ][CMD]┌Interaction create:" +
+					INTERACTION.commandName +
+					"\n             ├in " +
+					INTERACTION.guild.name +
+					"\n             ├in " +
+					INTERACTION.channel.name +
+					INTERACTION.channelId +
+					"\n             └in " +
+					INTERACTION.member.user.username +
+					"(" +
+					INTERACTION.member.id +
+					")"
+			);
 		} catch (EX) {
 			console.error("[ ERR ][ LOG ]", EX);
 			INTERACTION.reply("エラー");
@@ -514,7 +570,9 @@ client.on("guildDelete", GUILD => {
 
 			const SERVERS = client.guilds.cache;
 
-			LOG_CH.send(SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
+			LOG_CH.send(
+				SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!"
+			);
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ GUILD ]Send MSG:" + EX);
@@ -622,7 +680,14 @@ client.on("roleUpdate", (oldRole, newRole) => {
 				//名前が同じ
 				CH.send("「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
 			} else {
-				CH.send("「" + sanitize(oldRole.name) + "」→「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
+				CH.send(
+					"「" +
+						sanitize(oldRole.name) +
+						"」→「" +
+						sanitize(newRole.name) +
+						"」ロールの権限が変更されました\n" +
+						sanitize(PM_UPDATE_TEXT)
+				);
 			}
 		}
 	}
