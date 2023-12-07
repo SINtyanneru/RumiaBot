@@ -6,6 +6,7 @@ import * as FS from "node:fs";
 import { CONFIG } from "./MODULES/CONFIG.js";
 
 export async function REGIST_SLASH_COMMAND() {
+	/**@type {SlashCommandBuilder[]} */
 	const CMD_DATA = [];
 	CMD_DATA.push(
 		new SlashCommandBuilder().setName("test").setDescription("テストコマンド"),
@@ -20,7 +21,7 @@ export async function REGIST_SLASH_COMMAND() {
 				o
 					.setName("type")
 					.setDescription("タイプ")
-					.addChoices(
+					.setChoices(
 						{
 							name: "コンパイルできません",
 							value: "not_compile"
@@ -36,6 +37,59 @@ export async function REGIST_SLASH_COMMAND() {
 						{
 							name: "求められた振る舞いをしません",
 							value: "not_desired_behavior"
+						}
+					)
+					.setRequired(true)
+			),
+		new SlashCommandBuilder()
+			.setName("ws")
+			.setDescription("ウェブサイトをスクショします")
+			.addStringOption(o => o.setName("url").setDescription("ウェブサイトのURLです").setRequired(true))
+			.addStringOption(o =>
+				o.setName("browser_name").setDescription("ブラウザを指定(UAのみ)".setRequired(false)).setChoices(
+					{
+						name: "FireFox",
+						value: "firefox"
+					},
+					{
+						name: "Floorp",
+						value: "floorp"
+					},
+					{
+						name: "るみさん",
+						value: "rumisan"
+					},
+					{
+						name: "Chrome",
+						value: "chrome"
+					}
+				)
+			),
+		new SlashCommandBuilder().setName("info_server").setDescription("鯖の情報を取得"),
+		new SlashCommandBuilder()
+			.setName("info_user")
+			.setDescription("ユーザーの情報を取得")
+			.addMentionableOption(o => o.setName("user").setDescription("ユーザーを指定しろ").setRequired(true)),
+		new SlashCommandBuilder()
+			.setName("info_mine")
+			.setDescription("マイクラのユーザーの情報を盗みます")
+			.addStringOption(o => o.setName("mcid").setDescription("マイクラのID").setRequired(true)),
+		new SlashCommandBuilder()
+			.setName("kanji")
+			.setDescription("漢字を変換します")
+			.addStringOption(o => o.setName("text").setDescription("文字列").setRequired(true))
+			.addStringOption(o =>
+				o
+					.setName("mode")
+					.setDescription("モード")
+					.setChoices(
+						{
+							name: "新 => 旧",
+							value: "n_o"
+						},
+						{
+							name: "旧 => 新",
+							value: "o_n"
 						}
 					)
 					.setRequired(true)
