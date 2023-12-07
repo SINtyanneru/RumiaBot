@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * スラッシュコマンドの登録
  */
@@ -6,9 +7,7 @@ import * as FS from "node:fs";
 import { CONFIG } from "./MODULES/CONFIG.js";
 
 export async function REGIST_SLASH_COMMAND() {
-	/**@type {SlashCommandBuilder[]} */
-	const CMD_DATA = [];
-	CMD_DATA.push(
+	const CMD_DATA = [
 		new SlashCommandBuilder().setName("test").setDescription("テストコマンド"),
 		new SlashCommandBuilder()
 			.setName("ping")
@@ -46,7 +45,7 @@ export async function REGIST_SLASH_COMMAND() {
 			.setDescription("ウェブサイトをスクショします")
 			.addStringOption(o => o.setName("url").setDescription("ウェブサイトのURLです").setRequired(true))
 			.addStringOption(o =>
-				o.setName("browser_name").setDescription("ブラウザを指定(UAのみ)".setRequired(false)).setChoices(
+				o.setName("browser_name").setDescription("ブラウザを指定(UAのみ)").setRequired(false).setChoices(
 					{
 						name: "FireFox",
 						value: "firefox"
@@ -93,74 +92,187 @@ export async function REGIST_SLASH_COMMAND() {
 						}
 					)
 					.setRequired(true)
+			),
+		new SlashCommandBuilder()
+			.setName("letter")
+			.setDescription("文字を色々変換してくれます、たぶん")
+			.addStringOption(o =>
+				o
+					.setName("old")
+					.setDescription("変換前")
+					.setChoices(
+						{
+							name: "ひらがな",
+							value: "hilagana"
+						},
+						{
+							name: "ラテン文字",
+							value: "latin"
+						}
+					)
+					.setRequired(true)
 			)
-	);
+			.addStringOption(o =>
+				o
+					.setName("new")
+					.setDescription("変換後")
+					.setChoices(
+						{
+							name: "ひらがな",
+							value: "hilagana"
+						},
+						{
+							name: "ラテン文字",
+							value: "latin"
+						}
+					)
+					.setRequired(true)
+			),
+		new SlashCommandBuilder()
+			.setName("help")
+			.setDescription("ヘルプコマンド、作るのめんどいやつ")
+			.addStringOption(o =>
+				o
+					.setName("mode")
+					.setDescription("どれを見るか")
+					.setChoices(
+						{
+							name: "スラッシュコマンド",
+							value: "slash"
+						},
+						{
+							name: "メッセージコマンド",
+							value: "message"
+						}
+					)
+					.setRequired(true)
+			),
+		new SlashCommandBuilder().setName("ip").setDescription("るみBOTのIPを表示します"),
+		new SlashCommandBuilder().setName("wh_clear").setDescription("WHをすべてクリアします"),
+		new SlashCommandBuilder()
+			.setName("setting")
+			.setDescription("設定します")
+			.addStringOption(o =>
+				o
+					.setName("設定をどうするか")
+					.setChoices(
+						{
+							name: "有効化",
+							value: "true"
+						},
+						{
+							name: "無効化",
+							value: "false"
+						}
+					)
+					.setRequired(true)
+			)
+			.addStringOption(o =>
+				o
+					.setName("function")
+					.setDescription("どの機能を？")
+					.setChoices({
+						name: "VXTwitterに置き換え機能",
+						value: "vxtwitter"
+					})
+					.setRequired(true)
+			),
+		new SlashCommandBuilder()
+			.setName("num")
+			.setDescription("数字を変換します")
+			.addStringOption(o => o.setName("num").setDescription("数字").setRequired(true))
+			.addStringOption(o =>
+				o
+					.setName("input")
+					.setDescription("なに数字？")
+					.setChoices(
+						{
+							name: "アラビア数字",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 日本式区切り",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 アメリカ式区切り",
+							value: "national_arabic_usa"
+						}
+					)
+					.setRequired(true)
+			)
+			.addStringOption(o =>
+				o
+					.setName("output")
+					.setDescription("変換先")
+					.setChoices(
+						{
+							name: "アラビア数字",
+							value: "national_arabic"
+						},
+						{
+							name: "アラビア数字 日本式区切り",
+							value: "national_arabic_jp"
+						},
+						{
+							name: "アラビア数字 アメリカ式区切り",
+							value: "national_arabic_usa"
+						},
+						{
+							name: "ローマ数字",
+							value: "roma"
+						}
+					)
+					.setRequired(true)
+			)
+	];
 
 	//VC-music
 	CMD_DATA.push(
-		await (function () {
-			return new Promise((resolve, reject) => {
-				FS.readdir("./DATA/MUSIC", (ERR, FILES) => {
-					if (ERR) {
-						console.error("[ EER ][ FS ]ファイル一覧取得に失敗しました\n", ERR);
-						reject();
-					}
+		await (async () => {
+			const FILES = await FS.promises.readdir("./DATA/MUSIC");
+			const SC_VC_MUSIC = [];
 
-					let SC_VC_MUSIC = [];
-
-					FILES.forEach(FILE => {
-						SC_VC_MUSIC.push({
-							name: FILE,
-							value: FILE
-						});
-					});
-
-					resolve({
-						name: "vc_music",
-						description: "VCに曲を垂れ流します",
-						options: [
-							{
-								name: "file",
-								description: "どの曲",
-								type: "STRING",
-								required: true,
-								choices: SC_VC_MUSIC
-							}
-						]
-					});
+			FILES.forEach(FILE => {
+				SC_VC_MUSIC.push({
+					name: FILE,
+					value: FILE
 				});
 			});
+
+			return new SlashCommandBuilder()
+				.setName("vc_music")
+				.setDescription("VCに曲を垂れ流します")
+				.addStringOption(o =>
+					o
+						.setName("file")
+						.setDescription("どの曲")
+						.addChoices(...SC_VC_MUSIC)
+				);
 		})()
 	);
 
 	//ActivityPub
-	let SC_ActivityPub_CHOICES = [];
+	/** @type {{name:string,value:string}[]} */
+	const SC_ActivityPub_CHOICES = [];
 	CONFIG.SNS.forEach(DATA => {
 		SC_ActivityPub_CHOICES.push({
 			name: DATA.NAME,
 			value: DATA.ID
 		});
 	});
-
-	CMD_DATA.push({
-		name: "sns_set",
-		description: "SNSを",
-		options: [
-			{
-				name: "type",
-				description: "どのインスタンスを？",
-				type: "STRING",
-				required: true,
-				choices: SC_ActivityPub_CHOICES
-			},
-			{
-				name: "username",
-				description: "誰を？",
-				type: "STRING",
-				required: true
-			}
-		]
-	});
-
+	CMD_DATA.push(
+		new SlashCommandBuilder()
+			.setName("sns_set")
+			.setDescription("SNSを")
+			.addStringOption(o =>
+				o
+					.setName("type")
+					.setDescription("どのインスタンスを？")
+					.setChoices(...SC_ActivityPub_CHOICES)
+					.setRequired(true)
+			)
+			.addStringOption(o => o.setName("username").setDescription("誰を？").setRequired(true))
+	);
 	return CMD_DATA;
 }
