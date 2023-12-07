@@ -1,3 +1,4 @@
+// @ts-check
 import * as FS from "node:fs";
 import * as net from "node:net";
 import { RUMI_HAPPY_BIRTHDAY } from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
@@ -10,7 +11,16 @@ import * as command from "./COMMAND/index.js";
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { MSG_SEND } from "./MODULES/MSG_SEND.js";
-import { rumiserver, rumi, hakurei_win, p_nsk, rumisub, makeitaquote, general_channel, exiter_channel } from "./MODULES/SYNTAX_SUGER.js";
+import {
+	rumiserver,
+	rumi,
+	hakurei_win,
+	p_nsk,
+	rumisub,
+	makeitaquote,
+	general_channel,
+	exiter_channel
+} from "./MODULES/SYNTAX_SUGER.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
 import { calc } from "./MODULES/calc.js";
 import { search } from "./MODULES/search.js";
@@ -25,7 +35,7 @@ import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
-import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
+import { REGIST_SLASH_COMMAND } from "./new_REGIST_SL_COMMAND.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -68,9 +78,7 @@ client.once("ready", async () => {
 		console.log("⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⡿");
 	*/
 
-
-	/**@type {import("discord.js").ApplicationCommandData[]} */
-	const COMMAND_DATA = REGIST_SLASH_COMMAND();//スラッシュコマンドのデータを取得する
+	const COMMAND_DATA = await REGIST_SLASH_COMMAND(); //スラッシュコマンドのデータを取得する
 	//取得したやつを登録する
 	try {
 		//グローバルスラッシュコマンドを登録
@@ -95,7 +103,7 @@ client.once("ready", async () => {
 			ACTIVE = false;
 		}
 	}, 1000);
-	
+
 	//参加しているすべてのサーバーのメンバーを計算する
 	let ALL_MEMBERS = 0;
 	let ALL_GUILDS = Array.from(client.guilds.cache);
@@ -109,7 +117,6 @@ client.once("ready", async () => {
 		if (TEMP_ACTIVE !== ACTIVE) {
 			TEMP_ACTIVE = ACTIVE;
 			if (ACTIVE) {
-
 				client.user.setPresence({
 					status: "online",
 					activities: [
@@ -208,7 +215,12 @@ client.on("messageCreate", async message => {
 
 	//テストコマンド
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "IT/.")) {
-		message.reply('ping -c5 "' + message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") + '"\nIP?"' + net.isIP(CONFIG.ADMIN_PREFIX + "IT/."));
+		message.reply(
+			'ping -c5 "' +
+				message.content.replace(CONFIG.ADMIN_PREFIX + "IT/.", "").replace(/[^A-Za-z0-9\-.]/g, "") +
+				'"\nIP?"' +
+				net.isIP(CONFIG.ADMIN_PREFIX + "IT/.")
+		);
 	}
 
 	//メンションされたユーザーのコレクションを取得
@@ -247,12 +259,21 @@ client.on("messageCreate", async message => {
 							return;
 						}
 						//しもねた系
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+						if (
+							message.content.includes("まんこ") ||
+							message.content.includes("生理") ||
+							message.content.includes("ちんこ")
+						) {
 							message.reply("きもい");
 							return;
 						}
 						//特定の人なら
-						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+						if (
+							message.author.id === rumi ||
+							message.author.id === hakurei_win ||
+							message.author.id === p_nsk ||
+							message.author.id === rumisub
+						) {
 							message.reply("そーなのかー");
 							return;
 						}
@@ -260,7 +281,11 @@ client.on("messageCreate", async message => {
 					} else {
 						//メッセージである
 						//しもねた系
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+						if (
+							message.content.includes("まんこ") ||
+							message.content.includes("生理") ||
+							message.content.includes("ちんこ")
+						) {
 							message.reply("きっしょ死ね");
 							return;
 						}
@@ -270,7 +295,12 @@ client.on("messageCreate", async message => {
 							return;
 						}
 						//特定の人なら
-						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+						if (
+							message.author.id === rumi ||
+							message.author.id === hakurei_win ||
+							message.author.id === p_nsk ||
+							message.author.id === rumisub
+						) {
 							message.reply("なんなのだー？");
 							return;
 						}
@@ -351,7 +381,24 @@ client.on("messageCreate", async message => {
 	if (message.content === "時間") {
 		const DATE = new Date();
 		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-		const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
+		const DATE_TEXT =
+			DATE.getFullYear() +
+			"年" +
+			(DATE.getMonth() + 1) +
+			"月" +
+			DATE.getDate() +
+			"日" +
+			DAY_FORMAT[DATE.getDay()] +
+			"曜日" +
+			"\n" +
+			DATE.getHours() +
+			"時" +
+			DATE.getMinutes() +
+			"分" +
+			DATE.getSeconds() +
+			"秒" +
+			DATE.getMilliseconds() +
+			"ミリ秒";
 
 		message.reply(DATE_TEXT);
 	}
@@ -417,7 +464,20 @@ client.on("interactionCreate", async INTERACTION => {
 			return;
 		}
 		try {
-			console.log("[ INFO ][CMD]┌Interaction create:" + INTERACTION.commandName + "\n             ├in " + INTERACTION.guild.name + "\n             ├in " + INTERACTION.channel.name + INTERACTION.channelId + "\n             └in " + INTERACTION.member.user.username + "(" + INTERACTION.member.id + ")");
+			console.log(
+				"[ INFO ][CMD]┌Interaction create:" +
+					INTERACTION.commandName +
+					"\n             ├in " +
+					INTERACTION.guild.name +
+					"\n             ├in " +
+					INTERACTION.channel.name +
+					INTERACTION.channelId +
+					"\n             └in " +
+					INTERACTION.member.user.username +
+					"(" +
+					INTERACTION.member.id +
+					")"
+			);
 		} catch (EX) {
 			console.error("[ ERR ][ LOG ]", EX);
 			INTERACTION.reply("エラー");
@@ -530,7 +590,9 @@ client.on("guildDelete", GUILD => {
 
 			const SERVERS = client.guilds.cache;
 
-			LOG_CH.send(SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!");
+			LOG_CH.send(
+				SERVERS.size + 1 + " са¯ва¯ вэдэне тащ ду¯ма;\n" + "Иф" + SERVERS.size + " са¯ва¯ вэдэне зад〜! Бля¯д!"
+			);
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ GUILD ]Send MSG:" + EX);
@@ -635,7 +697,14 @@ client.on("roleUpdate", (oldRole, newRole) => {
 				//名前が同じ
 				CH.send("「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
 			} else {
-				CH.send("「" + sanitize(oldRole.name) + "」→「" + sanitize(newRole.name) + "」ロールの権限が変更されました\n" + sanitize(PM_UPDATE_TEXT));
+				CH.send(
+					"「" +
+						sanitize(oldRole.name) +
+						"」→「" +
+						sanitize(newRole.name) +
+						"」ロールの権限が変更されました\n" +
+						sanitize(PM_UPDATE_TEXT)
+				);
 			}
 		}
 	}
