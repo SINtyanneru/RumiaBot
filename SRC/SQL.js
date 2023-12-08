@@ -38,14 +38,16 @@ export class SQL {
 	 * @returns { Promise<string,Error> }
 	 */
 	SCRIPT_RUN(SQL_SCRIPT, SQL_PARAM) {
+		console.log("[ *** ][ SQL ]RUN SQL Script:" + SQL_SCRIPT.toString() + "/" + SQL_PARAM.toString());
 		return new Promise((resolve, reject) => {
 			this.SQL_CONNECTION.query(SQL_SCRIPT, SQL_PARAM, (ERR, RESULT) => {
 				if (ERR) {
 					//エラーチェック
-					console.log("[ ERR ]MySQL Connect err:" + ERR);
+					console.log("[ ERR ][ SQL ]" + ERR);
 					reject(ERR);
 				} else {
 					//せいこうしたので
+					console.log("[ OK ][ SQL ]RUN SQL Script OK");
 					resolve(RESULT);
 				}
 			});
