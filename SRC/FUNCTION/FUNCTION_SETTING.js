@@ -4,6 +4,10 @@
 import { SQL_OBJ } from "../Main.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
 export class FUNCTION_SETTING {
+	constructor(){
+		this.SETTING = undefined;
+	}
+
 	/**
 	 * 暫定
 	 * @returns {Promise<{ GID: string; FUNC_ID: string; }[]>}
@@ -12,13 +16,10 @@ export class FUNCTION_SETTING {
 		if (CONFIG.SQL_CONNECT) {
 			try {
 				const RESULT = await SQL_OBJ.SCRIPT_RUN("SELECT * FROM `CONFIG`", []);
-				return RESULT;
+				this.SETTING = RESULT;
 			} catch (EX) {
 				console.error(EX);
-				return [];
 			}
-		} else {
-			return [];
 		}
 	}
 }

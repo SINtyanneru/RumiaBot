@@ -2,7 +2,7 @@
  * るみBOTの機能を設定する
  */
 
-import { SQL_OBJ } from "../Main.js";
+import { SQL_OBJ, FUNCTION_SETTING_OBJ } from "../Main.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
 // import { FUNCTION_SETTING } from "../FUNCTION_SETTING.js";
 
@@ -22,6 +22,8 @@ export class SETTING {
 							SQL_OBJ.SCRIPT_RUN("INSERT INTO `CONFIG` (`ID`, `GID`, `MODE`, `FUNC_ID`) VALUES (NULL, ?, '1', ?);", [this.E.guild.id, FUNCTION])
 								.then(async () => {
 									await this.E.editReply(FUNCTION + "を有効化したとおもいます、たぶん");
+									//再読込
+									FUNCTION_SETTING_OBJ.LOAD();
 								})
 								.catch(async EX => {
 									console.error("[ ERR in Promise ][ SETTING ]", EX);
@@ -43,6 +45,8 @@ export class SETTING {
 							SQL_OBJ.SCRIPT_RUN("DELETE FROM `CONFIG` WHERE `ID` = ?", [RESULT[0].ID])
 								.then(async () => {
 									await this.E.editReply(FUNCTION + "を無効化したとおもいます、たぶん");
+									//再読込
+									FUNCTION_SETTING_OBJ.LOAD();
 								})
 								.catch(async EX => {
 									console.error("[ ERR in Promise ][ SETTING ]", EX);

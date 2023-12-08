@@ -39,6 +39,7 @@ if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
 }
 export const SNS_CONNECTION = new SNS();
+export let FUNCTION_SETTING_OBJ = new FUNCTION_SETTING();
 
 client.once("ready", async () => {
 	console.log("    ____                  _       ____  ____  ______");
@@ -56,6 +57,9 @@ client.once("ready", async () => {
 	//WS鯖を起動
 
 	LOCK_NICK_NAME_OBJ.INIT();
+
+	//機能設定をロード
+	FUNCTION_SETTING_OBJ.LOAD();
 
 	/*
 		console.log("⠀⠀⠀⠀⠀⠀⢀⣤⣀⣀⣀⠀⠻⣷⣄");
@@ -285,9 +289,7 @@ client.on("messageCreate", async message => {
 		}
 	}
 
-	//その鯖で有効化されているか
-	let FUNCTION_SETTING_OBJ = await new FUNCTION_SETTING().LOAD();
-	if (FUNCTION_SETTING_OBJ.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
+	if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
 		if (!CONFIG.DISABLE?.includes("vxtwitter")) {
 			// vxtwitterのリンクに自動で置換する機能
 			// もし実行しないと設定してるなら動かさない
