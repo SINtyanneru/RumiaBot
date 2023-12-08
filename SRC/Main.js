@@ -139,235 +139,239 @@ client.once("ready", async () => {
 
 //メッセージを受信
 client.on("messageCreate", async message => {
-	//ブロック
-	if (CONFIG.BLOCK) {
-		if (CONFIG.BLOCK.includes(message.author.id)) {
+	try{
+		//ブロック
+		if (CONFIG.BLOCK) {
+			if (CONFIG.BLOCK.includes(message.author.id)) {
+				return;
+			}
+		}
+	
+		//ログを出す
+		try {
+			let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
+			const LOG_TEXT_SPLIT = message.content.split("\n");
+			for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
+				const TEXT = LOG_TEXT_SPLIT[I];
+				if (LOG_TEXT_SPLIT[I + 1] !== undefined) {
+					LOG_TEXT += "├" + TEXT + "\n";
+				} else {
+					LOG_TEXT += "└" + TEXT + "\n";
+				}
+			}
+			console.log(LOG_TEXT);
+		} catch (EX) {
+			console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
 			return;
 		}
-	}
-
-	//ログを出す
-	try {
-		let LOG_TEXT = "┌[" + message.author.username + "@" + message.guild.name + "/" + message.channel.name + "]\n";
-		const LOG_TEXT_SPLIT = message.content.split("\n");
-		for (let I = 0; I < LOG_TEXT_SPLIT.length; I++) {
-			const TEXT = LOG_TEXT_SPLIT[I];
-			if (LOG_TEXT_SPLIT[I + 1] !== undefined) {
-				LOG_TEXT += "├" + TEXT + "\n";
-			} else {
-				LOG_TEXT += "└" + TEXT + "\n";
+	
+		//WSに流す
+		for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
+			const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
+			SOCKET.send(
+				JSON.stringify({
+					"TYPE": "MSG_RESOVE",
+					"MSG": {
+						"ID": message.id,
+						"TEXT": message.content
+					},
+					"GUILD": {
+						"ID": message.guild.id
+					},
+					"CHANNEL": {
+						"ID": message.channel.id
+					},
+					"AUTHOR": {
+						"ID": message.author.id,
+						"NAME": message.author.username,
+						"ICON": message.author.avatarURL(),
+						"DEF_ICON": message.author.defaultAvatarURL
+					}
+				})
+			);
+		}
+	
+		//ニックネーム固定
+		LOCK_NICK_NAME_OBJ.main(message.member);
+	
+		/*
+		//BOTの場合は処理しない
+		if(message.author.bot){
+			return;
+		}
+		*/
+	
+		//BOT所有者専用のコマンド
+		if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
+			await BOT_ADMIN(message);
+		}
+	
+		//誕生月取得
+		if (message.content === "誕生日") {
+			//実験用
+			message.react("✅");
+		
+			message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
+		}
+	
+		//メンションされたユーザーのコレクションを取得
+		const MENTION_USERS = message.mentions.users;
+	
+		if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
+			//メンションされたユーザーがいるかチェック
+			if (MENTION_USERS.size > 0) {
+				MENTION_USERS.forEach(async USER => {
+					if (USER.id === client.user.id) {
+						//自分に対するメッセージなら
+						if (message.reference) {
+							//リプライである
+							//メッセージインフォ
+							if (message.content.includes("taktud")) {
+								let REPLY_P = await message.fetchReference();
+								let FWH = await message.channel.fetchWebhooks();
+								let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
+								message.reply(
+									"BOT:" +
+										REPLY_P.author.bot +
+										"\n" +
+										"ID:" +
+										REPLY_P.author.id +
+										"\n" +
+										"WH:" +
+										(function () {
+											if (WH) {
+												return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
+											} else {
+												return "NONE";
+											}
+										})() +
+										"\n"
+								);
+								return;
+							}
+							//しもねた系
+							if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+								message.reply("きもい");
+								return;
+							}
+							//特定の人なら
+							if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+								message.reply("そーなのかー");
+								return;
+							}
+							message.reply("そうですか。");
+						} else {
+							//メッセージである
+							//しもねた系
+							if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
+								message.reply("きっしょ死ね");
+								return;
+							}
+							//お → なに？
+							if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
+								message.reply("...");
+								return;
+							}
+							//特定の人なら
+							if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
+								message.reply("なんなのだー？");
+								return;
+							}
+							message.reply("なに？");
+						}
+					}
+				});
 			}
 		}
-		console.log(LOG_TEXT);
-	} catch (EX) {
-		console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
-		return;
-	}
-
-	//WSに流す
-	for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
-		const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
-		SOCKET.send(
-			JSON.stringify({
-				"TYPE": "MSG_RESOVE",
-				"MSG": {
-					"ID": message.id,
-					"TEXT": message.content
-				},
-				"GUILD": {
-					"ID": message.guild.id
-				},
-				"CHANNEL": {
-					"ID": message.channel.id
-				},
-				"AUTHOR": {
-					"ID": message.author.id,
-					"NAME": message.author.username,
-					"ICON": message.author.avatarURL(),
-					"DEF_ICON": message.author.defaultAvatarURL
-				}
-			})
-		);
-	}
-
-	//ニックネーム固定
-	LOCK_NICK_NAME_OBJ.main(message.member);
-
-	/*
-	//BOTの場合は処理しない
-	if(message.author.bot){
-		return;
-	}
-	*/
-
-	//BOT所有者専用のコマンド
-	if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
-		await BOT_ADMIN(message);
-	}
-
-	//誕生月取得
-	if (message.content === "誕生日") {
-		//実験用
-		message.react("✅");
-
-		message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
-	}
-
-	//メンションされたユーザーのコレクションを取得
-	const MENTION_USERS = message.mentions.users;
-
-	if (!message.content.includes("@everyone") && !message.content.includes("@here")) {
-		//メンションされたユーザーがいるかチェック
-		if (MENTION_USERS.size > 0) {
-			MENTION_USERS.forEach(async USER => {
-				if (USER.id === client.user.id) {
-					//自分に対するメッセージなら
-					if (message.reference) {
-						//リプライである
-						//メッセージインフォ
-						if (message.content.includes("taktud")) {
-							let REPLY_P = await message.fetchReference();
-							let FWH = await message.channel.fetchWebhooks();
-							let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
-							message.reply(
-								"BOT:" +
-									REPLY_P.author.bot +
-									"\n" +
-									"ID:" +
-									REPLY_P.author.id +
-									"\n" +
-									"WH:" +
-									(function () {
-										if (WH) {
-											return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
-										} else {
-											return "NONE";
-										}
-									})() +
-									"\n"
-							);
-							return;
+	
+		//検索
+		if (message.content.startsWith("検索 ") || message.content.startsWith("検索　")) {
+			if (!CONFIG.DISABLE?.includes("search")) {
+				search(message);
+			}
+		}
+	
+		if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
+			if (!CONFIG.DISABLE?.includes("vxtwitter")) {
+				// vxtwitterのリンクに自動で置換する機能
+				// もし実行しないと設定してるなら動かさない
+				await convert_vxtwitter(message);
+			}
+		}
+		//計算
+		if (message.content.startsWith("計算 ") || message.content.startsWith("計算　")) {
+			if (!CONFIG.DISABLE?.includes("calc")) {
+				// もし実行しないと設定してるなら動かさない
+				calc(message);
+			}
+		}
+	
+		if (message.content === "今日は何の日？") {
+			message.react("✅");
+			new command.WHAT_NOW_DAY().main(message);
+		}
+	
+		if (message.content.startsWith("ルーレット")) {
+			const CHOISE_LIST = message.content.replace("ルーレット ", "").split(",");
+			const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
+			if (CHOISE_LIST[RANDOM]) {
+				message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM].toString()));
+			}
+		}
+	
+		if (message.content === "時間") {
+			const DATE = new Date();
+			const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
+			const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
+		
+			message.reply(DATE_TEXT);
+		}
+	
+		if (message.content === "しおり登録") {
+			new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).SET();
+		}
+	
+		if (message.content === "しおり") {
+			new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).LOAD();
+		}
+	
+	
+		if (message.guild.id === rumiserver) {
+			if (!CONFIG.DISABLE?.includes("httpcat")) {
+				const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
+				if (MATCH) {
+					if (HTTP_STATUS_CODE.some(CODE => MATCH[0] === CODE)) {
+						if (!message.author.bot) {
+							message.channel.send({
+								content: `http://http.cat/${MATCH[0]}`,
+								flags: ["SUPPRESS_NOTIFICATIONS"]
+							});
 						}
-						//しもねた系
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
-							message.reply("きもい");
-							return;
-						}
-						//特定の人なら
-						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
-							message.reply("そーなのかー");
-							return;
-						}
-						message.reply("そうですか。");
-					} else {
-						//メッセージである
-						//しもねた系
-						if (message.content.includes("まんこ") || message.content.includes("生理") || message.content.includes("ちんこ")) {
-							message.reply("きっしょ死ね");
-							return;
-						}
-						//お → なに？
-						if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
-							message.reply("...");
-							return;
-						}
-						//特定の人なら
-						if (message.author.id === rumi || message.author.id === hakurei_win || message.author.id === p_nsk || message.author.id === rumisub) {
-							message.reply("なんなのだー？");
-							return;
-						}
-						message.reply("なに？");
 					}
 				}
+			}
+		}
+	
+		message.attachments
+			.map(a => a)
+			.forEach((attachment, key) => {
+				const targetUrl = attachment.url;
+				const fileExtension = attachment.name.match(/.[^.]+$/)?.[0];
+				const targetPath = PATH.join("DOWNLOAD", "MSG_FILES", message.guildId);
+				if (!FS.existsSync(targetPath)) {
+					// ディレクトリが存在しない場合、作成
+					FS.mkdirSync(targetPath, { recursive: true });
+				}
+				const FileStream = FS.createWriteStream(PATH.join(targetPath, message.id + "_" + key + fileExtension));
+				console.info("[ *** ][ MSG_FILES ]Downloading…");
+				fetch(targetUrl)
+					.then(res => res.body.pipe(FileStream))
+					.then(() => console.info("[ OK ][ MSG_FILES ]Downloaded"))
+					.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
 			});
-		}
+	}catch(EX){
+		console.log("[ ERR ][ DJS ]" + EX);
 	}
-
-	//検索
-	if (message.content.startsWith("検索 ") || message.content.startsWith("検索　")) {
-		if (!CONFIG.DISABLE?.includes("search")) {
-			search(message);
-		}
-	}
-
-	if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
-		if (!CONFIG.DISABLE?.includes("vxtwitter")) {
-			// vxtwitterのリンクに自動で置換する機能
-			// もし実行しないと設定してるなら動かさない
-			await convert_vxtwitter(message);
-		}
-	}
-	//計算
-	if (message.content.startsWith("計算 ") || message.content.startsWith("計算　")) {
-		if (!CONFIG.DISABLE?.includes("calc")) {
-			// もし実行しないと設定してるなら動かさない
-			calc(message);
-		}
-	}
-
-	if (message.content === "今日は何の日？") {
-		message.react("✅");
-		new command.WHAT_NOW_DAY().main(message);
-	}
-
-	if (message.content.startsWith("ルーレット")) {
-		const CHOISE_LIST = message.content.replace("ルーレット ", "").split(",");
-		const RANDOM = Math.floor(Math.random() * CHOISE_LIST.length);
-		if (CHOISE_LIST[RANDOM]) {
-			message.reply("結果：" + sanitize(CHOISE_LIST[RANDOM].toString()));
-		}
-	}
-
-	if (message.content === "時間") {
-		const DATE = new Date();
-		const DAY_FORMAT = ["日", "月", "火", "水", "木", "金", "土"];
-		const DATE_TEXT = DATE.getFullYear() + "年" + (DATE.getMonth() + 1) + "月" + DATE.getDate() + "日" + DAY_FORMAT[DATE.getDay()] + "曜日" + "\n" + DATE.getHours() + "時" + DATE.getMinutes() + "分" + DATE.getSeconds() + "秒" + DATE.getMilliseconds() + "ミリ秒";
-
-		message.reply(DATE_TEXT);
-	}
-
-	if (message.content === "しおり登録") {
-		new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).SET();
-	}
-
-	if (message.content === "しおり") {
-		new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).LOAD();
-	}
-
-
-	if (message.guild.id === rumiserver) {
-		if (!CONFIG.DISABLE?.includes("httpcat")) {
-			const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
-			if (MATCH) {
-				if (HTTP_STATUS_CODE.some(CODE => MATCH[0] === CODE)) {
-					if (!message.author.bot) {
-						message.channel.send({
-							content: `http://http.cat/${MATCH[0]}`,
-							flags: ["SUPPRESS_NOTIFICATIONS"]
-						});
-					}
-				}
-			}
-		}
-	}
-
-	message.attachments
-		.map(a => a)
-		.forEach((attachment, key) => {
-			const targetUrl = attachment.url;
-			const fileExtension = attachment.name.match(/.[^.]+$/)?.[0];
-			const targetPath = PATH.join("DOWNLOAD", "MSG_FILES", message.guildId);
-			if (!FS.existsSync(targetPath)) {
-				// ディレクトリが存在しない場合、作成
-				FS.mkdirSync(targetPath, { recursive: true });
-			}
-			const FileStream = FS.createWriteStream(PATH.join(targetPath, message.id + "_" + key + fileExtension));
-			console.info("[ *** ][ MSG_FILES ]Downloading…");
-			fetch(targetUrl)
-				.then(res => res.body.pipe(FileStream))
-				.then(() => console.info("[ OK ][ MSG_FILES ]Downloaded"))
-				.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
-		});
 });
 
 //メッセージが更新された
