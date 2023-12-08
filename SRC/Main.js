@@ -27,6 +27,7 @@ import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
+import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -324,6 +325,15 @@ client.on("messageCreate", async message => {
 
 		message.reply(DATE_TEXT);
 	}
+
+	if (message.content === "しおり登録") {
+		new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).SET();
+	}
+
+	if (message.content === "しおり") {
+		new SHIOLI(message.guild.id, message.channel.id, message.id, message.author.id, message).LOAD();
+	}
+
 
 	if (message.guild.id === rumiserver) {
 		if (!CONFIG.DISABLE?.includes("httpcat")) {
