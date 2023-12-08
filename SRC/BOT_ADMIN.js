@@ -3,7 +3,7 @@ import { client } from "./MODULES/loadClient.js";
 // eslint-disable-next-line no-unused-vars
 import { MessageEmbed, Message } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
-import { exec } from "child_process";
+import { exec, spawn } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 import { SQL_OBJ, LOCK_NICK_NAME_OBJ } from "./Main.js";
 
@@ -40,22 +40,31 @@ export async function BOT_ADMIN(message) {
 	//シェルコマンド実行
 	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")) {
 		try {
-			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "");
-			exec(CMD, (ERR, STD_OUT, STD_ERR) => {
-				if (ERR) {
-					console.error(ERR);
-					message.reply("EXECでエラーが発生");
-					return;
-				}
-				if (STD_ERR) {
-					message.reply("```ansi\n" + STD_ERR + "```\nEXIT CODE:NOT 0");
-					return;
-				}
+			const CMD = "bash";
+			const ARGS = ["-c", message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "")];
 
-				let TEXT = STD_OUT;
-				TEXT = TEXT.replace(/\x1b\[[\d;]*(:[0-9;]*[Hf])?[A-GSTJK]/g, "");
+			let MSG = await message.channel.send("tailēd...");
+			let CMD_OUTPUT = "";
 
-				message.reply("```ansi\n" + TEXT + "```\nEXIT CODE:0");
+			let INTER = setInterval(() => {
+				if(!message.content === "```sh\n" + CMD_OUTPUT + "```"){
+					MSG.edit("```sh\n" + CMD_OUTPUT + "```");
+				}
+			}, 1000);
+			
+			const CHILS_PROCESS = spawn(CMD, ARGS);
+			// 標準出力のデータがあるたびに呼び出されるイベントハンドラ
+			CHILS_PROCESS.stdout.on('data', (DATA) => {
+				CMD_OUTPUT += DATA.toString();
+				if(CMD_OUTPUT.length > 1024){
+					const EXCESS_LENGTH = CMD_OUTPUT.length - 1024;
+					CMD_OUTPUT = CMD_OUTPUT.substring(EXCESS_LENGTH);
+				}
+			});
+			//外部プロセスが終了したときに呼び出されるイベントハンドラ
+			CHILS_PROCESS.on('close', (CODE) => {
+				MSG.edit("```sh\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
+				clearInterval(INTER);
 			});
 		} catch (EX) {
 			message.reply(EX);
