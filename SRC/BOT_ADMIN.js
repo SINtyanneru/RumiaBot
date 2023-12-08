@@ -47,9 +47,7 @@ export async function BOT_ADMIN(message) {
 			let CMD_OUTPUT = "";
 
 			let INTER = setInterval(() => {
-				if(!message.content === "```sh\n" + CMD_OUTPUT + "```"){
-					MSG.edit("```sh\n" + CMD_OUTPUT + "```");
-				}
+				MSG.edit("```sh\n" + CMD_OUTPUT + "```");
 			}, 1000);
 			
 			const CHILS_PROCESS = spawn(CMD, ARGS);
