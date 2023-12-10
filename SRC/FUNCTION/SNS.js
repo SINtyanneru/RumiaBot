@@ -125,7 +125,8 @@ export class SNS {
 		socket.on("message", DATA => {
 			try {
 				const RESULT = JSON.parse(DATA);
-				if (RESULT.body.type === "note") {
+				console.log();
+				if (RESULT.body.type === "note" && RESULT.body.body.replyId === null) {
 					//投稿者のID
 					let IT_MIS_USER = RESULT.body.body.user;
 					//SQLにそのIDがあるか探す
