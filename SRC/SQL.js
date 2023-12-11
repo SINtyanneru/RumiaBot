@@ -27,6 +27,10 @@ export class SQL {
 				return;
 			} else {
 				console.log("[ OK ][ SQL ] Connected!");
+
+				setInterval(async () => {
+					await this.SCRIPT_RUN("SHOW TABLES;", []);
+				}, 3600000);
 			}
 		});
 	}
