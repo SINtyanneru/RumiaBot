@@ -528,6 +528,9 @@ client.on("interactionCreate", async INTERACTION => {
 			case "misskey_emoji_search":
 				await new command.MISSKEY_EMOJI_SEARCH(INTERACTION).main();
 				break;
+			case "cp":
+				await new command.Unicode_CODEPOINT(INTERACTION).main();
+				break;
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ DJS ]" + EX);

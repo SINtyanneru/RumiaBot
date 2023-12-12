@@ -230,6 +230,11 @@ export async function REGIST_SLASH_COMMAND() {
 				.setName("misskey_emoji_search")
 				.setDescription("Misskeyの絵文字を検索するのだ")
 				.addStringOption(o => o.setName("name").setDescription("絵文字名").setRequired(true)
+			),
+			new SlashCommandBuilder()
+				.setName("cp")
+				.setDescription("引数に渡された文字のUnicodeコードポイントを返すのだ")
+				.addStringOption(o => o.setName("letter").setDescription("文字").setRequired(true)
 			)
 	];
 
