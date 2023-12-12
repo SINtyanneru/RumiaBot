@@ -255,24 +255,59 @@ export class SNS {
 				//トゥートされたら実行する
 				if (RESULT.event === "update") {
 					const TOOT = JSON.parse(RESULT.payload);
-					if (TOOT.account.id) {
-						const FILES = (function () {
-							if (TOOT.media_attachments.length > 0) {
-								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
-							} else {
-								return [];
-							}
-						})();
-
-						let TOOT_TEXT = TOOT.content;
-						//トゥートの文字列を痴漢する
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n"); //改行
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, ""); //その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">"); //その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<"); //その他のタグ
-
-						//this.SEND_EMBEDED(rumiserver, general_channel, "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT_TEXT, FILES, null, null, null, null, "MASTODON");
+					console.log(TOOT);
+					//横流しするチャンネル
+					let STREAM_CHANNEL = [];
+					//流すチャンネルを選別する
+					for (let I = 0; I < this.USER.length; I++) {
+						const SNS_USER = this.USER[I];
+						//UIDが一致していて、インスタンスのIDも一致しているなら
+						if (SNS_USER.SNS_UID === TOOT.account.id && SNS_USER.SNS_ID === ID) {
+							//追加
+							STREAM_CHANNEL.push(SNS_USER);
+						}
 					}
+
+					let TOOT_TEXT = TOOT.content;
+					//トゥートの文字列を痴漢する
+					TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n"); //改行
+					TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, ""); //その他のタグ
+					TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">"); //その他のタグ
+					TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<"); //その他のタグ
+
+					//横流しするチャンネルを回して流す
+					STREAM_CHANNEL.forEach(ROW => {
+						this.SEND_EMBEDED(
+							ROW.GID,
+							ROW.CID,
+							{//投稿者の情報
+								"NAME":TOOT.account.display_name,
+								"AVATAR":TOOT.account.avatar,
+								"PROF":"https://" + DOMAIN + "/@" + TOOT.account.username
+							},
+							//ノートの情報
+							{
+								"TEXT":TOOT_TEXT,
+								"URL":"https://" + DOMAIN + "/@" + TOOT.account.username + "/" + TOOT.id,
+								"DATE":TOOT.created_at
+							},
+							undefined,
+							{
+								"POST_FILE":(function(){
+									if(TOOT.media_attachments.length > 0){
+										if(TOOT.media_attachments.type === "image"){
+											return {
+												"URL":TOOT.media_attachments[0].preview_url,
+												"NSFW":false
+											};
+										}
+									}
+								})(),
+								"RENOTE_FILE":undefined
+							},
+							"MASTODON"
+						);
+					});
 				}
 			} catch (EX) {
 				console.error("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);
