@@ -1,5 +1,10 @@
 import { exec } from "child_process";
+import { CONFIG } from "../MODULES/CONFIG.js";
 export class PING {
+	/**
+	 *
+	 * @param {import("discord.js").CommandInteraction} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
@@ -7,6 +12,11 @@ export class PING {
 	async main() {
 		try {
 			let E = this.E;
+			if (CONFIG.DISABLE.includes("ping")) {
+				E.editReply("botの管理者がこれを無効化しています");
+				return;
+			}
+
 			const CMD = E.options.getString("host").replace(/[^A-Za-z0-9\-.]/g, "");
 			if (CMD != undefined) {
 				//コマンドを実行し、リアルタイムに出力を取得します
