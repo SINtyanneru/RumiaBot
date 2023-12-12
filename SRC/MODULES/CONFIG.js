@@ -12,7 +12,7 @@ import { readFileSync } from "fs";
  * @prop {SNS[]} [SNS]
  * @prop {string[]} ADMIN_ID
  * @prop {string} ADMIN_PREFIX
- * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" | "locknick" | "calc")[]} [DISABLE]
+ * @prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" | "locknick" | "calc" | "ping")[]} [DISABLE]
  * @prop {string[]} BLOCK
  *
  * @typedef {Object} SNS
