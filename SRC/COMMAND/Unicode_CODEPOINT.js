@@ -43,7 +43,7 @@ export class Unicode_CODEPOINT{
 			EB.setColor(RND_COLOR());
 			EB.addFields({
 				name: "コードポイント",
-				value: "U+" + Unioode_CODEPOINT_HEX,
+				value: "U+" + Unioode_CODEPOINT_HEX.padStart(5, "0"),
 				inline: false
 			});
 			
