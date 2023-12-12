@@ -252,10 +252,11 @@ export class SNS {
 		socket.on("message", DATA => {
 			try {
 				const RESULT = JSON.parse(DATA);
+				
 				//トゥートされたら実行する
 				if (RESULT.event === "update") {
 					const TOOT = JSON.parse(RESULT.payload);
-					console.log(TOOT);
+
 					//横流しするチャンネル
 					let STREAM_CHANNEL = [];
 					//流すチャンネルを選別する
