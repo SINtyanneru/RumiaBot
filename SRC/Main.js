@@ -478,52 +478,55 @@ client.on("interactionCreate", async INTERACTION => {
 
 		switch (CMD) {
 			case "test":
-				new command.test(INTERACTION).main();
+				await new command.test(INTERACTION).main();
 				break;
 			case "help":
-				new command.HELP(INTERACTION).main();
+				await new command.HELP(INTERACTION).main();
 				break;
 			case "ping":
-				new command.PING(INTERACTION).main();
+				await new command.PING(INTERACTION).main();
 				break;
 			case "ferris":
-				new command.FERRIS(INTERACTION).main();
+				await new command.FERRIS(INTERACTION).main();
 				break;
 			case "ws":
-				new command.WS(INTERACTION).main();
+				await new command.WS(INTERACTION).main();
 				break;
 			case "info_server":
-				getServerInfo(INTERACTION);
+				await getServerInfo(INTERACTION);
 				break;
 			case "info_user":
-				getUserInfo(INTERACTION);
+				await getUserInfo(INTERACTION);
 				break;
 			case "info_mine":
-				getMcInfo(INTERACTION);
+				await getMcInfo(INTERACTION);
 				break;
 			case "kanji":
-				new command.KANJI(INTERACTION).main();
+				await new command.KANJI(INTERACTION).main();
 				break;
 			case "letter":
-				new command.LETTER(INTERACTION).main();
+				await new command.LETTER(INTERACTION).main();
 				break;
 			case "sns_set":
-				new command.SNS(INTERACTION).main();
+				await new command.SNS(INTERACTION).main();
 				break;
 			case "ip":
-				new command.IP(INTERACTION).main();
+				await new command.IP(INTERACTION).main();
 				break;
 			case "setting":
-				new command.SETTING(INTERACTION).SET();
+				await new command.SETTING(INTERACTION).SET();
 				break;
 			case "num":
-				new command.NUM(INTERACTION).main();
+				await new command.NUM(INTERACTION).main();
 				break;
 			case "wh_clear":
-				new command.WH_CLEAR(INTERACTION).main();
+				await new command.WH_CLEAR(INTERACTION).main();
 				break;
 			case "vc_music":
-				new command.VC_MUSIC(INTERACTION).main();
+				await new command.VC_MUSIC(INTERACTION).main();
+				break;
+			case "misskey_emoji_search":
+				await new command.MISSKEY_EMOJI_SEARCH(INTERACTION).main();
 				break;
 		}
 	} catch (EX) {
