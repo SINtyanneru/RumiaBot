@@ -1,6 +1,7 @@
 // @ts-check
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v10";
 import * as FS from "node:fs";
-import * as net from "node:net";
 import { RUMI_HAPPY_BIRTHDAY } from "./MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { client } from "./MODULES/loadClient.js";
 import { BOT_ADMIN } from "./BOT_ADMIN.js";
@@ -35,12 +36,12 @@ import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
 import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
-import { REGIST_SLASH_COMMAND } from "./new_REGIST_SL_COMMAND.js";
-import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
+import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
+const rest = new REST({ version: "10" }).setToken(CONFIG.TOKEN);
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 const WS_SERVER_OBJ = new WS_SERVER();
 export const LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
@@ -80,11 +81,13 @@ client.once("ready", async () => {
 		console.log("⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⡿");
 	*/
 
-	const COMMAND_DATA = await REGIST_SLASH_COMMAND(); //スラッシュコマンドのデータを取得する
+	const COMMAND_DATA = (await REGIST_SLASH_COMMAND()).map(c => c.toJSON()); //スラッシュコマンドのデータを取得する toJSONしないと送れないっぽい
 	//取得したやつを登録する
 	try {
 		//グローバルスラッシュコマンドを登録
-		await client.application.commands.set(COMMAND_DATA);
+		await rest.put(Routes.applicationCommands(CONFIG.ID), {
+			body: COMMAND_DATA
+		});
 		console.log("[ OK ][ SLASH_COMMAND ]Al Komand wu registera!");
 	} catch (EX) {
 		console.log("[ ERR ][ SLASH_COMMAND ]" + EX);
@@ -208,8 +211,6 @@ client.on("messageCreate", async message => {
 		await BOT_ADMIN(message);
 	}
 
-	//誕生月取得
-	if (message.content === "誕生日") {
 	//誕生月取得
 	if (message.content === "誕生日") {
 		//実験用
