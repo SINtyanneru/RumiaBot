@@ -90,7 +90,7 @@ client.once("ready", async () => {
 	//取得したやつを登録する
 	try {
 		//グローバルスラッシュコマンドを登録
-		await rest.put(Routes.applicationCommands(CONFIG.ID), {
+		await rest.put(Routes.applicationCommands(client.user.id), {
 			body: COMMAND_DATA
 		});
 		console.log("[ OK ][ SLASH_COMMAND ]Al Komand wu registera!");
