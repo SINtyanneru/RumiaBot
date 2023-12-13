@@ -105,15 +105,22 @@ export class SNS {
 	
 			//引用元
 			if(REPOST){
-				if(REPOST.POST.TEXT.length < 1024){
-					EB.addFields({
-						"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
-						"value":REPOST.POST.TEXT
-					});
+				if(REPOST.POST.TEXT){
+					if(REPOST.POST.TEXT.length < 1024){
+						EB.addFields({
+							"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
+							"value":REPOST.POST.TEXT
+						});
+					}else{
+						EB.addFields({
+							"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
+							"value":REPOST.POST.TEXT.slice(0, 1000) + "..."
+						});
+					}
 				}else{
 					EB.addFields({
 						"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
-						"value":REPOST.POST.TEXT.slice(0, 1000) + "..."
+						"value":"‌"
 					});
 				}
 			}
