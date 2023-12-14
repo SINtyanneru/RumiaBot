@@ -645,6 +645,13 @@ client.on("roleUpdate", (oldRole, newRole) => {
 		const OLD_ROLE_PM = oldRole.permissions.toArray();
 		const NEW_ROLE_PM = newRole.permissions.toArray();
 
+		for (let I = 0; I < NEW_ROLE_PM.length; I++) {
+			if(OLD_ROLE_PM[I] === NEW_ROLE_PM[I]){
+				return;
+			}
+		}
+
+
 		const CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 		if (CH) {
 			let PM_UPDATE_LIST = [];
