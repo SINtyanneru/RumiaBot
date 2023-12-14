@@ -12,24 +12,10 @@ export class MISSKEY_EMOJI_SEARCH{
 	}
 
 	async main() {
-		const EMOJI_NAME = this.E.options.getString("name");
+		try{
+			const EMOJI_NAME = this.E.options.getString("name");
 
-		const RES = await fetch("https://ussr.rumiserver.com/api/emojis", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json"
-			}
-		});
-
-		if (RES.ok) {
-			const RESULT = await RES.json();
-
-			//キャッシュがなければつめる
-			if(!EMOJI_CACHE){
-				EMOJI_CACHE = {};
-				EMOJI_CACHE["DATE"] = new Date();
-				EMOJI_CACHE["ussr_rumiserver_com"] = RESULT.emojis;
-			}
+			let EMOJI_CACHE = await this.CACHE();
 
 			//検索結果
 			let EMOJI_SEARCH_RESULT = [];
@@ -61,8 +47,55 @@ export class MISSKEY_EMOJI_SEARCH{
 			}else{
 				await this.E.editReply("そんな絵文字は無い！");
 			}
+		}catch(EX){
+			await this.E.editReply("DiscordAPIがエラーを吐きやがった！Бля！");
+		}
+	}
+
+	async API_RUN(DOMAIN){
+		const RES = await fetch("https://" + DOMAIN + "/api/emojis", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		});
+
+		if (RES.ok) {
+			const RESULT = await RES.json();
+			return RESULT;
 		}else{
-			await this.E.editReply("MisskeyのAPIがエラーを吐きやがった！Бля！");
+			return null;
+		}
+	}
+
+	async CACHE(){
+		//キャッシュがなければつめる
+		if(!EMOJI_CACHE){
+			EMOJI_CACHE = {};
+			EMOJI_CACHE["DATE"] = new Date();
+
+			let RESULT = await this.API_RUN("ussr.rumiserver.com");
+			if(RESULT){//取得成功
+				EMOJI_CACHE["ussr_rumiserver_com"] = RESULT.emojis;
+			}
+
+			//返す
+			return EMOJI_CACHE;
+		}else{
+			//5分経ったか
+			if(EMOJI_CACHE["DATE"] - new Date() >= 5 * 60 * 1000){
+				EMOJI_CACHE["DATE"] = new Date();
+
+				let RESULT = await this.API_RUN("ussr.rumiserver.com");
+				if(RESULT){//取得成功
+					EMOJI_CACHE["ussr_rumiserver_com"] = RESULT.emojis;
+				}
+
+				//返す
+				return EMOJI_CACHE;
+			}else{//経ってない
+				return EMOJI_CACHE;
+			}
 		}
 
 	}
