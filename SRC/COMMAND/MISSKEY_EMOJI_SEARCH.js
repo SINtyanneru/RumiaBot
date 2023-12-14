@@ -62,6 +62,7 @@ export class MISSKEY_EMOJI_SEARCH{
 		}
 	}
 
+	//全インスタンスのAPIを叩く
 	async API_RUN(){
 		let API_RESULT = {};
 
@@ -85,6 +86,7 @@ export class MISSKEY_EMOJI_SEARCH{
 		return API_RESULT;
 	}
 
+	//キャッシュ
 	async CACHE(){
 		//キャッシュがなければつめる
 		if(!EMOJI_CACHE){
