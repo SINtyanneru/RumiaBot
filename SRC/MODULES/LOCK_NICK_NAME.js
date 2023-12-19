@@ -8,7 +8,7 @@ export class LOCK_NICK_NAME {
 	}
 	//初期化
 	INIT() {
-		if (CONFIG.DISABLE.includes("locknick")) return;
+		if (CONFIG.ADMIN.DISABLE.includes("locknick")) return;
 		let SQL_RESULT = SQL_OBJ.SCRIPT_RUN("SELECT * FROM `NICKNAME_LOCK`; ", []);
 		SQL_RESULT.then(RESULT => {
 			console.error("[ *** ][ LOCK NICKNAME ]設定をSQLから読み込んでいます...");
@@ -27,7 +27,7 @@ export class LOCK_NICK_NAME {
 	}
 	//メイン
 	async main(MEMBER) {
-		if (CONFIG.DISABLE.includes("locknick")) return;
+		if (CONFIG.ADMIN.DISABLE.includes("locknick")) return;
 		try {
 			let NICK_NAME = this.NICK_LOCK_USER[MEMBER.guild.id.toString()];
 			if (NICK_NAME) {

@@ -11,7 +11,7 @@ export class SETTING {
 		this.E = INTERACTION;
 	}
 	async SET() {
-		if (CONFIG.SQL_CONNECT) {
+		if (CONFIG.SQL.SQL_CONNECT) {
 			const FUNCTION = this.E.options.getString("function");
 			const MODE = this.E.options.getString("mode");
 			if (MODE === "true") {

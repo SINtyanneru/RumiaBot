@@ -1,4 +1,3 @@
-// @ts-check
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
 import * as FS from "node:fs";
@@ -42,13 +41,13 @@ import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js"
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
-const rest = new REST({ version: "10" }).setToken(CONFIG.TOKEN);
+const rest = new REST({ version: "10" }).setToken(CONFIG.DISCORD.TOKEN);
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 const WS_SERVER_OBJ = new WS_SERVER();
 export const LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
 export const SQL_OBJ = new SQL();
 // 何も存在しないなら
-if (!(CONFIG.ADMIN_ID || CONFIG.ADMIN_PREFIX || CONFIG.ID || CONFIG.TOKEN)) {
+if (!(CONFIG.ADMIN.ADMIN_ID || CONFIG.ADMIN.ADMIN_PREFIX || CONFIG.DISCORD.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
 }
 export const SNS_CONNECTION = new SNS();
@@ -61,7 +60,6 @@ client.once("ready", async () => {
 	console.log(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
 	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 	console.log("V1.1");
-
 	//SNSのインスタンスに接続
 	SNS_CONNECTION.main();
 
@@ -153,8 +151,8 @@ client.once("ready", async () => {
 client.on("messageCreate", async message => {
 	try {
 		//ブロック
-		if (CONFIG.BLOCK) {
-			if (CONFIG.BLOCK.includes(message.author.id)) {
+		if (CONFIG.ADMIN.BLOCK) {
+			if (CONFIG.ADMIN.BLOCK.includes(message.author.id)) {
 				return;
 			}
 		}
@@ -214,7 +212,7 @@ client.on("messageCreate", async message => {
 	}
 	*/
 		//BOT所有者専用のコマンド
-		if (CONFIG.ADMIN_ID.find(ROW => ROW === message.author.id)) {
+		if (CONFIG.ADMIN.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 			await BOT_ADMIN(message);
 		}
 
@@ -316,13 +314,13 @@ client.on("messageCreate", async message => {
 
 		//検索
 		if (message.content.startsWith("検索 ") || message.content.startsWith("検索　")) {
-			if (!CONFIG.DISABLE?.includes("search")) {
+			if (!CONFIG.ADMIN.DISABLE?.includes("search")) {
 				search(message);
 			}
 		}
 
 		if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
-			if (!CONFIG.DISABLE?.includes("vxtwitter")) {
+			if (!CONFIG.ADMIN.DISABLE?.includes("vxtwitter")) {
 				// vxtwitterのリンクに自動で置換する機能
 				// もし実行しないと設定してるなら動かさない
 				await convert_vxtwitter(message);
@@ -334,7 +332,7 @@ client.on("messageCreate", async message => {
 			message.content.startsWith("計算　") ||
 			message.content.startsWith("計算　")
 		) {
-			if (!CONFIG.DISABLE?.includes("calc")) {
+			if (!CONFIG.ADMIN.DISABLE?.includes("calc")) {
 				// もし実行しないと設定してるなら動かさない
 				calc(message);
 			}
@@ -387,7 +385,7 @@ client.on("messageCreate", async message => {
 		}
 
 		if (message.guild.id === rumiserver) {
-			if (!CONFIG.DISABLE?.includes("httpcat")) {
+			if (!CONFIG.ADMIN.DISABLE?.includes("httpcat")) {
 				const MATCH = message.content.match(/(?<!\d)\d{3}(?!\d)/);
 				if (MATCH) {
 					if (HTTP_STATUS_CODE.some(CODE => MATCH[0] === CODE)) {
@@ -440,8 +438,8 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 client.on("interactionCreate", async INTERACTION => {
 	try {
 		//ブロック
-		if (CONFIG.BLOCK) {
-			if (CONFIG.BLOCK.includes(INTERACTION.user.id)) {
+		if (CONFIG.ADMIN.BLOCK) {
+			if (CONFIG.ADMIN.BLOCK.includes(INTERACTION.user.id)) {
 				return;
 			}
 		}
@@ -716,4 +714,4 @@ client.on("roleUpdate", (oldRole, newRole) => {
 });
 
 //BOTにログインする
-client.login(CONFIG.TOKEN);
+client.login(CONFIG.DISCORD.TOKEN);

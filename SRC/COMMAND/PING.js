@@ -12,7 +12,7 @@ export class PING {
 	async main() {
 		try {
 			let E = this.E;
-			if (CONFIG.DISABLE.includes("ping")) {
+			if (CONFIG.ADMIN.DISABLE.includes("ping")) {
 				E.editReply("botの管理者がこれを無効化しています");
 				return;
 			}

@@ -6,7 +6,7 @@ export class IP {
 
 	async main() {
 		let E = this.E;
-		if (CONFIG.DISABLE?.includes("ip")) {
+		if (CONFIG.ADMIN.DISABLE?.includes("ip")) {
 			return E.editReply("運営者の意向により、開示できません！");
 		}
 		const RES = await fetch("https://ifconfig.me/ip", {
