@@ -210,7 +210,7 @@ export async function BOT_ADMIN(message) {
 			if (RES.ok) {
 				const RESULT = await RES.json();
 				if (RESULT.STATUS) {
-					let REGEX = new RegExp('\\B(?=(\\d{' + 4 + '})+(?!\\d))', 'g');
+					let REGEX = new RegExp("\\B(?=(\\d{" + 4 + "})+(?!\\d))", "g");
 					message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ");
 				} else {
 					message.reply("エラー" + RESULT.ERR);
