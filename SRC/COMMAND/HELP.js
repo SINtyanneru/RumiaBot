@@ -1,6 +1,27 @@
+//@ts-check
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { MessageEmbed } from "discord.js";
 export class HELP {
+	static command = new SlashCommandBuilder()
+		.setName("help")
+		.setDescription("ヘルプコマンド、作るのめんどいやつ")
+		.addStringOption(o =>
+			o
+				.setName("mode")
+				.setDescription("どれを見るか")
+				.setChoices(
+					{
+						name: "スラッシュコマンド",
+						value: "slash"
+					},
+					{
+						name: "メッセージコマンド",
+						value: "message"
+					}
+				)
+				.setRequired(true)
+		);
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

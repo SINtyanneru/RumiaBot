@@ -39,7 +39,7 @@ export class SQL {
 	 * SQL文を実行します
 	 * @param {string} SQL_SCRIPT SQL文
 	 * @param {(string | never)[]} SQL_PARAM SQL文に必要なパラメーター(無い場合は[]でおｋ)
-	 * @returns { Promise<string,Error> }
+	 * @returns { Promise<any> }
 	 */
 	SCRIPT_RUN(SQL_SCRIPT, SQL_PARAM) {
 		console.log("[ *** ][ SQL ]RUN SQL Script:" + SQL_SCRIPT.toString() + "/" + SQL_PARAM.toString());

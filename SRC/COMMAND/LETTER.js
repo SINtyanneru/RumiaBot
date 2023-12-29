@@ -1,4 +1,42 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+
+//@ts-check
 export class LETTER {
+	static command = new SlashCommandBuilder()
+		.setName("letter")
+		.setDescription("文字を色々変換してくれます、たぶん")
+		.addStringOption(o =>
+			o
+				.setName("old")
+				.setDescription("変換前")
+				.setChoices(
+					{
+						name: "ひらがな",
+						value: "hilagana"
+					},
+					{
+						name: "ラテン文字",
+						value: "latin"
+					}
+				)
+				.setRequired(true)
+		)
+		.addStringOption(o =>
+			o
+				.setName("new")
+				.setDescription("変換後")
+				.setChoices(
+					{
+						name: "ひらがな",
+						value: "hilagana"
+					},
+					{
+						name: "ラテン文字",
+						value: "latin"
+					}
+				)
+				.setRequired(true)
+		);
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 		this.LETTER_JSON = {

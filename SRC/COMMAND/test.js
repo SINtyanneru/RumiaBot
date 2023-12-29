@@ -1,12 +1,18 @@
+// @ts-check
 /*
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 */
 import { MessageActionRow, MessageButton } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { WebHook_FIND } from "../MODULES/WebHook_FIND.js";
 import { SQL_OBJ } from "../Main.js";
 
 export class test {
+	static command = new SlashCommandBuilder().setName("test").setDescription("テストコマンド");
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType> | import("discord.js").ButtonInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
@@ -15,7 +21,9 @@ export class test {
 		try {
 			let E = this.E;
 
-			const row = new MessageActionRow().addComponents(new MessageButton().setCustomId("test").setLabel("こゃーん").setStyle("PRIMARY"));
+			const row = new MessageActionRow().addComponents(
+				new MessageButton().setCustomId("test").setLabel("こゃーん").setStyle("PRIMARY")
+			);
 
 			let TEXT = "テストを実行します\n";
 
