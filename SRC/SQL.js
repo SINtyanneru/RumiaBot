@@ -8,12 +8,12 @@ import mysql from "mysql";
 export class SQL {
 	constructor() {
 		//接続する設定に成っているか
-		if (CONFIG.SQL_CONNECT) {
+		if (CONFIG.SQL.SQL_CONNECT) {
 			this.SQL_CONNECTION = mysql.createConnection({
-				host: CONFIG.SQL_HOST,
-				user: CONFIG.SQL_USER,
-				password: CONFIG.SQL_PASS,
-				database: CONFIG.SQL_DB
+				host: CONFIG.SQL.SQL_HOST,
+				user: CONFIG.SQL.SQL_USER,
+				password: CONFIG.SQL.SQL_PASS,
+				database: CONFIG.SQL.SQL_DB
 			});
 
 			this.main();

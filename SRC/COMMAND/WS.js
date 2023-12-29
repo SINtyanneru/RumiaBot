@@ -38,7 +38,7 @@ export class WS {
 
 	async main() {
 		let E = this.E;
-		if (CONFIG.DISABLE?.includes("ws")) {
+		if (CONFIG.ADMIN.DISABLE?.includes("ws")) {
 			return E.editReply("運営者の意向により、この機能は無効化されています！");
 		}
 		let REQUEST_URL = undefined;

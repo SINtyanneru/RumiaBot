@@ -13,7 +13,7 @@ export class FUNCTION_SETTING {
 	 * @returns {Promise<{ GID: string; FUNC_ID: string; }[]>}
 	 */
 	async LOAD() {
-		if (CONFIG.SQL_CONNECT) {
+		if (CONFIG.SQL.SQL_CONNECT) {
 			try {
 				const RESULT = await SQL_OBJ.SCRIPT_RUN("SELECT * FROM `CONFIG`", []);
 				this.SETTING = RESULT;

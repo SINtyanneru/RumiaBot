@@ -1,6 +1,5 @@
 import { CONFIG } from "../MODULES/CONFIG.js";
 import { MessageEmbed } from "discord.js";
-import { MSG_SEND } from "../MODULES/MSG_SEND.js";
 import { client } from "../MODULES/loadClient.js";
 import { WebSocket } from "ws";
 import { SQL_OBJ } from "../Main.js";
@@ -39,71 +38,97 @@ export class SNS {
 		});
 	}
 
-	SEND_EMBEDED(GID, CID, NOTE_URL, USER_NAME, USER_ID, NID, NOTE_TEXT, NOTE_FILES, RENOTE_USER_NAME, RID, RENOTE_TEXT, RENOTE_FILES, SNS_TYPE) {
-		const EB = new MessageEmbed();
+	async SEND_EMBEDED(GID, CID, AUTHOR, POST, REPOST, FILES, SNS_TYPE) {
+		try{
+			const EB = new MessageEmbed();
 
-		//ユーザー名
-		EB.setTitle(USER_NAME);
-		//SNSによって色をかえる
-		if (SNS_TYPE === "MISSKEY") {
-			//Misskey
-			EB.setColor("#99FF00");
-		} else if (SNS_TYPE === "MASTODON") {
-			//Mastodon
-			EB.setColor("#A200FF");
-		} else if (SNS_TYPE === "FIRE_FISH") {
-			//FireFish
-			EB.setColor("#FF9900");
-		} else {
-			EB.setColor("#A85100");
-		}
-		//URL
-		EB.setURL("https://ussr.rumiserver.com/@" + USER_ID);
-
-		//本文
-		EB.setDescription(NOTE_TEXT || "テキストなし");
-
-		//ノートのファイル
-		if (NOTE_FILES) {
-			if (NOTE_FILES.length !== 0) {
-				if (!NOTE_FILES[0].isSensitive) {
-					EB.setImage(NOTE_FILES[0].thumbnailUrl);
-				}
+			//SNSのタイプに寄って埋め込みの形式を買える
+			switch(SNS_TYPE){
+				case "MISSKEY":
+					//タイトル(どこからの投稿か)
+					EB.setTitle("Misskeyの投稿");
+					//色
+					EB.setColor("#86B300");
+					break;
+				case "MASTODON":
+					//タイトル(どこからの投稿か)
+					EB.setTitle("Mastodonの投稿");
+					//色
+					EB.setColor("#A200FF");
+					break;
+				case "FIRE_FISH":
+					//タイトル(どこからの投稿か)
+					EB.setTitle("FireFishの投稿");
+					//色
+					EB.setColor("#FF9900");
+					break;
+				default:
+					//タイトル(どこからの投稿か)
+					EB.setTitle("不明");
+					//色
+					EB.setColor("#A85100");
+					break;
 			}
-		}
-
-		//リノートがあるか
-		if (RID) {
-			EB.addFields({
-				name: "リノート元\n" + RENOTE_USER_NAME,
-				value: RENOTE_TEXT || "テキストなし",
-				inline: false
+	
+			//投稿者
+			EB.setAuthor({
+				"name":AUTHOR.NAME,
+				"iconURL":AUTHOR.AVATAR,
+				"url":AUTHOR.PROF
 			});
-
-			//リノートじの画像
-			if (NOTE_FILES) {
-				if (NOTE_FILES.length === 0) {
-					//既に画像が有るか
-					//リノート元に画像は有るか
-					if (RENOTE_FILES) {
-						if (RENOTE_FILES.length !== 0) {
-							if (!RENOTE_FILES[0].isSensitive) {
-								EB.setImage(RENOTE_FILES[0].thumbnailUrl);
-							}
-						}
-					}
+	
+			//投稿の本文
+			if(POST.TEXT){
+				if(POST.TEXT.length < 1024){
+					EB.setDescription(POST.TEXT);
+				}else{
+					EB.setDescription(POST.TEXT.slice(0, 1000) + "...");
 				}
 			}
+	
+			//投稿のURL
+			EB.setURL(POST.URL);
+	
+			//投稿の画像
+			if(FILES.POST_FILE){//投稿に添付されている画像がある
+				if(!FILES.POST_FILE.NSFW){
+					EB.setImage(FILES.POST_FILE.URL);
+				}
+			}else if(FILES.RENOTE_FILE){//画像がないので、引用に付いている画像があるか
+				if(!FILES.RENOTE_FILE.NSFW){
+					EB.setImage(FILES.RENOTE_FILE.URL);
+				}
+			}//画像は何も無かった
+	
+			//投稿日時
+			EB.setTimestamp(new Date(POST.DATE));
+	
+			//引用元
+			if(REPOST){
+				if(REPOST.POST.TEXT){
+					if(REPOST.POST.TEXT.length < 1024){
+						EB.addFields({
+							"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
+							"value":REPOST.POST.TEXT
+						});
+					}else{
+						EB.addFields({
+							"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
+							"value":REPOST.POST.TEXT.slice(0, 1000) + "..."
+						});
+					}
+				}else{
+					EB.addFields({
+						"name":"「" + REPOST.AUTHOR.NAME + "」の投稿を引用",
+						"value":"‌"
+					});
+				}
+			}
+	
+			await client.guilds.cache.get(GID).channels.cache.get(CID).send({ embeds: [EB] });
+		}catch(EX){
+			console.log("[ ERR ][ SNS ]" + EX);
 		}
-
-		// アクション
-		EB.addFields({
-			name: "ｱクション",
-			value: "[見に行く](" + NOTE_URL + ")|" + "[何もしない](https://google.com)",
-			inline: false
-		});
-
-		MSG_SEND(client, GID, CID, { embeds: [EB] });
 	}
 
 	misskey(DOMAIN, API_TOKEN, ID) {
@@ -122,10 +147,10 @@ export class SNS {
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ
-		socket.on("message", DATA => {
+		socket.on("message", async(DATA) => {
 			try {
 				const RESULT = JSON.parse(DATA);
-				console.log();
+
 				if (RESULT.body.type === "note" && RESULT.body.body.replyId === null) {
 					//投稿者のID
 					let IT_MIS_USER = RESULT.body.body.user;
@@ -144,19 +169,63 @@ export class SNS {
 						let NOTE_ID = RESULT.body.body.id; //ノートのID
 						let NOTE_TEXT = RESULT.body.body.text; //ノートのテキスト
 						let NOTE_FILES = RESULT.body.body.files; //ノートのファイル
-						let RENOTE_ID = RESULT.body.body.renoteId; //リノートのID
 						let RENOTE_NOTE = RESULT.body.body.renote; //リノートのデータ
 
 						console.log("[ INFO ][ MISSKEY ]Note res:" + NOTE_ID); //ログを吐く
-						if (!RENOTE_ID) {
-							IT_DIS_USER.forEach(ROW => {
-								this.SEND_EMBEDED(ROW.GID, ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, null, null, null, null, "MISSKEY");
-							});
-						} else {
-							IT_DIS_USER.forEach(ROW => {
-								this.SEND_EMBEDED(ROW.GID, ROW.CID, "https://" + DOMAIN + "/notes/" + NOTE_ID, IT_MIS_USER.name, IT_MIS_USER.username, NOTE_ID, NOTE_TEXT, NOTE_FILES, RENOTE_NOTE.user.name, RENOTE_ID, RENOTE_NOTE.text, RENOTE_NOTE.files, "MISSKEY");
-							});
-						}
+						IT_DIS_USER.forEach(async(ROW) => {
+							await this.SEND_EMBEDED(
+								ROW.GID,
+								ROW.CID,
+								{//投稿者の情報
+									"NAME":IT_MIS_USER.name,
+									"AVATAR":IT_MIS_USER.avatarUrl,
+									"PROF":"https://" + DOMAIN + "/@" + IT_MIS_USER.username
+								},
+								//ノートの情報
+								{
+									"TEXT":NOTE_TEXT,
+									"URL":"https://" + DOMAIN + "/notes/" + NOTE_ID,
+									"DATE":RESULT.body.body.createdAt
+								},
+								(function(){
+									if(RENOTE_NOTE){
+										return {
+											"AUTHOR":{
+												"NAME":RENOTE_NOTE.user.name,
+												"AVATAR":RENOTE_NOTE.user.avatarUrl,
+												"PROF":"https://" + DOMAIN + "/@" + RENOTE_NOTE.user.username
+											},
+											"POST":{
+												"TEXT":RENOTE_NOTE.text,
+												"URL":"https://" + DOMAIN + "/notes/" + RENOTE_NOTE.id,
+												"DATE":RENOTE_NOTE.createdAt
+											}
+										};
+									}
+								})(),
+								{
+									"POST_FILE":(function(){
+										if(NOTE_FILES.length > 0){
+											return {
+												"URL":NOTE_FILES[0].thumbnailUrl,
+												"NSFW":NOTE_FILES[0].isSensitive
+											};
+										}
+									})(),
+									"RENOTE_FILE":(function(){
+										if(RENOTE_NOTE){
+											if(RENOTE_NOTE.files.length > 0){
+												return {
+													"URL":RENOTE_NOTE.files[0].thumbnailUrl,
+													"NSFW":RENOTE_NOTE.files[0].isSensitive
+												};
+											}
+										}
+									})()
+								},
+								"MISSKEY"
+							);
+						});
 					}
 				}
 			} catch (EX) {
@@ -201,30 +270,66 @@ export class SNS {
 		});
 
 		//サーバーからメッセージを受信した際のイベントハンドラ
-		socket.on("message", DATA => {
+		socket.on("message", async(DATA) => {
 			try {
 				const RESULT = JSON.parse(DATA);
+				
 				//トゥートされたら実行する
 				if (RESULT.event === "update") {
 					const TOOT = JSON.parse(RESULT.payload);
-					if (TOOT.account.id) {
-						const FILES = (function () {
-							if (TOOT.media_attachments.length > 0) {
-								[{ thumbnailUrl: TOOT.media_attachments[0].preview_url }];
-							} else {
-								return [];
-							}
-						})();
 
-						let TOOT_TEXT = TOOT.content;
-						//トゥートの文字列を痴漢する
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n"); //改行
-						TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, ""); //その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">"); //その他のタグ
-						TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<"); //その他のタグ
-
-						this.SEND_EMBEDED(rumiserver, general_channel, "https://" + DOMAIN + "/@" + TOOT.account.acct + "/" + TOOT.id, TOOT.account.display_name, TOOT.account.acct, TOOT.id, TOOT_TEXT, FILES, null, null, null, null, "MASTODON");
+					//横流しするチャンネル
+					let STREAM_CHANNEL = [];
+					//流すチャンネルを選別する
+					for (let I = 0; I < this.USER.length; I++) {
+						const SNS_USER = this.USER[I];
+						//UIDが一致していて、インスタンスのIDも一致しているなら
+						if (SNS_USER.SNS_UID === TOOT.account.id && SNS_USER.SNS_ID === ID) {
+							//追加
+							STREAM_CHANNEL.push(SNS_USER);
+						}
 					}
+
+					let TOOT_TEXT = TOOT.content;
+					//トゥートの文字列を痴漢する
+					TOOT_TEXT = TOOT_TEXT.replaceAll(/<br.*?>/g, "\n"); //改行
+					TOOT_TEXT = TOOT_TEXT.replaceAll(/<.*?>/g, ""); //その他のタグ
+					TOOT_TEXT = TOOT_TEXT.replaceAll("&gt;", ">"); //その他のタグ
+					TOOT_TEXT = TOOT_TEXT.replaceAll("&lt;", "<"); //その他のタグ
+
+					//横流しするチャンネルを回して流す
+					STREAM_CHANNEL.forEach(async(ROW) => {
+						await this.SEND_EMBEDED(
+							ROW.GID,
+							ROW.CID,
+							{//投稿者の情報
+								"NAME":TOOT.account.display_name,
+								"AVATAR":TOOT.account.avatar,
+								"PROF":"https://" + DOMAIN + "/@" + TOOT.account.username
+							},
+							//ノートの情報
+							{
+								"TEXT":TOOT_TEXT,
+								"URL":"https://" + DOMAIN + "/@" + TOOT.account.username + "/" + TOOT.id,
+								"DATE":TOOT.created_at
+							},
+							undefined,
+							{
+								"POST_FILE":(function(){
+									if(TOOT.media_attachments.length > 0){
+										if(TOOT.media_attachments.type === "image"){
+											return {
+												"URL":TOOT.media_attachments[0].preview_url,
+												"NSFW":false
+											};
+										}
+									}
+								})(),
+								"RENOTE_FILE":undefined
+							},
+							"MASTODON"
+						);
+					});
 				}
 			} catch (EX) {
 				console.error("[ ERR ][ MASTODON ][ " + DOMAIN + " ]" + EX);

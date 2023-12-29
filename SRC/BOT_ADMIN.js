@@ -5,7 +5,7 @@ import { MessageEmbed, Message } from "discord.js";
 import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { exec, spawn } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
-import { SQL_OBJ, LOCK_NICK_NAME_OBJ } from "./Main.js";
+import { SQL_OBJ, LOCK_NICK_NAME_OBJ, SNS_CONNECTION } from "./Main.js";
 
 /**
  * BOT管理者が使う奴
@@ -13,12 +13,12 @@ import { SQL_OBJ, LOCK_NICK_NAME_OBJ } from "./Main.js";
  */
 export async function BOT_ADMIN(message) {
 	//参加済みサーバーの数を表示
-	if (message.content === CONFIG.ADMIN_PREFIX + "SLS") {
+	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "SLS") {
 		message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 	}
 
 	//参加済みサーバーを表示
-	if (message.content === CONFIG.ADMIN_PREFIX + "SL") {
+	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "SL") {
 		const SERVERS = client.guilds.cache;
 
 		let EB = new MessageEmbed()
@@ -38,10 +38,10 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//シェルコマンド実行
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "SHELL/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "SHELL/.")) {
 		try {
 			const CMD = "bash";
-			const ARGS = ["-c", message.content.replace(CONFIG.ADMIN_PREFIX + "SHELL/.", "")];
+			const ARGS = ["-c", message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "SHELL/.", "")];
 
 			let MSG = await message.channel.send("tailēd...");
 			let CMD_OUTPUT = "";
@@ -70,10 +70,10 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//任意コード実行
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "EXEC/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "EXEC/.")) {
 		console.log("任意コードを実行する");
 		try {
-			const CMD = message.content.replace(CONFIG.ADMIN_PREFIX + "EXEC/.", "");
+			const CMD = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "EXEC/.", "");
 			const result = eval(CMD);
 			console.log("[ EVAL_RESULT ] ", result);
 			message.reply(JSON.stringify(result)?.toString() || "内容が返されませんでした！！");
@@ -84,9 +84,9 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//招待コード作成
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "INV/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "INV/.")) {
 		try {
-			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "INV/.", "");
+			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "INV/.", "");
 			let INV_CODE = await client.guilds.cache
 				.get(GID)
 				.channels.cache.find(ROW => ROW.type === "GUILD_TEXT")
@@ -101,9 +101,9 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//鯖から抜ける
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "LV/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "LV/.")) {
 		try {
-			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "LV/.", "");
+			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "LV/.", "");
 			let GUILD = client.guilds.cache.get(GID);
 			GUILD.leave();
 		} catch (EX) {
@@ -114,9 +114,9 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//チャンネル一覧取得
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "CH_L/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "CH_L/.")) {
 		try {
-			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "CH_L/.", "");
+			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "CH_L/.", "");
 			let GUILD = client.guilds.cache.get(GID);
 
 			if (GUILD !== undefined) {
@@ -147,10 +147,10 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//管理者チェック
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "PM/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "PM/.")) {
 		//実験用
 		try {
-			const GID = message.content.replace(CONFIG.ADMIN_PREFIX + "PM/.", "");
+			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "PM/.", "");
 			let GUILD = client.guilds.cache.get(GID);
 			if (GUILD.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR")) {
 				message.reply("はい、それは管理者権限的");
@@ -165,7 +165,7 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//ブロックリスト
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "BL/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "BL/.")) {
 		try {
 			message.reply("以下の人がブロックされてます\n" + JSON.stringify(CONFIG.BLOCK_LIST));
 		} catch (EX) {
@@ -176,9 +176,9 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//好感度
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "LIKE/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "LIKE/.")) {
 		try {
-			const UID = message.content.replace(CONFIG.ADMIN_PREFIX + "LIKE/.", "");
+			const UID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "LIKE/.", "");
 			SQL_OBJ.SCRIPT_RUN("SELECT * FROM `LIKABILITY` WHERE `UID` = ?;", [UID])
 				.then(RESULT => {
 					if (RESULT.length !== 0) {
@@ -199,7 +199,7 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//私のお金
-	if (message.content.startsWith(CONFIG.ADMIN_PREFIX + "MONEY/.")) {
+	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "MONEY/.")) {
 		try {
 			let RES = await fetch("https://rumiserver.com/API/Rumisan/money.php", {
 				method: "GET",
@@ -210,7 +210,7 @@ export async function BOT_ADMIN(message) {
 			if (RES.ok) {
 				const RESULT = await RES.json();
 				if (RESULT.STATUS) {
-					let REGEX = new RegExp('\\B(?=(\\d{' + 4 + '})+(?!\\d))', 'g');
+					let REGEX = new RegExp("\\B(?=(\\d{" + 4 + "})+(?!\\d))", "g");
 					message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ");
 				} else {
 					message.reply("エラー" + RESULT.ERR);
@@ -226,11 +226,13 @@ export async function BOT_ADMIN(message) {
 	}
 
 	//再読込
-	if (message.content === CONFIG.ADMIN_PREFIX + "RELOAD/.") {
+	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "RELOAD/.") {
 		console.log("[ *** ][ BOT ADMIN ]管理者が設定の再読込を要請しました、再読込を開始します...");
 
 		//ニックネーム強制固定
 		LOCK_NICK_NAME_OBJ.INIT();
+		//SNS
+		SNS_CONNECTION.SQL_RELOAD();
 
 		message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
 		console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
