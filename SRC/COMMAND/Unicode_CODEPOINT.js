@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Unicodeコードポイントを返すやつ
  */
@@ -5,32 +6,35 @@ import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-export class Unicode_CODEPOINT{
+export class Unicode_CODEPOINT {
 	static command = new SlashCommandBuilder()
 		.setName("cp")
 		.setDescription("Unicodeコードポイントを出します")
 		.addStringOption(o => o.setName("letter").setDescription("文字").setRequired(true));
 
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 
 		this.LETTER_INFO = {
-			"A":{
-				DESC:"ラテン文字のA",
-				ASCII:true,
-				CATEGORY:"ラテン文字"
+			"A": {
+				DESC: "ラテン文字のA",
+				ASCII: true,
+				CATEGORY: "ラテン文字"
 			},
-			"a":{
-				DESC:"ラテン文字のAの小文字",
-				ASCII:true,
-				CATEGORY:"ラテン文字"
+			"a": {
+				DESC: "ラテン文字のAの小文字",
+				ASCII: true,
+				CATEGORY: "ラテン文字"
 			}
 		};
 	}
 
 	async main() {
 		const LETTER = this.E.options.getString("letter");
-		if(LETTER.length === 1){
+		if (LETTER.length === 1) {
 			//文字のUnicodeコードポイントを取得数r
 			let Unioode_CODEPOINT = LETTER.charCodeAt(0);
 			//それを16進法にする
@@ -38,7 +42,7 @@ export class Unicode_CODEPOINT{
 
 			const EB = new MessageEmbed();
 			EB.setTitle(LETTER);
-			if(this.LETTER_INFO[LETTER]){
+			if (this.LETTER_INFO[LETTER]) {
 				EB.setDescription(this.LETTER_INFO[LETTER].DESC);
 				EB.addFields({
 					name: "文字種",
@@ -52,9 +56,9 @@ export class Unicode_CODEPOINT{
 				value: "U+" + Unioode_CODEPOINT_HEX.padStart(5, "0"),
 				inline: false
 			});
-			
+
 			await this.E.editReply({ embeds: [EB] });
-		}else{
+		} else {
 			await this.E.editReply("1文字のみです");
 		}
 	}
