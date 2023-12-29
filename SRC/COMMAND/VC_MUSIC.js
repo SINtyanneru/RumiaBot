@@ -1,7 +1,36 @@
+// @ts-check
 import * as FS from "node:fs";
-import { joinVoiceChannel, createAudioResource, StreamType, createAudioPlayer, NoSubscriberBehavior } from "@discordjs/voice";
+import {
+	joinVoiceChannel,
+	createAudioResource,
+	StreamType,
+	createAudioPlayer,
+	NoSubscriberBehavior
+} from "@discordjs/voice";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 export class VC_MUSIC {
+	static async generateCommand() {
+		const FILES = await FS.promises.readdir("./DATA/MUSIC");
+		const SC_VC_MUSIC = [];
+
+		FILES.forEach(FILE => {
+			SC_VC_MUSIC.push({
+				name: FILE,
+				value: FILE
+			});
+		});
+
+		return new SlashCommandBuilder()
+			.setName("vc_music")
+			.setDescription("VCに曲を垂れ流します")
+			.addStringOption(o =>
+				o
+					.setName("file")
+					.setDescription("どの曲")
+					.addChoices(...SC_VC_MUSIC)
+			);
+	}
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

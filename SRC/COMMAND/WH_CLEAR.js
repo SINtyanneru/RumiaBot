@@ -1,38 +1,42 @@
+//@ts-check
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { sanitize } from "../MODULES/sanitize.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
+import { ThreadChannel } from "discord.js";
 
 export class WH_CLEAR {
+	static command = new SlashCommandBuilder()
+		.setName("wh_clear")
+		.setDescription("WHをすべてクリアします")
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
 
 	async main() {
-		const PERM = this.E.channel.permissionsFor(this.E.member).has("MANAGE_MESSAGES");
-		if (PERM) {
-			let FWH = await this.E.channel.fetchWebhooks();
+		if (this.E.channel instanceof ThreadChannel) return;
+		const FWH = await this.E.channel.fetchWebhooks();
 
-			FWH = Array.from(FWH);
+		if (FWH.size > 0) {
+			let TEXT = "";
 
-			if (FWH.length > 0) {
-				let TEXT = "";
-
-				await this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "");
-
-				for (let I = 0; I < FWH.length; I++) {
-					const WH = FWH[I][1];
-					try {
-						WH.delete();
-						TEXT += "[ OK ]" + sanitize(WH.name) + "(" + WH.id + ")" + "\n";
-						this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
-					} catch (EX) {
-						TEXT += "[ ERR ]" + sanitize(WH.name) + "(" + WH.id + ")" + "\n→" + EX + "\n";
-						this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
-					}
+			await this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "");
+			// prettier-ignore
+			for (const [/*ESLintがキレるから空白 */, wh] of FWH) {
+				try {
+					wh.delete();
+					TEXT += "[ OK ]" + sanitize(wh.name) + "(" + wh.id + ")" + "\n";
+					this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
+				} catch (error) {
+					TEXT += "[ ERR ]" + sanitize(wh.name) + "(" + wh.id + ")" + "\n→" + error + "\n";
+					this.E.editReply("このチャンネルのWebHookを削除しています。。。\n```" + TEXT.toString() + "```");
 				}
-			} else {
-				this.E.editReply("このチャンネルにはWebHookがないです");
 			}
 		} else {
-			this.E.editReply("お前には権限がありません、出直せ\nMANAGE_MESSAGES");
+			this.E.editReply("このチャンネルにはWebHookがないです");
 		}
 	}
 }

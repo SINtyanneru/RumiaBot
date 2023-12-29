@@ -1,8 +1,61 @@
+// @ts-check
 //TODO:いつか完成させる
 
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { sanitize } from "../MODULES/sanitize.js";
 
 export class NUM {
+	static command = new SlashCommandBuilder()
+		.setName("num")
+		.setDescription("数字を変換します")
+		.addStringOption(o => o.setName("num").setDescription("数字").setRequired(true))
+		.addStringOption(o =>
+			o
+				.setName("input")
+				.setDescription("なに数字？")
+				.setChoices(
+					{
+						name: "アラビア数字",
+						value: "national_arabic"
+					},
+					{
+						name: "アラビア数字 日本式区切り",
+						value: "national_arabic"
+					},
+					{
+						name: "アラビア数字 アメリカ式区切り",
+						value: "national_arabic_usa"
+					}
+				)
+				.setRequired(true)
+		)
+		.addStringOption(o =>
+			o
+				.setName("output")
+				.setDescription("変換先")
+				.setChoices(
+					{
+						name: "アラビア数字",
+						value: "national_arabic"
+					},
+					{
+						name: "アラビア数字 日本式区切り",
+						value: "national_arabic_jp"
+					},
+					{
+						name: "アラビア数字 アメリカ式区切り",
+						value: "national_arabic_usa"
+					},
+					{
+						name: "ローマ数字",
+						value: "roma"
+					}
+				)
+				.setRequired(true)
+		);
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
@@ -17,9 +70,9 @@ export class NUM {
 				case "national_arabic_jp":
 					await this.E.editReply("日本式区切りに変換\n" + sanitize(this.n_a_jp(NUM)));
 					break;
-				case "national_arabic_usa":
-					await this.E.editReply("アメリカ式区切りに変換\n" + sanitize(this.n_a_usa(NUM)));
-					break;
+				//	case "national_arabic_usa":
+				//		await this.E.editReply("アメリカ式区切りに変換\n" + sanitize(this.n_a_usa(NUM)));
+				//		break;
 				case "roma":
 					await this.E.editReply("ローマ数字変換\n" + sanitize(this.roma(NUM)));
 					break;
@@ -32,6 +85,9 @@ export class NUM {
 		}
 	}
 
+	/**
+	 * @param {string} NUM
+	 */
 	n_a_jp(NUM) {
 		const REGEX = /.{1,4}/g;
 		const RESULT = NUM.match(REGEX).join(", ");
@@ -39,6 +95,9 @@ export class NUM {
 		return RESULT;
 	}
 
+	/**
+	 * @param {string} NUM
+	 */
 	roma(NUM) {
 		let RESULT = NUM;
 

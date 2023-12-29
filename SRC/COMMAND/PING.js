@@ -1,9 +1,15 @@
+// @ts-check
 import { exec } from "child_process";
 import { CONFIG } from "../MODULES/CONFIG.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 export class PING {
+	static command = new SlashCommandBuilder()
+		.setName("ping")
+		.setDescription("pingします")
+		.addStringOption(o => o.setName("host").setDescription("ホスト名").setRequired(true));
 	/**
 	 *
-	 * @param {import("discord.js").CommandInteraction} INTERACTION
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
 	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;

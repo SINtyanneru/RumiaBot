@@ -1,7 +1,35 @@
+// @ts-check
+
+import { SlashCommandBuilder } from "@discordjs/builders";
+
 /**
  * 漢字と旧漢字の置き換え
  */
 export class KANJI {
+	static command = new SlashCommandBuilder()
+		.setName("kanji")
+		.setDescription("漢字を変換します")
+		.addStringOption(o => o.setName("text").setDescription("文字列").setRequired(true))
+		.addStringOption(o =>
+			o
+				.setName("mode")
+				.setDescription("モード")
+				.setChoices(
+					{
+						name: "新 => 旧",
+						value: "n_o"
+					},
+					{
+						name: "旧 => 新",
+						value: "o_n"
+					}
+				)
+				.setRequired(true)
+		);
+
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 		this.KANJI_JSON = [
@@ -327,14 +355,13 @@ export class KANJI {
 	async main() {
 		try {
 			let E = this.E;
-			let KANJI_JSON = this.KANJI_JSON;
 			let TEXT = E.options.getString("text");
 			let MODE = E.options.getString("mode");
 
 			if (MODE === "n_o") {
-				this.N_O_XEST(E, KANJI_JSON, TEXT);
+				this.N_O_XEST(TEXT);
 			} else {
-				this.O_N_XEST(E, KANJI_JSON, TEXT);
+				this.O_N_XEST(TEXT);
 			}
 		} catch (EX) {
 			console.error("[ ERR ][ KANJI ]", EX);
@@ -343,22 +370,28 @@ export class KANJI {
 	}
 
 	//新漢字を旧漢字へ変換する
-	async N_O_XEST(E, KANJI_JSON, TEXT) {
-		for (let I = 0; I < KANJI_JSON.length; I++) {
-			const KANJI_TEXT = KANJI_JSON[I];
+	/**
+	 * @param {string} TEXT
+	 */
+	async N_O_XEST(TEXT) {
+		for (let I = 0; I < this.KANJI_JSON.length; I++) {
+			const KANJI_TEXT = this.KANJI_JSON[I];
 			TEXT = TEXT.replaceAll(KANJI_TEXT.new, KANJI_TEXT.old);
 		}
 
-		E.editReply("```" + TEXT + "```");
+		this.E.editReply("```" + TEXT + "```");
 	}
 
 	//旧漢字を新漢字へ変換する
-	async O_N_XEST(E, KANJI_JSON, TEXT) {
-		for (let I = 0; I < KANJI_JSON.length; I++) {
-			const KANJI_TEXT = KANJI_JSON[I];
+	/**
+	 * @param {string} TEXT
+	 */
+	async O_N_XEST(TEXT) {
+		for (let I = 0; I < this.KANJI_JSON.length; I++) {
+			const KANJI_TEXT = this.KANJI_JSON[I];
 			TEXT = TEXT.replaceAll(KANJI_TEXT.old, KANJI_TEXT.new);
 		}
 
-		E.editReply("```" + TEXT + "```");
+		this.E.editReply("```" + TEXT + "```");
 	}
 }

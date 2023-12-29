@@ -1,5 +1,11 @@
+// @ts-check
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { CONFIG } from "../MODULES/CONFIG.js";
 export class IP {
+	static command = new SlashCommandBuilder().setName("ip").setDescription("るみBOTのIPを表示します");
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

@@ -4,7 +4,33 @@ import firefox from "selenium-webdriver/firefox.js";
 import FS from "fs";
 import { RUMI_HAPPY_BIRTHDAY } from "../MODULES/RUMI_HAPPY_BIRTHDAY.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 export class WS {
+	static command = new SlashCommandBuilder()
+		.setName("ws")
+		.setDescription("ウェブサイトをスクショします")
+		.addStringOption(o => o.setName("url").setDescription("ウェブサイトのURLです").setRequired(true))
+		.addStringOption(o =>
+			o.setName("browser_name").setDescription("ブラウザを指定(UAのみ)").setRequired(false).setChoices(
+				{
+					name: "FireFox",
+					value: "firefox"
+				},
+				{
+					name: "Floorp",
+					value: "floorp"
+				},
+				{
+					name: "るみさん",
+					value: "rumisan"
+				},
+				{
+					name: "Chrome",
+					value: "chrome"
+				}
+			)
+		);
+
 	/** @param {import("discord.js").CommandInteraction} INTERACTION */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
@@ -54,20 +80,30 @@ export class WS {
 						case "floorp":
 							BROWSER_OPTION = new firefox.Options();
 							BROWSER_OPTION.addArguments("--headless"); //ヘッドレスモードで実行
-							BROWSER_OPTION.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0");
+							BROWSER_OPTION.addArguments(
+								"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Floorp/10.13.0"
+							);
 							BROWSER_NAME_TEXT = "Floorp";
 							BROWSER_NAME_FF = "firefox";
 							break;
 						case "rumisan":
 							BROWSER_OPTION = new firefox.Options();
 							BROWSER_OPTION.addArguments("--headless"); //ヘッドレスモードで実行
-							BROWSER_OPTION.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0; rumisan:" + RUMI_HAPPY_BIRTHDAY() + ".0) Gecko/20100101 Firefox/102.0");
+							BROWSER_OPTION.addArguments(
+								"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0; rumisan:" +
+									RUMI_HAPPY_BIRTHDAY() +
+									".0) Gecko/20100101 Firefox/102.0"
+							);
 							BROWSER_NAME_TEXT = "るみさん";
 							break;
 						case "chrome":
 							BROWSER_OPTION = new chrome.Options();
 							BROWSER_OPTION.addArguments("--headless"); //ヘッドレスモードで実行
-							BROWSER_OPTION.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0; rumisan:" + RUMI_HAPPY_BIRTHDAY() + ".0) Gecko/20100101 Firefox/102.0");
+							BROWSER_OPTION.addArguments(
+								"--user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:102.0; rumisan:" +
+									RUMI_HAPPY_BIRTHDAY() +
+									".0) Gecko/20100101 Firefox/102.0"
+							);
 							BROWSER_NAME_TEXT = "Chrome";
 							BROWSER_NAME_FF = "chrome";
 							break;

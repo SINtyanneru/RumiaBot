@@ -1,4 +1,37 @@
+// @ts-check
+import { SlashCommandBuilder } from "@discordjs/builders";
 export class FERRIS {
+	static command = new SlashCommandBuilder()
+		.setName("ferris")
+		.setDescription("ウニ？カニ？ヤドカリ？")
+		.addStringOption(o =>
+			o
+				.setName("type")
+				.setDescription("タイプ")
+				.setChoices(
+					{
+						name: "コンパイルできません",
+						value: "not_compile"
+					},
+					{
+						name: "パニックします！",
+						value: "panic"
+					},
+					{
+						name: "アンセーフなコードを含みます",
+						value: "un_safe"
+					},
+					{
+						name: "求められた振る舞いをしません",
+						value: "not_desired_behavior"
+					}
+				)
+				.setRequired(true)
+		);
+
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}

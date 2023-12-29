@@ -34,7 +34,7 @@ import * as PATH from "node:path";
 import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
-import { getMcInfo, getServerInfo, getUserInfo } from "./COMMAND/INFO.js";
+import { mcInfo, userInfo, serverInfo } from "./COMMAND/infocommand/index.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
@@ -488,13 +488,13 @@ client.on("interactionCreate", async INTERACTION => {
 				await new command.WS(INTERACTION).main();
 				break;
 			case "info_server":
-				await getServerInfo(INTERACTION);
+				serverInfo.getServerInfo(INTERACTION);
 				break;
 			case "info_user":
-				await getUserInfo(INTERACTION);
+				userInfo.getUserInfo(INTERACTION);
 				break;
 			case "info_mine":
-				await getMcInfo(INTERACTION);
+				mcInfo.getMcInfo(INTERACTION);
 				break;
 			case "kanji":
 				await new command.KANJI(INTERACTION).main();
