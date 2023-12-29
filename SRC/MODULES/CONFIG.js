@@ -1,5 +1,7 @@
-import { readFileSync } from "fs";
-/**
+// @ts-check
+import CONFIG from "../../Config.json" assert { type: "json" };
+// import { readFileSync } from "fs";
+/*
  * @typedef {Object} Config
  * @prop {DISCORD} [DISCORD]
  * @prop {SQL} [SQL]
@@ -28,8 +30,8 @@ import { readFileSync } from "fs";
  * 	@prop {("vxtwitter" | "search" | "automod" | "ws" | "ip" | "httpcat" | "locknick" | "calc" | "ping")[]} [DISABLE]
  * 	@prop {string[]} BLOCK
  */
-const DATA = readFileSync("Config.json", "utf8");
-/**
+// const DATA = readFileSync("Config.json", "utf8");
+/*
  * @type {Config}
  */
-export const CONFIG = JSON.parse(DATA);
+export { CONFIG };

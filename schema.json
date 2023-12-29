@@ -1,0 +1,165 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"DISCORD": {
+			"type": "object",
+			"title": "Discordの設定",
+			"description": "Discordに関する設定ですわ、今はtokenしか要求しませんわ",
+			"properties": {
+				"TOKEN": {
+					"type": "string",
+					"default": ""
+				}
+			},
+			"required": [
+				"TOKEN"
+			]
+		},
+		"SQL": {
+			"title": "SQLに関する設定",
+			"description": "SQLに接続するか、接続する場合は認証方法などを設定します",
+			"type": "object",
+			"oneOf": [
+				{
+					"properties": {
+						"SQL_CONNECT": {
+							"const": true
+						},
+						"SQL_HOST": {
+							"type": "string"
+						},
+						"SQL_PASS": {
+							"type": "string"
+						},
+						"SQL_USER": {
+							"type": "string"
+						}
+					},
+					"type": "object",
+					"required": [
+						"SQL_CONNECT",
+						"SQL_HOST",
+						"SQL_PASS",
+						"SQL_USER"
+					]
+				},
+				{
+					"properties": {
+						"SQL_CONNECT": {
+							"const": false
+						}
+					},
+					"required": [
+						"SQL_CONNECT"
+					],
+					"additionalProperties": true
+				}
+			],
+			"required": [
+				"SQL_CONNECT"
+			]
+		},
+		"GOOGLE_SEARCH": {
+			"type": "object",
+			"required": [
+				"GOOGLE_API_KEY",
+				"GOOGLE_API_ENGINE_ID"
+			],
+			"properties": {
+				"GOOGLE_API_ENGINE_ID": {
+					"type": "string"
+				},
+				"GOOGLE_API_KEY": {
+					"type": "string"
+				}
+			}
+		},
+		"SNS": {
+			"type": "array",
+			"title": "Misskey,Mastdonなどに接続するやつ",
+			"items": {
+				"properties": {
+					"ID": {
+						"type": "string",
+						"default": ""
+					},
+					"NAME": {
+						"type": "string",
+						"default": ""
+					},
+					"DOMAIN": {
+						"type": "string",
+						"default": ""
+					},
+					"API": {
+						"type": "string",
+						"default": ""
+					}
+				},
+				"required": [
+					"ID",
+					"NAME",
+					"DOMAIN",
+					"API"
+				]
+			}
+		},
+		"ADMIN": {
+			"type": "object",
+			"title": "管理に関する設定",
+			"properties": {
+				"ADMIN_ID": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"ADMIN_PREFIX": {
+					"type": "string",
+					"default": "EXEC_"
+				},
+				"DISABLE": {
+					"type": "array",
+					"items": {
+						"enum": [
+							"vxtwitter",
+							"search",
+							"automod",
+							"ws",
+							"ip",
+							"httpcat",
+							"locknick",
+							"calc",
+							"ping"
+						]
+					},
+					"uniqueItems": true,
+					"title": "無効化する機能",
+					"description": "そのうちws,ip,pingはipアドレスを漏洩します、注意を"
+				},
+				"BLOCK": {
+					"type": "array",
+					"title": "ブロックしてるユーザー、なんだこれ",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"required": [
+				"ADMIN_ID",
+				"ADMIN_PREFIX"
+			]
+		},
+		"$schema": {
+			"const": "./schema.json"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"DISCORD",
+		"SQL",
+		"ADMIN",
+		"SNS"
+	]
+}
