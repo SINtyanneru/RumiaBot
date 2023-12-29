@@ -440,40 +440,37 @@ client.on("interactionCreate", async INTERACTION => {
 		//ブロック
 		if (CONFIG.ADMIN.BLOCK) {
 			if (CONFIG.ADMIN.BLOCK.includes(INTERACTION.user.id)) {
+				//ブロックしてるので実行しない
+				INTERACTION.reply("お前嫌いだから実行しない");
 				return;
 			}
 		}
 
+		//インテラクションはスラッシュコマンドか
 		if (!INTERACTION.isCommand()) {
-			//コマンドが送信されたか確認
 			return;
 		}
-		try {
-			console.log(
-				"[ INFO ][CMD]┌Interaction create:" +
-					INTERACTION.commandName +
-					"\n             ├in " +
-					INTERACTION.guild.name +
-					"\n             ├in " +
-					INTERACTION.channel.name +
-					INTERACTION.channelId +
-					"\n             └in " +
-					INTERACTION.member.user.username +
-					"(" +
-					INTERACTION.member.id +
-					")"
-			);
-		} catch (EX) {
-			console.error("[ ERR ][ LOG ]", EX);
-			INTERACTION.reply("エラー");
-			return;
-		}
+
+		console.log(
+			"[ INFO ][CMD]┌Interaction create:" +
+				INTERACTION.commandName +
+				"\n             ├in " +
+				INTERACTION.guild.name +
+				"\n             ├in " +
+				INTERACTION.channel.name +
+				INTERACTION.channelId +
+				"\n             └in " +
+				INTERACTION.member.user.username +
+				"(" +
+				INTERACTION.member.id +
+				")"
+		);
 
 		//ユーザーに待ってもらう
 		await INTERACTION.deferReply();
 
 		const CMD = INTERACTION.commandName;
-
+		
 		switch (CMD) {
 			case "test":
 				await new command.test(INTERACTION).main();
