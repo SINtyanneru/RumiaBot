@@ -17,6 +17,7 @@ import { WH_CLEAR } from "./COMMAND/WH_CLEAR.js";
 import { SETTING } from "./COMMAND/SETTING.js";
 import { NUM } from "./COMMAND/NUM.js";
 import { VC_MUSIC } from "./COMMAND/VC_MUSIC.js";
+import { Unicode_CODEPOINT } from "./COMMAND/Unicode_CODEPOINT.js";
 export async function REGIST_SLASH_COMMAND() {
 	const CMD_DATA = [
 		test.command,
@@ -32,7 +33,8 @@ export async function REGIST_SLASH_COMMAND() {
 		IP.command,
 		WH_CLEAR.command,
 		SETTING.command,
-		NUM.command
+		NUM.command,
+		Unicode_CODEPOINT.command
 	];
 
 	//VC-music

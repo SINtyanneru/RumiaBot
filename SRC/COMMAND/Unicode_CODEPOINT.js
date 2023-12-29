@@ -3,8 +3,14 @@
  */
 import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
 
 export class Unicode_CODEPOINT{
+	static command = new SlashCommandBuilder()
+		.setName("cp")
+		.setDescription("Unicodeコードポイントを出します")
+		.addStringOption(o => o.setName("letter").setDescription("文字").setRequired(true));
+
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
 
@@ -19,7 +25,7 @@ export class Unicode_CODEPOINT{
 				ASCII:true,
 				CATEGORY:"ラテン文字"
 			}
-		}
+		};
 	}
 
 	async main() {
