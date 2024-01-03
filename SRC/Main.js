@@ -219,9 +219,9 @@ client.on("messageCreate", async message => {
 		//誕生月取得
 		if (message.content === "誕生日") {
 			//実験用
-			message.react("✅");
+			await message.react("✅");
 
-			message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
+			await message.reply("るみさんの年齢は" + RUMI_HAPPY_BIRTHDAY());
 		}
 
 		//メンションされたユーザーのコレクションを取得
@@ -231,82 +231,86 @@ client.on("messageCreate", async message => {
 			//メンションされたユーザーがいるかチェック
 			if (MENTION_USERS.size > 0) {
 				MENTION_USERS.forEach(async USER => {
-					if (USER.id === client.user.id) {
-						//自分に対するメッセージなら
-						if (message.reference) {
-							//リプライである
-							//メッセージインフォ
-							if (message.content.includes("taktud")) {
-								let REPLY_P = await message.fetchReference();
-								let FWH = await message.channel.fetchWebhooks();
-								let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
-								message.reply(
-									"BOT:" +
-										REPLY_P.author.bot +
-										"\n" +
-										"ID:" +
-										REPLY_P.author.id +
-										"\n" +
-										"WH:" +
-										(function () {
-											if (WH) {
-												return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
-											} else {
-												return "NONE";
-											}
-										})() +
-										"\n"
-								);
-								return;
+					try{
+						if (USER.id === client.user.id) {
+							//自分に対するメッセージなら
+							if (message.reference) {
+								//リプライである
+								//メッセージインフォ
+								if (message.content.includes("taktud")) {
+									let REPLY_P = await message.fetchReference();
+									let FWH = await message.channel.fetchWebhooks();
+									let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
+									await message.reply(
+										"BOT:" +
+											REPLY_P.author.bot +
+											"\n" +
+											"ID:" +
+											REPLY_P.author.id +
+											"\n" +
+											"WH:" +
+											(function () {
+												if (WH) {
+													return "NAME-" + WH.name + "/OWNER-" + WH.owner.username;
+												} else {
+													return "NONE";
+												}
+											})() +
+											"\n"
+									);
+									return;
+								}
+								//しもねた系
+								if (
+									message.content.includes("まんこ") ||
+									message.content.includes("生理") ||
+									message.content.includes("ちんこ")
+								) {
+									await message.reply("きもい");
+									return;
+								}
+								//特定の人なら
+								if (
+									message.author.id === rumi ||
+									message.author.id === hakurei_win ||
+									message.author.id === p_nsk ||
+									message.author.id === rumisub
+								) {
+									await message.reply("そーなのかー");
+									return;
+								}
+								message.reply("そうですか。");
+							} else {
+								//メッセージである
+								//しもねた系
+								if (
+									message.content.includes("まんこ") ||
+									message.content.includes("生理") ||
+									message.content.includes("ちんこ")
+								) {
+									message.reply("きっしょ死ね");
+									return;
+								}
+								//お → なに？
+								if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
+									await message.reply("...");
+									return;
+								}
+								//特定の人なら
+								if (
+									message.author.id === rumi ||
+									message.author.id === hakurei_win ||
+									message.author.id === p_nsk ||
+									message.author.id === rumisub
+								) {
+									await message.reply("なんなのだー？");
+									return;
+								}
+								await message.reply("なに？");
 							}
-							//しもねた系
-							if (
-								message.content.includes("まんこ") ||
-								message.content.includes("生理") ||
-								message.content.includes("ちんこ")
-							) {
-								message.reply("きもい");
-								return;
-							}
-							//特定の人なら
-							if (
-								message.author.id === rumi ||
-								message.author.id === hakurei_win ||
-								message.author.id === p_nsk ||
-								message.author.id === rumisub
-							) {
-								message.reply("そーなのかー");
-								return;
-							}
-							message.reply("そうですか。");
-						} else {
-							//メッセージである
-							//しもねた系
-							if (
-								message.content.includes("まんこ") ||
-								message.content.includes("生理") ||
-								message.content.includes("ちんこ")
-							) {
-								message.reply("きっしょ死ね");
-								return;
-							}
-							//お → なに？
-							if (message.content.replace("<@" + client.user.id + ">", "").endsWith("お")) {
-								message.reply("...");
-								return;
-							}
-							//特定の人なら
-							if (
-								message.author.id === rumi ||
-								message.author.id === hakurei_win ||
-								message.author.id === p_nsk ||
-								message.author.id === rumisub
-							) {
-								message.reply("なんなのだー？");
-								return;
-							}
-							message.reply("なに？");
 						}
+					}catch(EX){
+						console.log("[ ERR ][ DJS ]" + EX);
 					}
 				});
 			}
