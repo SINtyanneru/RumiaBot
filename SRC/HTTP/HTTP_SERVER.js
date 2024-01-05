@@ -9,11 +9,14 @@ import { client } from "../MODULES/loadClient.js";
  */
 export class HTTP_SERVER {
 	constructor() {
+		this.HOST_NAME = "0.0.0.0";
 		this.PORT = 3000;
 	}
 
 	main() {
-		const SERVER = HTTP.createServer(async (REQ, RES) => {
+		const SERVER = HTTP.createServer();
+		SERVER.on("request", async (REQ, RES) => {
+			console.log(REQ.url);
 			/**@param {{}} payload */
 			function res_send_api(payload) {
 				RES.end(JSON.stringify(payload));
@@ -304,7 +307,7 @@ export class HTTP_SERVER {
 		});
 
 		//サーバー起動
-		SERVER.listen(this.PORT, "127.0.0.1", () => {
+		SERVER.listen(this.PORT, this.HOST_NAME, () => {
 			console.log("[ OK ][ HTTP ]HTTP Server runing. port " + this.PORT);
 		});
 	}
