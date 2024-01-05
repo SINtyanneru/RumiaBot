@@ -1,5 +1,5 @@
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+import { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } from "discord.js";
 import { client } from "../MODULES/loadClient.js";
 import { WebSocket } from "ws";
 import { SQL_OBJ } from "../Main.js";
@@ -126,9 +126,18 @@ export class SNS {
 			}
 	
 			//ボタン
-			const row = new MessageActionRow().addComponents(
+			const row = new MessageActionRow();
+
+			row.addComponents(
 				new MessageButton()
+					.setCustomId("sns_button_noteopen")
 					.setLabel("ノートを見に行く")
+					.setStyle("PRIMARY")
+			);
+
+			row.addComponents(
+				new MessageButton()
+					.setLabel("ノートをリモートで見に行く")
 					.setStyle("LINK")
 					.setURL(POST.URL)
 			);
