@@ -1,5 +1,5 @@
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
 import { client } from "../MODULES/loadClient.js";
 import { WebSocket } from "ws";
 import { SQL_OBJ } from "../Main.js";
@@ -87,7 +87,7 @@ export class SNS {
 			}
 	
 			//投稿のURL
-			EB.setURL(POST.URL);
+			//EB.setURL(POST.URL);
 	
 			//投稿の画像
 			if(FILES.POST_FILE){//投稿に添付されている画像がある
@@ -125,7 +125,18 @@ export class SNS {
 				}
 			}
 	
-			await client.guilds.cache.get(GID).channels.cache.get(CID).send({ embeds: [EB] });
+			//ボタン
+			const row = new MessageActionRow().addComponents(
+				new MessageButton()
+					.setLabel("ノートを見に行く")
+					.setStyle("LINK")
+					.setURL(POST.URL)
+			);
+
+			await client.guilds.cache.get(GID).channels.cache.get(CID).send({
+				embeds: [EB],
+				components: [row]
+			});
 		}catch(EX){
 			console.log("[ ERR ][ SNS ]" + EX);
 		}
