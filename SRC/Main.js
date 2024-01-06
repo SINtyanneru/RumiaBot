@@ -469,67 +469,77 @@ client.on("interactionCreate", async INTERACTION => {
 				INTERACTION.member.id +
 				")"
 		);
-
-		//ユーザーに待ってもらう
-		await INTERACTION.deferReply();
-
 		const CMD = INTERACTION.commandName;
+
+		/**
+		 * でふぁーりぷらいしないやつら
+		 */
+		switch (CMD) {
+			case "sns_login":
+				await new command.sns_login(INTERACTION).main();
+				return;
+		}
+
+		/**
+		 * ユーザーに待ってもらうやつの処理
+		 */
+		await INTERACTION.deferReply();
 		
 		switch (CMD) {
 			case "test":
 				await new command.test(INTERACTION).main();
-				break;
+				return;
 			case "help":
 				await new command.HELP(INTERACTION).main();
-				break;
+				return;
 			case "ping":
 				await new command.PING(INTERACTION).main();
-				break;
+				return;
 			case "ferris":
 				await new command.FERRIS(INTERACTION).main();
-				break;
+				return;
 			case "ws":
 				await new command.WS(INTERACTION).main();
-				break;
+				return;
 			case "info_server":
 				serverInfo.getServerInfo(INTERACTION);
-				break;
+				return;
 			case "info_user":
 				userInfo.getUserInfo(INTERACTION);
-				break;
+				return;
 			case "info_mine":
 				mcInfo.getMcInfo(INTERACTION);
-				break;
+				return;
 			case "kanji":
 				await new command.KANJI(INTERACTION).main();
-				break;
+				return;
 			case "letter":
 				await new command.LETTER(INTERACTION).main();
-				break;
+				return;
 			case "sns_set":
 				await new command.SNS(INTERACTION).main();
-				break;
+				return;
 			case "ip":
 				await new command.IP(INTERACTION).main();
-				break;
+				return;
 			case "setting":
 				await new command.SETTING(INTERACTION).SET();
-				break;
+				return;
 			case "num":
 				await new command.NUM(INTERACTION).main();
-				break;
+				return;
 			case "wh_clear":
 				await new command.WH_CLEAR(INTERACTION).main();
-				break;
+				return;
 			case "vc_music":
 				await new command.VC_MUSIC(INTERACTION).main();
-				break;
+				return;
 			case "misskey_emoji_search":
 				await new command.MISSKEY_EMOJI_SEARCH(INTERACTION).main();
-				break;
+				return;
 			case "cp":
 				await new command.Unicode_CODEPOINT(INTERACTION).main();
-				break;
+				return;
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ DJS ]" + EX);

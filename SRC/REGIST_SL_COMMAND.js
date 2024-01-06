@@ -18,6 +18,7 @@ import { SETTING } from "./COMMAND/SETTING.js";
 import { NUM } from "./COMMAND/NUM.js";
 import { VC_MUSIC } from "./COMMAND/VC_MUSIC.js";
 import { Unicode_CODEPOINT } from "./COMMAND/Unicode_CODEPOINT.js";
+import { sns_login } from "./COMMAND/sns_login.js";
 export async function REGIST_SLASH_COMMAND() {
 	const CMD_DATA = [
 		test.command,
@@ -34,7 +35,7 @@ export async function REGIST_SLASH_COMMAND() {
 		WH_CLEAR.command,
 		SETTING.command,
 		NUM.command,
-		Unicode_CODEPOINT.command
+		Unicode_CODEPOINT.command,
 	];
 
 	//VC-music
@@ -61,6 +62,19 @@ export async function REGIST_SLASH_COMMAND() {
 					.setRequired(true)
 			)
 			.addStringOption(o => o.setName("username").setDescription("誰を？").setRequired(true))
+	);
+
+	CMD_DATA.push(
+		new SlashCommandBuilder()
+			.setName("sns_login")
+			.setDescription("ログインしよう！！ちん！")
+			.addStringOption(o =>
+				o
+					.setName("type")
+					.setDescription("インスタンス")
+					.setChoices(...SC_ActivityPub_CHOICES)
+					.setRequired(true)
+			)
 	);
 	return CMD_DATA;
 }
