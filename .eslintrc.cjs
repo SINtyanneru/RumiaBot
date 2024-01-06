@@ -1,3 +1,4 @@
+/** @type {import("eslint").ESLint.ConfigData} */
 module.exports = {
 	"env": {
 		"es2021": true,
@@ -26,6 +27,8 @@ module.exports = {
 
 		"linebreak-style": ["error", "unix"],
 		"quotes": ["error", "double", { avoidEscape: true }],
-		"semi": ["error", "always"]
+		"semi": ["error", "always"],
+		"no-empty": ["warn"],
+		"no-unused-vars": ["warn"]
 	}
 };
