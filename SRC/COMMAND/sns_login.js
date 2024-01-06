@@ -20,22 +20,9 @@ export class sns_login {
 				if (SNS_CONFIG.TYPE === "MISSKEY") {
 					const UUID = crypto.randomUUID();
 					await this.E.reply({
-						content: "次のURLをクリックしてログインしてね！！！\nhttps://" + SNS_CONFIG.DOMAIN + "/miauth/" + UUID + "?name=るみさんBOT&icon=https://rumiserver.com/Asset/RUMI_BOT/db719e41bcea5ba6337fd109a06aa277.png&permission=read:account",
+						content: "次のURLをクリックしてログインしてね！！！\nhttps://" + SNS_CONFIG.DOMAIN + "/miauth/" + UUID + "?name=るみさんBOT&icon=https://rumiserver.com/Asset/RUMI_BOT/db719e41bcea5ba6337fd109a06aa277.png&callback=https://rumiserver.com/rumiabot/login/misskey/" + UUID + "&permission=read:account",
 						ephemeral: true
 					});
-
-					let TIMER = setInterval(async () => {
-						let AJAX = await fetch("https://" + SNS_CONFIG.DOMAIN + "/api/miauth/" + UUID + "/check", {
-							method: "POST"
-						});
-
-						if(AJAX.ok){
-							let RESULT = await AJAX.json();
-							if(RESULT.ok){
-								clearInterval(TIMER);
-							}
-						}
-					}, 5000);
 				}
 			}
 		}catch(EX){

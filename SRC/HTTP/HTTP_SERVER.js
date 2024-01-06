@@ -2,6 +2,8 @@
 import * as HTTP from "node:http";
 import * as FS from "node:fs";
 import { client } from "../MODULES/loadClient.js";
+import { CONFIG } from "../MODULES/CONFIG.js";
+import { SQL_OBJ } from "../Main.js";
 
 /**
  * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL
@@ -274,6 +276,66 @@ export class HTTP_SERVER {
 				}
 
 				//これ以上処理する必要がないので殺す
+				return;
+			}
+
+			/**
+			 * /user
+			 */
+			if (REQ_PATH.startsWith("/user")) {
+				//ログイン
+				if (REQ_PATH.startsWith("/user/login/misskey/")) {
+					const TYPE = REQ_PATH.replace("/user/login/misskey/", "").split("/")[0];
+					const DID = REQ_PATH.replace("/user/login/misskey/", "").split("/")[1];
+					const UUID = URI_PARAM["session"];
+
+					//インスタンスの設定を取得
+					let SNS_CONFIG = CONFIG.SNS.find(ROW => ROW.ID === TYPE);
+
+					//設定があるか
+					if (SNS_CONFIG) {
+						//ある
+						if (SNS_CONFIG.TYPE === "MISSKEY") {
+							let AJAX = await fetch("https://" + SNS_CONFIG.DOMAIN + "/api/miauth/" + UUID + "/check", {
+								method: "POST"
+							});
+
+							if(AJAX.ok){
+								let RESULT = await AJAX.json();
+								if(RESULT.ok){
+									try{
+										let RESULT_SQL = await SQL_OBJ.SCRIPT_RUN("SELECT count(*) FROM `USER` WHERE `DID` = ?; ", [DID]);
+										if (RESULT_SQL[0]["count(*)"] === 0) {
+											await SQL_OBJ.SCRIPT_RUN("INSERT INTO `USER` (`ID`, `DID`, `NAME`, `SNS_TOKEN`) VALUES (NULL, ?, ?, ?);", [DID, "名無し", RESULT.token]);
+										}else{
+											await SQL_OBJ.SCRIPT_RUN("UPDATE `USER` SET `SNS_TOKEN` = ? WHERE `USER`.`DID` = ?;", [RESULT.token, DID]);
+										}
+
+										RES.statusCode = 200;
+										RES.end("認証に性交したかも");
+										return;
+									}catch(EX){
+										console.error("[ ERR in Promise ][ SNS ]", EX);
+
+										RES.statusCode = 500;
+										RES.end("AJAXがNG吐いたわ！！！！：" + REQ.statusCode.toString());
+										return;
+									}
+								}
+							}else{
+								RES.statusCode = 500;
+								RES.end("AJAXがNG吐いたわ！！！！：" + REQ.statusCode.toString());
+							}
+						}
+					}
+
+					RES.statusCode = 500;
+					RES.end("インスタンスが登録されていません");
+					return;
+				}
+
+				RES.statusCode = 404;
+				RES.end("ページがないかも");
 				return;
 			}
 
