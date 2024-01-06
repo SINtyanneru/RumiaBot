@@ -306,9 +306,9 @@ export class HTTP_SERVER {
 									try{
 										let RESULT_SQL = await SQL_OBJ.SCRIPT_RUN("SELECT count(*) FROM `USER` WHERE `DID` = ?; ", [DID]);
 										if (RESULT_SQL[0]["count(*)"] === 0) {
-											await SQL_OBJ.SCRIPT_RUN("INSERT INTO `USER` (`ID`, `DID`, `NAME`, `SNS_TOKEN`) VALUES (NULL, ?, ?, ?);", [DID, "名無し", RESULT.token]);
+											await SQL_OBJ.SCRIPT_RUN("INSERT INTO `USER` (`ID`, `DID`, `NAME`, `SNS_TOKEN`) VALUES (NULL, ?, ?, ?);", [DID, "名無し", SNS_CONFIG.ID + "/" + RESULT.token]);
 										}else{
-											await SQL_OBJ.SCRIPT_RUN("UPDATE `USER` SET `SNS_TOKEN` = ? WHERE `USER`.`DID` = ?;", [RESULT.token, DID]);
+											await SQL_OBJ.SCRIPT_RUN("UPDATE `USER` SET `SNS_TOKEN` = ? WHERE `USER`.`DID` = ?;", [SNS_CONFIG.ID + "/" + RESULT.token, DID]);
 										}
 
 										let FILE = await this.LOAD_FILE("/user/login/misskey.html");

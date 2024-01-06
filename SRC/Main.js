@@ -38,6 +38,7 @@ import { mcInfo, userInfo, serverInfo } from "./COMMAND/infocommand/index.js";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
+import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
 // ↑インスタンスのことですか？←るみさん用語でオブジェクトです
@@ -456,7 +457,7 @@ client.on("interactionCreate", async INTERACTION => {
 		}
 
 		console.log(
-			"[ INFO ][CMD]┌Interaction create:" +
+			"[ INFO ][ SL ]┌Interaction create:" +
 				INTERACTION.commandName +
 				"\n             ├in " +
 				INTERACTION.guild.name +
@@ -553,9 +554,30 @@ client.on("interactionCreate", async INTERACTION => {
 		return;
 	}
 
-	switch (INTERACTION.customId) {
+	const CMD = INTERACTION.customId.split("?")[0];
+	let URI_PARAM = URI_PARAM_DECODE(INTERACTION.customId);
+
+	console.log(
+		"[ INFO ][ MI ]┌Interaction create:" +
+			CMD +
+			"\n             ├in " +
+			INTERACTION.guild.name +
+			"\n             ├in " +
+			INTERACTION.channel.name +
+			INTERACTION.channelId +
+			"\n             └in " +
+			INTERACTION.member.user.username +
+			"(" +
+			INTERACTION.member.id +
+			")"
+	);
+
+	switch (CMD) {
 		case "test":
 			new command.test(INTERACTION).button();
+			break;
+		case "sns_button_noteopen":
+			SNS_CONNECTION.note_open(INTERACTION, URI_PARAM);
 			break;
 	}
 });

@@ -130,7 +130,7 @@ export class SNS {
 
 			row.addComponents(
 				new MessageButton()
-					.setCustomId("sns_button_noteopen")
+					.setCustomId("sns_button_noteopen?ID=" + POST.ID)
 					.setLabel("ノートを見に行く")
 					.setStyle("PRIMARY")
 			);
@@ -203,6 +203,7 @@ export class SNS {
 								},
 								//ノートの情報
 								{
+									"ID": NOTE_ID,
 									"TEXT":NOTE_TEXT,
 									"URL":"https://" + DOMAIN + "/notes/" + NOTE_ID,
 									"DATE":RESULT.body.body.createdAt
@@ -329,6 +330,7 @@ export class SNS {
 							},
 							//ノートの情報
 							{
+								"ID":TOOT.id,
 								"TEXT":TOOT_TEXT,
 								"URL":"https://" + DOMAIN + "/@" + TOOT.account.username + "/" + TOOT.id,
 								"DATE":TOOT.created_at
@@ -370,6 +372,14 @@ export class SNS {
 				console.log("[ *** ][ MASTODON ][ " + DOMAIN + " ]Re Connecting...");
 				this.mastodon(DOMAIN, API_TOKEN, ID); //再接続する
 			}, 5000);
+		});
+	}
+
+	async note_open(I, URI_PARAM){
+
+		await I.reply({
+			content: "IDは" + URI_PARAM + "だよ、うん",
+			ephemeral: true // このオプションを true にすると他のユーザーには見えません
 		});
 	}
 }
