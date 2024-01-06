@@ -20,7 +20,7 @@ export class sns_login {
 				if (SNS_CONFIG.TYPE === "MISSKEY") {
 					const UUID = crypto.randomUUID();
 					await this.E.reply({
-						content: "次のURLをクリックしてログインしてね！！！\nhttps://" + SNS_CONFIG.DOMAIN + "/miauth/" + UUID + "?name=るみさんBOT&icon=https://rumiserver.com/Asset/RUMI_BOT/db719e41bcea5ba6337fd109a06aa277.png&callback=https://rumiserver.com/rumiabot/login/misskey/" + UUID + "&permission=read:account",
+						content: "次のURLをクリックしてログインしてね！！！\nhttps://" + SNS_CONFIG.DOMAIN + "/miauth/" + UUID + "?name=るみさんBOT&icon=https://rumiserver.com/Asset/RUMI_BOT/db719e41bcea5ba6337fd109a06aa277.png&callback=https://rumiserver.com/rumiabot/login/misskey/" + SNS_CONFIG.ID + "/" + this.E.member.id + "&permission=read:account,write:notes,write:reactions,read:drive,write:drive",
 						ephemeral: true
 					});
 				}

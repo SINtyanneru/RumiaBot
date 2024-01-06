@@ -311,8 +311,14 @@ export class HTTP_SERVER {
 											await SQL_OBJ.SCRIPT_RUN("UPDATE `USER` SET `SNS_TOKEN` = ? WHERE `USER`.`DID` = ?;", [RESULT.token, DID]);
 										}
 
+										let FILE = await this.LOAD_FILE("/user/login/misskey.html");
+
+										FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{BANNER_URL\}/g, RESULT.user.bannerUrl);
+										FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{ICON_URL\}/g, RESULT.user.avatarUrl);
+										FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{USER_NAME\}/g, RESULT.user.name);
+
 										RES.statusCode = 200;
-										RES.end("認証に性交したかも");
+										RES.end(FILE.CONTENTS);
 										return;
 									}catch(EX){
 										console.error("[ ERR in Promise ][ SNS ]", EX);
@@ -348,29 +354,46 @@ export class HTTP_SERVER {
 				REQ_PATH = REFERAR + REQ_PATH;
 			}
 			//ファイルを読み込む
+			let FILE = await this.LOAD_FILE(REQ_PATH);
+			RES.statusCode = FILE.STATUS;
+			RES.end(FILE.CONTENTS);
+		});
+
+		//サーバー起動
+		SERVER.listen(this.PORT, this.HOST_NAME, () => {
+			console.log("[ OK ][ HTTP ]HTTP Server runing. port " + this.PORT);
+		});
+	}
+
+	LOAD_FILE(REQ_PATH){
+		return new Promise((resolve) => {
+			//ファイルを読み込む
 			FS.readFile("./SRC/HTTP/CONTENTS" + REQ_PATH, "utf8", (ERR, DATA) => {
 				if (ERR) {
 					//ファイルがないのでindex.htmlが無いかをチェックする
 					FS.readFile("./SRC/HTTP/CONTENTS/" + REQ_PATH + "/index.html", "utf8", (ERR, DATA) => {
 						if (ERR) {
 							//無いので死ぬ
-							RES.statusCode = 404;
-							RES.end("ファイルロード時にエラー");
+							resolve({
+								CONTENTS:"ファイルロード時にエラー",
+								STATUS:404
+							});
 						} else {
 							//ファイルの内容を返す
-							RES.end(DATA);
+							resolve({
+								CONTENTS:DATA,
+								STATUS:200
+							});
 						}
 					});
 				} else {
 					//ファイルの内容を返す
-					RES.end(DATA);
+					resolve({
+						CONTENTS:DATA,
+						STATUS:200
+					});
 				}
 			});
-		});
-
-		//サーバー起動
-		SERVER.listen(this.PORT, this.HOST_NAME, () => {
-			console.log("[ OK ][ HTTP ]HTTP Server runing. port " + this.PORT);
 		});
 	}
 }
