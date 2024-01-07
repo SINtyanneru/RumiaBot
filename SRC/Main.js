@@ -41,13 +41,13 @@ import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js"
 import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
 
 //ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
-// ↑インスタンスのことですか？←るみさん用語でオブジェクトです
+//↑インスタンスのことですか？←るみさん用語でオブジェクトです
 const rest = new REST({ version: "10" }).setToken(CONFIG.DISCORD.TOKEN);
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 const WS_SERVER_OBJ = new WS_SERVER();
 export const LOCK_NICK_NAME_OBJ = new LOCK_NICK_NAME();
 export const SQL_OBJ = new SQL();
-// 何も存在しないなら
+//何も存在しないなら
 if (!(CONFIG.ADMIN.ADMIN_ID || CONFIG.ADMIN.ADMIN_PREFIX || CONFIG.DISCORD.TOKEN)) {
 	throw new Error("深刻なエラー:設定が初期化されていないので、実行できません");
 }
@@ -97,7 +97,7 @@ client.once("ready", async () => {
 		console.log("[ ERR ][ SLASH_COMMAND ]" + EX);
 	}
 
-	// 活動期間か？
+	//活動期間か？
 	setInterval(() => {
 		//現在の時刻を取得
 		const currentTime = new Date();
@@ -326,8 +326,8 @@ client.on("messageCreate", async message => {
 
 		if (FUNCTION_SETTING_OBJ.SETTING.some(ROW => ROW.GID === message.guild.id && ROW.FUNC_ID === "vxtwitter")) {
 			if (!CONFIG.ADMIN.DISABLE?.includes("vxtwitter")) {
-				// vxtwitterのリンクに自動で置換する機能
-				// もし実行しないと設定してるなら動かさない
+				//vxtwitterのリンクに自動で置換する機能
+				//もし実行しないと設定してるなら動かさない
 				await convert_vxtwitter(message);
 			}
 		}
@@ -338,7 +338,7 @@ client.on("messageCreate", async message => {
 			message.content.startsWith("計算　")
 		) {
 			if (!CONFIG.ADMIN.DISABLE?.includes("calc")) {
-				// もし実行しないと設定してるなら動かさない
+				//もし実行しないと設定してるなら動かさない
 				calc(message);
 			}
 		}
@@ -412,7 +412,7 @@ client.on("messageCreate", async message => {
 				const fileExtension = attachment.name.match(/.[^.]+$/)?.[0];
 				const targetPath = PATH.join("DOWNLOAD", "MSG_FILES", message.guildId);
 				if (!FS.existsSync(targetPath)) {
-					// ディレクトリが存在しない場合、作成
+					//ディレクトリが存在しない場合、作成
 					FS.mkdirSync(targetPath, { recursive: true });
 				}
 				const FileStream = FS.createWriteStream(PATH.join(targetPath, message.id + "_" + key + fileExtension));
@@ -593,7 +593,7 @@ client.on("guildCreate", async GUILD => {
 
 		const guildOwner = await GUILD.fetchOwner();
 
-		// Send a DM to the guild owner
+		//Send a DM to the guild owner
 		const dmChannel = await guildOwner.createDM();
 		await dmChannel.send("導入ありがと！よろしくね！");
 		console.log("[ INFO ][ GUILD ]Send DM:" + guildOwner.nickname);

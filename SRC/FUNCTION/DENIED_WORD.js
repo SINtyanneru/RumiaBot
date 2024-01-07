@@ -2,7 +2,7 @@
  * 事実上機能停止
  */
 
-// eslint-disable-next-line no-unused-vars
+//eslint-disable-next-line no-unused-vars
 import { Message } from "discord.js";
 import moji from "moji";
 import { rumiserver } from "./MODULES/SYNTAX_SUGER.js";
@@ -12,7 +12,7 @@ import { sanitize } from "./MODULES/sanitize.js";
 export class DENIED_WORD {
 	static DENIED_WORD_LIST = {
 		[rumiserver]: [
-			// るみサーバーにて
+			//るみサーバーにて
 			{
 				WORD: /(?:チ|ち|千|テ|〒)(?:ン|ん|ソ)(?:コ|こ|ポ|ぽ)/g,
 				WHITE_LIST: [],
@@ -56,7 +56,7 @@ export class DENIED_WORD {
 	async main(MESSAGE) {
 		try {
 			if (MESSAGE.guild.id === rumiserver) {
-				// HACK 合理的じゃないから後でなんとかして(しろ)
+				//HACK 合理的じゃないから後でなんとかして(しろ)
 				const DWL = DENIED_WORD.DENIED_WORD_LIST[rumiserver];
 				//投稿された鯖に、禁止ワードリストが登録されているか
 				if (DWL) {
@@ -109,7 +109,7 @@ export class DENIED_WORD {
 		return inputString.replaceAll(regexPattern, match => {
 			const middle = Math.floor(match.length / 2);
 			const leftPart = match.substring(0, middle);
-			const rightPart = match.substring(middle + overwriteText.length); // 上書きするテキストの長さ分を右側から削除
+			const rightPart = match.substring(middle + overwriteText.length); //上書きするテキストの長さ分を右側から削除
 			return leftPart + overwriteText + rightPart;
 		});
 	}
