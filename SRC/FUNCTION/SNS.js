@@ -42,33 +42,28 @@ export class SNS {
 		try{
 			const EB = new MessageEmbed();
 
-			//SNSのタイプに寄って埋め込みの形式を買える
-			switch(SNS_TYPE){
-				case "MISSKEY":
-					//タイトル(どこからの投稿か)
-					EB.setTitle("Misskeyの投稿");
-					//色
-					EB.setColor("#86B300");
-					break;
-				case "MASTODON":
-					//タイトル(どこからの投稿か)
-					EB.setTitle("Mastodonの投稿");
-					//色
-					EB.setColor("#A200FF");
-					break;
-				case "FIRE_FISH":
-					//タイトル(どこからの投稿か)
-					EB.setTitle("FireFishの投稿");
-					//色
-					EB.setColor("#FF9900");
-					break;
-				default:
-					//タイトル(どこからの投稿か)
-					EB.setTitle("不明");
-					//色
-					EB.setColor("#A85100");
-					break;
-			}
+			let LANG = {
+				"MISSKEY":{
+					"COLOR":"#86B300",
+					"SNS_NAME":"Misskey",
+					"POST":"ノート"
+				},
+				"MASTODON":{
+					"COLOR":"#A200FF",
+					"SNS_NAME":"Mastodon",
+					"POST":"トゥート"
+				},
+				"FIREFISH":{
+					"COLOR":"#FF9900",
+					"SNS_NAME":"FireFish",
+					"POST":"FFは投稿のヿ何ていうんですか"
+				}
+			};
+
+			//タイトル(どこからの投稿か)
+			EB.setTitle(LANG[SNS_TYPE].SNS_NAME + "の投稿");
+			//色
+			EB.setColor(LANG[SNS_TYPE].COLOR);
 	
 			//投稿者
 			EB.setAuthor({
@@ -131,13 +126,13 @@ export class SNS {
 			row.addComponents(
 				new MessageButton()
 					.setCustomId("sns_button_noteopen?URL=" + POST.URL)
-					.setLabel("ノートを見に行く")
+					.setLabel(LANG[SNS_TYPE].POST + "を見に行く")
 					.setStyle("PRIMARY")
 			);
 
 			row.addComponents(
 				new MessageButton()
-					.setLabel("ノートをリモートで見に行く")
+					.setLabel(LANG[SNS_TYPE].POST + "をリモートで見に行く")
 					.setStyle("LINK")
 					.setURL(POST.URL)
 			);
