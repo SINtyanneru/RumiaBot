@@ -400,16 +400,23 @@ export class SNS {
 						},
 						body: JSON.stringify({
 							i: SNS_CONFIG.API,
-							url: URI_PARAM.URL
+							uri: URI_PARAM.URL
 						})
 					});
 
 					if (AJAX.ok) {
 						const RESULT = await AJAX.json();
-						await I.editReply({
-							content: JSON.stringify(RESULT),
-							ephemeral: true
-						});
+						if(RESULT.type === "Note"){
+							await I.editReply({
+								content: "どうぞ：" + RESULT.object.uri,
+								ephemeral: true
+							});
+						}else{
+							await I.editReply({
+								content: "なーんかノート以外が帰ってきたぞ",
+								ephemeral: true
+							});
+						}
 						return;
 					}else{
 						await I.editReply({
