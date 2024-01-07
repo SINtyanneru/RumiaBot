@@ -130,7 +130,7 @@ export class SNS {
 
 			row.addComponents(
 				new MessageButton()
-					.setCustomId("sns_button_noteopen?ID=" + POST.ID)
+					.setCustomId("sns_button_noteopen?URL=" + POST.URL)
 					.setLabel("ノートを見に行く")
 					.setStyle("PRIMARY")
 			);
@@ -375,11 +375,65 @@ export class SNS {
 		});
 	}
 
+	//ノートを開くボタン
 	async note_open(I, URI_PARAM){
+		if(URI_PARAM.URL){
+			//とりま適当なこと言って待ってもらおう
+			await I.reply({
+				content: "`" + URI_PARAM.URL + "`" + "\n連合にお問い合わせしてるのだ",
+				ephemeral: true
+			});
 
-		await I.reply({
-			content: "IDは" + URI_PARAM + "だよ、うん",
-			ephemeral: true // このオプションを true にすると他のユーザーには見えません
-		});
+			let RESULT_SQL = await SQL_OBJ.SCRIPT_RUN("SELECT * FROM `USER` WHERE `DID` = ?; ", [I.member.id]);
+			if(RESULT_SQL.length > 0){
+				const MISSKEY_INFO = RESULT_SQL[0]["SNS_TOKEN"].split("/");
+	
+				//インスタンスの設定を取得
+				let SNS_CONFIG = CONFIG.SNS.find(ROW => ROW.ID === MISSKEY_INFO[0]);
+	
+				//設定があり、SNSはMISSKEYか
+				if (SNS_CONFIG && SNS_CONFIG.TYPE === "MISSKEY") {
+					const AJAX = await fetch("https://" + SNS_CONFIG.DOMAIN + "/api/ap/show", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							i: SNS_CONFIG.API,
+							url: URI_PARAM.URL
+						})
+					});
+
+					if (AJAX.ok) {
+						const RESULT = await AJAX.json();
+						await I.editReply({
+							content: JSON.stringify(RESULT),
+							ephemeral: true
+						});
+						return;
+					}else{
+						await I.editReply({
+							content: "AJAXでエラー" + AJAX.status.toString() + AJAX.statusText +"！",
+							ephemeral: true
+						});
+					}
+				}else{
+					await I.editReply({
+						content: "Mastodonは使えないよ！",
+						ephemeral: true
+					});
+				}
+			}else{
+				await I.editReply({
+					content: "お前認証してないから無理だわーーーーーーー、\n認証してー",
+					ephemeral: true
+				});
+			}
+		}else{
+			await I.reply({
+				content: "URIパラメーターが異常だ！ｱｱｱｱｱｱ",
+				ephemeral: true
+			});
+		}
 	}
 }
