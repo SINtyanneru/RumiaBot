@@ -60,7 +60,7 @@ export class WS {
 		//URLのポートが不正じゃないか
 		if (!(REQUEST_URL.port === "80" || REQUEST_URL.port === "443" || REQUEST_URL.port === "")) {
 			//なんでポート番号がURLになかったらStringNullなんだよしかもなんでStringなんだよ頭大丈夫か開発者
-			E.editReply("ポート番号が不正です");
+			await E.editReply("ポート番号が不正です");
 			return;
 		}
 
@@ -108,7 +108,7 @@ export class WS {
 							BROWSER_NAME_FF = "chrome";
 							break;
 						default:
-							E.editReply("ブラウザ名が無効です");
+							await E.editReply("ブラウザ名が無効です");
 							break;
 					}
 				} else {
@@ -142,7 +142,7 @@ export class WS {
 						return;
 					} catch (EX) {
 						console.error("[ ERR ][ WebScreenShot ]", EX);
-						E.editReply("接続できませんでした！" + EX);
+						await E.editReply("接続できませんでした！" + EX);
 						return;
 					}
 				});
