@@ -399,7 +399,7 @@ export class SNS {
 							"Content-Type": "application/json"
 						},
 						body: JSON.stringify({
-							i: SNS_CONFIG.API,
+							i: MISSKEY_INFO[1],
 							uri: URI_PARAM.URL
 						})
 					});
