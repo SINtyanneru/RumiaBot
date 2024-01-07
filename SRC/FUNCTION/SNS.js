@@ -408,7 +408,7 @@ export class SNS {
 						const RESULT = await AJAX.json();
 						if(RESULT.type === "Note"){
 							await I.editReply({
-								content: "どうぞ：" + RESULT.object.uri,
+								content: "どうぞ：" + "https://" + SNS_CONFIG.DOMAIN + "/notes/" + RESULT.object.id,
 								ephemeral: true
 							});
 						}else{
