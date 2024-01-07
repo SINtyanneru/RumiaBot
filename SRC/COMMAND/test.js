@@ -82,7 +82,7 @@ export class test {
 
 			await this.E.reply({
 				content: this.E.user.username + "は言った「こゃゃーん」",
-				ephemeral: true // このオプションを true にすると他のユーザーには見えません
+				ephemeral: true
 			});
 		} catch (EX) {
 			console.log("[ ERR ][ TEST ]" + EX);
