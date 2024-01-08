@@ -1,7 +1,6 @@
 // @ts-check
 
-import { client } from "../../MODULES/loadClient.js";
-import { MessageEmbed } from "discord.js";
+import { type CacheType, CommandInteraction, MessageEmbed } from "discord.js";
 import { NULLCHECK } from "../../MODULES/NULLCHECK.js";
 import { RND_COLOR } from "../../MODULES/RND_COLOR.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
@@ -9,38 +8,36 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 //鯖情報取得
 
 export const command = new SlashCommandBuilder().setName("info_server").setDescription("鯖の情報を取得");
-/**
- * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} interaction
- */
-export async function getServerInfo(interaction) {
+export async function getServerInfo(interaction: CommandInteraction<CacheType>) {
 	try {
-		const GLID = client.guilds.cache.get(interaction.guildId);
+		const guild = interaction.guild;
+		if (!guild) return;
 
 		const embed = new MessageEmbed();
-		embed.setTitle(GLID.name);
-		if (GLID.description) {
-			embed.setDescription(GLID.description);
+		embed.setTitle(guild.name);
+		if (guild.description) {
+			embed.setDescription(guild.description);
 		}
 		embed.setColor(RND_COLOR());
 
-		embed.setThumbnail(`https://cdn.discordapp.com/icons/${GLID.id}/${GLID.icon}.png`);
+		embed.setThumbnail(`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`);
 
 		//鯖のID
 		embed.addFields({
 			name: "ID",
-			value: NULLCHECK(GLID.id),
+			value: NULLCHECK(guild.id),
 			inline: false
 		});
 
 		//認証レベル
 		embed.addFields({
 			name: "認証レベル",
-			value: NULLCHECK(GLID.verificationLevel),
+			value: NULLCHECK(guild.verificationLevel),
 			inline: false
 		});
 
 		//鯖のオーナー
-		const OWNER = await GLID.fetchOwner();
+		const OWNER = await guild.fetchOwner();
 		embed.addFields({
 			name: "所有者",
 			value: "<@" + OWNER.id + ">",
@@ -48,17 +45,17 @@ export async function getServerInfo(interaction) {
 		});
 
 		//AFK
-		if (GLID.afkChannel) {
+		if (guild.afkChannel) {
 			embed.addFields({
 				name: "AFKチャンネル",
-				value: "<#" + GLID.afkChannel.id.toString() + ">",
+				value: "<#" + guild.afkChannel.id.toString() + ">",
 				inline: false
 			});
 		}
 
 		//作成日
-		if (GLID.createdAt) {
-			const DATE = GLID.createdAt;
+		if (guild.createdAt) {
+			const DATE = guild.createdAt;
 			embed.addFields({
 				name: "鯖作成日",
 				value:
@@ -83,34 +80,27 @@ export async function getServerInfo(interaction) {
 		}
 
 		//絵文字を配列にするやつ
-		const fetched_emoji = await GLID.emojis.fetch();
-		/**@type {string[]} */
-		const processed_emojis = [];
-		let i = 0;
+		const fetched_emoji = await guild.emojis.fetch();
+		const processed_emojis: string[] = [];
 		// 全ての絵文字を列挙したら終わる
-		while (fetched_emoji.size < i) {
-			// ループの初めの旅にtmpは初期化
-			let tmp = "";
+		let tmp = "";
+		for (const [, emoji] of fetched_emoji) {
 			// 全ての絵文字を列挙したら終わる
-			while (fetched_emoji.size < i) {
-				const emoji = fetched_emoji[i];
-				/**@type {string} */
-				let text;
-				if (emoji.animated) {
-					text = `<a:${emoji.name}:${emoji.id}>`;
-				} else {
-					text = `<:${emoji.name}:${emoji.id}>`;
-				}
-				// 上限を超えそうなら
-				if ((tmp + text).length > 1000) {
-					// 配列に追加
-					processed_emojis.push(tmp);
-					break;
-				}
-				// tmpにまだ増やせるから増やす
-				tmp += text;
-				i++;
+			let text: string;
+			if (emoji.animated) {
+				text = `<a:${emoji.name}:${emoji.id}>`;
+			} else {
+				text = `<:${emoji.name}:${emoji.id}>`;
 			}
+			// 上限を超えそうなら
+			if ((tmp + text).length > 1000) {
+				// 配列に追加
+				processed_emojis.push(tmp);
+				tmp = text;
+				continue;
+			}
+			// tmpにまだ増やせるから増やす
+			tmp += text;
 		}
 
 		processed_emojis.forEach((row, i) => {

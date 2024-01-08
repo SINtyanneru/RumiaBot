@@ -1,37 +1,26 @@
 {
-	// プロジェクトに合わせて変更してください
-	"include": [
-		"SRC/**/*"
-	],
-	"exclude": [
-		"node_modules"
-	],
 	"compilerOptions": {
-		"module": "NodeNext",
-		"skipLibCheck": true,
-		// JSファイルは通常、ソースファイルとして無視されますが、
-		// ここではJSファイルを読み込むようにTypeScriptに指示します
-		"allowJs": true,
-		// d.tsファイルを生成します
-		"declaration": true,
-		// コンパイラを実行すると
-		// d.tsファイルのみ出力されます
-		"emitDeclarationOnly": true,
-		// 型はこのディレクトリに出力されます
-		// このオプションを削除すると
-		// .jsファイルの隣に.d.tsファイルが置かれます
-		"outDir": "dist",
-		// これ設定するとTSがバグるんだけどどうなってんの？？？？
-		"target": "es2015",
-		"strict": false,
-		"strictNullChecks": false,
 		"lib": [
-			"esnext",
-			"dom.iterable",
-			"dom"
+			"ESNext"
 		],
-		"removeComments": true,
-		"moduleResolution": "NodeNext",
-		"resolveJsonModule": true
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleDetection": "force",
+		"jsx": "react-jsx",
+		"allowJs": true,
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"noEmit": true,
+		/* Linting */
+		"skipLibCheck": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": [
+			"bun"
+		]
 	}
 }

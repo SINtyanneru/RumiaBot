@@ -1,7 +1,7 @@
 //@ts-check
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { RND_COLOR } from "../MODULES/RND_COLOR.js";
-import { MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 export class HELP {
 	static command = new SlashCommandBuilder()
 		.setName("help")
@@ -22,12 +22,13 @@ export class HELP {
 				)
 				.setRequired(true)
 		);
-	constructor(INTERACTION) {
+	E: CommandInteraction;
+	constructor(INTERACTION: CommandInteraction) {
 		this.E = INTERACTION;
 	}
 
 	async main() {
-		let E = this.E;
+		const E = this.E;
 		const CMD = E.options.getString("mode");
 		if (CMD === "slash") {
 			const EB = new MessageEmbed();

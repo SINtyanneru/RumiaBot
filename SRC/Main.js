@@ -1,3 +1,4 @@
+// @ts-check
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
 import * as FS from "node:fs";
@@ -22,7 +23,7 @@ import {
 	exiter_channel
 } from "./MODULES/SYNTAX_SUGER.js";
 import { LOCK_NICK_NAME } from "./MODULES/LOCK_NICK_NAME.js";
-import { calc } from "./FUNCTION/calc.js";
+import { calc } from "./FUNCTION/calc.ts";
 import { search } from "./FUNCTION/search.js";
 import { convert_vxtwitter } from "./FUNCTION/VXTWITTER_CONVERT.js";
 import { SQL } from "./SQL.js";
@@ -31,10 +32,9 @@ import { SNS } from "./FUNCTION/SNS.js";
 import { HTTP_STATUS_CODE } from "./MODULES/HTTP_STATUS_CODE.js";
 import { FUNCTION_SETTING } from "./FUNCTION/FUNCTION_SETTING.js";
 import * as PATH from "node:path";
-import fetch from "node-fetch";
 import { HTTP_SERVER } from "./HTTP/HTTP_SERVER.js";
 import { WS_SERVER } from "./HTTP/WS_SERVER.js";
-import { mcInfo, userInfo, serverInfo } from "./COMMAND/infocommand/index.js";
+import { mcInfo, userInfo, serverInfo } from "./COMMAND/infocommand";
 import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
@@ -232,7 +232,7 @@ client.on("messageCreate", async message => {
 			//メンションされたユーザーがいるかチェック
 			if (MENTION_USERS.size > 0) {
 				MENTION_USERS.forEach(async USER => {
-					try{
+					try {
 						if (USER.id === client.user.id) {
 							//自分に対するメッセージなら
 							if (message.reference) {
@@ -310,7 +310,7 @@ client.on("messageCreate", async message => {
 								await message.reply("なに？");
 							}
 						}
-					}catch(EX){
+					} catch (EX) {
 						console.log("[ ERR ][ DJS ]" + EX);
 					}
 				});
@@ -485,7 +485,7 @@ client.on("interactionCreate", async INTERACTION => {
 		 * ユーザーに待ってもらうやつの処理
 		 */
 		await INTERACTION.deferReply();
-		
+
 		switch (CMD) {
 			case "test":
 				await new command.test(INTERACTION).main();
@@ -678,12 +678,11 @@ client.on("roleUpdate", (oldRole, newRole) => {
 
 		if (oldRole.name === newRole.name) {
 			for (let I = 0; I < NEW_ROLE_PM.length; I++) {
-				if(OLD_ROLE_PM[I] === NEW_ROLE_PM[I]){
+				if (OLD_ROLE_PM[I] === NEW_ROLE_PM[I]) {
 					return;
 				}
 			}
 		}
-
 
 		const CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 		if (CH) {
