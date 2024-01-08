@@ -40,8 +40,8 @@ import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
 
-//ここに、オブジェクトとして置いておくべき、クラスを、置くよ。
-//↑インスタンスのことですか？←るみさん用語でオブジェクトです
+//Tef el Obzhekt iel zef klas lö peif ere;
+//↑インスタンスのことですか？←Rumisan xēlp zo Obzhekt za;
 const rest = new REST({ version: "10" }).setToken(CONFIG.DISCORD.TOKEN);
 let HTTP_SERVER_OBJ = new HTTP_SERVER();
 const WS_SERVER_OBJ = new WS_SERVER();
