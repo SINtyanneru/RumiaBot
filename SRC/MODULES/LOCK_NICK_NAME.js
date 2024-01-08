@@ -11,18 +11,18 @@ export class LOCK_NICK_NAME {
 		if (CONFIG.ADMIN.DISABLE.includes("locknick")) return;
 		let SQL_RESULT = SQL_OBJ.SCRIPT_RUN("SELECT * FROM `NICKNAME_LOCK`; ", []);
 		SQL_RESULT.then(RESULT => {
-			console.error("[ *** ][ LOCK NICKNAME ]設定をSQLから読み込んでいます...");
+			console.log("[ *** ][ LOCK NICKNAME ]設定をSQLから読み込んでいます...");
 			RESULT.forEach(ROW => {
 				if (!this.NICK_LOCK_USER[ROW.GID]) {
 					this.NICK_LOCK_USER[ROW.GID] = {};
 				}
 				this.NICK_LOCK_USER[ROW.GID][ROW.UID] = ROW.NICKNAME;
-				console.error("[ OK ][ LOCK NICKNAME ]次を読み込みました:" + ROW.GID + "/" + ROW.UID + "=" + ROW.NICKNAME);
+				console.log("[ OK ][ LOCK NICKNAME ]次を読み込みました:" + ROW.GID + "/" + ROW.UID + "=" + ROW.NICKNAME);
 			});
-			console.error("[ OK ][ LOCK NICKNAME ]全ての設定を再読込しました!");
+			console.log("[ OK ][ LOCK NICKNAME ]全ての設定を再読込しました!");
 		});
 		SQL_RESULT.catch(EX => {
-			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
+			console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
 		});
 	}
 	//メイン
@@ -37,7 +37,7 @@ export class LOCK_NICK_NAME {
 						console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
 						if (MEMBER.manageable) {
 							await MEMBER.setNickname(NICK_NAME);
-							console.error("[ OK ][ LOCK NICKNAME ]" + MEMBER.user.username + "の名前を変更しました");
+							console.log("[ OK ][ LOCK NICKNAME ]" + MEMBER.user.username + "の名前を変更しました");
 						} else {
 							console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
 							return;
