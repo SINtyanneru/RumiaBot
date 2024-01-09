@@ -55,12 +55,6 @@ export const SNS_CONNECTION = new SNS();
 export let FUNCTION_SETTING_OBJ = new FUNCTION_SETTING();
 
 client.once("ready", async () => {
-	console.log("    ____                  _       ____  ____  ______");
-	console.log("   / __ \\__  ______ ___  (_)___ _/ __ )/ __ \\/_  __/");
-	console.log("  / /_/ / / / / __ `__ \\/ / __ `/ __  / / / / / /   ");
-	console.log(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
-	console.log("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
-	console.log("V1.1");
 	//SNSのインスタンスに接続
 	SNS_CONNECTION.main();
 
