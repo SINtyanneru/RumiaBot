@@ -17,21 +17,21 @@ public class ProcessStart extends Thread {
 	public void run(){
 		try{
 			// 外部アプリケーションのプロセスを起動
-			ProcessBuilder processBuilder = new ProcessBuilder(APP, ARG);
-			Process process = processBuilder.start();
+			ProcessBuilder PB = new ProcessBuilder(APP, ARG);
+			Process PROCESS = PB.start();
 
 			// 外部アプリケーションの出力を読み取るための BufferedReader を作成
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			BufferedReader READER = new BufferedReader(new InputStreamReader(PROCESS.getInputStream()));
 
 			// 外部アプリケーションの出力をコンソールに出力
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
+			String LINE;
+			while ((LINE = READER.readLine()) != null) {
+				Main.LOG(TAG, LINE);
 			}
 
 			// プロセスが終了するまで待機
-			int exitCode = process.waitFor();
-			System.out.println("外部アプリケーションの終了コード: " + exitCode);
+			int EXIT_CODE = PROCESS.waitFor();
+			System.out.println(TAG + "a EXIT:" + EXIT_CODE);
 		}catch (Exception EX){
 			EX.printStackTrace();
 		}
