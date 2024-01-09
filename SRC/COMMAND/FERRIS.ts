@@ -1,5 +1,6 @@
 // @ts-check
 import { SlashCommandBuilder } from "@discordjs/builders";
+import type { CommandInteraction } from "discord.js";
 export class FERRIS {
 	static command = new SlashCommandBuilder()
 		.setName("ferris")
@@ -28,16 +29,14 @@ export class FERRIS {
 				)
 				.setRequired(true)
 		);
+	E: CommandInteraction;
 
-	/**
-	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
-	 */
-	constructor(INTERACTION) {
+	constructor(INTERACTION: CommandInteraction) {
 		this.E = INTERACTION;
 	}
 
 	async main() {
-		let E = this.E;
+		const E = this.E;
 		switch (E.options.getString("type")) {
 			case "not_compile":
 				await E.editReply("https://rumiserver.com/Asset/RUMI_BOT/RES/does_not_compile.png");
