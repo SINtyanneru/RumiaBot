@@ -1,0 +1,1 @@
+print("Pythonを導入するのだ")
