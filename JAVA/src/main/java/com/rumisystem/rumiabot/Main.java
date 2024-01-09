@@ -12,10 +12,9 @@ public class Main {
 		ProcessStart PS1 = new ProcessStart("JS", "node", "./SRC/Main.js");
 		PS1.start();
 
-		/*
-		ProcessStart PS2 = new ProcessStart("PY", "ping", "192.168.0.132");
+
+		ProcessStart PS2 = new ProcessStart("PY", "python", "./SRC/Main.py");
 		PS2.start();
-		 */
 	}
 
 	public static void LOG(String TAG, String TEXT){
