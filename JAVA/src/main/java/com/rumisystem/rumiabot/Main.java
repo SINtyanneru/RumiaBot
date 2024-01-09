@@ -9,7 +9,7 @@ public class Main {
 		System.out.println("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 		System.out.println("V1.1");
 
-		ProcessStart PS1 = new ProcessStart("JS", "node", "../../../SRC/Main.js");
+		ProcessStart PS1 = new ProcessStart("JS", "node", "./SRC/Main.js");
 		PS1.start();
 
 		/*

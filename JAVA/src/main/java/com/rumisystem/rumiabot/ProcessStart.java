@@ -31,7 +31,7 @@ public class ProcessStart extends Thread {
 
 			// プロセスが終了するまで待機
 			int EXIT_CODE = PROCESS.waitFor();
-			System.out.println(TAG + "a EXIT:" + EXIT_CODE);
+			System.out.println(TAG + " a EXIT:" + EXIT_CODE);
 		}catch (Exception EX){
 			EX.printStackTrace();
 		}
