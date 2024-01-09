@@ -1,15 +1,17 @@
+// @ts-check
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { CommandInteraction, CacheType } from "discord.js";
 export class IP {
 	static command = new SlashCommandBuilder().setName("ip").setDescription("るみBOTのIPを表示します");
-	E: CommandInteraction<CacheType>;
-	constructor(INTERACTION: CommandInteraction<CacheType>) {
+	/**
+	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} INTERACTION
+	 */
+	constructor(INTERACTION) {
 		this.E = INTERACTION;
 	}
 
 	async main() {
-		const E = this.E;
+		let E = this.E;
 		if (CONFIG.ADMIN.DISABLE?.includes("ip")) {
 			return E.editReply("運営者の意向により、開示できません！");
 		}

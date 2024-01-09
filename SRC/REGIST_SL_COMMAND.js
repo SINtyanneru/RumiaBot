@@ -11,7 +11,7 @@ import { WS } from "./COMMAND/WS.js";
 import { serverInfo, userInfo, mcInfo } from "./COMMAND/infocommand/index.js";
 import { KANJI } from "./COMMAND/KANJI.js";
 import { LETTER } from "./COMMAND/LETTER.js";
-import { HELP } from "./COMMAND/HELP";
+import { HELP } from "./COMMAND/HELP.js";
 import { IP } from "./COMMAND/IP.js";
 import { WH_CLEAR } from "./COMMAND/WH_CLEAR.js";
 import { SETTING } from "./COMMAND/SETTING.js";

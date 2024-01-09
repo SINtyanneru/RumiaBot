@@ -1,4 +1,5 @@
-import { type CacheType, CommandInteraction, MessageEmbed } from "discord.js";
+// @ts-check
+import { MessageEmbed } from "discord.js";
 import { RND_COLOR } from "../../MODULES/RND_COLOR.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
@@ -9,8 +10,9 @@ export const command = new SlashCommandBuilder()
 
 /**
  * minecraftユーザーの情報を取得する(インタラクションを使って)
+ * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType>} interaction
  */
-export async function getMcInfo(interaction: CommandInteraction<CacheType>) {
+export async function getMcInfo(interaction) {
 	try {
 		const MCID = interaction.options.getString("mcid");
 
@@ -22,7 +24,7 @@ export async function getMcInfo(interaction: CommandInteraction<CacheType>) {
 		});
 
 		if (RES_GET_UUID.ok) {
-			const RESULT_GET_UUID = (await RES_GET_UUID.json()) as { id: string };
+			const RESULT_GET_UUID = await RES_GET_UUID.json();
 
 			const RES_GET_BASE64 = await fetch(
 				"https://sessionserver.mojang.com/session/minecraft/profile/" + RESULT_GET_UUID.id,
@@ -35,11 +37,7 @@ export async function getMcInfo(interaction: CommandInteraction<CacheType>) {
 			);
 
 			if (RES_GET_BASE64.ok) {
-				const RESULT_GET_BASE64 = (await RES_GET_BASE64.json()) as {
-					name: string;
-					id: string;
-					properties: { value: string }[];
-				};
+				const RESULT_GET_BASE64 = await RES_GET_BASE64.json();
 				const RESULT_JSON = JSON.parse(atob(RESULT_GET_BASE64.properties[0].value));
 
 				//埋め込み

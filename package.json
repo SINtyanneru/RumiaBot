@@ -1,42 +1,47 @@
 {
-  "name": "rumiabot",
-  "version": "1.0.1",
-  "main": "./SRC/Main.js",
-  "type": "module",
-  "scripts": {
-    "format": "eslint SRC/**/*.{js,ts} --fix && npx prettier -w SRC/**/*.{js,jsx,ts,tsx}",
-    "postinstall": "sh ./setup.sh",
-    "lint": "prettier -w ./",
-    "dev": "bun SRC/Main.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@discordjs/rest": "^2.2.0",
-    "@discordjs/voice": "^0.16.0",
-    "@discordjs/builders": "1.7.0",
-    "chromedriver": "^119.0.1",
-    "discord.js": "^13.16.0",
-    "ffmpeg-static": "^5.2.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "jsdoc": "^4.0.2",
-    "libsodium-wrappers": "^0.7.13",
-    "moji": "^0.5.1",
-    "mysql": "^2.18.1",
-    "selenium-webdriver": "^4.15.0",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
-    "@types/moji": "^0.5.0",
-    "@types/mysql": "^2.15.21",
-    "@types/selenium-webdriver": "^4.1.21",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
-    "@typescript-eslint/parser": "^6.13.2",
-    "discord-api-types": "^0.37.66",
-    "eslint": "^8.48.0",
-    "pm2": "^5.3.0",
-    "typescript": "^5.2.2",
-    "@types/bun": "latest"
-  }
+	"name": "rumiabot",
+	"version": "1.0.1",
+	"description": "___ ## なんだこのBOTは？！ 元ルーミアちゃんBOT<BR> このBOTは、わたしがほしいと思った機能を搭載するBOTです()<BR> なので完全に自分用ｗｗ<BR> ## ビルド方法 ```sh source ./build.sh ``` を実行(LINUXの場合)<BR> そして[Config.json]を作成<BR> ```json { \t\"TOKEN\":\"Discordのトークン\", \t\"ID\":\"BOTのID\", \t\"SQL_HOST\":\"SQLのホスト\", \t\"SQL_USER\":\"SQLのユーザー名\", \t\"SQL_PASS\":\"SQLのパスワード\", \t\"GOOGLE_API_KEY\":\"GoogleAPIのAPIキー\", \t\"GOOGLE_API_ENGINE_ID\":\"Google検索APIのえんじんDI\", \t\"MISSKEY_API_KEY\":\"MisskeyのAPIキー\", \t\"ADMIN_ID\":\"BOTの管理者のID\", \t\"ADMIN_PREFIX\":\"管理用のプレフィクス\" } ``` これでおｋ！<BR> あとはsource start.shできどうするだけ！<BR> あとは楽しんでください()<BR>",
+	"main": "./SRC/Main.js",
+	"type": "module",
+	"scripts": {
+		"format": "eslint SRC/**/*.{js,ts} --fix && npx prettier -w SRC/**/*.{js,jsx,ts,tsx}",
+		"test": "pm2 logs",
+		"start": "pm2 start pm2.config.json --watch",
+		"stop": "pm2 stop Rumiabot",
+		"install": "sh ./setup.sh",
+		"lint": "prettier -w ./",
+		"restart": "pm2 restart Rumiabot",
+		"debug": "node SRC/Main.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@discordjs/rest": "^2.2.0",
+		"@discordjs/voice": "^0.16.0",
+		"@discordjs/builders": "1.7.0",
+		"chromedriver": "^119.0.1",
+		"discord.js": "^13.16.0",
+		"ffmpeg-static": "^5.2.0",
+		"fluent-ffmpeg": "^2.1.2",
+		"jsdoc": "^4.0.2",
+		"libsodium-wrappers": "^0.7.13",
+		"moji": "^0.5.1",
+		"mysql": "^2.18.1",
+		"node-fetch": "^3.3.2",
+		"selenium-webdriver": "^4.15.0",
+		"ws": "^8.13.0"
+	},
+	"devDependencies": {
+		"@types/moji": "^0.5.0",
+		"@types/mysql": "^2.15.21",
+		"@types/selenium-webdriver": "^4.1.21",
+		"@typescript-eslint/eslint-plugin": "^6.13.2",
+		"@typescript-eslint/parser": "^6.13.2",
+		"discord-api-types": "^0.37.66",
+		"eslint": "^8.48.0",
+		"pm2": "^5.3.0",
+		"typescript": "^5.2.2"
+	}
 }
