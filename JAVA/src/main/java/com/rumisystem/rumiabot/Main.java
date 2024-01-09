@@ -8,5 +8,11 @@ public class Main {
 		System.out.println(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /    ");
 		System.out.println("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 		System.out.println("V1.1");
+
+		ProcessStart PS1 = new ProcessStart("JS", "ping", "192.168.0.3");
+		PS1.start();
+
+		ProcessStart PS2 = new ProcessStart("JS", "ping", "192.168.0.132");
+		PS2.start();
 	}
 }
