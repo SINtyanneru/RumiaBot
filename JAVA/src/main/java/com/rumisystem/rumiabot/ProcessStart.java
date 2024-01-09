@@ -3,7 +3,7 @@ package com.rumisystem.rumiabot;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class ProcessStart extends Thread {
+public class ProcessStart implements Runnable {
 	private String TAG;
 	private String APP;
 	private String ARG;
@@ -18,7 +18,10 @@ public class ProcessStart extends Thread {
 		try{
 			// 外部アプリケーションのプロセスを起動
 			ProcessBuilder PB = new ProcessBuilder(APP, ARG);
+			PB.redirectErrorStream(true);
 			Process PROCESS = PB.start();
+
+			Main.LOG(TAG, "Start " + APP + " " + ARG);
 
 			// 外部アプリケーションの出力を読み取るための BufferedReader を作成
 			BufferedReader READER = new BufferedReader(new InputStreamReader(PROCESS.getInputStream()));

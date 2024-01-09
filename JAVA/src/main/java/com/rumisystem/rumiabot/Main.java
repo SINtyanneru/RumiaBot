@@ -9,11 +9,11 @@ public class Main {
 		System.out.println("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 		System.out.println("V1.1");
 
-		ProcessStart PS1 = new ProcessStart("JS", "node", "./SRC/Main.js");
+		Thread PS1 = new Thread( new ProcessStart("JS", "node", "./SRC/Main.js"));
 		PS1.start();
 
 
-		ProcessStart PS2 = new ProcessStart("PY", "python", "./SRC/Main.py");
+		Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/Main.py"));
 		PS2.start();
 	}
 
