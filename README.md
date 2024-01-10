@@ -10,41 +10,61 @@
 
 ## セットアップ方法
 
-まずはNodeJSとnpmを入れてね<BR>
-
+まずはNodeJSとnpmとGradle入れてね<BR>
+そしたらJAVAディレクトリ内のソースコードをビルドしてね<BR>
+そしたらライブラリを入れてね<BR>
 ```sh
-source ./setup.sh
+npm i
 ```
-
-を実行(LINUXの場合)<BR>
-そして[Config.json]を作成<BR>
+を実行<BR>
+そして[Config.json]を生成するか自分で作ってね<BR>
 
 ```json
 {
-	"TOKEN": "Discordのトークン",
-	"ID": "BOTのID",
-	"SQL_HOST": "SQLのホスト",
-	"SQL_USER": "SQLのユーザー名",
-	"SQL_PASS": "SQLのパスワード",
-	"GOOGLE_API_KEY": "GoogleAPIのAPIキー",
-	"GOOGLE_API_ENGINE_ID": "Google検索APIのえんじんDI",
-	"ADMIN_ID": "BOTの管理者のID",
-	"ADMIN_PREFIX": "管理用のプレフィクス",
+	"DISCORD": {
+		"TOKEN": "BOTのトークン"
+	},
+	"SQL": {
+		"SQL_CONNECT": true,//接続するか
+		"SQL_HOST": "SQLのホスト",
+		"SQL_USER": "SQLのユーザー",
+		"SQL_PASS": "パスワード",
+		"SQL_DB": "データベース名"
+	},
+	"GOOGLE_SEARCH": {
+		"GOOGLE_API_KEY": "GoogleのAPIキー",
+		"GOOGLE_API_ENGINE_ID": "検索エンジンID"
+	},
 	"SNS": [
 		{
-			"ID": "自由にIDを",
-			"NAME": "インスタンス名",
-			"DOMAIN": "ドメイン(httpsを含まない)",
-			"API": "MisskeyやマストドンのAPIキー",
-			"TYPE": "MISSKEYかMASTODON"
+			"ID": "接続先インスタンスのID",
+			"NAME": "名前(自由)",
+			"DOMAIN": "ドメイン",
+			"API": "APIキー",
+			"TYPE": "MISSKEYもしくはMASTODON"
 		}
-	]
+	],
+	"ADMIN": {
+		"ADMIN_ID": [
+			"管理者のDiscordのID"
+		],
+		"ADMIN_PREFIX": "管理用コマンドのプレフィクス",
+		"DISABLE": [],
+		"BLOCK": [
+			"ブロックするユーザー"
+		]
+	}
 }
 ```
 
-これでおｋ！<BR>
-あとはsource start.shできどうするだけ！<BR>
-あとは楽しんでください()<BR>
+次に起動<BR>
+```sh
+npm run debug
+```
+もしくは
+```sh
+npm run start
+```
 
 ## ライブラリ
 
