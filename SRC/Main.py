@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 #カスタムハンドラを作成
-class MyHandler(BaseHTTPRequestHandler):
+class HTTP_Handler(BaseHTTPRequestHandler):
 	#リクエストが来たらこの関数が実行される
 	def do_GET(SELF):
 		REQUEST_URI = SELF.path
@@ -15,7 +15,7 @@ HOST = "0.0.0.0"
 PORT = 8085
 
 #サーバーを作成してハンドラを登録
-SERVER = HTTPServer((HOST, PORT), MyHandler)
+SERVER = HTTPServer((HOST, PORT), HTTP_Handler)
 
 print(f"Starting server on http://{HOST}:{PORT}")
 
