@@ -9,17 +9,38 @@ class HTTP_Handler(BaseHTTPRequestHandler):
 	#リクエストが来たらこの関数が実行される
 	def do_GET(SELF):
 		REQUEST_URI = SELF.path.replace("../", "")
-		CONTENTS = FILE_LOAD(REQUEST_URI)
-		if(CONTENTS is not None):
+		#リクエストURIによって内容を買える
+		if(REQUEST_URI.startswith("/API")):#API
+			SELF.send_response(200)
+			SELF.send_header("Content-type", "application/json; charset=UTF-8")
+			SELF.end_headers()
+			SELF.wfile.write("{\"STATUS\":true}".encode("UTF-8"))
+		elif(REQUEST_URI.startswith("/user")):
 			SELF.send_response(200)
 			SELF.send_header("Content-type", "text/html; charset=UTF-8")
 			SELF.end_headers()
-			SELF.wfile.write(CONTENTS.encode("UTF-8"))
-		else:
-			SELF.send_response(404)
-			SELF.send_header("Content-type", "text/html; charset=UTF-8")
-			SELF.end_headers()
-			SELF.wfile.write("404 Page not found".encode("UTF-8"))
+			SELF.wfile.write("作ってる".encode("UTF-8"))
+		else:#どれでもないので
+			#ファイルを読み込む
+			CONTENTS = FILE_LOAD(REQUEST_URI)
+			#ファイルが有るか
+			if(CONTENTS is not None):#ある
+				#ステータスコード
+				SELF.send_response(200)
+				#拡張子によってヘッダーのMEMEを買える
+				if(REQUEST_URI.endswith(".css")):
+					#CSS
+					SELF.send_header("Content-type", "text/css; charset=UTF-8")
+					SELF.end_headers()
+				else:#HTML
+					SELF.send_header("Content-type", "text/html; charset=UTF-8")
+					SELF.end_headers()
+				SELF.wfile.write(CONTENTS.encode("UTF-8"))
+			else:#ファイルがない
+				SELF.send_response(404)
+				SELF.send_header("Content-type", "text/html; charset=UTF-8")
+				SELF.end_headers()
+				SELF.wfile.write("404 Page not found".encode("UTF-8"))
 
 #HTTP鯖を起動する関数
 def CREATE_HTTP_SERVER(HOST:str, PORT:int):
