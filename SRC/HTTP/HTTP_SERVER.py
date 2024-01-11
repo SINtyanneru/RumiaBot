@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
 
 #カスタムハンドラを作成
 class HTTP_Handler(BaseHTTPRequestHandler):
@@ -6,7 +7,7 @@ class HTTP_Handler(BaseHTTPRequestHandler):
 	def do_GET(SELF):
 		REQUEST_URI = SELF.path
 		if(REQUEST_URI == "/"):
-			F = open("/home/rumisan/source/RumiaBot/SRC/HTTP/CONTENTS/index.html", "r", encoding="UTF-8")
+			F = open("./SRC/HTTP/CONTENTS/index.html", "r", encoding="UTF-8")
 			SELF.send_response(200)
 			SELF.send_header("Content-type", "text/html; charset=UTF-8")
 			SELF.end_headers()
