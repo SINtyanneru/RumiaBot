@@ -1,3 +1,7 @@
 from HTTP.HTTP_SERVER import CREATE_HTTP_SERVER
 
-CREATE_HTTP_SERVER("0.0.0.0", 8085)
+def main():
+	CREATE_HTTP_SERVER("0.0.0.0", 8085)
+
+
+main()

@@ -10,11 +10,13 @@ class HTTP_Handler(BaseHTTPRequestHandler):
 		SELF.end_headers()
 		SELF.wfile.write(b"python de HTTP")
 
+#HTTP鯖を起動する関数
 def CREATE_HTTP_SERVER(HOST:str, PORT:int):
 	#サーバーを作成してハンドラを登録
 	SERVER = HTTPServer((HOST, PORT), HTTP_Handler)
 
-	print(f"Starting server on http://{HOST}:{PORT}")
+	#ログを吐く
+	print(f"Start HTTP server\n{HOST}:{PORT}")
 
 	#サーバーを開始
 	SERVER.serve_forever()
