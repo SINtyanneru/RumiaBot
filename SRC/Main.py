@@ -1,23 +1,3 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from HTTP.HTTP_SERVER import CREATE_HTTP_SERVER
 
-#カスタムハンドラを作成
-class HTTP_Handler(BaseHTTPRequestHandler):
-	#リクエストが来たらこの関数が実行される
-	def do_GET(SELF):
-		REQUEST_URI = SELF.path
-		SELF.send_response(200)
-		SELF.send_header('Content-type', 'text/html')
-		SELF.end_headers()
-		SELF.wfile.write(b"python de HTTP")
-
-#サーバーのアドレスとポートを指定
-HOST = "0.0.0.0"
-PORT = 8085
-
-#サーバーを作成してハンドラを登録
-SERVER = HTTPServer((HOST, PORT), HTTP_Handler)
-
-print(f"Starting server on http://{HOST}:{PORT}")
-
-#サーバーを開始
-SERVER.serve_forever()
+CREATE_HTTP_SERVER("0.0.0.0", 8085)
