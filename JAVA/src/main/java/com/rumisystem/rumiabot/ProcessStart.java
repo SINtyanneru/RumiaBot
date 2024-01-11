@@ -1,6 +1,7 @@
 package com.rumisystem.rumiabot;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ProcessStart implements Runnable {
@@ -16,23 +17,41 @@ public class ProcessStart implements Runnable {
 
 	public void run(){
 		try{
-			// 外部アプリケーションのプロセスを起動
+			//外部アプリケーションのプロセスを起動
 			ProcessBuilder PB = new ProcessBuilder(APP, ARG);
-			PB.redirectErrorStream(true);
 			Process PROCESS = PB.start();
 
 			Main.LOG(TAG, "Start " + APP + " " + ARG);
 
-			// 外部アプリケーションの出力を読み取るための BufferedReader を作成
-			BufferedReader READER = new BufferedReader(new InputStreamReader(PROCESS.getInputStream()));
+			//標準出力の読み取る用のスレッド
+			Thread OUT_TH = new Thread(() -> {
+				try (BufferedReader READER = new BufferedReader(new InputStreamReader(PROCESS.getInputStream()))) {
+					String LINE;
+					while ((LINE = READER.readLine()) != null) {
+						Main.LOG(" INFO  | " + TAG, LINE);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 
-			// 外部アプリケーションの出力をコンソールに出力
-			String LINE;
-			while ((LINE = READER.readLine()) != null) {
-				Main.LOG(TAG, LINE);
-			}
+			//エラー出力の読み取る用のスレッド
+			Thread ERR_TH = new Thread(() -> {
+				try (BufferedReader ERR_READER = new BufferedReader(new InputStreamReader(PROCESS.getErrorStream()))) {
+					String ERR_LINE;
+					while ((ERR_LINE = ERR_READER.readLine()) != null) {
+						Main.LOG(" ERR   | " + TAG, ERR_LINE);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 
-			// プロセスが終了するまで待機
+			//スレッドを開始
+			OUT_TH.start();
+			ERR_TH.start();
+
+			//プロセスが終了するまで待機
 			int EXIT_CODE = PROCESS.waitFor();
 			System.out.println(TAG + " a EXIT:" + EXIT_CODE);
 		}catch (Exception EX){
