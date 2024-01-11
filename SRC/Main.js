@@ -109,7 +109,7 @@ client.once("ready", async () => {
 	}, 1000);
 
 	//参加しているすべてのサーバーのメンバー数
-	const ALL_MEMBERS_COUNT = GET_ALL_MEMBERS_COUNT(client);
+	const ALL_MEMBERS_COUNT = await GET_ALL_MEMBERS_COUNT(client);
 
 	//プレセンツェを設定するやつ
 	let TEMP_ACTIVE = undefined;
