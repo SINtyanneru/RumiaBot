@@ -259,4 +259,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+#Pythonの謎ファイル
 __pycache__
