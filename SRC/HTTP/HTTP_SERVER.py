@@ -1,6 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 import os
+from MODULES_PYTHON.AJAX import AJAX
+import json
 
 CONTENTS_OWNER_PATH = os.getcwd() + "/SRC/HTTP/CONTENTS"
 
@@ -15,11 +17,15 @@ class HTTP_Handler(BaseHTTPRequestHandler):
 			SELF.send_header("Content-type", "application/json; charset=UTF-8")
 			SELF.end_headers()
 			SELF.wfile.write("{\"STATUS\":true}".encode("UTF-8"))
+		#user関連
 		elif(REQUEST_URI.startswith("/user")):
-			SELF.send_response(200)
-			SELF.send_header("Content-type", "text/html; charset=UTF-8")
-			SELF.end_headers()
-			SELF.wfile.write("作ってる".encode("UTF-8"))
+			#Misskeyの連携
+			if(REQUEST_URI.startswith("/user/login/misskey/")):
+				print(json.loads(AJAX("https://rumiserver.com/API/ACCOUNT/ACCOUNT_GET?UID=Kazemidori_x86", {"HEADER":{}})))
+				SELF.send_response(200)
+				SELF.send_header("Content-type", "text/html; charset=UTF-8")
+				SELF.end_headers()
+				SELF.wfile.write("作ってる".encode("UTF-8"))
 		else:#どれでもないので
 			#ファイルを読み込む
 			CONTENTS = FILE_LOAD(REQUEST_URI)
