@@ -59,9 +59,9 @@ client.once("ready", async () => {
 	SNS_CONNECTION.main();
 
 	//HTTP鯖を起動
-	HTTP_SERVER_OBJ.main();
+	//HTTP_SERVER_OBJ.main();
 	//WS鯖を起動
-	WS_SERVER_OBJ.main();
+	//WS_SERVER_OBJ.main();
 
 	LOCK_NICK_NAME_OBJ.INIT();
 
