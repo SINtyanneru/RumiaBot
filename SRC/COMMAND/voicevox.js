@@ -42,7 +42,7 @@ export class voicevox{
 	constructor(INTERACTION){
 		this.E = INTERACTION;
 
-		//ID
+		//ID（時刻をbase64してる）
 		this.ID = btoa(encodeURIComponent(new Date().toISOString()));
 
 		//文章
@@ -51,7 +51,7 @@ export class voicevox{
 		//話者を選ぶ
 		if(INTERACTION.options.getString("speaker")){
 			this.SPEEK_ID = INTERACTION.options.getString("speaker");
-		}else{
+		}else{//話者が指定されてないので初期値の3(ずんだもん/ノーマル)
 			this.SPEEK_ID = "3";
 		}
 	}
