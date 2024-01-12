@@ -19,6 +19,7 @@ import { NUM } from "./COMMAND/NUM.js";
 import { VC_MUSIC } from "./COMMAND/VC_MUSIC.js";
 import { Unicode_CODEPOINT } from "./COMMAND/Unicode_CODEPOINT.js";
 import { sns_login } from "./COMMAND/sns_login.js";
+import { machikado_mazoku_pic } from "./COMMAND/machikado_mazoku_pic.js";
 export async function REGIST_SLASH_COMMAND() {
 	const CMD_DATA = [
 		test.command,
@@ -36,6 +37,7 @@ export async function REGIST_SLASH_COMMAND() {
 		SETTING.command,
 		NUM.command,
 		Unicode_CODEPOINT.command,
+		machikado_mazoku_pic.command
 	];
 
 	//VC-music
