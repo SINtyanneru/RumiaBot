@@ -68,7 +68,7 @@ export class mazokupic{
 					}
 					//説明文
 					if(ILLUST_GET["description"]){
-						EB.setDescription(ILLUST_GET["description"]);
+						EB.setDescription(ILLUST_GET["description"].replaceAll("<br />", "\n"));
 					}
 					EB.setColor(RND_COLOR());
 
