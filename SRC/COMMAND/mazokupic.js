@@ -78,6 +78,20 @@ export class mazokupic{
 					}
 					EB.setColor(RND_COLOR());
 
+					//投稿日時
+					EB.setTimestamp(new Date(ILLUST_GET["uploadDate"]));
+
+					//タグ
+					let TAG_ARRAY = [];
+					for (let I = 0; I < ILLUST_GET["tags"]["tags"].length; I++) {
+						const TAG = ILLUST_GET["tags"]["tags"][I];
+						TAG_ARRAY.push(TAG["tag"]);
+					}
+					EB.addFields({
+						"name":"タグ",
+						"value": TAG_ARRAY.join("/")
+					});
+
 					//投稿者の情報を登録する
 					EB.setAuthor({
 						"name": AUTHOR_INFO["name"],
