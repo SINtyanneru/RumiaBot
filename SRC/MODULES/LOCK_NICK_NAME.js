@@ -22,7 +22,7 @@ export class LOCK_NICK_NAME {
 			console.log("[ OK ][ LOCK NICKNAME ]全ての設定を再読込しました!");
 		});
 		SQL_RESULT.catch(EX => {
-			console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
+			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
 		});
 	}
 	//メイン
@@ -39,14 +39,14 @@ export class LOCK_NICK_NAME {
 							await MEMBER.setNickname(NICK_NAME);
 							console.log("[ OK ][ LOCK NICKNAME ]" + MEMBER.user.username + "の名前を変更しました");
 						} else {
-							console.log("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
+							console.error("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
 							return;
 						}
 					}
 				}
 			}
 		} catch (EX) {
-			console.log("[ ERR ][ LOCK NICKNAME ]" + EX);
+			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
 			return;
 		}
 	}

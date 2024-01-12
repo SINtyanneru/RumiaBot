@@ -89,7 +89,7 @@ client.once("ready", async () => {
 		});
 		console.log("[ OK ][ SLASH_COMMAND ]Al Komand wu registera!");
 	} catch (EX) {
-		console.log("[ ERR ][ SLASH_COMMAND ]" + EX);
+		console.error("[ ERR ][ SLASH_COMMAND ]" + EX);
 	}
 
 	//活動期間か？
@@ -418,7 +418,7 @@ client.on("messageCreate", async message => {
 					.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
 			});
 	} catch (EX) {
-		console.log("[ ERR ][ DJS ]" + EX);
+		console.error("[ ERR ][ DJS ]" + EX);
 	}
 });
 

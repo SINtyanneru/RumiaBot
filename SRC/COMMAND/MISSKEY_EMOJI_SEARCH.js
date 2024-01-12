@@ -57,7 +57,7 @@ export class MISSKEY_EMOJI_SEARCH{
 				await this.E.editReply("そんな絵文字は無い！");
 			}
 		}catch(EX){
-			console.log(EX);
+			console.error(EX);
 			await this.E.editReply("DiscordAPIがエラーを吐きやがった！Бля！");
 		}
 	}

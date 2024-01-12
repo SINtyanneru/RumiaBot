@@ -23,7 +23,7 @@ export class SQL {
 	main() {
 		this.SQL_CONNECTION.connect(ERR => {
 			if (ERR) {
-				console.log("[ ERR ][ SQL ]" + ERR);
+				console.error("[ ERR ][ SQL ]" + ERR);
 				return;
 			} else {
 				console.log("[ OK ][ SQL ] Connected!");
@@ -47,7 +47,7 @@ export class SQL {
 			this.SQL_CONNECTION.query(SQL_SCRIPT, SQL_PARAM, (ERR, RESULT) => {
 				if (ERR) {
 					//エラーチェック
-					console.log("[ ERR ][ SQL ]" + ERR);
+					console.error("[ ERR ][ SQL ]" + ERR);
 					reject(ERR);
 				} else {
 					//せいこうしたので
