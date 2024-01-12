@@ -23,6 +23,10 @@ export class voicevox{
 					{
 						name: "四国めたん/ノーマル",
 						value: "2"
+					},
+					{
+						name: "四国めたん/あまあま",
+						value: "0"
 					}
 				)
 				.setRequired(false)
