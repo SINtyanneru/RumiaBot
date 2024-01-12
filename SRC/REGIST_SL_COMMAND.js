@@ -20,6 +20,8 @@ import { VC_MUSIC } from "./COMMAND/VC_MUSIC.js";
 import { Unicode_CODEPOINT } from "./COMMAND/Unicode_CODEPOINT.js";
 import { sns_login } from "./COMMAND/sns_login.js";
 import { mazokupic } from "./COMMAND/mazokupic.js";
+import { voicevox } from "./COMMAND/voicevox.js";
+
 export async function REGIST_SLASH_COMMAND() {
 	const CMD_DATA = [
 		test.command,
@@ -37,7 +39,8 @@ export async function REGIST_SLASH_COMMAND() {
 		SETTING.command,
 		NUM.command,
 		Unicode_CODEPOINT.command,
-		mazokupic.command
+		mazokupic.command,
+		voicevox.command
 	];
 
 	//VC-music

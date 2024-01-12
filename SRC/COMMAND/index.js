@@ -19,5 +19,6 @@ import { MISSKEY_EMOJI_SEARCH } from "./MISSKEY_EMOJI_SEARCH.js";
 import { Unicode_CODEPOINT } from "./Unicode_CODEPOINT.js";
 import { sns_login } from "./sns_login.js";
 import { mazokupic } from "./mazokupic.js";
+import { voicevox } from "./voicevox.js";
 
-export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC, MISSKEY_EMOJI_SEARCH, Unicode_CODEPOINT, sns_login, mazokupic };
+export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC, MISSKEY_EMOJI_SEARCH, Unicode_CODEPOINT, sns_login, mazokupic, voicevox };

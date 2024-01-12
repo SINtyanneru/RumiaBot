@@ -539,6 +539,9 @@ client.on("interactionCreate", async INTERACTION => {
 			case "mazokupic":
 				await new command.mazokupic(INTERACTION).main();
 				return;
+			case "voicevox":
+				await new command.voicevox(INTERACTION).main();
+				return;
 		}
 	} catch (EX) {
 		console.error("[ ERR ][ DJS ]" + EX);
