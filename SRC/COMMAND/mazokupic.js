@@ -15,6 +15,25 @@ export class mazokupic{
 	 */
 	constructor(INTERACTION) {
 		this.E = INTERACTION;
+
+		//いつでも使えるように
+		this.API_HEADER = {//これで満足かPixivAPIめ
+			"Host": "i.pximg.net",
+			"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0;rumisan:16.0) Gecko/20100101 Firefox/115.0",
+			"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/jxl,image/webp,*/*;q=0.8",
+			"Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Referer": "https://www.pixiv.net/",
+			"Connection": "keep-alive",
+			"Upgrade-Insecure-Requests": "1",
+			"Sec-Fetch-Dest": "document",
+			"Sec-Fetch-Mode": "navigate",
+			"Sec-Fetch-Site": "cross-site",
+			"Pragma": "no-cache",
+			"Cache-Control": "no-cache",
+		};
+
+		this.API_VERSION = "6c38cc7c723c6ae8b0dc7022d497a1ee751824c0";
 	}
 
 	async main(){
@@ -35,7 +54,7 @@ export class mazokupic{
 
 				EB.setImage(`attachment://${ILLUST["id"]}.png`);
 
-				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"], new Date(ILLUST["createDate"]));
+				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"]);
 				if(ILLUST_GET){
 					await this.E.editReply({ embeds: [EB], files: [`./DOWNLOAD/MAZOKUPIC/${ILLUST["id"]}.png`] });
 				}else{
@@ -89,20 +108,20 @@ export class mazokupic{
 
 	async GET_PIC(){
 		console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIに問い合わせています。。。");
-		let AJAX = await fetch("https://www.pixiv.net/ajax/search/illustrations/%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F?word=%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F&order=date_d&mode=all&p=1&csw=0&s_mode=s_tag_full&type=illust_and_ugoira&lang=ja&version=6c38cc7c723c6ae8b0dc7022d497a1ee751824c0",{
+		let AJAX = await fetch("https://www.pixiv.net/ajax/search/illustrations/%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F?word=%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F&order=date_d&mode=all&p=1&csw=0&s_mode=s_tag_full&type=illust_and_ugoira&lang=ja&version=" + this.API_VERSION,{
 			method:"GET",
 			headers:{
 				"Referer": "https://www.pixiv.net/tags/%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F/illustrations"
 			}
 		});
 
-		if(AJAX.ok){
+		if(AJAX.ok){//成功
 			let RESULT = await AJAX.json();
 
 			console.log("[ OK ][ MAZOKU.AJAX ]PixivAPIが応答しました");
 
 			return RESULT;
-		}else{
+		}else{//失敗
 			console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
 			return undefined;
 		}
@@ -110,51 +129,48 @@ export class mazokupic{
 
 	/**
 	 * @param {string} ID
-	 * @param {Date} DATE
 	 */
-	async GET_ILLUST(ID, DATE){
+	async GET_ILLUST(ID){
 		//キャッシュが有るか
 		if(FS.existsSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png")){
 			//ある
 			return true;
 		}else{
-			console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています" + ID);
-			//Pixivの違法DL防止機能の所為でこんなことにｗｗｗ
-			let AJAX = await fetch(`https://i.pximg.net/img-original/img/${DATE.getFullYear()}\
-																		/${(DATE.getMonth() + 1).toString().padStart(2, "0")}\
-																		/${DATE.getDate().toString().padStart(2, "0")}\
-																		/${DATE.getHours().toString().padStart(2, "0")}\
-																		/${DATE.getMinutes().toString().padStart(2, "0")}\
-																		/${DATE.getSeconds().toString().padStart(2, "0")}\
-																		/${ID}_p0.png`,{
+			console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIに問い合わせています。。。");
+			let API_AJAX = await fetch(`https://www.pixiv.net/ajax/illust/${ID}?lang=ja&version=${this.API_VERSION}`,{
 				method:"GET",
-				headers:{//これで満足かPixivAPIめ
-					"Host": "i.pximg.net",
-					"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0;rumisan:16.0) Gecko/20100101 Firefox/115.0",
-					"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/jxl,image/webp,*/*;q=0.8",
-					"Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
-					"Accept-Encoding": "gzip, deflate, br",
-					"Referer": "https://www.pixiv.net/",
-					"Connection": "keep-alive",
-					"Upgrade-Insecure-Requests": "1",
-					"Sec-Fetch-Dest": "document",
-					"Sec-Fetch-Mode": "navigate",
-					"Sec-Fetch-Site": "cross-site",
-					"Pragma": "no-cache",
-					"Cache-Control": "no-cache",
-				}
+				headers:this.API_HEADER
 			});
 
-			if(AJAX.ok){
-				let RESULT = new DataView(await (await AJAX.blob()).arrayBuffer());
+			if(API_AJAX.ok){
+				console.log("[ OK ][ MAZOKU.AJAX ]PixivAPIが応答しました");
+				let API_RESULT = await API_AJAX.json();
 
-				console.log("[ OK ][ MAZOKU.GET_ILLUST ]ダウンロード完了");
+				//イラストのURL
+				const ILLUST_URL = API_RESULT["body"]["urls"]["thumb"];
 
-				FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png", RESULT, "binary");
+				//イラストをダウンロードする
+				console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています:" + ILLUST_URL);
 
-				return true;
-			}else{
-				console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！|" + AJAX.status);
+				let ILLUST_AJAX = await fetch(ILLUST_URL,{
+					method:"GET",
+					headers:this.API_HEADER
+				});
+	
+				if(ILLUST_AJAX.ok){//成功
+					let ILLUST_RESULT = new DataView(await (await ILLUST_AJAX.blob()).arrayBuffer());
+	
+					console.log("[ OK ][ MAZOKU.GET_ILLUST ]ダウンロード完了");
+	
+					FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png", ILLUST_RESULT, "binary");
+	
+					return true;
+				}else{//失敗
+					console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！|" + ILLUST_AJAX.status);
+					return false;
+				}
+			}else{//失敗
+				console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
 				return false;
 			}
 		}
