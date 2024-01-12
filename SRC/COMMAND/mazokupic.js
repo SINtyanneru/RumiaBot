@@ -68,7 +68,13 @@ export class mazokupic{
 					}
 					//説明文
 					if(ILLUST_GET["description"]){
-						EB.setDescription(ILLUST_GET["description"].replaceAll("<br />", "\n"));
+						let DESC_TEXT = ILLUST_GET["description"];
+
+						DESC_TEXT = DESC_TEXT.replaceAll("<br />", "\n");
+						DESC_TEXT = DESC_TEXT.replaceAll("<strong>", "**");
+						DESC_TEXT = DESC_TEXT.replaceAll(/<a[^>]*>[^<]*<\/a>/g, "");
+
+						EB.setDescription(DESC_TEXT);
 					}
 					EB.setColor(RND_COLOR());
 
