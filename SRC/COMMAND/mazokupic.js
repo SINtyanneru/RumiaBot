@@ -50,21 +50,37 @@ export class mazokupic{
 			if(RESULT["illust"]["data"][RND]){//ある
 				const ILLUST = RESULT["illust"]["data"][RND];
 
-				const EB = new MessageEmbed();
-				EB.setTitle(ILLUST["title"]);
-				EB.setDescription("https://www.pixiv.net/artworks/" + ILLUST["id"]);
-				EB.setColor(RND_COLOR());
-
 				const AUTHOR_INFO = await this.GET_USER(RESULT["illust"]["data"][RND]["userId"]);
 				const ILLUST_GET = await this.GET_ILLUST(ILLUST["id"]);
 
 				if(AUTHOR_INFO && ILLUST_GET){
+					const EB = new MessageEmbed();
+					//タイトル
+					if(ILLUST["title"]){
+						if(ILLUST["title"].length > 250){//250文字を超えたら
+							//切り落とす
+							EB.setTitle(ILLUST["title"].substring(0, 250) + "...");
+						}else{//250文字超えてないのでそのまま載せる
+							EB.setTitle(ILLUST["title"]);
+						}
+					}else{//無題の場合
+						EB.setTitle("無題");
+					}
+					//説明文
+					if(ILLUST_GET["description"]){
+						EB.setDescription(ILLUST_GET["description"]);
+					}
+					EB.setColor(RND_COLOR());
+
 					//投稿者の情報を登録する
 					EB.setAuthor({
 						"name": AUTHOR_INFO["name"],
 						"url": `https://www.pixiv.net/users/${AUTHOR_INFO["userId"]}`,
 						"iconURL": `attachment://USER_${AUTHOR_INFO["userId"]}.png`
 					});
+
+					//イラストのURLをつける
+					EB.setURL("https://www.pixiv.net/artworks/" + ILLUST["id"]);
 
 					//イラストを登録する
 					EB.setImage(`attachment://ILLUST_${ILLUST["id"]}.png`);
@@ -152,31 +168,31 @@ export class mazokupic{
 	 * @param {string} ID イラストID
 	 */
 	async GET_ILLUST(ID){
-		//キャッシュが有るか
-		if(FS.existsSync(this.FILE_PATH + "/ILLUST/" + ID + ".png")){
-			//ある
-			return true;
-		}else{
-			console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIにイラスト情報を問い合わせています。。。");
-			let API_AJAX = await fetch(`https://www.pixiv.net/ajax/illust/${ID}?lang=ja&version=${this.API_VERSION}`,{
-				method:"GET",
-				headers:this.API_HEADER
-			});
+		console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIにイラスト情報を問い合わせています。。。");
+		let API_AJAX = await fetch(`https://www.pixiv.net/ajax/illust/${ID}?lang=ja&version=${this.API_VERSION}`,{
+			method:"GET",
+			headers:this.API_HEADER
+		});
 
-			if(API_AJAX.ok){
-				console.log("[ OK ][ MAZOKU.AJAX ]PixivAPIが応答しました");
-				let API_RESULT = await API_AJAX.json();
+		if(API_AJAX.ok){
+			console.log("[ OK ][ MAZOKU.AJAX ]PixivAPIが応答しました");
+			let API_RESULT = await API_AJAX.json();
 
+			//キャッシュが有るか
+			if(FS.existsSync(this.FILE_PATH + "/ILLUST/" + ID + ".png")){
+				//ある
+				return true;
+			}else{//無い
 				//イラストのURL
 				const ILLUST_URL = API_RESULT["body"]["urls"]["regular"];
 				//イラストを保存する
 				FS.writeFileSync(this.FILE_PATH + "/ILLUST/ILLUST_" + ID + ".png", (await this.DOWNLOAD_PICTURE(ILLUST_URL)), "binary");
-
-				return true;
-			}else{//失敗
-				console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
-				return false;
 			}
+
+			return API_RESULT["body"];
+		}else{//失敗
+			console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
+			return undefined;
 		}
 	}
 
