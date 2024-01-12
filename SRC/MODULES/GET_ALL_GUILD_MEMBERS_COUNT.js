@@ -1,5 +1,4 @@
 import { MAP_KILLER } from "./MAP_KILLER.js";
-import * as FS from "node:fs";
 
 /**参加してるメンバーをしゅうけいするやつ
 * @param {import("discord.js").Client} client
