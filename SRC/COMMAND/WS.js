@@ -133,11 +133,11 @@ export class WS {
 				//スクショする
 				await DRIVER.takeScreenshot().then(async SCREENSHOT_DATA => {
 					try {
-						FS.writeFileSync("./DOWNLOAD/" + E.member.id + ".png", SCREENSHOT_DATA, "base64");
+						FS.writeFileSync("./DOWNLOAD/WS/" + E.member.id + ".png", SCREENSHOT_DATA, "base64");
 
 						await E.editReply({
 							content: "おｋ、" + BROWSER_NAME_TEXT + "で撮影したよ",
-							files: ["./DOWNLOAD/" + E.member.id + ".png"]
+							files: ["./DOWNLOAD/WS/" + E.member.id + ".png"]
 						});
 						return;
 					} catch (EX) {
