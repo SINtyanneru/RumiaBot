@@ -17,7 +17,16 @@ public class Main {
 		PS2.start();
 	}
 
-	public static void LOG(String TAG, String TEXT){
-		System.out.println("[ " + TAG + " ]" + TEXT);
+	public static void LOG(String TAG, String TEXT, int MODE){
+		switch (MODE){
+			case 0:{
+				System.out.println("[ " + TAG + " ]" + TEXT);
+				return;
+			}
+			case 1:{
+				System.out.println("\u001B[31m[ " + TAG + " ]" + TEXT + "\u001B[0m");
+				return;
+			}
+		}
 	}
 }

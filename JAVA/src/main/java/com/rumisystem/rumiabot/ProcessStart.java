@@ -21,14 +21,14 @@ public class ProcessStart implements Runnable {
 			ProcessBuilder PB = new ProcessBuilder(APP, ARG);
 			Process PROCESS = PB.start();
 
-			Main.LOG(TAG, "Start " + APP + " " + ARG);
+			Main.LOG(TAG, "Start " + APP + " " + ARG, 0);
 
 			//標準出力の読み取る用のスレッド
 			Thread OUT_TH = new Thread(() -> {
 				try (BufferedReader READER = new BufferedReader(new InputStreamReader(PROCESS.getInputStream()))) {
 					String LINE;
 					while ((LINE = READER.readLine()) != null) {
-						Main.LOG(" INFO  | " + TAG, LINE);
+						Main.LOG(" INFO  | " + TAG, LINE, 0);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -40,7 +40,7 @@ public class ProcessStart implements Runnable {
 				try (BufferedReader ERR_READER = new BufferedReader(new InputStreamReader(PROCESS.getErrorStream()))) {
 					String ERR_LINE;
 					while ((ERR_LINE = ERR_READER.readLine()) != null) {
-						Main.LOG(" ERR   | " + TAG, ERR_LINE);
+						Main.LOG(" ERR   | " + TAG, ERR_LINE, 1);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
