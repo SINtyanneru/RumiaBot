@@ -35,7 +35,7 @@ export class mazokupic{
 
 				EB.setImage(`attachment://${ILLUST["id"]}.png`);
 
-				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"], new Date(ILLUST["updateDate"]));//イラストの作成日時じゃねえからな、更新日を使え
+				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"], new Date(ILLUST["createDate"]));
 				if(ILLUST_GET){
 					await this.E.editReply({ embeds: [EB], files: [`./DOWNLOAD/MAZOKUPIC/${ILLUST["id"]}.png`] });
 				}else{
@@ -118,7 +118,7 @@ export class mazokupic{
 			//ある
 			return true;
 		}else{
-			console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています");
+			console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています" + ID);
 			//Pixivの違法DL防止機能の所為でこんなことにｗｗｗ
 			let AJAX = await fetch(`https://i.pximg.net/img-original/img/${DATE.getFullYear()}\
 																		/${(DATE.getMonth() + 1).toString().padStart(2, "0")}\
@@ -140,7 +140,6 @@ export class mazokupic{
 					"Sec-Fetch-Dest": "document",
 					"Sec-Fetch-Mode": "navigate",
 					"Sec-Fetch-Site": "cross-site",
-					"Sec-Fetch-User": "?1",
 					"Pragma": "no-cache",
 					"Cache-Control": "no-cache",
 				}
@@ -155,7 +154,7 @@ export class mazokupic{
 
 				return true;
 			}else{
-				console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！");
+				console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！|" + AJAX.status);
 				return false;
 			}
 		}
