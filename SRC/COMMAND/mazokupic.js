@@ -34,10 +34,12 @@ export class mazokupic{
 		};
 
 		this.API_VERSION = "6c38cc7c723c6ae8b0dc7022d497a1ee751824c0";
+
+		this.FILE_PATH = "./DOWNLOAD/MAZOKUPIC";
 	}
 
 	async main(){
-		let RESULT = await this.CATCHE();
+		let RESULT = await this.GET_PICTURES_CATCHE();
 
 		//Nullチェック
 		if(RESULT){
@@ -47,16 +49,31 @@ export class mazokupic{
 			//乱数の先にデータが有るか
 			if(RESULT["illust"]["data"][RND]){//ある
 				const ILLUST = RESULT["illust"]["data"][RND];
+
 				const EB = new MessageEmbed();
 				EB.setTitle(ILLUST["title"]);
 				EB.setDescription("https://www.pixiv.net/artworks/" + ILLUST["id"]);
 				EB.setColor(RND_COLOR());
 
-				EB.setImage(`attachment://${ILLUST["id"]}.png`);
+				const AUTHOR_INFO = await this.GET_USER(RESULT["illust"]["data"][RND]["userId"]);
+				const ILLUST_GET = await this.GET_ILLUST(ILLUST["id"]);
 
-				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"]);
-				if(ILLUST_GET){
-					await this.E.editReply({ embeds: [EB], files: [`./DOWNLOAD/MAZOKUPIC/${ILLUST["id"]}.png`] });
+				if(AUTHOR_INFO && ILLUST_GET){
+					//投稿者の情報を登録する
+					EB.setAuthor({
+						"name": AUTHOR_INFO["name"],
+						"url": `https://www.pixiv.net/users/${AUTHOR_INFO["userId"]}`,
+						"iconURL": `attachment://USER_${AUTHOR_INFO["userId"]}.png`
+					});
+
+					//イラストを登録する
+					EB.setImage(`attachment://ILLUST_${ILLUST["id"]}.png`);
+
+					//投稿
+					await this.E.editReply({ embeds: [EB], files: [
+						`./DOWNLOAD/MAZOKUPIC/ILLUST/ILLUST_${ILLUST["id"]}.png`,
+						`./DOWNLOAD/MAZOKUPIC/USER/USER_${AUTHOR_INFO["userId"]}.png`
+					] });
 				}else{
 					await this.E.editReply("画像のダウンロードに失敗しました");
 				}
@@ -69,19 +86,19 @@ export class mazokupic{
 	}
 
 	//キャッシュのDATAはbody内を保存してます、errorを消してます注意しろよ未来の私
-	async CATCHE(){
+	async GET_PICTURES_CATCHE(){
 		try{
 			//キャッシュはあるか
-			if(FS.existsSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json")){
-				const F =FS.readFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", "utf-8");
+			if(FS.existsSync(this.FILE_PATH + "/MACHIKADO_MAZOKU_PIXIV_CACHE.json")){
+				const F =FS.readFileSync(this.FILE_PATH + "/MACHIKADO_MAZOKU_PIXIV_CACHE.json", "utf-8");
 				const F_D = JSON.parse(F.toString());                   //ファイルの内容
 				let NOW_DATE = new Date();                      //今日の日付
 				let CACHE_DATE = new Date(F_D.DATE);              //キャッシュの日付
 				//キャッシュの日付と今日の日付は違うか
 				if(CACHE_DATE.getDate() !== NOW_DATE.getDate()){
 					//違うので再取得して(ry
-					let RESULT = await this.GET_PIC();
-					FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
+					let RESULT = await this.GET_PICTURES();
+					FS.writeFileSync(this.FILE_PATH + "/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 						"DATE":new Date(),
 						"DATA":RESULT["body"]
 					}));
@@ -91,9 +108,9 @@ export class mazokupic{
 					return F_D["DATA"];
 				}
 			}else{//ないのでAPIで情報を取得する
-				let RESULT = await this.GET_PIC();
+				let RESULT = await this.GET_PICTURES();
 				//取得した内容をキャッシュに書き込む
-				FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
+				FS.writeFileSync(this.FILE_PATH + "/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 					"DATE":new Date(),
 					"DATA":RESULT["body"]
 				}));
@@ -106,7 +123,10 @@ export class mazokupic{
 		}
 	}
 
-	async GET_PIC(){
+	/**
+	 * @description イラスト一覧を取得する
+	 */
+	async GET_PICTURES(){
 		console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIに問い合わせています。。。");
 		let AJAX = await fetch("https://www.pixiv.net/ajax/search/illustrations/%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F?word=%E3%81%BE%E3%81%A1%E3%82%AB%E3%83%89%E3%81%BE%E3%81%9E%E3%81%8F&order=date_d&mode=all&p=1&csw=0&s_mode=s_tag_full&type=illust_and_ugoira&lang=ja&version=" + this.API_VERSION,{
 			method:"GET",
@@ -128,15 +148,16 @@ export class mazokupic{
 	}
 
 	/**
-	 * @param {string} ID
+	 * @description イラストの情報を取得してイラストを保存する
+	 * @param {string} ID イラストID
 	 */
 	async GET_ILLUST(ID){
 		//キャッシュが有るか
-		if(FS.existsSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png")){
+		if(FS.existsSync(this.FILE_PATH + "/ILLUST/" + ID + ".png")){
 			//ある
 			return true;
 		}else{
-			console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIに問い合わせています。。。");
+			console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIにイラスト情報を問い合わせています。。。");
 			let API_AJAX = await fetch(`https://www.pixiv.net/ajax/illust/${ID}?lang=ja&version=${this.API_VERSION}`,{
 				method:"GET",
 				headers:this.API_HEADER
@@ -147,32 +168,68 @@ export class mazokupic{
 				let API_RESULT = await API_AJAX.json();
 
 				//イラストのURL
-				const ILLUST_URL = API_RESULT["body"]["urls"]["thumb"];
+				const ILLUST_URL = API_RESULT["body"]["urls"]["regular"];
+				//イラストを保存する
+				FS.writeFileSync(this.FILE_PATH + "/ILLUST/ILLUST_" + ID + ".png", (await this.DOWNLOAD_PICTURE(ILLUST_URL)), "binary");
 
-				//イラストをダウンロードする
-				console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています:" + ILLUST_URL);
-
-				let ILLUST_AJAX = await fetch(ILLUST_URL,{
-					method:"GET",
-					headers:this.API_HEADER
-				});
-	
-				if(ILLUST_AJAX.ok){//成功
-					let ILLUST_RESULT = new DataView(await (await ILLUST_AJAX.blob()).arrayBuffer());
-	
-					console.log("[ OK ][ MAZOKU.GET_ILLUST ]ダウンロード完了");
-	
-					FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png", ILLUST_RESULT, "binary");
-	
-					return true;
-				}else{//失敗
-					console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！|" + ILLUST_AJAX.status);
-					return false;
-				}
+				return true;
 			}else{//失敗
 				console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
 				return false;
 			}
+		}
+	}
+
+	/**
+	 * @description ユーザー情報を取得する(ついでにアイコンをDLしてくれる)
+	 * @param {string} ID ユーザーID
+	 */
+	async GET_USER(ID){
+		console.log("[ *** ][ MAZOKU.AJAX ]PixivAPIにユーザー情報を問い合わせています。。。");
+		let API_AJAX = await fetch(`https://www.pixiv.net/ajax/user/${ID}?lang=ja&version=${this.API_VERSION}`,{
+			method:"GET",
+			headers:this.API_HEADER
+		});
+
+		if(API_AJAX.ok){
+			console.log("[ OK ][ MAZOKU.AJAX ]PixivAPIが応答しました");
+			let API_RESULT = await API_AJAX.json();
+
+			//ユーザーのアイコンは有るか
+			if(!FS.existsSync(this.FILE_PATH + "/USER/USER_" + API_RESULT["body"]["userId"] + ".png")){
+				//ユーザーのアイコンをダウンロードする
+				FS.writeFileSync(this.FILE_PATH + "/USER/USER_" + API_RESULT["body"]["userId"] + ".png", (await this.DOWNLOAD_PICTURE(API_RESULT["body"]["image"])), "binary");
+			}
+			
+			return API_RESULT["body"];
+		}else{
+			console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
+			return undefined;
+		}
+	}
+
+	/**
+	 * @description 画像をダウンロードする
+	 * @param {string} URL 画像のURL
+	 */
+	async DOWNLOAD_PICTURE(URL){
+		//イラストをダウンロードする
+		console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています:" + URL);
+
+		let ILLUST_AJAX = await fetch(URL,{
+			method:"GET",
+			headers:this.API_HEADER
+		});
+
+		if(ILLUST_AJAX.ok){//成功
+			let ILLUST_RESULT = new DataView(await (await ILLUST_AJAX.blob()).arrayBuffer());
+
+			console.log("[ OK ][ MAZOKU.GET_ILLUST ]ダウンロード完了");
+
+			return ILLUST_RESULT;
+		}else{//失敗
+			console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！|" + ILLUST_AJAX.status);
+			return undefined;
 		}
 	}
 }
