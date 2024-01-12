@@ -53,15 +53,30 @@ export class voicevox{
 	}
 
 	async main(){
-		const QUERY = await this.GET_QUERY(this.TEXT);
+		try{
+			const QUERY = await this.GET_QUERY(this.TEXT);
 
-		//生成結果のファイルを保存
-		FS.writeFileSync(`./DOWNLOAD/VOICEVOX/${this.ID}.wav`, (await this.GENERATE(QUERY)), "binary");
-
-		//生成結果を入れる
-		await this.E.editReply({ content:"生成した", files: [
-			`./DOWNLOAD/VOICEVOX/${this.ID}.wav`
-		] });
+			if(QUERY){
+				let GENERATE_RESULT = await this.GENERATE(QUERY);
+				if(GENERATE_RESULT){
+					//生成結果をファイルを保存
+					FS.writeFileSync(`./DOWNLOAD/VOICEVOX/${this.ID}.wav`, (GENERATE_RESULT), "binary");
+	
+					//生成結果を入れる
+					await this.E.editReply({ content:"生成した", files: [
+						`./DOWNLOAD/VOICEVOX/${this.ID}.wav`
+					] });
+	
+					//終了
+					return;
+				}
+			}
+			//終了しないとここにくる
+			await this.E.editReply({ content:"エラー"});
+		}catch(EX){
+			console.error("[ ERR ][ VOICEVOX ]" + EX);
+			return;
+		}
 	}
 
 	/**
