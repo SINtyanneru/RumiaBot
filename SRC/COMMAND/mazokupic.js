@@ -1,8 +1,11 @@
+// @ts-check
 /**
  * まちカドまぞくのあれをあれするあれ
  */
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { MessageEmbed } from "discord.js";
 import * as FS from "node:fs";
+import { RND_COLOR } from "../MODULES/RND_COLOR.js";
 
 export class mazokupic{
 	static command = new SlashCommandBuilder().setName("mazokupic").setDescription("まちカドまぞくのイラストをPixivからランダムにだしますのだのあのだのあのんだ");
@@ -23,10 +26,22 @@ export class mazokupic{
 			let RND = Math.floor(Math.random() * RESULT["illust"]["data"].length);
 
 			//乱数の先にデータが有るか
-			if(RESULT["illust"]["data"][RND]){
-				//あるので返す
-				await this.E.editReply("https://www.pixiv.net/artworks/" + RESULT["illust"]["data"][RND]["id"]);
-			}else{//無いのでエラーを変えす
+			if(RESULT["illust"]["data"][RND]){//ある
+				const ILLUST = RESULT["illust"]["data"][RND];
+				const EB = new MessageEmbed();
+				EB.setTitle(ILLUST["title"]);
+				EB.setDescription("https://www.pixiv.net/artworks/" + ILLUST["id"]);
+				EB.setColor(RND_COLOR());
+
+				EB.setImage(`attachment://${ILLUST["id"]}.png`);
+
+				let ILLUST_GET = await this.GET_ILLUST(ILLUST["id"], new Date(ILLUST["updateDate"]));//イラストの作成日時じゃねえからな、更新日を使え
+				if(ILLUST_GET){
+					await this.E.editReply({ embeds: [EB], files: [`./DOWNLOAD/MAZOKUPIC/${ILLUST["id"]}.png`] });
+				}else{
+					await this.E.editReply("画像のダウンロードに失敗しました");
+				}
+			}else{
 				await this.E.editReply("乱数生成中にエラーが発生");
 			}
 		}else{
@@ -38,28 +53,28 @@ export class mazokupic{
 	async CATCHE(){
 		try{
 			//キャッシュはあるか
-			if(FS.existsSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json")){
-				let F =FS.readFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", "UTF-8");
-				F = JSON.parse(F.toString());                   //ファイルの内容
+			if(FS.existsSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json")){
+				const F =FS.readFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", "utf-8");
+				const F_D = JSON.parse(F.toString());                   //ファイルの内容
 				let NOW_DATE = new Date();                      //今日の日付
-				let CACHE_DATE = new Date(F.DATE);              //キャッシュの日付
+				let CACHE_DATE = new Date(F_D.DATE);              //キャッシュの日付
 				//キャッシュの日付と今日の日付は違うか
 				if(CACHE_DATE.getDate() !== NOW_DATE.getDate()){
 					//違うので再取得して(ry
 					let RESULT = await this.GET_PIC();
-					FS.writeFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
+					FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 						"DATE":new Date(),
 						"DATA":RESULT["body"]
 					}));
 					//取得した内容を返答する
 					return RESULT["body"];
 				}else{//同じなのでキャッシュの内容を返す
-					return F["DATA"];
+					return F_D["DATA"];
 				}
 			}else{//ないのでAPIで情報を取得する
 				let RESULT = await this.GET_PIC();
 				//取得した内容をキャッシュに書き込む
-				FS.writeFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
+				FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 					"DATE":new Date(),
 					"DATA":RESULT["body"]
 				}));
@@ -90,6 +105,59 @@ export class mazokupic{
 		}else{
 			console.error("[ ERR ][ MAZOKU.AJAX ]PixivAPI、もしくはAJAXがエラーを吐きました；；");
 			return undefined;
+		}
+	}
+
+	/**
+	 * @param {string} ID
+	 * @param {Date} DATE
+	 */
+	async GET_ILLUST(ID, DATE){
+		//キャッシュが有るか
+		if(FS.existsSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png")){
+			//ある
+			return true;
+		}else{
+			console.log("[ *** ][ MAZOKU.GET_ILLUST ]Pixivから画像ファイルをダウンロードしています");
+			//Pixivの違法DL防止機能の所為でこんなことにｗｗｗ
+			let AJAX = await fetch(`https://i.pximg.net/img-original/img/${DATE.getFullYear()}\
+																		/${(DATE.getMonth() + 1).toString().padStart(2, "0")}\
+																		/${DATE.getDate().toString().padStart(2, "0")}\
+																		/${DATE.getHours().toString().padStart(2, "0")}\
+																		/${DATE.getMinutes().toString().padStart(2, "0")}\
+																		/${DATE.getSeconds().toString().padStart(2, "0")}\
+																		/${ID}_p0.png`,{
+				method:"GET",
+				headers:{//これで満足かPixivAPIめ
+					"Host": "i.pximg.net",
+					"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0;rumisan:16.0) Gecko/20100101 Firefox/115.0",
+					"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/jxl,image/webp,*/*;q=0.8",
+					"Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+					"Accept-Encoding": "gzip, deflate, br",
+					"Referer": "https://www.pixiv.net/",
+					"Connection": "keep-alive",
+					"Upgrade-Insecure-Requests": "1",
+					"Sec-Fetch-Dest": "document",
+					"Sec-Fetch-Mode": "navigate",
+					"Sec-Fetch-Site": "cross-site",
+					"Sec-Fetch-User": "?1",
+					"Pragma": "no-cache",
+					"Cache-Control": "no-cache",
+				}
+			});
+
+			if(AJAX.ok){
+				let RESULT = new DataView(await (await AJAX.blob()).arrayBuffer());
+
+				console.log("[ OK ][ MAZOKU.GET_ILLUST ]ダウンロード完了");
+
+				FS.writeFileSync("./DOWNLOAD/MAZOKUPIC/" + ID + ".png", RESULT, "binary");
+
+				return true;
+			}else{
+				console.error("[ ERR ][ MAZOKU.GET_ILLUST ]むりだー！");
+				return false;
+			}
 		}
 	}
 }
