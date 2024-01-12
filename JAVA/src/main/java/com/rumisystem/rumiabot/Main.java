@@ -24,7 +24,7 @@ public class Main {
 				return;
 			}
 			case 1:{
-				System.out.println("\u001B[31m[ " + TAG + " ]" + TEXT + "\u001B[0m");
+				System.out.println("\u001B[41m\u001B[37m\u001B[1m[ " + TAG + " ]" + TEXT + "\u001B[0m");
 				return;
 			}
 		}
