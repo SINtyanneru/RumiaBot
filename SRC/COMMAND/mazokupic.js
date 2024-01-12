@@ -4,8 +4,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import * as FS from "node:fs";
 
-export class machikado_mazoku_pic{
-	static command = new SlashCommandBuilder().setName("machikado_mazoku_pic").setDescription("まちカドまぞくのイラストをPixivからランダムにだしますのだのあのだのあのんだ");
+export class mazokupic{
+	static command = new SlashCommandBuilder().setName("mazokupic").setDescription("まちカドまぞくのイラストをPixivからランダムにだしますのだのあのだのあのんだ");
 
 	/**
 	 * @param {import("discord.js").CommandInteraction<import("discord.js").CacheType> | import("discord.js").ButtonInteraction<import("discord.js").CacheType>} INTERACTION

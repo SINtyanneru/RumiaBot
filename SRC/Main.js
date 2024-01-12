@@ -536,8 +536,8 @@ client.on("interactionCreate", async INTERACTION => {
 			case "cp":
 				await new command.Unicode_CODEPOINT(INTERACTION).main();
 				return;
-			case "machikado_mazoku_pic":
-				await new command.machikado_mazoku_pic(INTERACTION).main();
+			case "mazokupic":
+				await new command.mazokupic(INTERACTION).main();
 				return;
 		}
 	} catch (EX) {
