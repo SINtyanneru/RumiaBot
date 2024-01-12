@@ -15,40 +15,60 @@ export class machikado_mazoku_pic{
 	}
 
 	async main(){
-		console.log(await this.CATCHE());
+		let RESULT = await this.CATCHE();
 
-		await this.E.editReply("作ってる");
+		//Nullチェック
+		if(RESULT){
+			//乱数を生成する
+			let RND = Math.floor(Math.random() * RESULT["illust"]["data"].length);
+
+			//乱数の先にデータが有るか
+			if(RESULT["illust"]["data"][RND]){
+				//あるので返す
+				await this.E.editReply("https://www.pixiv.net/artworks/" + RESULT["illust"]["data"][RND]["id"]);
+			}else{//無いのでエラーを変えす
+				await this.E.editReply("乱数生成中にエラーが発生");
+			}
+		}else{
+			await this.E.editReply("キャッシュもしくはAJAXでエラーが発生しました");
+		}
 	}
 
 	//キャッシュのDATAはbody内を保存してます、errorを消してます注意しろよ未来の私
 	async CATCHE(){
 		try{
+			//キャッシュはあるか
 			if(FS.existsSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json")){
 				let F =FS.readFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", "UTF-8");
-				F = JSON.parse(F.toString());
-				let NOW_DATE = new Date();
-				let CACHE_DATE = new Date(F.DATE);
+				F = JSON.parse(F.toString());                   //ファイルの内容
+				let NOW_DATE = new Date();                      //今日の日付
+				let CACHE_DATE = new Date(F.DATE);              //キャッシュの日付
+				//キャッシュの日付と今日の日付は違うか
 				if(CACHE_DATE.getDate() !== NOW_DATE.getDate()){
+					//違うので再取得して(ry
 					let RESULT = await this.GET_PIC();
 					FS.writeFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 						"DATE":new Date(),
 						"DATA":RESULT["body"]
 					}));
-
+					//取得した内容を返答する
 					return RESULT["body"];
-				}else{
+				}else{//同じなのでキャッシュの内容を返す
 					return F["DATA"];
 				}
-			}else{
+			}else{//ないのでAPIで情報を取得する
 				let RESULT = await this.GET_PIC();
+				//取得した内容をキャッシュに書き込む
 				FS.writeFileSync("./DOWNLOAD/MACHIKADO_MAZOKU_PIXIV_CACHE.json", JSON.stringify({
 					"DATE":new Date(),
 					"DATA":RESULT["body"]
 				}));
+				//取得した内容を返答する
 				return RESULT["body"];
 			}
 		}catch(EX){
 			console.error("[ ERR ][ MAZOKU_PIC.CATCHE ]" + EX);
+			return undefined;
 		}
 	}
 
