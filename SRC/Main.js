@@ -441,7 +441,10 @@ client.on("interactionCreate", async INTERACTION => {
 		if (CONFIG.ADMIN.BLOCK) {
 			if (CONFIG.ADMIN.BLOCK.includes(INTERACTION.user.id)) {
 				//ブロックしてるので実行しない
-				INTERACTION.reply("お前嫌いだから実行しない");
+				INTERACTION.reply({
+					content:"お前嫌いだから実行しない",
+					ephemeral: true
+				});
 				return;
 			}
 		}
