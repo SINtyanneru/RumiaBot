@@ -100,7 +100,7 @@ export class voicevox{
 		if(AJAX.ok){
 			let QUERY = await AJAX.text();
 
-			console.log("[ OK ][ VOICEVOX ]返答がありました" + QUERY);
+			console.log("[ OK ][ VOICEVOX ]返答がありました");
 
 			return QUERY;
 		}else{
@@ -132,7 +132,7 @@ export class voicevox{
 
 			return RESULT;
 		}else{
-			console.error("[ ERR ][ VOICEVOX ]音声を生成できませんでした:" + JSON.stringify(await AJAX.json()));
+			console.error("[ ERR ][ VOICEVOX ]音声を生成できませんでした:");
 			return undefined;
 		}
 	}
