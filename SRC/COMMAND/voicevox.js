@@ -27,6 +27,10 @@ export class voicevox{
 					{
 						name: "四国めたん/あまあま",
 						value: "0"
+					},
+					{
+						name: "春日部つむぎ/ノーマル",
+						value: "8"
 					}
 				)
 				.setRequired(false)
