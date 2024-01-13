@@ -19,9 +19,9 @@ def RUN(SQL_SCRIPT:str, PARAM:list):
 		#カーソル作成
 		CURSOR = SQL_CONNECTION.cursor()
 
-		SQL_SCRIPT = SQL_SCRIPT.format(PARAM)
+		SQL_SCRIPT = SQL_SCRIPT
 
-		CURSOR.execute(SQL_SCRIPT)
+		CURSOR.execute(SQL_SCRIPT, PARAM)
 
 		return CURSOR.fetchall()
 	else:

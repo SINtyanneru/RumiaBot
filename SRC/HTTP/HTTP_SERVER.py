@@ -19,7 +19,7 @@ async def HTTP_HANDLE(REQ:web.Request):
 	elif(REQUEST_URI.startswith("/user")):#ユーザー
 		#Misskeyログイン
 		if(REQUEST_URI.startswith("/user/login/misskey/")):
-			print(RUN("SELECT * FROM `SNS`", []))
+			print(RUN("SELECT * FROM `USER` WHERE `DID` = %s;", ["564772363950882816"]))
 			AJAX_RESULT = AJAX("https://rumiserver.com/API/ACCOUNT/ACCOUNT_GET?UID=Kazemidori_x86", {"HEADER":{}})
 			#AJAXが成功したか
 			if(AJAX_RESULT is not None):
