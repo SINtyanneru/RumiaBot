@@ -53,6 +53,7 @@ public class ProcessStart implements Runnable {
 
 			//プロセスが終了するまで待機
 			int EXIT_CODE = PROCESS.waitFor();
+			PROCESS.destroy();
 			System.out.println(TAG + " a EXIT:" + EXIT_CODE);
 		}catch (Exception EX){
 			EX.printStackTrace();
