@@ -11,11 +11,12 @@ async def HTTP_HANDLE(REQ:web.Request):
 	#ログを吐く
 	PRINT(f"[ HTTP_SERVER ]Request:{REQUEST_URI}")
 
+	#API
 	if(REQUEST_URI.startswith("/API")):
 		return web.Response(text="{\"STATUS\":true}",headers={"Content-type":"application/json; charset=UTF-8"}, status=200)
-	elif(REQUEST_URI.startswith("/user")):
+	elif(REQUEST_URI.startswith("/user")):#ユーザー
 		return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
-	else:
+	else:#その他
 		#ファイルを読み込む
 		CONTENTS = FILE_LOAD(REQUEST_URI)
 		#ファイルが有るか
