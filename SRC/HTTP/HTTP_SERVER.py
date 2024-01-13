@@ -1,5 +1,6 @@
 import os
 import datetime
+import json
 from MODULES_PYTHON.AJAX import AJAX
 from MODULES_PYTHON.PRINT import PRINT
 from aiohttp import web
@@ -15,7 +16,15 @@ async def HTTP_HANDLE(REQ:web.Request):
 	if(REQUEST_URI.startswith("/API")):
 		return web.Response(text="{\"STATUS\":true}",headers={"Content-type":"application/json; charset=UTF-8"}, status=200)
 	elif(REQUEST_URI.startswith("/user")):#ユーザー
-		return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+		if(REQUEST_URI.startswith("/user/login/misskey/")):
+			AJAX_RESULT = AJAX("https://rumiserver.com/API/ACCOUNT/ACCOUNT_GET?UID=Kazemidori_x86", {"HEADER":{}})
+			if(AJAX_RESULT is not None):
+				AJAX_RESULT = json.loads(AJAX_RESULT)
+				return web.Response(text=f"はい",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+			else:
+				return web.Response(text=f"AJAXに失敗しました",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
+		else:#どれでもない
+			return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
 	else:#管理画面
 		#ファイルを読み込む
 		CONTENTS = FILE_LOAD(REQUEST_URI)
