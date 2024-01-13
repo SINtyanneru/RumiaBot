@@ -5,43 +5,48 @@ from MODULES_PYTHON.AJAX import AJAX
 from MODULES_PYTHON.PRINT import PRINT
 from SQL import RUN
 from aiohttp import web
+from MODULES_PYTHON.CONFIG import CONFIG_LOAD
 
 CONTENTS_OWNER_PATH = os.getcwd() + "/SRC/HTTP/CONTENTS"
 
 async def HTTP_HANDLE(REQ:web.Request):
-	REQUEST_URI = REQ.url.path.replace("../", "")
-	#ログを吐く
-	PRINT(f"[ HTTP_SERVER ]Request:{REQUEST_URI}")
+	try:
+		REQUEST_URI = REQ.url.path.replace("../", "")
+		#ログを吐く
+		PRINT(f"[ HTTP_SERVER ]Request:{REQUEST_URI}")
 
-	#API
-	if(REQUEST_URI.startswith("/API")):
-		return web.Response(text="{\"STATUS\":true}",headers={"Content-type":"application/json; charset=UTF-8"}, status=200)
-	elif(REQUEST_URI.startswith("/user")):#ユーザー
-		#Misskeyログイン
-		if(REQUEST_URI.startswith("/user/login/misskey/")):
-			print(RUN("SELECT * FROM `USER` WHERE `DID` = %s;", ["564772363950882816"]))
-			AJAX_RESULT = AJAX("https://rumiserver.com/API/ACCOUNT/ACCOUNT_GET?UID=Kazemidori_x86", {"HEADER":{}})
-			#AJAXが成功したか
-			if(AJAX_RESULT is not None):
-				AJAX_RESULT = json.loads(AJAX_RESULT)
-				return web.Response(text=f"はい",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
-			else:#失敗
-				return web.Response(text=f"AJAXに失敗しました",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
-		else:#どれでもない
-			return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
-	else:#管理画面
-		#ファイルを読み込む
-		CONTENTS = FILE_LOAD(REQUEST_URI)
-		#ファイルが有るか
-		if(CONTENTS is not None):#ある
-			#拡張子によってヘッダーのMEMEを買える
-			if(REQUEST_URI.endswith(".css")):
-				#CSS
-				return web.Response(text=CONTENTS,headers={"Content-type":"text/css; charset=UTF-8"}, status=200)
-			else:#HTML
-				return web.Response(text=CONTENTS,headers={"Content-type":"text/html; charset=UTF-8"}, status=200)
-		else:#ファイルがない
-			return web.Response(text=f"404 Page not found",headers={"Content-type":"text/plain; charset=UTF-8"}, status=404)
+		#API
+		if(REQUEST_URI.startswith("/API")):
+			return web.Response(text="{\"STATUS\":true}",headers={"Content-type":"application/json; charset=UTF-8"}, status=200)
+		elif(REQUEST_URI.startswith("/user")):#ユーザー
+			#Misskeyログイン
+			if(REQUEST_URI.startswith("/user/login/misskey/")):
+				USER_INFO:list = REQUEST_URI.replace("/user/login/misskey/", "").split("/")     #ユーザーじょうほう
+				USER_SESSION:str = REQ.query.get("session")                                     #セッションID
+				SNS_SETTING:dict = SNS_SETTING_GET(CONFIG_LOAD()["SNS"], USER_INFO[0])          #SNSの設定
+
+				#Noneちぇっく
+				if((USER_SESSION is not None) and (USER_INFO[0] is not None) and (USER_INFO[1] is not None) and (SNS_SETTING is not None)):
+					return web.Response(text=f"はい\nあなたは{USER_INFO[0]}のインスタンスを使用していて、{USER_INFO[1]}というDiscordIDですね",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+				else:
+					return web.Response(text=f"いいえ",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+			else:#どれでもない
+				return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+		else:#管理画面
+			#ファイルを読み込む
+			CONTENTS = FILE_LOAD(REQUEST_URI)
+			#ファイルが有るか
+			if(CONTENTS is not None):#ある
+				#拡張子によってヘッダーのMEMEを買える
+				if(REQUEST_URI.endswith(".css")):
+					#CSS
+					return web.Response(text=CONTENTS,headers={"Content-type":"text/css; charset=UTF-8"}, status=200)
+				else:#HTML
+					return web.Response(text=CONTENTS,headers={"Content-type":"text/html; charset=UTF-8"}, status=200)
+			else:#ファイルがない
+				return web.Response(text=f"404 Page not found",headers={"Content-type":"text/plain; charset=UTF-8"}, status=404)
+	except Exception as EX:#エラー
+		return web.Response(text=f"500 Server err\n{EX}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
 
 #HTTP鯖を起動する関数
 def CREATE_HTTP_SERVER(HOST:str, PORT:int):
@@ -73,3 +78,13 @@ def FILE_LOAD(PATH:str):
 	#そもそもファイル自体無い
 	else:
 		return None
+	
+#SNSを検索
+def SNS_SETTING_GET(SNS_SETTING, ID):
+	for ROW in SNS_SETTING:
+		#IDが一致したら
+		if(ROW["ID"] == ID):
+			#変えす
+			return ROW
+	#そんなSNSはない！
+	return None
