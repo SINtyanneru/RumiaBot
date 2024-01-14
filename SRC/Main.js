@@ -39,6 +39,7 @@ import { REGIST_SLASH_COMMAND } from "./REGIST_SL_COMMAND.js";
 import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
+import { pws_main } from "./PROCESS_WS.js";
 
 //Tef el Obzhekt iel zef klas lö peif ere;
 //↑インスタンスのことですか？←Rumisan xēlp zo Obzhekt za;
@@ -53,6 +54,8 @@ if (!(CONFIG.ADMIN.ADMIN_ID || CONFIG.ADMIN.ADMIN_PREFIX || CONFIG.DISCORD.TOKEN
 }
 export const SNS_CONNECTION = new SNS();
 export let FUNCTION_SETTING_OBJ = new FUNCTION_SETTING();
+
+pws_main();
 
 client.once("ready", async () => {
 	//SNSのインスタンスに接続

@@ -6,7 +6,7 @@
  */
 
 plugins {
-	// Apply the application plugin to add support for building a CLI application in Java.
+	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "application"
 }
 
@@ -19,7 +19,7 @@ dependencies {
 	// Use JUnit Jupiter for testing.
 	testImplementation libs.junit.jupiter
 
-	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+	implementation 'org.eclipse.jetty.websocket:websocket-server:9.4.43.v20210629'
 
 	// This dependency is used by the application.
 	implementation libs.guava

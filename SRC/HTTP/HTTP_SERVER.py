@@ -27,9 +27,25 @@ async def HTTP_HANDLE(REQ:web.Request):
 
 				#Noneちぇっく
 				if((USER_SESSION is not None) and (USER_INFO[0] is not None) and (USER_INFO[1] is not None) and (SNS_SETTING is not None)):
-					return web.Response(text=f"はい\nあなたは{USER_INFO[0]}のインスタンスを使用していて、{USER_INFO[1]}というDiscordIDですね",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+					AJAX_RESULT = AJAX("https://" + SNS_SETTING["DOMAIN"] + "/api/miauth/" + USER_SESSION + "/check", {"HEADER": {}, "METHOD":"POST"})
+					#AJAXが成功したか
+					if(AJAX_RESULT is not None):
+						AJAX_RESULT = json.loads(AJAX_RESULT)
+						print(AJAX_RESULT)
+						if(AJAX_RESULT["ok"]):
+							if(len(RUN("SELECT * FROM `USER` WHERE `DID` = %s;", [USER_INFO[1]]))):
+								print("書き換えています")
+								RUN("UPDATE `USER` SET `SNS_TOKEN` = %s WHERE `USER`.`DID` = %s;", [AJAX_RESULT["token"], USER_INFO[1]])
+							else:
+								print("インサート")
+								RUN("INSERT INTO `USER` (`ID`, `DID`, `NAME`, `SNS_TOKEN`) VALUES (NULL, %s, %s, %s);", [USER_INFO[1], "名無し", USER_INFO[0] + "/" + AJAX_RESULT["token"]])
+							return web.Response(text=f"はい\nあなたは{USER_INFO[0]}のインスタンスを使用していて、{USER_INFO[1]}というDiscordIDですね",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+						else:
+							return web.Response(text=f"APIがエラーを吐きました",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
+					else:
+						return web.Response(text=f"AJAXがエラー",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
 				else:
-					return web.Response(text=f"いいえ",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
+					return web.Response(text=f"パラメーターがNoneです",headers={"Content-type":"text/plain; charset=UTF-8"}, status=500)
 			else:#どれでもない
 				return web.Response(text=f"お前は：{REQUEST_URI.replace('/user', '')}にアクセスした\n{datetime.datetime.today()}",headers={"Content-type":"text/plain; charset=UTF-8"}, status=200)
 		else:#管理画面

@@ -1,12 +1,15 @@
 #HTTPリクエストを送るのだ
 
-from urllib import request
+import urllib.request
+import sys
+from MODULES_PYTHON.PRINT import PRINT
 
 def AJAX(URL:str, SETTING:dict):
 	try:
+		PRINT("[ AJAX ]Request:" + URL)
 		#ヘッダー
-		HEADER = {}
-		METHOD = "GET"
+		HEADER:dict = {}
+		METHOD:str = "GET"
 
 		#設定を読み込むm
 		if(SETTING["HEADER"] is not None):
@@ -15,9 +18,11 @@ def AJAX(URL:str, SETTING:dict):
 			METHOD = SETTING["METHOD"]
 
 		#リクエストを送る
-		REQ = request.Request(URL, headers=HEADER, method=METHOD)
-		with request.urlopen(REQ) as RES:
+		REQ = urllib.request.Request(URL, headers=HEADER, method=METHOD)
+		with urllib.request.urlopen(REQ) as RES:
+			PRINT("[ AJAX ]Status:" + str(RES.status))
 			RESULT = RES.read()
 		return RESULT
-	except:
+	except Exception as e:
+		print(e)
 		return None
