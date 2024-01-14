@@ -1,7 +1,9 @@
 package com.rumisystem.rumiabot;
 
+import com.rumisystem.rumiabot.WEBSOCKET.WS_SERVER;
+
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		System.out.println("    ____                  _       ____  ____  ______");
 		System.out.println("   / __ \\__  ______ ___  (_)___ _/ __ )/ __ \\/_  __/");
 		System.out.println("  / /_/ / / / / __ `__ \\/ / __ `/ __  / / / / / /   ");
@@ -9,12 +11,23 @@ public class Main {
 		System.out.println("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/     ");
 		System.out.println("V1.1");
 
+		System.out.println("[ *** ]Staring WS Server...");
+
+		Thread WS = new Thread(() -> {
+			try {
+				WS_SERVER.main();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		WS.start();
+
 		Thread PS1 = new Thread( new ProcessStart("JS", "node", "./SRC/Main.js"));
 		PS1.start();
 
 
 		Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/Main.py"));
-		PS2.start();
+		//PS2.start();
 	}
 
 	public static void LOG(String TAG, String TEXT, int MODE){
