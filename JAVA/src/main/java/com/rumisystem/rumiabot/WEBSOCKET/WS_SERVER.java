@@ -12,12 +12,12 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 public class WS_SERVER {
 
 	public static void main() throws Exception {
-		Server server = new Server(3001); // ポートは適切に変更してください
+		Server server = new Server(3001);
 
 		WebSocketHandler wsHandler = new WebSocketHandler() {
 			@Override
 			public void configure(WebSocketServletFactory factory) {
-				factory.register(MyWebSocketHandler.class);
+				factory.register(WS_HANDLE.class);
 			}
 		};
 
@@ -32,32 +32,5 @@ public class WS_SERVER {
 
 		server.start();
 		server.join();
-	}
-
-	public static class MyWebSocketHandler extends WebSocketAdapter {
-		@Override
-		public void onWebSocketConnect(Session session) {
-			super.onWebSocketConnect(session);
-			System.out.println("WebSocket connected: " + session.getRemoteAddress().getAddress());
-		}
-
-		@Override
-		public void onWebSocketText(String message) {
-			super.onWebSocketText(message);
-			System.out.println("Received message: " + message);
-
-			// クライアントにメッセージを返信
-			try {
-				getSession().getRemote().sendString("Server received: " + message);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public void onWebSocketClose(int statusCode, String reason) {
-			super.onWebSocketClose(statusCode, reason);
-			System.out.println("WebSocket closed: " + statusCode + ", " + reason);
-		}
 	}
 }
