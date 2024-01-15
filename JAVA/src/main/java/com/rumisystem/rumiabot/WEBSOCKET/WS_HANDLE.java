@@ -45,7 +45,9 @@ public class WS_HANDLE extends WebSocketAdapter {
 				case "HELLO":
 					getSession().getRemote().sendString(CMD[0] + ";HELLO;200");
 					break;
-
+				case "PING":
+					getSession().getRemote().sendString(CMD[0] + ";200");
+					break;
 				default:
 					getSession().getRemote().sendString(CMD[0] + ";ERR;構文エラー;400");
 			}
