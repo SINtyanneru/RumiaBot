@@ -13,10 +13,10 @@ export function pws_main(){
 	WS_SOCKET.addEventListener("open", async() => {
 		console.log("[ OK ][ PWS ]WS Connected!");
 
-		//メッセージをサーバーに送信
+		//pingする
 		setInterval(async() => {
-			let RESULT = await PWS_SEND_MSG("PING");
-			console.log("[ INFO ][ PWS ]PING", RESULT);
+			await PWS_SEND_MSG("PING");
+			console.log("[ INFO ][ PWS ]PING PONG");
 		}, 60000);
 	});
 
