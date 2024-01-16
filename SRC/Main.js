@@ -175,6 +175,8 @@ client.on("messageCreate", async message => {
 			return;
 		}
 
+
+
 		//WSに流す
 		for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
 			const SOCKET = WS_SERVER_OBJ.SOCKETS[I];
@@ -204,12 +206,6 @@ client.on("messageCreate", async message => {
 		//ニックネーム固定
 		LOCK_NICK_NAME_OBJ.main(message.member);
 
-		/*
-	//BOTの場合は処理しない
-	if(message.author.bot){
-		return;
-	}
-	*/
 		//BOT所有者専用のコマンド
 		if (CONFIG.ADMIN.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 			await BOT_ADMIN(message);
