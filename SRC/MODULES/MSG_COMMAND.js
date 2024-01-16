@@ -17,6 +17,10 @@ export class MSG_COMMAND{
 					}*/
 				],
 				"FUNCTION":"test"
+			},
+			"mazokupic":{
+				"OPTION":[],
+				"FUNCTION":"mazokupic"
 			}
 		};
 
