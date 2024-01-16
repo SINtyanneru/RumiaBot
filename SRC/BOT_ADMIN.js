@@ -52,7 +52,7 @@ export async function BOT_ADMIN(message) {
 			
 			const CHILS_PROCESS = spawn(CMD, ARGS);
 			// 標準出力のデータがあるたびに呼び出されるイベントハンドラ
-			CHILS_PROCESS.stdout.on('data', (DATA) => {
+			CHILS_PROCESS.stdout.on("data", (DATA) => {
 				CMD_OUTPUT += DATA.toString();
 				if(CMD_OUTPUT.length > 1024){
 					const EXCESS_LENGTH = CMD_OUTPUT.length - 1024;
@@ -60,7 +60,7 @@ export async function BOT_ADMIN(message) {
 				}
 			});
 			//外部プロセスが終了したときに呼び出されるイベントハンドラ
-			CHILS_PROCESS.on('close', (CODE) => {
+			CHILS_PROCESS.on("close", (CODE) => {
 				MSG.edit("```ansi\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
 				clearInterval(INTER);
 			});
@@ -105,7 +105,8 @@ export async function BOT_ADMIN(message) {
 		try {
 			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "LV/.", "");
 			let GUILD = client.guilds.cache.get(GID);
-			GUILD.leave();
+			await GUILD.leave();
+			message.reply("たぶん脱退した");
 		} catch (EX) {
 			console.error(EX);
 
