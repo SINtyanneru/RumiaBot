@@ -40,6 +40,7 @@ import { SHIOLI } from "./FUNCTION/SHIOLI.js";
 import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js";
 import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
 import { pws_main } from "./PROCESS_WS.js";
+import { MSG_COMMAND } from "./MODULES/MSG_COMMAND.js";
 
 //Tef el Obzhekt iel zef klas lö peif ere;
 //↑インスタンスのことですか？←Rumisan xēlp zo Obzhekt za;
@@ -175,7 +176,7 @@ client.on("messageCreate", async message => {
 			return;
 		}
 
-
+		new MSG_COMMAND(message);
 
 		//WSに流す
 		for (let I = 0; I < WS_SERVER_OBJ.SOCKETS.length; I++) {
