@@ -6,6 +6,7 @@ import { RND_COLOR } from "./MODULES/RND_COLOR.js";
 import { exec, spawn } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 import { SQL_OBJ, LOCK_NICK_NAME_OBJ, SNS_CONNECTION } from "./Main.js";
+import { MAP_KILLER } from "./MODULES/MAP_KILLER.js";
 
 /**
  * BOT管理者が使う奴
@@ -19,22 +20,19 @@ export async function BOT_ADMIN(message) {
 
 	//参加済みサーバーを表示
 	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "SL") {
-		const SERVERS = client.guilds.cache;
+		const GUILDS = MAP_KILLER(await client.guilds.fetch());
+		const GUILDS_KEY = Object.keys(GUILDS);
+		let TEXT = "参加している鯖\n```";
 
-		let EB = new MessageEmbed()
-			.setTitle("参加済み鯖")
-			.setDescription("合計" + SERVERS.size)
-			.setColor(RND_COLOR());
+		for (let I = 0; I < GUILDS_KEY.length; I++) {
+			/** @type { import("discord.js").Guild } */
+			const GUILD = GUILDS[GUILDS_KEY[I]];
+			TEXT += (GUILD.name + "/" + GUILD.id) + "\n";
+		}
 
-		SERVERS.forEach(SERVER => {
-			EB.addFields({
-				name: SERVER.name,
-				value: SERVER.id,
-				inline: true
-			});
-		});
+		TEXT += "\n```";
 
-		message.reply({ embeds: [EB] });
+		message.reply(TEXT);
 	}
 
 	//シェルコマンド実行
