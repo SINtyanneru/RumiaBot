@@ -210,7 +210,20 @@ export async function BOT_ADMIN(message) {
 				const RESULT = await RES.json();
 				if (RESULT.STATUS) {
 					let REGEX = new RegExp("\\B(?=(\\d{" + 4 + "})+(?!\\d))", "g");
-					message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ");
+					let TN_LIST_TEXT = "```diff\n";
+
+					for (let I = 0; I < RESULT.TN_LIST.length; I++) {
+						const TN = RESULT.TN_LIST[I];
+						if(TN.V){
+							TN_LIST_TEXT += "+ " + TN.DATE + "に" + TN.SITE + "から" + TN.MONEY + "円入金されました\n"
+						}else{
+							TN_LIST_TEXT += "- " + TN.DATE + "に" + TN.SITE + "で" + TN.MONEY + "円使いました\n"
+						}
+					}
+
+					TN_LIST_TEXT += "```";
+
+					message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ\n" + TN_LIST_TEXT);
 				} else {
 					message.reply("エラー" + RESULT.ERR);
 				}
