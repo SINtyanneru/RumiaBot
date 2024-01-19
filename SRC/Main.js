@@ -275,7 +275,7 @@ client.on("messageCreate", async message => {
 									await message.reply("そーなのかー");
 									return;
 								}
-								message.reply("そうですか。");
+								message.reply("おんこ");
 							} else {
 								//メッセージである
 								//しもねた系
