@@ -54,62 +54,66 @@ export class mazokupic{
 				const ILLUST_GET = await this.GET_ILLUST(ILLUST["id"]);
 
 				if(AUTHOR_INFO && ILLUST_GET){
-					const EB = new MessageEmbed();
-					//タイトル
-					if(ILLUST["title"]){
-						if(ILLUST["title"].length > 250){//250文字を超えたら
-							//切り落とす
-							EB.setTitle(ILLUST["title"].substring(0, 250) + "...");
-						}else{//250文字超えてないのでそのまま載せる
-							EB.setTitle(ILLUST["title"]);
+					if(ILLUST_GET["aiType"] === 1){
+						const EB = new MessageEmbed();
+						//タイトル
+						if(ILLUST["title"]){
+							if(ILLUST["title"].length > 250){//250文字を超えたら
+								//切り落とす
+								EB.setTitle(ILLUST["title"].substring(0, 250) + "...");
+							}else{//250文字超えてないのでそのまま載せる
+								EB.setTitle(ILLUST["title"]);
+							}
+						}else{//無題の場合
+							EB.setTitle("無題");
 						}
-					}else{//無題の場合
-						EB.setTitle("無題");
+						//説明文
+						if(ILLUST_GET["description"]){
+							let DESC_TEXT = ILLUST_GET["description"];
+	
+							DESC_TEXT = DESC_TEXT.replaceAll("<br />", "\n");
+							DESC_TEXT = DESC_TEXT.replaceAll("<strong>", "**");
+							DESC_TEXT = DESC_TEXT.replaceAll(/<a[^>]*>[^<]*<\/a>/g, "");
+	
+							EB.setDescription(DESC_TEXT);
+						}
+						EB.setColor(RND_COLOR());
+	
+						//投稿日時
+						EB.setTimestamp(new Date(ILLUST_GET["uploadDate"]));
+	
+						//タグ
+						let TAG_ARRAY = [];
+						for (let I = 0; I < ILLUST_GET["tags"]["tags"].length; I++) {
+							const TAG = ILLUST_GET["tags"]["tags"][I];
+							TAG_ARRAY.push(TAG["tag"]);
+						}
+						EB.addFields({
+							"name":"タグ",
+							"value": TAG_ARRAY.join("/")
+						});
+	
+						//投稿者の情報を登録する
+						EB.setAuthor({
+							"name": AUTHOR_INFO["name"],
+							"url": `https://www.pixiv.net/users/${AUTHOR_INFO["userId"]}`,
+							"iconURL": `attachment://USER_${AUTHOR_INFO["userId"]}.png`
+						});
+	
+						//イラストのURLをつける
+						EB.setURL("https://www.pixiv.net/artworks/" + ILLUST["id"]);
+	
+						//イラストを登録する
+						EB.setImage(`attachment://ILLUST_${ILLUST["id"]}.png`);
+	
+						//投稿
+						await this.E.editReply({ embeds: [EB], files: [
+							`./DOWNLOAD/MAZOKUPIC/ILLUST/ILLUST_${ILLUST["id"]}.png`,
+							`./DOWNLOAD/MAZOKUPIC/USER/USER_${AUTHOR_INFO["userId"]}.png`
+						] });
+					}else{
+						await this.E.editReply("もっかい実行して");
 					}
-					//説明文
-					if(ILLUST_GET["description"]){
-						let DESC_TEXT = ILLUST_GET["description"];
-
-						DESC_TEXT = DESC_TEXT.replaceAll("<br />", "\n");
-						DESC_TEXT = DESC_TEXT.replaceAll("<strong>", "**");
-						DESC_TEXT = DESC_TEXT.replaceAll(/<a[^>]*>[^<]*<\/a>/g, "");
-
-						EB.setDescription(DESC_TEXT);
-					}
-					EB.setColor(RND_COLOR());
-
-					//投稿日時
-					EB.setTimestamp(new Date(ILLUST_GET["uploadDate"]));
-
-					//タグ
-					let TAG_ARRAY = [];
-					for (let I = 0; I < ILLUST_GET["tags"]["tags"].length; I++) {
-						const TAG = ILLUST_GET["tags"]["tags"][I];
-						TAG_ARRAY.push(TAG["tag"]);
-					}
-					EB.addFields({
-						"name":"タグ",
-						"value": TAG_ARRAY.join("/")
-					});
-
-					//投稿者の情報を登録する
-					EB.setAuthor({
-						"name": AUTHOR_INFO["name"],
-						"url": `https://www.pixiv.net/users/${AUTHOR_INFO["userId"]}`,
-						"iconURL": `attachment://USER_${AUTHOR_INFO["userId"]}.png`
-					});
-
-					//イラストのURLをつける
-					EB.setURL("https://www.pixiv.net/artworks/" + ILLUST["id"]);
-
-					//イラストを登録する
-					EB.setImage(`attachment://ILLUST_${ILLUST["id"]}.png`);
-
-					//投稿
-					await this.E.editReply({ embeds: [EB], files: [
-						`./DOWNLOAD/MAZOKUPIC/ILLUST/ILLUST_${ILLUST["id"]}.png`,
-						`./DOWNLOAD/MAZOKUPIC/USER/USER_${AUTHOR_INFO["userId"]}.png`
-					] });
 				}else{
 					await this.E.editReply("画像のダウンロードに失敗しました");
 				}
