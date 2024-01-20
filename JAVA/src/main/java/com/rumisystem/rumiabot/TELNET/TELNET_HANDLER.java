@@ -40,17 +40,17 @@ public class TELNET_HANDLER implements Runnable {
 				LOG(INFO_LOG_TAG, "Message received:" + MSG, 0);
 
 				//コマンドに寄って処理を変える
-				switch (CMD[0]){
+				switch (CMD[1]){
 					//認証
 					case "HELLO":
-						if(CMD[1].equals("JS")){//JS
+						if(CMD[2].equals("JS")){//JS
 							//接続一覧にOutputStreamを追加
 							CONNECTIONU.put("JS", OUTPUT_STREAM);
 
 							//成功と返す
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 							break;
-						}if(CMD[1].equals("PY")){//Python
+						}if(CMD[2].equals("PY")){//Python
 							//接続一覧にOutputStreamを追加
 							CONNECTIONU.put("PY", OUTPUT_STREAM);
 

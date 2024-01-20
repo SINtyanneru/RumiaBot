@@ -1,5 +1,6 @@
 import net from "net";
 import { client } from "./MODULES/loadClient.js";
+import * as crypto from "node:crypto";
 
 const SERVER_URL = "localhost";
 const SERVER_PORT = 3001;
@@ -37,14 +38,18 @@ export async function pws_main(){
  */
 export async function PWS_SEND_MSG(TEXT){
 	return new Promise((resolve, reject) => {
-		const CMD = TEXT.split(";");
+		//const CMD = TEXT.split(";");
+		const UUID = crypto.randomUUID();
 
 		//命令の返答を待つやつ
 		function EV_LISENER(DATA){
 			const RESULT = DATA.toString().split(";");
-			if(RESULT[0] === CMD[0]){
+			if(RESULT[0] === UUID){
 				//イベントリスナーを破棄
 				TL_CONNECT.removeListener("data", EV_LISENER);
+
+				//UUIDを殺す
+				RESULT.splice(0, 1);
 
 				//ステータスコードが200か
 				if(RESULT[RESULT.length - 1] === "200"){
@@ -60,7 +65,7 @@ export async function PWS_SEND_MSG(TEXT){
 		TL_CONNECT.addListener("data", EV_LISENER);
 
 		//命令を送る
-		TL_CONNECT.write(TEXT);
+		TL_CONNECT.write(UUID + ";" + TEXT);
 	});
 }
 
