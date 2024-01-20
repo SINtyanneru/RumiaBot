@@ -1,6 +1,6 @@
 package com.rumisystem.rumiabot;
 
-import com.rumisystem.rumiabot.WEBSOCKET.WS_SERVER;
+import com.rumisystem.rumiabot.TELNET.TELNET_SERVER;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -15,7 +15,7 @@ public class Main {
 
 		Thread WS = new Thread(() -> {
 			try {
-				WS_SERVER.main();
+				TELNET_SERVER.main();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
