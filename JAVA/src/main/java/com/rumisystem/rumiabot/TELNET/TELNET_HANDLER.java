@@ -62,6 +62,7 @@ public class TELNET_HANDLER implements Runnable {
 						}
 						break;
 
+					//Discord関連の命令(JSに横ながし)
 					case "DISCORD":
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
 							SEND_STRING(CONNECTIONU.get("JS"), MSG);
