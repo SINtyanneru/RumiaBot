@@ -7,9 +7,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static com.rumisystem.rumiabot.Main.LOG;
+import static com.rumisystem.rumiabot.TELNET.TELNET_SERVER.CONNECTIONU;
 
 public class TELNET_HANDLER implements Runnable {
 	private Socket CLIENT_SOCKET;
+
+	private final String INFO_LOG_TAG = " INFO  | PT";
+	private final String ERR_LOG_TAG = " ERR   | PT";
 
 	public TELNET_HANDLER(Socket CLIENT_SOCKET) {
 		this.CLIENT_SOCKET = CLIENT_SOCKET;
@@ -26,13 +33,52 @@ public class TELNET_HANDLER implements Runnable {
 
 
 			while ((BYTES_READ = INPUT_STREAM.read(BUFFER)) != -1) {
-				String DATA = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
-				System.out.println("受信データ: " + DATA);
-				SEND_STRING(OUTPUT_STREAM, DATA + ";200");
+				String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
+				String[] CMD = MSG.split(";");
+
+				//ログを吐く
+				LOG(INFO_LOG_TAG, "Message received:" + MSG, 0);
+
+				//コマンドに寄って処理を変える
+				switch (CMD[0]){
+					//認証
+					case "HELLO":
+						if(CMD[1].equals("JS")){//JS
+							//接続一覧にOutputStreamを追加
+							CONNECTIONU.put("JS", OUTPUT_STREAM);
+
+							//成功と返す
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+							break;
+						}if(CMD[1].equals("PY")){//Python
+							//接続一覧にOutputStreamを追加
+							CONNECTIONU.put("PY", OUTPUT_STREAM);
+
+							//成功と返す
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+							break;
+						}else{//誰やねんお前
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";WHO_IS_YOU;403");
+						}
+						break;
+
+					case "DISCORD":
+						if(Objects.nonNull(CONNECTIONU.get("JS"))){
+							SEND_STRING(CONNECTIONU.get("JS"), MSG);
+
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
+						}else {
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
+						}
+						break;
+
+					default:
+						SEND_STRING(OUTPUT_STREAM, CMD[0] + ";400");
+				}
 			}
 
 		} catch (Exception EX) {
-			Main.LOG(" ERR   | PT", "ERR", 1);
+			LOG(ERR_LOG_TAG, "ERR", 1);
 			EX.printStackTrace();
 		}
 	}

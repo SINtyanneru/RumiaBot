@@ -1,4 +1,5 @@
 import net from "net";
+import { client } from "./MODULES/loadClient.js";
 
 const SERVER_URL = "localhost";
 const SERVER_PORT = 3001;
@@ -9,9 +10,23 @@ export async function pws_main(){
 	TL_CONNECT.connect(SERVER_PORT, SERVER_URL, async ()=>{
 		console.log("[ PWS ][ OK ]Connected Telnet");
 
-		PWS_SEND_MSG("test").then((R) => {
+		PWS_SEND_MSG("HELLO;JS").then((R) => {
 			console.log(R);
 		});
+	});
+
+
+	TL_CONNECT.addListener("data", async (DATA) =>{
+		const MSG = DATA.toString();
+		const CMD = MSG.split(";");
+		if(CMD[0] === "DISCORD"){
+			if(CMD[1] === "MSG_SEND"){
+				const CH =await client.channels.fetch(CMD[2]);
+				if(CH){
+					CH.send(CMD[3]);
+				}
+			}
+		}
 	});
 }
 

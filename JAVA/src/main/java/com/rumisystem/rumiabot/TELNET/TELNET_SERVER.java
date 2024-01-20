@@ -2,11 +2,14 @@ package com.rumisystem.rumiabot.TELNET;
 
 import com.rumisystem.rumiabot.Main;
 
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class TELNET_SERVER {
 	private static int PORT_NUMBER = 3001;
+	public static HashMap<String, OutputStream> CONNECTIONU = new HashMap<String, OutputStream>();
 
 	public static void main(){
 		try{
