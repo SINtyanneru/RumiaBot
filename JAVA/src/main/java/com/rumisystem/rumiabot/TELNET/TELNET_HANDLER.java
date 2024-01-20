@@ -65,7 +65,7 @@ public class TELNET_HANDLER implements Runnable {
 					//Discord関連の命令(JSに横ながし)
 					case "DISCORD":
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
-							SEND_STRING(CONNECTIONU.get("JS"), MSG);
+							SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
 
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
 						}else {
@@ -88,5 +88,14 @@ public class TELNET_HANDLER implements Runnable {
 		byte[] messageBytes = TEXT.getBytes(StandardCharsets.UTF_8);
 		OS.write(messageBytes);
 		OS.flush();
+	}
+
+	private String CMD_TO_STRING(String[] CMD){
+		StringBuilder SB = new StringBuilder();
+		for (int I = 1; I < CMD.length; I++){
+			SB.append(CMD[I] + ";");
+		}
+
+		return SB.toString();
 	}
 }
