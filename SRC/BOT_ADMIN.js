@@ -7,246 +7,150 @@ import { exec, spawn } from "child_process";
 import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 import { SQL_OBJ, LOCK_NICK_NAME_OBJ, SNS_CONNECTION } from "./Main.js";
 import { MAP_KILLER } from "./MODULES/MAP_KILLER.js";
+import { REON4213 } from "./MODULES/REON4213.js";
 
 /**
  * BOT管理者が使う奴
  * @param {Message} message メッセージ
  */
 export async function BOT_ADMIN(message) {
-	//参加済みサーバーの数を表示
-	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "SLS") {
-		message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
-	}
-
-	//参加済みサーバーを表示
-	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "SL") {
-		const GUILDS = MAP_KILLER(await client.guilds.fetch());
-		const GUILDS_KEY = Object.keys(GUILDS);
-		let TEXT = "参加している鯖\n```";
-
-		for (let I = 0; I < GUILDS_KEY.length; I++) {
-			/** @type { import("discord.js").Guild } */
-			const GUILD = GUILDS[GUILDS_KEY[I]];
-			TEXT += (GUILD.name + "/" + GUILD.id) + "\n";
-		}
-
-		TEXT += "\n```";
-
-		message.reply(TEXT);
-	}
-
-	//シェルコマンド実行
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "SHELL/.")) {
-		try {
-			const CMD = "bash";
-			const ARGS = ["-c", message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "SHELL/.", "")];
-
-			let MSG = await message.channel.send("tailēd...");
-			let CMD_OUTPUT = "";
-
-			let INTER = setInterval(() => {
-				MSG.edit("```ansi\n" + CMD_OUTPUT + "```");
-			}, 1000);
-			
-			const CHILS_PROCESS = spawn(CMD, ARGS);
-			// 標準出力のデータがあるたびに呼び出されるイベントハンドラ
-			CHILS_PROCESS.stdout.on("data", (DATA) => {
-				CMD_OUTPUT += DATA.toString();
-				if(CMD_OUTPUT.length > 1024){
-					const EXCESS_LENGTH = CMD_OUTPUT.length - 1024;
-					CMD_OUTPUT = CMD_OUTPUT.substring(EXCESS_LENGTH);
-				}
-			});
-			//外部プロセスが終了したときに呼び出されるイベントハンドラ
-			CHILS_PROCESS.on("close", (CODE) => {
-				MSG.edit("```ansi\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
-				clearInterval(INTER);
-			});
-		} catch (EX) {
-			message.reply(EX);
-		}
-	}
-
-	//任意コード実行
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "EXEC/.")) {
-		console.log("任意コードを実行する");
-		try {
-			const CMD = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "EXEC/.", "");
-			const result = eval(CMD);
-			console.log("[ EVAL_RESULT ] ", result);
-			message.reply(JSON.stringify(result)?.toString() || "内容が返されませんでした！！");
-		} catch (EX) {
-			console.error(EX);
-			message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
-		}
-	}
-
-	//招待コード作成
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "INV/.")) {
-		try {
-			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "INV/.", "");
-			let INV_CODE = await client.guilds.cache
-				.get(GID)
-				.channels.cache.find(ROW => ROW.type === "GUILD_TEXT")
-				.createInvite();
-
-			message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
-		}
-	}
-
-	//鯖から抜ける
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "LV/.")) {
-		try {
-			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "LV/.", "");
-			let GUILD = client.guilds.cache.get(GID);
-			await GUILD.leave();
-			message.reply("たぶん脱退した");
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
-		}
-	}
-
-	//チャンネル一覧取得
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "CH_L/.")) {
-		try {
-			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "CH_L/.", "");
-			let GUILD = client.guilds.cache.get(GID);
-
-			if (GUILD !== undefined) {
-				let CH = GUILD.channels.cache;
-
-				let EB = new MessageEmbed()
-					.setTitle(GUILD.name)
-					.setDescription("合計" + CH.size)
-					.setColor(RND_COLOR());
-
-				CH.forEach(CH_INFO => {
-					EB.addFields({
-						name: CH_INFO.name,
-						value: CH_INFO.id,
-						inline: true
-					});
-				});
-
-				message.reply({ embeds: [EB] });
-			} else {
-				message.reply("鯖がありません");
-			}
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
-		}
-	}
-
-	//管理者チェック
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "PM/.")) {
-		//実験用
-		try {
-			const GID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "PM/.", "");
-			let GUILD = client.guilds.cache.get(GID);
-			if (GUILD.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR")) {
-				message.reply("はい、それは管理者権限的");
-			} else {
-				message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
-			}
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
-		}
-	}
-
-	//ブロックリスト
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "BL/.")) {
-		try {
-			message.reply("以下の人がブロックされてます\n" + JSON.stringify(CONFIG.BLOCK_LIST));
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
-		}
-	}
-
-	//好感度
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "LIKE/.")) {
-		try {
-			const UID = message.content.replace(CONFIG.ADMIN.ADMIN_PREFIX + "LIKE/.", "");
-			SQL_OBJ.SCRIPT_RUN("SELECT * FROM `LIKABILITY` WHERE `UID` = ?;", [UID])
-				.then(RESULT => {
-					if (RESULT.length !== 0) {
-						let RESULT_ODIN = RESULT[0];
-
-						message.reply("ID:" + RESULT_ODIN.ID + "\n" + "DiscordID" + RESULT_ODIN.UID + "\n" + "好感度:" + RESULT_ODIN.LIKABILITY);
-					} else {
-						message.reply("誰ですかそれ");
-					}
-				})
-				.catch(EX => {
-					console.error(EX);
-					message.reply(JSON.stringify(EX));
-				});
-		} catch (EX) {
-			console.error(EX);
-		}
-	}
-
-	//私のお金
-	if (message.content.startsWith(CONFIG.ADMIN.ADMIN_PREFIX + "MONEY/.")) {
-		try {
-			let RES = await fetch("https://rumiserver.com/API/Rumisan/money.php", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json"
-				}
-			});
-			if (RES.ok) {
-				const RESULT = await RES.json();
-				if (RESULT.STATUS) {
-					let REGEX = new RegExp("\\B(?=(\\d{" + 4 + "})+(?!\\d))", "g");
-					let TN_LIST_TEXT = "```diff\n";
-
-					for (let I = 0; I < RESULT.TN_LIST.length; I++) {
-						const TN = RESULT.TN_LIST[I];
-						if(TN.V){
-							TN_LIST_TEXT += "+ " + TN.DATE + "に" + TN.SITE + "から" + TN.MONEY + "円入金されました\n"
+	let CMD_LIST = REON4213(message.content);
+	if(CMD_LIST != null){
+		for (let I = 0; I < CMD_LIST.length; I++) {
+			const CMD = CMD_LIST[I];
+			switch(CMD.A){
+				case "EXEC":{
+					console.log("任意コードを実行する:" + CMD.B);
+					try {
+						const result = JSON.stringify(eval(CMD.B));
+						console.log("[ EVAL_RESULT ] ", result);
+						if(result){
+							if(result !== "{}"){
+								message.reply(result);
+							}
 						}else{
-							TN_LIST_TEXT += "- " + TN.DATE + "に" + TN.SITE + "で" + TN.MONEY + "円使いました\n"
+							message.reply("内容が返されませんでした！！");
+						}
+					} catch (EX) {
+						console.error(EX);
+						message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
+					}
+
+					return;
+				}
+
+				case "SHELL":{
+					try {
+						const SHELL_CMD = "bash";
+						const ARGS = ["-c", CMD.B];
+			
+						let MSG = await message.channel.send("tailēd...");
+						let CMD_OUTPUT = "";
+			
+						let INTER = setInterval(() => {
+							MSG.edit("```ansi\n" + CMD_OUTPUT + "```");
+						}, 1000);
+						
+						const CHILS_PROCESS = spawn(SHELL_CMD, ARGS);
+						// 標準出力のデータがあるたびに呼び出されるイベントハンドラ
+						CHILS_PROCESS.stdout.on("data", (DATA) => {
+							CMD_OUTPUT += DATA.toString();
+							if(CMD_OUTPUT.length > 1024){
+								const EXCESS_LENGTH = CMD_OUTPUT.length - 1024;
+								CMD_OUTPUT = CMD_OUTPUT.substring(EXCESS_LENGTH);
+							}
+						});
+						//外部プロセスが終了したときに呼び出されるイベントハンドラ
+						CHILS_PROCESS.on("close", (CODE) => {
+							MSG.edit("```ansi\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
+							clearInterval(INTER);
+						});
+					} catch (EX) {
+						message.reply(EX);
+					}
+					return;
+				}
+
+				case "SYS":{
+					if(CMD.B === "SLS"){
+						message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
+					}
+
+					if(CMD.B === "SL"){
+						const GUILDS = MAP_KILLER(await client.guilds.fetch());
+						const GUILDS_KEY = Object.keys(GUILDS);
+						let TEXT = "参加している鯖\n```";
+				
+						for (let I = 0; I < GUILDS_KEY.length; I++) {
+							/** @type { import("discord.js").Guild } */
+							const GUILD = GUILDS[GUILDS_KEY[I]];
+							TEXT += (GUILD.name + "/" + GUILD.id) + "\n";
+						}
+				
+						TEXT += "\n```";
+				
+						message.reply(TEXT);
+					}
+
+					if(CMD.B.split(":")[0] === "INV"){
+						try {
+							const GID = CMD.B.split(":")[1];
+							let INV_CODE = await client.guilds.cache
+								.get(GID)
+								.channels.cache.find(ROW => ROW.type === "GUILD_TEXT")
+								.createInvite();
+				
+							message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
+						} catch (EX) {
+							console.error(EX);
+				
+							message.reply("エラー");
 						}
 					}
 
-					TN_LIST_TEXT += "```";
+					if(CMD.B.split(":")[0] === "LV"){
+						try {
+							const GID = CMD.B.split(":")[1];
+							let GUILD = client.guilds.cache.get(GID);
+							await GUILD.leave();
+							message.reply("たぶん脱退した");
+						} catch (EX) {
+							console.error(EX);
+				
+							message.reply("エラー");
+						}
+					}
 
-					message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ\n" + TN_LIST_TEXT);
-				} else {
-					message.reply("エラー" + RESULT.ERR);
+					if(CMD.B.split(":")[0] === "PM"){
+						try {
+							const GID = CMD.B.split(":")[1];
+							let GUILD = client.guilds.cache.get(GID);
+							if (GUILD.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR")) {
+								message.reply("はい、それは管理者権限的");
+							} else {
+								message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
+							}
+						} catch (EX) {
+							console.error(EX);
+				
+							message.reply("エラー");
+						}
+					}
+
+					if(CMD.B === "RELOAD"){
+						console.log("[ *** ][ BOT ADMIN ]管理者が設定の再読込を要請しました、再読込を開始します...");
+
+						//ニックネーム強制固定
+						LOCK_NICK_NAME_OBJ.INIT();
+						//SNS
+						SNS_CONNECTION.SQL_RELOAD();
+				
+						message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
+						console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
+					}
+					return;
 				}
-			} else {
-				message.reply("取得に失敗" + RES.status);
 			}
-		} catch (EX) {
-			console.error(EX);
-
-			message.reply("エラー");
 		}
-	}
-
-	//再読込
-	if (message.content === CONFIG.ADMIN.ADMIN_PREFIX + "RELOAD/.") {
-		console.log("[ *** ][ BOT ADMIN ]管理者が設定の再読込を要請しました、再読込を開始します...");
-
-		//ニックネーム強制固定
-		LOCK_NICK_NAME_OBJ.INIT();
-		//SNS
-		SNS_CONNECTION.SQL_RELOAD();
-
-		message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
-		console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
 	}
 }

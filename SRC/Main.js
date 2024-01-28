@@ -210,6 +210,45 @@ client.on("messageCreate", async message => {
 		//BOT所有者専用のコマンド
 		if (CONFIG.ADMIN.ADMIN_ID.find(ROW => ROW === message.author.id)) {
 			await BOT_ADMIN(message);
+
+			if(message.content === "お金"){
+				try {
+					let RES = await fetch("https://rumiserver.com/API/Rumisan/money.php", {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (RES.ok) {
+						const RESULT = await RES.json();
+						if (RESULT.STATUS) {
+							let REGEX = new RegExp("\\B(?=(\\d{" + 4 + "})+(?!\\d))", "g");
+							let TN_LIST_TEXT = "```diff\n";
+		
+							for (let I = 0; I < RESULT.TN_LIST.length; I++) {
+								const TN = RESULT.TN_LIST[I];
+								if(TN.V){
+									TN_LIST_TEXT += "+ " + TN.DATE + "に" + TN.SITE + "から" + TN.MONEY + "円入金されました\n"
+								}else{
+									TN_LIST_TEXT += "- " + TN.DATE + "に" + TN.SITE + "で" + TN.MONEY + "円使いました\n"
+								}
+							}
+		
+							TN_LIST_TEXT += "```";
+		
+							message.reply("るみさんのお金は" + RESULT.MONEY.replace(REGEX, ",") + "円だよ\n" + TN_LIST_TEXT);
+						} else {
+							message.reply("エラー" + RESULT.ERR);
+						}
+					} else {
+						message.reply("取得に失敗" + RES.status);
+					}
+				} catch (EX) {
+					console.error(EX);
+		
+					message.reply("エラー");
+				}
+			}
 		}
 
 		//誕生月取得
