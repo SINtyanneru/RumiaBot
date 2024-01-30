@@ -6,7 +6,7 @@ export function REON4213(TEXT){
 
 	if(COMMAND.startsWith("Quell->{") && COMMAND.match(/\}->ExeC->\{.*\}/)){
 		const ACTIVATOR = COMMAND.match(/\}->ExeC->\{([^}]*)\}/);
-		if(ACTIVATOR[1] === "SELF"){
+		if(ACTIVATOR[1] === "BOT"){
 			COMMAND = COMMAND.replace("Quell->{", "");
 			COMMAND = COMMAND.replace(/\}->ExeC->\{.*\}/, "");
 
