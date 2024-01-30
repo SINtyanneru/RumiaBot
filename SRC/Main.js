@@ -228,9 +228,9 @@ client.on("messageCreate", async message => {
 							for (let I = 0; I < RESULT.TN_LIST.length; I++) {
 								const TN = RESULT.TN_LIST[I];
 								if(TN.V){
-									TN_LIST_TEXT += "+ " + TN.DATE + "に" + TN.SITE + "から" + TN.MONEY + "円入金されました\n"
+									TN_LIST_TEXT += "+ " + TN.DATE + "に" + TN.SITE + "から" + TN.MONEY + "円入金されました\n";
 								}else{
-									TN_LIST_TEXT += "- " + TN.DATE + "に" + TN.SITE + "で" + TN.MONEY + "円使いました\n"
+									TN_LIST_TEXT += "- " + TN.DATE + "に" + TN.SITE + "で" + TN.MONEY + "円使いました\n";
 								}
 							}
 		
