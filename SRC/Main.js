@@ -457,7 +457,7 @@ client.on("messageCreate", async message => {
 					.catch(error => console.error("[ ERR ][ MSG_FILES ]" + error));
 			});
 	} catch (EX) {
-		console.error("[ ERR ][ DJS ]" + EX);
+		console.error("[ ERR ][ DJS ]Error", EX);
 	}
 });
 
