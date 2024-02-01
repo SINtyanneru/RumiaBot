@@ -557,6 +557,9 @@ client.on("interactionCreate", async INTERACTION => {
 			case "sns_set":
 				await new command.SNS(INTERACTION).main();
 				return;
+			case "sns_remove":
+				await new command.sns_remove(INTERACTION).main();
+				return;
 			case "ip":
 				await new command.IP(INTERACTION).main();
 				return;

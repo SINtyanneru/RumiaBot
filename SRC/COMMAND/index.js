@@ -20,5 +20,6 @@ import { Unicode_CODEPOINT } from "./Unicode_CODEPOINT.js";
 import { sns_login } from "./sns_login.js";
 import { mazokupic } from "./mazokupic.js";
 import { voicevox } from "./voicevox.js";
+import { sns_remove } from "./sns_remove.js";
 
-export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC, MISSKEY_EMOJI_SEARCH, Unicode_CODEPOINT, sns_login, mazokupic, voicevox };
+export { FERRIS, HELP, KANJI, LETTER, MATH, MIQ, PING, SEARCH, SNS, test, WHAT_NOW_DAY, WS, IP, SETTING, NUM, WH_CLEAR, VC_MUSIC, MISSKEY_EMOJI_SEARCH, Unicode_CODEPOINT, sns_login, mazokupic, voicevox, sns_remove };
