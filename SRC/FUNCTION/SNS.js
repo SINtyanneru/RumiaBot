@@ -2,7 +2,7 @@ import { CONFIG } from "../MODULES/CONFIG.js";
 import { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } from "discord.js";
 import { client } from "../MODULES/loadClient.js";
 import { WebSocket } from "ws";
-import { SQL_OBJ } from "../Main.js";
+import { SQL_OBJ, SNS_CONNECTION } from "../Main.js";
 import { general_channel, rumiserver } from "../MODULES/SYNTAX_SUGER.js";
 
 export class SNS {
@@ -38,7 +38,7 @@ export class SNS {
 		});
 	}
 
-	async SEND_EMBEDED(GID, CID, AUTHOR, POST, REPOST, FILES, SNS_TYPE) {
+	async SEND_EMBEDED(GID, CID, AUTHOR, POST, REPOST, FILES, SNS_TYPE, DOMAIN) {
 		try{
 			const EB = new MessageEmbed();
 
@@ -137,10 +137,30 @@ export class SNS {
 					.setURL(POST.URL)
 			);
 
-			await client.guilds.cache.get(GID).channels.cache.get(CID).send({
-				embeds: [EB],
-				components: [row]
-			});
+			try{
+				const CHANNEL = await client.channels.fetch(CID);
+				if(CHANNEL){
+					await CHANNEL.send({
+						embeds: [EB],
+						components: [row]
+					});
+				}
+			}catch(EX){
+				if(EX == "DiscordAPIError: Unknown Channel"){
+					console.log("[ ERR ][ SNS ]チャンネルが消えてます");
+					//インスタンスの設定を取得
+					let SNS_CONFIG = CONFIG.SNS.find(ROW => ROW.DOMAIN === DOMAIN);
+					if(SNS_CONFIG){
+						//SQLから削除
+						await SQL_OBJ.SCRIPT_RUN("DELETE FROM `SNS` WHERE `SNS_ID` = ? AND `SNS_UID` = ? AND `CID` = ? AND `GID` = ?; ", [SNS_CONFIG.ID, AUTHOR.ID, CID, GID]);
+	
+						//再読込
+						SNS_CONNECTION.SQL_RELOAD();
+
+						console.log("[ ERR ][ SNS ]" + CID + "をSQLから抹消しました");
+					}
+				}
+			}
 		}catch(EX){
 			console.log("[ ERR ][ SNS ]" + EX);
 		}
@@ -192,6 +212,7 @@ export class SNS {
 								ROW.GID,
 								ROW.CID,
 								{//投稿者の情報
+									"ID":IT_MIS_USER.id,
 									"NAME":IT_MIS_USER.name,
 									"AVATAR":IT_MIS_USER.avatarUrl,
 									"PROF":"https://" + DOMAIN + "/@" + IT_MIS_USER.username
@@ -239,7 +260,8 @@ export class SNS {
 										}
 									})()
 								},
-								"MISSKEY"
+								"MISSKEY",
+								DOMAIN
 							);
 						});
 					}
@@ -319,6 +341,7 @@ export class SNS {
 							ROW.GID,
 							ROW.CID,
 							{//投稿者の情報
+								"ID":TOOT.account.id,
 								"NAME":TOOT.account.display_name,
 								"AVATAR":TOOT.account.avatar,
 								"PROF":"https://" + DOMAIN + "/@" + TOOT.account.username
@@ -344,7 +367,8 @@ export class SNS {
 								})(),
 								"RENOTE_FILE":undefined
 							},
-							"MASTODON"
+							"MASTODON",
+							DOMAIN
 						);
 					});
 				}
