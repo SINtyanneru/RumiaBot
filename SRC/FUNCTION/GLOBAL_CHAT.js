@@ -29,29 +29,33 @@ export class GLOBAL_CHAT{
 	 * @param {import("discord.js").TextChannel<import("discord.js").CacheType>} G_CHANNEL
 	 */
 	async SEND(message){
-		const G_CHANNEL = this.CHANNEL_LIST.find((ROW) => ROW.CID === message.channel.id);
+		try{
+			const G_CHANNEL = this.CHANNEL_LIST.find((ROW) => ROW.CID === message.channel.id);
 
-		let FWH = await message.channel.fetchWebhooks();
-		let WH = FWH.find(webhook => webhook.id === message.author.id);
-
-		if(G_CHANNEL && !WH){
-			console.log("ルーム" + G_CHANNEL.ROOM + "に送信したよ");
-
-			for (let I = 0; I < this.CHANNEL_LIST.length; I++) {
-				const CHANNEL_DATA = this.CHANNEL_LIST[I];
-				if(CHANNEL_DATA.ROOM === G_CHANNEL.ROOM && CHANNEL_DATA.CID !== message.channel.id){
-					const CHANNEL = await client.channels.fetch(CHANNEL_DATA.CID);
-					if(CHANNEL){
-						let WEB_HOOK = await WebHook_FIND(CHANNEL);
+			let FWH = await message.channel.fetchWebhooks();
+			let WH = FWH.find(webhook => webhook.id === message.author.id);
 	
-						WEB_HOOK.send({
-							username: message.author.username + "@" + message.guild.name,
-							avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
-							content: sanitize(message.content)
-						});
+			if(G_CHANNEL && !WH){
+				console.log("ルーム" + G_CHANNEL.ROOM + "に送信したよ");
+	
+				for (let I = 0; I < this.CHANNEL_LIST.length; I++) {
+					const CHANNEL_DATA = this.CHANNEL_LIST[I];
+					if(CHANNEL_DATA.ROOM === G_CHANNEL.ROOM && CHANNEL_DATA.CID !== message.channel.id){
+						const CHANNEL = await client.channels.fetch(CHANNEL_DATA.CID);
+						if(CHANNEL){
+							let WEB_HOOK = await WebHook_FIND(CHANNEL);
+		
+							WEB_HOOK.send({
+								username: message.author.username + "@" + message.guild.name,
+								avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
+								content: sanitize(message.content)
+							});
+						}
 					}
 				}
 			}
+		}catch(EX){
+			console.error(EX);
 		}
 	}
 }
