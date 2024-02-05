@@ -22,6 +22,7 @@ import { sns_login } from "./COMMAND/sns_login.js";
 import { mazokupic } from "./COMMAND/mazokupic.js";
 import { voicevox } from "./COMMAND/voicevox.js";
 import { sns_remove } from "./COMMAND/sns_remove.js";
+import { GLOBAL_CHAT_CMD } from "./COMMAND/GLOBAL_CHAT.js";
 
 export async function REGIST_SLASH_COMMAND() {
 	const CMD_DATA = [
@@ -42,7 +43,9 @@ export async function REGIST_SLASH_COMMAND() {
 		Unicode_CODEPOINT.command,
 		mazokupic.command,
 		voicevox.command,
-		sns_remove.command
+		sns_remove.command,
+		GLOBAL_CHAT_CMD.command.JOIN,
+		GLOBAL_CHAT_CMD.command.LEFT
 	];
 
 	//VC-music

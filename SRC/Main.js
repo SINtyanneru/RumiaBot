@@ -41,6 +41,7 @@ import { GET_ALL_MEMBERS_COUNT } from "./MODULES/GET_ALL_GUILD_MEMBERS_COUNT.js"
 import { URI_PARAM_DECODE } from "./MODULES/URI_PARAM_DECODE.js";
 import { pws_main } from "./PROCESS_WS.js";
 import { MSG_COMMAND } from "./MODULES/MSG_COMMAND.js";
+import { GLOBAL_CHAT } from "./FUNCTION/GLOBAL_CHAT.js";
 
 //Tef el Obzhekt iel zef klas lö peif ere;
 //↑インスタンスのことですか？←Rumisan xēlp zo Obzhekt za;
@@ -175,6 +176,8 @@ client.on("messageCreate", async message => {
 			console.error("[ ERR ][ LOG ]Send LOG ERR" + EX);
 			return;
 		}
+
+		new GLOBAL_CHAT(message);
 
 		new MSG_COMMAND(message);
 
@@ -586,6 +589,12 @@ client.on("interactionCreate", async INTERACTION => {
 				return;
 			case "voicevox":
 				await new command.voicevox(INTERACTION).main();
+				return;
+			case "global_chat_join":
+				await new command.GLOBAL_CHAT_CMD(INTERACTION).JOIN();
+				return;
+			case "global_chat_left":
+				await new command.GLOBAL_CHAT_CMD(INTERACTION).LEFT();
 				return;
 		}
 	} catch (EX) {
