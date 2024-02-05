@@ -22,32 +22,35 @@ export class LOCK_NICK_NAME {
 			console.log("[ OK ][ LOCK NICKNAME ]全ての設定を再読込しました!");
 		});
 		SQL_RESULT.catch(EX => {
-			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
+			console.error("[ ERR ][ LOCK NICKNAME ]");
+			console.error(EX);
 		});
 	}
 	//メイン
 	async main(MEMBER) {
 		if (CONFIG.ADMIN.DISABLE.includes("locknick")) return;
 		try {
-			let NICK_NAME = this.NICK_LOCK_USER[MEMBER.guild.id.toString()];
-			if (NICK_NAME) {
-				NICK_NAME = NICK_NAME[MEMBER.user.id.toString()];
+			if(MEMBER){
+				let NICK_NAME = this.NICK_LOCK_USER[MEMBER.guild.id.toString()];
 				if (NICK_NAME) {
-					if (NICK_NAME !== MEMBER.nickname) {
-						console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
-						if (MEMBER.manageable) {
-							await MEMBER.setNickname(NICK_NAME);
-							console.log("[ OK ][ LOCK NICKNAME ]" + MEMBER.user.username + "の名前を変更しました");
-						} else {
-							console.error("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
-							return;
+					NICK_NAME = NICK_NAME[MEMBER.user.id.toString()];
+					if (NICK_NAME) {
+						if (NICK_NAME !== MEMBER.nickname) {
+							console.log("[ INFO ][ LOCK NICKNAME ]" + MEMBER.user.username + "がニックネームを変えました");
+							if (MEMBER.manageable) {
+								await MEMBER.setNickname(NICK_NAME);
+								console.log("[ OK ][ LOCK NICKNAME ]" + MEMBER.user.username + "の名前を変更しました");
+							} else {
+								console.error("[ ERR ][ LOCK NICKNAME ]権限不足により変更できませんでした");
+								return;
+							}
 						}
 					}
 				}
 			}
 		} catch (EX) {
-			console.error("[ ERR ][ LOCK NICKNAME ]" + EX);
-			return;
+			console.error("[ ERR ][ LOCK NICKNAME ]");
+			console.error(EX);
 		}
 	}
 }
