@@ -3,6 +3,8 @@
  */
 import { SlashCommandBuilder } from "@discordjs/builders";
 import * as FS from "node:fs";
+import * as crypto from "node:crypto";
+import { sanitize } from "../MODULES/sanitize.js";
 
 export class voicevox{
 	static command = new SlashCommandBuilder().setName("voicevox").setDescription("ボイボのテスト用コマンド")
@@ -42,11 +44,11 @@ export class voicevox{
 	constructor(INTERACTION){
 		this.E = INTERACTION;
 
-		//ID（時刻をbase64してる）
-		this.ID = btoa(encodeURIComponent(new Date().toISOString()));
-
 		//文章
 		this.TEXT = INTERACTION.options.getString("text");
+
+		//ID（時刻をbase64してる）←なんとなく文字列に変更
+		this.ID = crypto.randomUUID();
 
 		//話者を選ぶ
 		if(INTERACTION.options.getString("speaker")){
@@ -67,9 +69,12 @@ export class voicevox{
 					FS.writeFileSync(`./DOWNLOAD/VOICEVOX/${this.ID}.wav`, (GENERATE_RESULT), "binary");
 	
 					//生成結果を入れる
-					await this.E.editReply({ content:"生成した", files: [
-						`./DOWNLOAD/VOICEVOX/${this.ID}.wav`
-					] });
+					await this.E.editReply({
+						content: `生成した「${sanitize(this.TEXT)}」`,
+						files: [
+							`./DOWNLOAD/VOICEVOX/${this.ID}.wav`
+						]
+					});
 	
 					//終了
 					return;
