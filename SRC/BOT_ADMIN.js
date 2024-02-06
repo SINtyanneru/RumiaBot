@@ -18,6 +18,7 @@ export async function BOT_ADMIN(message) {
 	if(CMD_LIST != null){
 		for (let I = 0; I < CMD_LIST.length; I++) {
 			const CMD = CMD_LIST[I];
+
 			switch(CMD.A){
 				case "EXEC":{
 					console.log("任意コードを実行する:" + CMD.B);
@@ -36,7 +37,7 @@ export async function BOT_ADMIN(message) {
 						message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
 					}
 
-					return;
+					break;
 				}
 
 				case "SHELL":{
@@ -68,7 +69,7 @@ export async function BOT_ADMIN(message) {
 					} catch (EX) {
 						message.reply(EX);
 					}
-					return;
+					break;
 				}
 
 				case "SYS":{
@@ -148,7 +149,7 @@ export async function BOT_ADMIN(message) {
 						message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
 						console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
 					}
-					return;
+					break;
 				}
 			}
 		}
