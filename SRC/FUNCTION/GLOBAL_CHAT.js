@@ -46,7 +46,7 @@ export class GLOBAL_CHAT{
 							if(CHANNEL){
 								let WEB_HOOK = await WebHook_FIND(CHANNEL);
 			
-								WEB_HOOK.send({
+								await WEB_HOOK.send({
 									username: message.author.username + "@" + message.guild.name,
 									avatarURL: "https://cdn.discordapp.com/avatars/" + message.author.id + "/" + message.author.avatar + ".png",
 									content: sanitize(message.content)
