@@ -25,11 +25,13 @@ export async function BOT_ADMIN(message) {
 				let HYMN_TEXT = HYMN.toString();
 
 				//なにこれ
-				if(HYMN_TEXT.startsWith("#!HYMN_EXTRA\n")){
+				if(HYMN_TEXT.startsWith("#!HYMN_EXTRA;BOT\n")){
 					await message.reply("ヒュムノス・エクストラを実行します：" + message.content);
-					HYMN_TEXT = HYMN_TEXT.replace("#!HYMN_EXTRA\n", "");
-				}else{
+					HYMN_TEXT = HYMN_TEXT.replace("#!HYMN_EXTRA;BOT\n", "");
+				}else if(HYMN_TEXT.startsWith("#!HYMN_WORD;BOT\n")){
 					await message.reply("ヒュムノス・ワードを実行します：" + message.content);
+				}else{
+					return;
 				}
 
 				//内容を送信
