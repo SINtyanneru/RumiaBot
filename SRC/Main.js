@@ -295,13 +295,13 @@ client.on("messageCreate", async message => {
 												}
 											})() + "\n" +
 											"REMJA:" + 
-												message.createdAt.getFullYear() + "God " +
-												message.createdAt.getMonth() + "Yeğ " +
-												message.createdAt.getDate() + "Seo " +
+												message.createdAt.getFullYear() + "G " +
+												message.createdAt.getMonth() + "Y " +
+												message.createdAt.getDate() + "S " +
 
-												message.createdAt.getHours() + "Časo " +
-												message.createdAt.getMinutes() + "Minut " +
-												message.createdAt.getSeconds() + "Sekundî " +
+												message.createdAt.getHours() + "Č " +
+												message.createdAt.getMinutes() + "M " +
+												message.createdAt.getSeconds() + "Sî " +
 											"\n"
 									);
 									return;
