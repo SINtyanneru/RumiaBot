@@ -8,12 +8,48 @@ import { NULLCHECK } from "./MODULES/NULLCHECK.js";
 import { SQL_OBJ, LOCK_NICK_NAME_OBJ, SNS_CONNECTION } from "./Main.js";
 import { MAP_KILLER } from "./MODULES/MAP_KILLER.js";
 import { REON4213 } from "./MODULES/REON4213.js";
+import * as FS from "node:fs";
 
 /**
  * BOT管理者が使う奴
  * @param {Message} message メッセージ
  */
 export async function BOT_ADMIN(message) {
+	COMMAND_RUN(message);
+
+	//詩
+	if(message.content.startsWith("EXEC_") && message.content.endsWith("/.")){
+		try{
+			if(FS.existsSync(CONFIG.HYMN.PATH + message.content.replace("/.", ""))){
+				const HYMN = FS.readFileSync(CONFIG.HYMN.PATH + message.content.replace("/.", ""));
+				let HYMN_TEXT = HYMN.toString();
+
+				//なにこれ
+				if(HYMN_TEXT.startsWith("#!HYMN_EXTRA\n")){
+					await message.reply("ヒュムノス・エクストラを実行します：" + message.content);
+					HYMN_TEXT = HYMN_TEXT.replace("#!HYMN_EXTRA\n", "");
+				}else{
+					await message.reply("ヒュムノス・ワードを実行します：" + message.content);
+				}
+
+				//内容を送信
+				await message.channel.send("```\n" + HYMN_TEXT + "\n```");
+
+				//いい感じに整形
+				let RUN_CONTENTS = message;
+				RUN_CONTENTS.content = HYMN_TEXT;
+
+				//実行
+				await COMMAND_RUN(RUN_CONTENTS);
+			}
+		}catch(EX){
+			console.error("詩の実行時にエラー");
+			console.error(EX);
+		}
+	}
+}
+
+async function COMMAND_RUN(message){
 	let CMD_LIST = REON4213(message.content);
 	if(CMD_LIST != null && CMD_LIST.ACTIVATOR === "CMD"){
 		for (let I = 0; I < CMD_LIST.V.length; I++) {
@@ -30,11 +66,11 @@ export async function BOT_ADMIN(message) {
 								message.reply(result);
 							}
 						}else{
-							message.reply("内容が返されませんでした！！");
+							await message.reply("内容が返されませんでした！！");
 						}
 					} catch (EX) {
 						console.error(EX);
-						message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
+						await message.reply("<:blod_sad:1155039115709005885> エラー: ```js\n" + EX.stack + "```");
 					}
 
 					break;
@@ -62,8 +98,8 @@ export async function BOT_ADMIN(message) {
 							}
 						});
 						//外部プロセスが終了したときに呼び出されるイベントハンドラ
-						CHILS_PROCESS.on("close", (CODE) => {
-							MSG.edit("```ansi\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
+						CHILS_PROCESS.on("close", async (CODE) => {
+							await MSG.edit("```ansi\n" + CMD_OUTPUT + "```\nEND CODE:" + CODE.toString());
 							clearInterval(INTER);
 						});
 					} catch (EX) {
@@ -74,7 +110,7 @@ export async function BOT_ADMIN(message) {
 
 				case "SYS":{
 					if(CMD.B === "SLS"){
-						message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
+						await message.reply("サーバー参加数：「" + client.guilds.cache.size + "」");
 					}
 
 					if(CMD.B === "SL"){
@@ -90,7 +126,7 @@ export async function BOT_ADMIN(message) {
 				
 						TEXT += "\n```";
 				
-						message.reply(TEXT);
+						await message.reply(TEXT);
 					}
 
 					if(CMD.B.split(":")[0] === "INV"){
@@ -101,11 +137,11 @@ export async function BOT_ADMIN(message) {
 								.channels.cache.find(ROW => ROW.type === "GUILD_TEXT")
 								.createInvite();
 				
-							message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
+							await message.reply("https://discord.gg/" + NULLCHECK(INV_CODE.code));
 						} catch (EX) {
 							console.error(EX);
 				
-							message.reply("エラー");
+							await message.reply("エラー");
 						}
 					}
 
@@ -114,11 +150,11 @@ export async function BOT_ADMIN(message) {
 							const GID = CMD.B.split(":")[1];
 							let GUILD = client.guilds.cache.get(GID);
 							await GUILD.leave();
-							message.reply("たぶん脱退した");
+							await message.reply("たぶん脱退した");
 						} catch (EX) {
 							console.error(EX);
 				
-							message.reply("エラー");
+							await message.reply("エラー");
 						}
 					}
 
@@ -127,14 +163,14 @@ export async function BOT_ADMIN(message) {
 							const GID = CMD.B.split(":")[1];
 							let GUILD = client.guilds.cache.get(GID);
 							if (GUILD.members.cache.get(client.user.id).permissions.has("ADMINISTRATOR")) {
-								message.reply("はい、それは管理者権限的");
+								await message.reply("はい、それは管理者権限的");
 							} else {
-								message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
+								await message.reply("あーー！管理者権限がないぞおおお！！！こんな鯖抜けてやる！");
 							}
 						} catch (EX) {
 							console.error(EX);
 				
-							message.reply("エラー");
+							await message.reply("エラー");
 						}
 					}
 
@@ -146,7 +182,7 @@ export async function BOT_ADMIN(message) {
 						//SNS
 						SNS_CONNECTION.SQL_RELOAD();
 				
-						message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
+						await message.reply("[ OK ]ｼｽﾃﾑの設定を再読込しました");
 						console.log("[ *** ][ BOT ADMIN ]ｼｽﾃﾑの設定を再読込しました");
 					}
 					break;
