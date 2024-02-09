@@ -275,7 +275,7 @@ client.on("messageCreate", async message => {
 							if (message.reference) {
 								//リプライである
 								//メッセージインフォ
-								if (message.content.includes("taktud")) {
+								if (message.content.includes("info")) {
 									let REPLY_P = await message.fetchReference();
 									let FWH = await message.channel.fetchWebhooks();
 									let WH = FWH.find(webhook => webhook.id === REPLY_P.author.id);
@@ -293,7 +293,15 @@ client.on("messageCreate", async message => {
 												} else {
 													return "NONE";
 												}
-											})() +
+											})() + "\n" +
+											"REMJA:" + 
+												message.createdAt.getFullYear() + "God " +
+												message.createdAt.getMonth() + "Yeğ " +
+												message.createdAt.getDate() + "Seo " +
+
+												message.createdAt.getHours() + "Časo " +
+												message.createdAt.getMinutes() + "Minut " +
+												message.createdAt.getSeconds() + "Sekundî " +
 											"\n"
 									);
 									return;
