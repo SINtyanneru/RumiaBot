@@ -1,46 +1,52 @@
 export function REON4213(TEXT){
 	let COMMAND = TEXT;
 
+	const CLS = "BOT";
+
 	COMMAND = COMMAND.replaceAll("\n", "");
 	COMMAND = COMMAND.replaceAll("\t", "");
 
 	if(COMMAND.startsWith("Quell->{") && COMMAND.match(/\}->ExeC->\{.*\}/)){
 		const ACTIVATOR = COMMAND.match(/\}->ExeC->\{([^}]*)\}/);
-		if(ACTIVATOR[1] === "BOT"){
-			COMMAND = COMMAND.replace("Quell->{", "");
-			COMMAND = COMMAND.replace(/\}->ExeC->\{.*\}/, "");
 
-			const COMMAND_SPLIT = COMMAND.split("");
-			let I = 0;
-			if((COMMAND_SPLIT[I] === "C") && (COMMAND_SPLIT[I + 1] === "l") && (COMMAND_SPLIT[I + 2] === "s")){
-				//カーソルを2個進める
-				I = I + 2;
+		COMMAND = COMMAND.replace("Quell->{", "");
+		COMMAND = COMMAND.replace(/\}->ExeC->\{.*\}/, "");
 
-				//主語の括弧内を取得
-				let CLS_A = GROUP_PARSE(COMMAND_SPLIT, "(", ")", I + 1);
-				I = CLS_A.OFSET;
+		const COMMAND_SPLIT = COMMAND.split("");
+		let I = 0;
+		if((COMMAND_SPLIT[I] === "C") && (COMMAND_SPLIT[I + 1] === "l") && (COMMAND_SPLIT[I + 2] === "s")){
+			//カーソルを2個進める
+			I = I + 2;
 
-				let CLS_B = GROUP_PARSE(COMMAND_SPLIT, "{", "}", I + 1);
-				I = CLS_B.OFSET;
+			//主語の括弧内を取得
+			let CLS_A = GROUP_PARSE(COMMAND_SPLIT, "(", ")", I + 1);
+			I = CLS_A.OFSET;
 
-				//AはCMDか
-				if(CLS_A.CONTENTS === "CMD"){
-					//B内のVブロックを解析する
-					const V_BLOCK = CLS_B.CONTENTS.split(";");
-					let V_BLOCK_CONTENTS = [];
+			let CLS_B = GROUP_PARSE(COMMAND_SPLIT, "{", "}", I + 1);
+			I = CLS_B.OFSET;
 
-					V_BLOCK.forEach((ROW) => {
-						if(ROW !== ""){
-							const MATCH = ROW.match(/^EX\[([^}]*)\]->\(([^}]*)\)$/);
+			//主語はCLS内の文字列か
+			if(CLS_A.CONTENTS === CLS){
+				//B内のVブロックを解析する
+				const V_BLOCK = CLS_B.CONTENTS.split(";");
+				let V_BLOCK_CONTENTS = [];
+
+				V_BLOCK.forEach((ROW) => {
+					if(ROW !== ""){
+						const MATCH = ROW.match(/^(?:EX|EXiV)\[([^}]*)\]->\(([^}]*)\)$/);
+						if(MATCH){
 							V_BLOCK_CONTENTS.push({
 								A:MATCH[1],
 								B:MATCH[2]
 							});
 						}
-					});
+					}
+				});
 
-					return V_BLOCK_CONTENTS;
-				}
+				return {
+					ACTIVATOR:ACTIVATOR[1],
+					V:V_BLOCK_CONTENTS
+				};
 			}
 		}
 	}

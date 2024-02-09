@@ -15,9 +15,9 @@ import { REON4213 } from "./MODULES/REON4213.js";
  */
 export async function BOT_ADMIN(message) {
 	let CMD_LIST = REON4213(message.content);
-	if(CMD_LIST != null){
-		for (let I = 0; I < CMD_LIST.length; I++) {
-			const CMD = CMD_LIST[I];
+	if(CMD_LIST != null && CMD_LIST.ACTIVATOR === "CMD"){
+		for (let I = 0; I < CMD_LIST.V.length; I++) {
+			const CMD = CMD_LIST.V[I];
 
 			switch(CMD.A){
 				case "EXEC":{
