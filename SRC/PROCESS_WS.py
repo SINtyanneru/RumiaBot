@@ -9,10 +9,10 @@ async def PWS_MAIN():
 	CONNECTION = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	CONNECTION.connect(("localhost", 3001))
 	print(await SEND_MSG("HELLO;PY"))
-	await sleep(1)
-	print(await SEND_MSG("DISCORD;MSG_SEND;1164919064678903848;PythonがらJSにメッセージ送信命令"))
-	await sleep(1)
-	CONNECTION.close()
+	#await sleep(1)
+	#print(await SEND_MSG("DISCORD;MSG_SEND;1164919064678903848;PythonがらJSにメッセージ送信命令"))
+	#await sleep(1)
+	#CONNECTION.close()
 
 async def SEND_MSG(TEXT:str):
 	global CONNECTION
