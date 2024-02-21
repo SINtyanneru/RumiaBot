@@ -762,7 +762,6 @@ client.on("roleUpdate", (oldRole, newRole) => {
 			}
 		}
 
-
 		const CH = client.guilds.cache.get(rumiserver).channels.cache.get(general_channel);
 		if (CH) {
 			let PM_UPDATE_LIST = [];
