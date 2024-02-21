@@ -51,7 +51,13 @@ public class WEBSOCKET extends WebSocketClient {
 				}
 
 				case "mention":{
-					String AJAX = new HTTP_REQUEST("https://" + SERVER_URL.getHost() + "/api/notes/reactions/create").POST("{\"noteId\":\"" + MESSAGE_JSON.get("body").get("body").get("id").asText() + "\",\"reaction\":\":1039992459209490513:\",\"i\":\"" + TOKEN + "\"}");
+					JsonNode NOTE_DATA = MESSAGE_JSON.get("body").get("body");
+
+					if(NOTE_DATA.get("text").asText().contains("")){
+
+					} else {
+						String AJAX = new HTTP_REQUEST("https://" + SERVER_URL.getHost() + "/api/notes/reactions/create").POST("{\"noteId\":\"" + NOTE_DATA.get("id").asText() + "\",\"reaction\":\":1039992459209490513:\",\"i\":\"" + TOKEN + "\"}");
+					}
 					break;
 				}
 			}
