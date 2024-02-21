@@ -6,22 +6,20 @@ import java.io.InputStreamReader;
 
 public class ProcessStart implements Runnable {
 	private String TAG;
-	private String APP;
-	private String ARG;
+	private String[] ARG;
 
-	public ProcessStart(String TAG, String APP, String ARG){
+	public ProcessStart(String TAG, String[] ARG){
 		this.TAG = TAG;
-		this.APP = APP;
 		this.ARG = ARG;
 	}
 
 	public void run(){
 		try{
 			//外部アプリケーションのプロセスを起動
-			ProcessBuilder PB = new ProcessBuilder(APP, ARG);
+			ProcessBuilder PB = new ProcessBuilder(ARG);
 			Process PROCESS = PB.start();
 
-			Main.LOG(TAG, "Start " + APP + " " + ARG, 0);
+			Main.LOG(TAG, "Start " + ARG[0], 0);
 
 			//標準出力の読み取る用のスレッド
 			Thread OUT_TH = new Thread(() -> {
