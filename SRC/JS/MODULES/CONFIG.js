@@ -1,5 +1,5 @@
 // @ts-check
-import CONFIG from "../../Config.json" assert { type: "json" };
+import CONFIG from "../../../Config.json" assert { type: "json" };
 // import { readFileSync } from "fs";
 /*
  * @typedef {Object} Config

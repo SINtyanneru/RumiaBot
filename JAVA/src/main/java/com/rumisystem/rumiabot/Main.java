@@ -22,11 +22,10 @@ public class Main {
 		});
 		WS.start();
 
-		Thread PS1 = new Thread( new ProcessStart("JS", "node", "./SRC/Main.js"));
+		Thread PS1 = new Thread( new ProcessStart("JS", "node", "./SRC/JS/Main.js"));
 		PS1.start();
 
-
-		Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/Main.py"));
+		Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/PY/Main.py"));
 		//PS2.start();
 	}
 
