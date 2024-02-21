@@ -757,10 +757,8 @@ client.on("roleUpdate", (oldRole, newRole) => {
 		const NEW_ROLE_PM = newRole.permissions.toArray();
 
 		if (oldRole.name === newRole.name) {
-			for (let I = 0; I < NEW_ROLE_PM.length; I++) {
-				if(OLD_ROLE_PM[I] === NEW_ROLE_PM[I]){
-					return;
-				}
+			if(JSON.stringify(OLD_ROLE_PM) === JSON.stringify(NEW_ROLE_PM)){
+				return;
 			}
 		}
 
