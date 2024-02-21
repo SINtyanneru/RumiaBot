@@ -618,13 +618,13 @@ client.on("interactionCreate", async INTERACTION => {
 		if (CONFIG.ADMIN.BLOCK) {
 			if (CONFIG.ADMIN.BLOCK.includes(INTERACTION.user.id)) {
 				//ブロックしてるので実行しない
-				INTERACTION.reply({
+				return await INTERACTION.reply({
 					content:"お前嫌いだから実行しない",
 					ephemeral: true
 				});
-				return;
 			}
 		}
+
 		if (!INTERACTION.isButton()) {
 			return;
 		}
@@ -649,10 +649,10 @@ client.on("interactionCreate", async INTERACTION => {
 
 		switch (CMD) {
 			case "test":
-				new command.test(INTERACTION).button();
+				await new command.test(INTERACTION).button();
 				break;
 			case "sns_button_noteopen":
-				SNS_CONNECTION.note_open(INTERACTION, URI_PARAM);
+				await SNS_CONNECTION.note_open(INTERACTION, URI_PARAM);
 				break;
 		}
 	}catch(EX){
