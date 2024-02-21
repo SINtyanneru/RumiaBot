@@ -81,3 +81,8 @@ selenium-webdriver/chrome<BR>
 ## ライセンス
 
 いつもどおり、「るみしすてむアプリケーションライセンス V1.0」です！
+
+## ディレクトリ構成
+
+SRCにBOTのコードが、JSにJavaScript、PYにPython、JAVAにJAVAがあります<BR>
+JAVAフォルダは、BOTのコードを実行するやつ
