@@ -606,42 +606,59 @@ client.on("interactionCreate", async INTERACTION => {
 				return;
 		}
 	} catch (EX) {
-		console.error("[ ERR ][ DJS ]" + EX);
-		return;
+		console.error("[ ERR ][ DJS ]スラッシュコマンドのインテラツティオンエラー");
+		console.error(EX);
 	}
 });
 
 //ボタンのインテラツティオン
 client.on("interactionCreate", async INTERACTION => {
-	if (!INTERACTION.isButton()) {
+	try{
+		//ブロック
+		if (CONFIG.ADMIN.BLOCK) {
+			if (CONFIG.ADMIN.BLOCK.includes(INTERACTION.user.id)) {
+				//ブロックしてるので実行しない
+				INTERACTION.reply({
+					content:"お前嫌いだから実行しない",
+					ephemeral: true
+				});
+				return;
+			}
+		}
+		if (!INTERACTION.isButton()) {
+			return;
+		}
+
+		const CMD = INTERACTION.customId.split("?")[0];
+		let URI_PARAM = URI_PARAM_DECODE(INTERACTION.customId);
+
+		console.log(
+			"[ INFO ][ MI ]┌Interaction create:" +
+				CMD +
+				"\n             ├in " +
+				INTERACTION.guild.name +
+				"\n             ├in " +
+				INTERACTION.channel.name +
+				INTERACTION.channelId +
+				"\n             └in " +
+				INTERACTION.member.user.username +
+				"(" +
+				INTERACTION.member.id +
+				")"
+		);
+
+		switch (CMD) {
+			case "test":
+				new command.test(INTERACTION).button();
+				break;
+			case "sns_button_noteopen":
+				SNS_CONNECTION.note_open(INTERACTION, URI_PARAM);
+				break;
+		}
+	}catch(EX){
+		console.error("[ ERR ][ DJS ]ボタンのインテラツティオンエラー");
+		console.error(EX);
 		return;
-	}
-
-	const CMD = INTERACTION.customId.split("?")[0];
-	let URI_PARAM = URI_PARAM_DECODE(INTERACTION.customId);
-
-	console.log(
-		"[ INFO ][ MI ]┌Interaction create:" +
-			CMD +
-			"\n             ├in " +
-			INTERACTION.guild.name +
-			"\n             ├in " +
-			INTERACTION.channel.name +
-			INTERACTION.channelId +
-			"\n             └in " +
-			INTERACTION.member.user.username +
-			"(" +
-			INTERACTION.member.id +
-			")"
-	);
-
-	switch (CMD) {
-		case "test":
-			new command.test(INTERACTION).button();
-			break;
-		case "sns_button_noteopen":
-			SNS_CONNECTION.note_open(INTERACTION, URI_PARAM);
-			break;
 	}
 });
 
