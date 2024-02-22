@@ -43,21 +43,28 @@ public class TELNET_HANDLER implements Runnable {
 				switch (CMD[1]){
 					//認証
 					case "HELLO":
-						if(CMD[2].equals("JS")){//JS
+						if(CMD[2].equals("JS")) {//JS
 							//接続一覧にOutputStreamを追加
 							CONNECTIONU.put("JS", OUTPUT_STREAM);
 
 							//成功と返す
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 							break;
-						}if(CMD[2].equals("PY")){//Python
+						} else if(CMD[2].equals("PY")) {//Python
 							//接続一覧にOutputStreamを追加
 							CONNECTIONU.put("PY", OUTPUT_STREAM);
 
 							//成功と返す
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 							break;
-						}else{//誰やねんお前
+						} else if(CMD[2].equals("JAVA")) {//JAVA
+							//接続一覧にOutputStreamを追加
+							CONNECTIONU.put("JAVA", OUTPUT_STREAM);
+
+							//成功と返す
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+							break;
+						} else {//誰やねんお前
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";WHO_IS_YOU;403");
 						}
 						break;
@@ -68,7 +75,7 @@ public class TELNET_HANDLER implements Runnable {
 							SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
 
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
-						}else {
+						} else {
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
 						}
 						break;

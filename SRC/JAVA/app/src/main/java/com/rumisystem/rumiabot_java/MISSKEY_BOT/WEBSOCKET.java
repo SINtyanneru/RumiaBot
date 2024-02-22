@@ -2,7 +2,6 @@ package com.rumisystem.rumiabot_java.MISSKEY_BOT;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rumisystem.rumiabot_java.HTTP_REQUEST;
-import org.checkerframework.checker.units.qual.A;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -28,12 +27,16 @@ public class WEBSOCKET extends WebSocketClient {
 
 	@Override//つながった
 	public void onOpen(ServerHandshake HAND_SHAKE_DATA) {
+		System.out.println("Misskeyサーバーに接続しました");
 		SEND_MESSAGE("{\"type\":\"connect\",\"body\":{\"channel\":\"main\",\"id\":\"1\",\"params\":{\"withRenotes\":true,\"withReplies\":false}}}");
+		SEND_MESSAGE("{\"type\":\"connect\",\"body\":{\"channel\":\"homeTimeline\",\"id\":\"2\",\"params\":{\"withRenotes\":true,\"withReplies\":false}}}");
 	}
 
 	@Override//受信
 	public void onMessage(String MESSAGE) {
 		try {
+			System.out.println(MESSAGE);
+
 			ObjectMapper OM = new ObjectMapper();
 
 			JsonNode MESSAGE_JSON = OM.readTree(MESSAGE);

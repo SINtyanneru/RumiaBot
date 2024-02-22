@@ -23,12 +23,12 @@ public class Main {
 		WS.start();
 
 		Thread PS1 = new Thread( new ProcessStart("JS", new String[]{"node", "./SRC/JS/Main.js"}));
-		PS1.start();
+		//PS1.start();
 
 		//Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/PY/Main.py"));
 		//PS2.start();
 
-		Thread PS3 =new Thread( new ProcessStart("JAVA", new String[]{"java", "-jar", "./SRC/JAVA/app/build/libs/app-all.jar"}));
+		Thread PS3 = new Thread( new ProcessStart("JAVA", new String[]{"java", "-jar", "./SRC/JAVA/app/build/libs/app-all.jar"}));
 		PS3.start();
 	}
 

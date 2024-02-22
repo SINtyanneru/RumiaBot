@@ -9,9 +9,6 @@ repositories {
 }
 
 dependencies {
-	// This dependency is used by the application.
-	implementation libs.guava
-
 	//WS
 	implementation "org.java-websocket:Java-WebSocket:1.5.1"
 	//JSON

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.rumisystem.rumiabot_java.PS;
+
 public class Main {
 	public static void main(String[] args) {
 		try{
@@ -37,11 +39,24 @@ public class Main {
 				ObjectMapper OM = new ObjectMapper();
 				JsonNode CONFIG = OM.readTree(CONFIG_CONTENTS.toString());
 
+				//PS
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						PS.main(3001);
+					}
+				}).start();
+
 				for (int I = 0; CONFIG.get("SNS").size() > I; I++) {
 					JsonNode ROW = CONFIG.get("SNS").get(I);
 					if(ROW.get("MAIN").asBoolean()){
 						System.out.println(ROW.get("ID").asText() + "に接続します");
-						com.rumisystem.rumiabot_java.MISSKEY_BOT.Main.main(ROW.get("DOMAIN").asText(), ROW.get("API").asText());
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								//com.rumisystem.rumiabot_java.MISSKEY_BOT.Main.main(ROW.get("DOMAIN").asText(), ROW.get("API").asText());
+							}
+						}).start();
 						break;
 					}
 				}
