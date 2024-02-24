@@ -4,7 +4,6 @@ plugins {
 }
 
 repositories {
-	// Use Maven Central for resolving dependencies.
 	mavenCentral()
 }
 
@@ -27,8 +26,7 @@ java {
 }
 
 application {
-	// Define the main class for the application.
-	mainClass = 'com.rumisystem.rumiabot.jda'
+	mainClass = 'com.rumisystem.rumiabot.jda.Main'
 }
 
 jar {
