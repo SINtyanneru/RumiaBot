@@ -16,6 +16,9 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
 	implementation("com.fasterxml.jackson.core:jackson-annotations:2.16.0")
+	//Selenium
+	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
+	implementation 'io.github.bonigarcia:webdrivermanager:5.3.1'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

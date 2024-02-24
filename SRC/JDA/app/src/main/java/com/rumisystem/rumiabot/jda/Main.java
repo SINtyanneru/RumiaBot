@@ -78,11 +78,14 @@ public class Main {
 		SlashCommandData info_server = Commands.slash("info_server", "鯖の情報を取得");
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得")
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
+		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
+				.addOption(OptionType.STRING, "url", "ウーエルエル", true);
 
 		BOT.updateCommands().addCommands(
 				test,
 				info_server,
-				info_user
+				info_user,
+				ws
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");

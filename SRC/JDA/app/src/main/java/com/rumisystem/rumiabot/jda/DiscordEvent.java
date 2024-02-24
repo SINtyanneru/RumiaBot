@@ -3,6 +3,7 @@ package com.rumisystem.rumiabot.jda;
 import com.rumisystem.rumiabot.jda.COMMAND.info_server;
 import com.rumisystem.rumiabot.jda.COMMAND.info_user;
 import com.rumisystem.rumiabot.jda.COMMAND.test;
+import com.rumisystem.rumiabot.jda.COMMAND.ws;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -52,6 +53,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 				case "info_user":{
 					info_user.main(INTERACTION);
+					break;
+				}
+
+				case "ws":{
+					ws.main(INTERACTION);
 					break;
 				}
 
