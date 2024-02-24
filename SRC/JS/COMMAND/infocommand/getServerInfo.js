@@ -90,6 +90,30 @@ export async function getServerInfo(interaction) {
 			true
 		);
 
+		const GUILD_MEMBERS = MAP_KILLER(await GLID.members.fetch());
+
+		embed.addField(
+			"ユーザー数",
+			Object.keys(GUILD_MEMBERS).length.toString() + "人",
+			true
+		);
+
+		let ONLINE_USER_COUNT = 0;
+		for (let I = 0; I < Object.keys(GUILD_MEMBERS).length; I++) {
+			const MEMBER = GUILD_MEMBERS[Object.keys(GUILD_MEMBERS)[I]];
+			if(MEMBER.user.presence){
+				if(MEMBER.user.presence.status !== "offline"){
+					ONLINE_USER_COUNT++;
+				}
+			}
+		}
+
+		embed.addField(
+			"ユーザー数",
+			ONLINE_USER_COUNT.toString() + "人",
+			true
+		);
+
 		//絵文字を配列にするやつ
 		const fetched_emoji = await GLID.emojis.fetch();
 		/**@type {string[]} */
