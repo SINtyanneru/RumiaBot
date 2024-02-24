@@ -22,7 +22,7 @@ public class Main {
 		});
 		WS.start();
 
-		Thread PS1 = new Thread( new ProcessStart("JS", new String[]{"node", "./SRC/JS/Main.js"}));
+		Thread PS1 = new Thread( new ProcessStart("JDA", new String[]{"java", "-jar", "./SRC/JDA/app/build/libs/app-all.jar"}));
 		PS1.start();
 
 		//Thread PS2 =new Thread( new ProcessStart("PY", "python", "./SRC/PY/Main.py"));
@@ -30,6 +30,9 @@ public class Main {
 
 		Thread PS3 = new Thread( new ProcessStart("JAVA", new String[]{"java", "-jar", "./SRC/JAVA/app/build/libs/app-all.jar"}));
 		PS3.start();
+
+		Thread PS4 = new Thread( new ProcessStart("JS", new String[]{"node", "./SRC/JS/Main.js"}));
+		PS4.start();
 	}
 
 	public static void LOG(String TAG, String TEXT, int MODE){

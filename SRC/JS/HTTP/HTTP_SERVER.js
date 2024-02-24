@@ -3,7 +3,7 @@ import * as HTTP from "node:http";
 import * as FS from "node:fs";
 import { client } from "../MODULES/loadClient.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { SQL_OBJ } from "../Main.js";
+import { SQL_OBJ } from "../OLD/Main.js";
 
 /**
  * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL

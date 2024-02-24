@@ -1,5 +1,4 @@
 import net from "net";
-import { client } from "./MODULES/loadClient.js";
 import * as crypto from "node:crypto";
 
 const SERVER_URL = "localhost";
@@ -21,12 +20,6 @@ export async function pws_main(){
 		const MSG = DATA.toString();
 		const CMD = MSG.split(";");
 		if(CMD[0] === "DISCORD"){
-			if(CMD[1] === "MSG_SEND"){
-				const CH =await client.channels.fetch(CMD[2]);
-				if(CH){
-					CH.send(CMD[3]);
-				}
-			}
 		}
 	});
 }
