@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.DiscordLocale;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -64,9 +65,16 @@ public class Main {
 
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用").setNameLocalization(DiscordLocale.JAPANESE, "テスト");
+		SlashCommandData info_server = Commands.slash("info_server", "鯖の情報を取得").setNameLocalization(DiscordLocale.JAPANESE, "サーバーの情報");
+		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得").setNameLocalization(DiscordLocale.JAPANESE, "ユーザー情報")
+				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
 
-		for(Guild GUILD:BOT.getGuilds()){
-			GUILD.updateCommands().addCommands(test).queue();
-		}
+		BOT.updateCommands().addCommands(
+				test,
+				info_server,
+				info_user
+		).queue();
+
+		System.out.println("コマンドを全て登録しました");
 	}
 }
