@@ -5,6 +5,7 @@ import { MessageEmbed } from "discord.js";
 import { NULLCHECK } from "../../MODULES/NULLCHECK.js";
 import { RND_COLOR } from "../../MODULES/RND_COLOR.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { MAP_KILLER } from "../../MODULES/MAP_KILLER.js";
 
 //鯖情報取得
 
@@ -29,14 +30,14 @@ export async function getServerInfo(interaction) {
 		embed.addFields({
 			name: "ID",
 			value: NULLCHECK(GLID.id),
-			inline: false
+			inline: true
 		});
 
 		//認証レベル
 		embed.addFields({
 			name: "認証レベル",
 			value: NULLCHECK(GLID.verificationLevel),
-			inline: false
+			inline: true
 		});
 
 		//鯖のオーナー
@@ -44,7 +45,7 @@ export async function getServerInfo(interaction) {
 		embed.addFields({
 			name: "所有者",
 			value: "<@" + OWNER.id + ">",
-			inline: false
+			inline: true
 		});
 
 		//AFK
@@ -52,7 +53,7 @@ export async function getServerInfo(interaction) {
 			embed.addFields({
 				name: "AFKチャンネル",
 				value: "<#" + GLID.afkChannel.id.toString() + ">",
-				inline: false
+				inline: true
 			});
 		}
 
@@ -78,9 +79,16 @@ export async function getServerInfo(interaction) {
 					"秒" +
 					DATE.getMilliseconds() +
 					"ミリ秒",
-				inline: false
+				inline: true
 			});
 		}
+
+		//JSがクソすぎて、addFieldsを使おうと「nameなんても物は型XXXXにありません」とかほざきやがるのでこうなった、死ね
+		embed.addField(
+			"BANされたユーザー",
+			Object.keys(MAP_KILLER(await GLID.bans.fetch())).length.toString() + "人",
+			true
+		);
 
 		//絵文字を配列にするやつ
 		const fetched_emoji = await GLID.emojis.fetch();
@@ -122,8 +130,9 @@ export async function getServerInfo(interaction) {
 		});
 
 		await interaction.editReply({ embeds: [embed] });
-	} catch (error) {
-		console.log("[ ERR ][ INFO ]" + error);
-		await interaction.editReply("エラー\n" + error);
+	} catch (EX) {
+		console.log("[ ERR ][ INFO ]");
+		console.log(EX);
+		await interaction.editReply("エラー\n" + EX);
 	}
 }
