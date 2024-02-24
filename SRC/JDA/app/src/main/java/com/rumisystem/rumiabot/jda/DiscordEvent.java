@@ -14,6 +14,11 @@ public class DiscordEvent extends ListenerAdapter {
 		try {
 			String MESSAGE_CONTENT = E.getMessage().getContentRaw();
 			System.out.println(MESSAGE_CONTENT);
+			//TODO:ログを戻す
+			//TODO:検索機能を復元する
+			//TODO:日付機能を復元する
+			//TODO:メンション時の返答を全て復元する
+			//TODO:メッセージファイルロガーを復元する
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
@@ -39,6 +44,15 @@ public class DiscordEvent extends ListenerAdapter {
 
 			//ユーザーに待ってもらう
 			INTERACTION.deferReply().queue();
+
+			//TODO:ヘルプコマンドを復旧する
+			//TODO:IP開示を復旧する
+			//TODO:PINGを復旧する
+			//TODO:mazokupicを復旧する
+			//TODO:sns_set sns_removeを復旧する
+			//TODO:SETTINGを復旧する
+			//TODO:WH_CLEARを復旧する
+			//TODO:VOICEVOXを復旧する
 
 			switch (INTERACTION.getName()){
 				case "test":{
