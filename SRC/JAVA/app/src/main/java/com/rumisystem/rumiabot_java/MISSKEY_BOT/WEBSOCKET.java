@@ -35,8 +35,6 @@ public class WEBSOCKET extends WebSocketClient {
 	@Override//受信
 	public void onMessage(String MESSAGE) {
 		try {
-			System.out.println(MESSAGE);
-
 			ObjectMapper OM = new ObjectMapper();
 
 			JsonNode MESSAGE_JSON = OM.readTree(MESSAGE);
@@ -56,11 +54,12 @@ public class WEBSOCKET extends WebSocketClient {
 				case "mention":{
 					JsonNode NOTE_DATA = MESSAGE_JSON.get("body").get("body");
 
+					String AJAX = new HTTP_REQUEST("https://" + SERVER_URL.getHost() + "/api/notes/reactions/create").POST("{\"noteId\":\"" + NOTE_DATA.get("id").asText() + "\",\"reaction\":\":1039992459209490513:\",\"i\":\"" + TOKEN + "\"}");
+					System.out.println(AJAX);
+					/*
 					if(NOTE_DATA.get("text").asText().contains("")){
-
-					} else {
-						String AJAX = new HTTP_REQUEST("https://" + SERVER_URL.getHost() + "/api/notes/reactions/create").POST("{\"noteId\":\"" + NOTE_DATA.get("id").asText() + "\",\"reaction\":\":1039992459209490513:\",\"i\":\"" + TOKEN + "\"}");
-					}
+						System.out.println("此征");
+					}*/
 					break;
 				}
 			}

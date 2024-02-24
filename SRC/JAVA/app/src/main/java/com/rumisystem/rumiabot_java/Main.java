@@ -54,7 +54,7 @@ public class Main {
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
-								//com.rumisystem.rumiabot_java.MISSKEY_BOT.Main.main(ROW.get("DOMAIN").asText(), ROW.get("API").asText());
+								com.rumisystem.rumiabot_java.MISSKEY_BOT.Main.main(ROW.get("DOMAIN").asText(), ROW.get("API").asText());
 							}
 						}).start();
 						break;
