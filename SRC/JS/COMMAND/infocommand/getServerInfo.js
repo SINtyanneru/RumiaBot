@@ -109,7 +109,7 @@ export async function getServerInfo(interaction) {
 		}
 
 		embed.addField(
-			"ユーザー数",
+			"オンラインユーザー数",
 			ONLINE_USER_COUNT.toString() + "人",
 			true
 		);
