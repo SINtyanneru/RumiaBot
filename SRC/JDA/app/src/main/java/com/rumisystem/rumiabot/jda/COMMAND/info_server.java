@@ -22,7 +22,7 @@ public class info_server {
 			EB.addField("認証レベル", GUILD.getVerificationLevel().name(), true);
 			EB.addField("所有者", "<@" + GUILD.getOwner().getId() + ">", true);
 			EB.addField("AFKチャンネル", "<#" + GUILD.getAfkChannel().getId() + ">", true);
-			EB.addField("ID", GUILD.getTimeCreated().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 h時m分s秒")), true);
+			EB.addField("鯖作成日", GUILD.getTimeCreated().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 h時m分s秒")), true);
 			EB.addField("ユーザー数", String.valueOf(GUILD.getMembers().toArray().length), true);
 
 			INTERACTION.getHook().editOriginalEmbeds(EB.build()).queue();
