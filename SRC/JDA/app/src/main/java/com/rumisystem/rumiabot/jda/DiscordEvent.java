@@ -20,43 +20,47 @@ public class DiscordEvent extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
-		System.out.println(
-				"[ INFO ][ SL ]┌Interaction create:" +
-				INTERACTION.getName() +
-				"\n             ├in " +
-				INTERACTION.getGuild().getName() +
-				"\n             ├in " +
-				INTERACTION.getChannel().getName() +
-				INTERACTION.getCommandId() +
-				"\n             └in " +
-				INTERACTION.getMember().getUser().getName() +
-				"(" +
-				INTERACTION.getMember().getId() +
-				")"
-		);
+		try{
+			System.out.println(
+					"[ INFO ][ SL ]┌Interaction create:" +
+							INTERACTION.getName() +
+							"\n             ├in " +
+							INTERACTION.getGuild().getName() +
+							"\n             ├in " +
+							INTERACTION.getChannel().getName() +
+							INTERACTION.getCommandId() +
+							"\n             └in " +
+							INTERACTION.getMember().getUser().getName() +
+							"(" +
+							INTERACTION.getMember().getId() +
+							")"
+			);
 
-		//ユーザーに待ってもらう
-		INTERACTION.deferReply().queue();
+			//ユーザーに待ってもらう
+			INTERACTION.deferReply().queue();
 
-		switch (INTERACTION.getName()){
-			case "test":{
-				test.main(INTERACTION);
-				break;
+			switch (INTERACTION.getName()){
+				case "test":{
+					test.main(INTERACTION);
+					break;
+				}
+
+				case "info_server":{
+					info_server.main(INTERACTION);
+					break;
+				}
+
+				case "info_user":{
+					info_user.main(INTERACTION);
+					break;
+				}
+
+				default:{
+					INTERACTION.getHook().editOriginal("？").queue();
+				}
 			}
-
-			case "info_server":{
-				info_server.main(INTERACTION);
-				break;
-			}
-
-			case "info_user":{
-				info_user.main(INTERACTION);
-				break;
-			}
-
-			default:{
-				INTERACTION.getHook().editOriginal("？").queue();
-			}
+		}catch (Exception EX){
+			EX.printStackTrace();
 		}
 	}
 }
