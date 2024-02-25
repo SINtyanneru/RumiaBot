@@ -4,12 +4,15 @@ import com.rumisystem.rumiabot.jda.COMMAND.info_server;
 import com.rumisystem.rumiabot.jda.COMMAND.info_user;
 import com.rumisystem.rumiabot.jda.COMMAND.test;
 import com.rumisystem.rumiabot.jda.COMMAND.ws;
+import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import net.dv8tion.jda.api.entities.IMentionable;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -71,8 +74,29 @@ public class DiscordEvent extends ListenerAdapter {
 				}
 			}
 
+			if(E.isFromGuild()){
+				int I = 0;
+				for(Message.Attachment FILE:E.getMessage().getAttachments()){
+					File AUTHOR_FOLDER = new File("./DOWNLOAD/MSG_FILES/" + E.getAuthor().getId());
+					if(!AUTHOR_FOLDER.exists()){
+						AUTHOR_FOLDER.mkdir();
+					}
 
-			//TODO:メッセージファイルロガーを復元する
+					File GUILD_FOLDER = new File("./DOWNLOAD/MSG_FILES/" + E.getAuthor().getId() + "/" + E.getGuild().getId());
+					if(!GUILD_FOLDER.exists()){
+						GUILD_FOLDER.mkdir();
+					}
+
+					File CHANNEL_FOLDER = new File("./DOWNLOAD/MSG_FILES/" + E.getAuthor().getId() + "/" + E.getGuild().getId() + "/" + E.getChannel().getId());
+					if(!CHANNEL_FOLDER.exists()){
+						CHANNEL_FOLDER.mkdir();
+					}
+
+					new HTTP_REQUEST(FILE.getUrl()).DOWNLOAD("./DOWNLOAD/MSG_FILES/" + E.getAuthor().getId() + "/" + E.getGuild().getId() + "/" + E.getChannel().getId() + "/" + E.getMessage().getId() + "_" + I + "." + FILE.getFileExtension());
+
+					I++;
+				}
+			}
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
