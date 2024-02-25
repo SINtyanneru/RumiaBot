@@ -35,7 +35,11 @@ public class DiscordEvent extends ListenerAdapter {
 			}
 			System.out.println(LOG_TEXT.toString());
 
-			//TODO:検索機能を復元する
+			//検索機能
+			if(MESSAGE_CONTENT.startsWith("検索 ")){
+				com.rumisystem.rumiabot.jda.FUNCTION.SEARCH.main(E);
+			}
+
 			//TODO:日付機能を復元する
 			//TODO:メンション時の返答を全て復元する
 			//TODO:メッセージファイルロガーを復元する
