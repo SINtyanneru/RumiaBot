@@ -8,13 +8,33 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.Objects;
+
 public class DiscordEvent extends ListenerAdapter {
 	@Override
 	public void onMessageReceived(MessageReceivedEvent E) {
 		try {
 			String MESSAGE_CONTENT = E.getMessage().getContentRaw();
-			System.out.println(MESSAGE_CONTENT);
-			//TODO:ログを戻す
+			String GUILD_NAME = "localhost";
+
+			//鯖でのメッセージなら、鯖名に鯖名を入れる
+			if(E.isFromGuild()){
+				GUILD_NAME = E.getGuild().getName();
+			}
+
+			//ログを出す部分
+			StringBuilder LOG_TEXT = new StringBuilder("┌[" + E.getAuthor().getName() + "@" + GUILD_NAME + "/" + E.getChannel().getName() + "]\n");
+			String[] TEXT_SPLIT = MESSAGE_CONTENT.split("\n");
+			for(int I = 0; TEXT_SPLIT.length > I; I++){
+				String TEXT = TEXT_SPLIT[I];
+				if(TEXT_SPLIT.length > I + 1){
+					LOG_TEXT.append("├" + TEXT + "\n");
+				} else {
+					LOG_TEXT.append("└" + TEXT + "\n");
+				}
+			}
+			System.out.println(LOG_TEXT.toString());
+
 			//TODO:検索機能を復元する
 			//TODO:日付機能を復元する
 			//TODO:メンション時の返答を全て復元する
