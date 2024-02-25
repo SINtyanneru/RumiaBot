@@ -4,6 +4,8 @@ import com.rumisystem.rumiabot.jda.COMMAND.info_server;
 import com.rumisystem.rumiabot.jda.COMMAND.info_user;
 import com.rumisystem.rumiabot.jda.COMMAND.test;
 import com.rumisystem.rumiabot.jda.COMMAND.ws;
+import net.dv8tion.jda.api.entities.IMentionable;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
+
+import static com.rumisystem.rumiabot.jda.Main.BOT;
 
 public class DiscordEvent extends ListenerAdapter {
 	@Override
@@ -49,8 +53,22 @@ public class DiscordEvent extends ListenerAdapter {
 				E.getMessage().reply("現在の時刻は、\n" + DATE.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 h時m分s秒"))).queue();
 			}
 
-			//TODO:メンション時の返答を全て復元する
-			//TODO:メッセージファイルロガーを復元するZ
+			//メンション時(everyoneじゃないなら実行)
+			if(!E.getMessage().getMentions().mentionsEveryone()){
+				for(IMentionable MENTION:E.getMessage().getMentions().getMentions()){
+					//自分にメンションされたか
+					if(MENTION.getId().equals(BOT.getSelfUser().getId())){
+						if(E.getMessage().getReferencedMessage() != null){
+							E.getMessage().reply("おんこ").queue();
+						} else {
+							E.getMessage().reply("なに？").queue();
+						}
+					}
+				}
+			}
+
+
+			//TODO:メッセージファイルロガーを復元する
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
