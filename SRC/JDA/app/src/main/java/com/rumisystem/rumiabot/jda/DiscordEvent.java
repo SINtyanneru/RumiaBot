@@ -8,6 +8,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Objects;
 
 public class DiscordEvent extends ListenerAdapter {
@@ -40,9 +43,14 @@ public class DiscordEvent extends ListenerAdapter {
 				com.rumisystem.rumiabot.jda.FUNCTION.SEARCH.main(E);
 			}
 
-			//TODO:日付機能を復元する
+			//日付
+			if(MESSAGE_CONTENT.equals("時間")){
+				LocalDateTime DATE = LocalDateTime.now();
+				E.getMessage().reply("現在の時刻は、\n" + DATE.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 h時m分s秒"))).queue();
+			}
+
 			//TODO:メンション時の返答を全て復元する
-			//TODO:メッセージファイルロガーを復元する
+			//TODO:メッセージファイルロガーを復元するZ
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
