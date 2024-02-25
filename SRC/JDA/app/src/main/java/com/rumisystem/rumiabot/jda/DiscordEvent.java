@@ -61,6 +61,10 @@ public class DiscordEvent extends ListenerAdapter {
 						if(E.getMessage().getReferencedMessage() != null){
 							E.getMessage().reply("おんこ").queue();
 						} else {
+							if(MESSAGE_CONTENT.endsWith("お")){
+								E.getMessage().reply("...").queue();
+								return;
+							}
 							E.getMessage().reply("なに？").queue();
 						}
 					}
