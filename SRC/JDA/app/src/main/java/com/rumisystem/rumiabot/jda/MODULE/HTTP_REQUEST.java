@@ -139,7 +139,6 @@ public class HTTP_REQUEST {
 				while((BYTES_READ = IS.read(BUFFER)) != -1){
 					OS.write(BUFFER, 0, BYTES_READ);
 				}
-
 			}
 		}catch (Exception EX){
 			EX.printStackTrace();
