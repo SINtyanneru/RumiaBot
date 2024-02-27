@@ -114,7 +114,8 @@ public class HTTP_REQUEST {
 		}
 	}
 
-	public String PIXIV_DOWNLOAD(String PATH){
+	//Pixivの画像を落とすための関数
+	public void PIXIV_DOWNLOAD(String PATH){
 		try{
 			//名前が長すぎるので切り落としたよ
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
@@ -144,6 +145,7 @@ public class HTTP_REQUEST {
 			EX.printStackTrace();
 		}
 	}
+
 
 	//ダウンロード
 	public void DOWNLOAD(String PATH){
