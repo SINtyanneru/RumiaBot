@@ -76,7 +76,7 @@ public class HTTP_REQUEST {
 
 	public String POST(String POST_BODY){
 		try{
-			System.out.println("[  ***  ]GET:" + REQIEST_URI.toString());
+			System.out.println("[  ***  ]POST:" + REQIEST_URI.toString());
 			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
 
 			//POSTだと主張する
@@ -106,12 +106,16 @@ public class HTTP_REQUEST {
 			}
 
 			BR.close();
-			System.out.println("[  OK   ]GET");
+			System.out.println("[  OK   ]POST");
 			return RES_STRING.toString();
 		}catch (Exception EX){
 			EX.printStackTrace();
 			return null;
 		}
+	}
+
+	public String PIXIV(){
+
 	}
 
 	//ダウンロード
