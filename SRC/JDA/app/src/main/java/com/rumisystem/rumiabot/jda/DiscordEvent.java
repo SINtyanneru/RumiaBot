@@ -1,9 +1,6 @@
 package com.rumisystem.rumiabot.jda;
 
-import com.rumisystem.rumiabot.jda.COMMAND.info_server;
-import com.rumisystem.rumiabot.jda.COMMAND.info_user;
-import com.rumisystem.rumiabot.jda.COMMAND.test;
-import com.rumisystem.rumiabot.jda.COMMAND.ws;
+import com.rumisystem.rumiabot.jda.COMMAND.*;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
@@ -126,7 +123,6 @@ public class DiscordEvent extends ListenerAdapter {
 			//TODO:ヘルプコマンドを復旧する
 			//TODO:IP開示を復旧する
 			//TODO:PINGを復旧する
-			//TODO:mazokupicを復旧する
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
 			//TODO:WH_CLEARを復旧する
@@ -150,6 +146,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 				case "ws":{
 					ws.main(INTERACTION);
+					break;
+				}
+
+				case "mazokupic":{
+					mazokupic.main(INTERACTION);
 					break;
 				}
 
