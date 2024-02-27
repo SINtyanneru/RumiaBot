@@ -80,12 +80,14 @@ public class Main {
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
 		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
 				.addOption(OptionType.STRING, "url", "ウーエルエル", true);
+		SlashCommandData mazokupic = Commands.slash("mazokupic", "まちカドまぞくのイラストをランダムに");
 
 		BOT.updateCommands().addCommands(
 				test,
 				info_server,
 				info_user,
-				ws
+				ws,
+				mazokupic
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");
