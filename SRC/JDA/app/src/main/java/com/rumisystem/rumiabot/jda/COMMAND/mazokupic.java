@@ -119,7 +119,7 @@ public class mazokupic {
 				//キャッシュを書き込む
 				new FILE_WRITER(CATCHE_PATH, RES);
 
-				return RESULT.get("body");
+				return RESULT;
 			}
 		}catch (Exception EX){
 			System.err.println("Mazokupic ERR");
@@ -133,8 +133,6 @@ public class mazokupic {
 		try{
 			//HTTPリクエスt
 			String AJAX = new HTTP_REQUEST("https://www.pixiv.net/ajax/search/illustrations/まちカドまぞく")	.GET();
-
-			System.out.println(AJAX);
 
 			//JSONをパース
 			ObjectMapper OM = new ObjectMapper();
