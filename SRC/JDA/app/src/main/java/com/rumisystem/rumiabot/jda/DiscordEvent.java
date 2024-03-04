@@ -5,6 +5,9 @@ import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -160,6 +163,24 @@ public class DiscordEvent extends ListenerAdapter {
 			}
 		}catch (Exception EX){
 			EX.printStackTrace();
+		}
+	}
+
+	@Override//鯖に参加
+	public void onGuildJoin(GuildJoinEvent E){
+		TextChannel CH = BOT.getTextChannelById("1128742498194444298");
+		if(CH != null){
+			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
+					"これで" + BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+		}
+	}
+
+	@Override
+	public void onGuildLeave(GuildLeaveEvent E){
+		TextChannel CH = BOT.getTextChannelById("1128742498194444298");
+		if(CH != null){
+			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
+					"これで" + BOT.getGuilds().size() + "個の鯖になりました").queue();
 		}
 	}
 }
