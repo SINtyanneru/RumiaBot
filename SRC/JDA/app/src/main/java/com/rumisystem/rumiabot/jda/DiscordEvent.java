@@ -161,6 +161,11 @@ public class DiscordEvent extends ListenerAdapter {
 					break;
 				}
 
+				case "ping":{
+					ping.main(INTERACTION);
+					break;
+				}
+
 				default:{
 					INTERACTION.getHook().editOriginal("？").queue();
 				}

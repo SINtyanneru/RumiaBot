@@ -75,13 +75,21 @@ public class Main {
 
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用");
+
 		SlashCommandData ip = Commands.slash("ip", "IPアドレスを開示します");
+
 		SlashCommandData info_server = Commands.slash("info_server", "鯖の情報を取得");
+
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得")
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
+
 		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
 				.addOption(OptionType.STRING, "url", "ウーエルエル", true);
+
 		SlashCommandData mazokupic = Commands.slash("mazokupic", "まちカドまぞくのイラストをランダムに");
+
+		SlashCommandData ping = Commands.slash("ping", "pingする")
+				.addOption(OptionType.STRING, "ip", "ping先", true);
 
 		BOT.updateCommands().addCommands(
 				test,
@@ -89,7 +97,8 @@ public class Main {
 				info_server,
 				info_user,
 				ws,
-				mazokupic
+				mazokupic,
+				ping
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");
