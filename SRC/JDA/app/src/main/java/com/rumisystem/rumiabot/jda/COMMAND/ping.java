@@ -10,7 +10,7 @@ import java.net.InetAddress;
 public class ping {
 	public static void main(SlashCommandInteractionEvent INTERACTION) {
 		try{
-			String IP = INTERACTION.getOption("ip").getAsString().replaceAll("[^0-9.]", "");
+			String IP = INTERACTION.getOption("ip").getAsString().replaceAll("[^0-9.-A-Za-z]", "");
 
 			ProcessBuilder PB = new ProcessBuilder(new String[]{"ping", "-c4", IP});
 			Process PROCESS = PB.start();
@@ -22,7 +22,12 @@ public class ping {
 			String LINE;
 			int I = 0;
 			while ((LINE = READER.readLine()) != null) {
-				//PINGは最初に「XXバイトのデータ」って表示するので5にしないといけない
+				if(I == 0){
+					CONTENTS += LINE;
+					INTERACTION.getHook().editOriginal(CONTENTS).queue();
+				}
+
+				//PINGの送信データ
 				if(I >= 1 && I <= 4){
 					String[] LINE_SPLIT = LINE.split(" ");
 
@@ -31,6 +36,7 @@ public class ping {
 					INTERACTION.getHook().editOriginal(CONTENTS).queue();
 				}
 
+				//PINGの結果
 				if(I >= 7){
 					RESULT = LINE;
 					break;
