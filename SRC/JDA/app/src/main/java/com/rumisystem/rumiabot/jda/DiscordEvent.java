@@ -124,7 +124,6 @@ public class DiscordEvent extends ListenerAdapter {
 			INTERACTION.deferReply().queue();
 
 			//TODO:ヘルプコマンドを復旧する
-			//TODO:IP開示を復旧する
 			//TODO:PINGを復旧する
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
