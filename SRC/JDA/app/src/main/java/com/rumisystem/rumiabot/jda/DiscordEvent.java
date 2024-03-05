@@ -125,7 +125,6 @@ public class DiscordEvent extends ListenerAdapter {
 
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
-			//TODO:WH_CLEARを復旧する
 			//TODO:VOICEVOXを復旧する
 
 			switch (INTERACTION.getName()){
@@ -166,6 +165,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 				case "ping":{
 					ping.main(INTERACTION);
+					break;
+				}
+
+				case "wh_clear":{
+					wh_clear.main(INTERACTION);
 					break;
 				}
 

@@ -93,6 +93,8 @@ public class Main {
 		SlashCommandData ping = Commands.slash("ping", "pingする")
 				.addOption(OptionType.STRING, "ip", "ping先", true);
 
+		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを前消しする");
+
 		BOT.updateCommands().addCommands(
 				test,
 				help,
@@ -101,7 +103,8 @@ public class Main {
 				info_user,
 				ws,
 				mazokupic,
-				ping
+				ping,
+				wh_clear
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");
