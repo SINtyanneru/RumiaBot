@@ -75,6 +75,7 @@ public class Main {
 
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用");
+		SlashCommandData ip = Commands.slash("ip", "IPアドレスを開示します");
 		SlashCommandData info_server = Commands.slash("info_server", "鯖の情報を取得");
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得")
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
@@ -84,6 +85,7 @@ public class Main {
 
 		BOT.updateCommands().addCommands(
 				test,
+				ip,
 				info_server,
 				info_user,
 				ws,
