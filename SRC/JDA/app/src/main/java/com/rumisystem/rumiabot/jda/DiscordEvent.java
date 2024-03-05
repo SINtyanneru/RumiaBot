@@ -139,7 +139,6 @@ public class DiscordEvent extends ListenerAdapter {
 					break;
 				}
 
-
 				case "ip":{
 					ip.main(INTERACTION);
 					break;
