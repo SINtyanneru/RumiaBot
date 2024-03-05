@@ -123,7 +123,6 @@ public class DiscordEvent extends ListenerAdapter {
 			//ユーザーに待ってもらう
 			INTERACTION.deferReply().queue();
 
-			//TODO:ヘルプコマンドを復旧する
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
 			//TODO:WH_CLEARを復旧する
@@ -134,6 +133,12 @@ public class DiscordEvent extends ListenerAdapter {
 					test.main(INTERACTION);
 					break;
 				}
+
+				case "help":{
+					help.main(INTERACTION);
+					break;
+				}
+
 
 				case "ip":{
 					ip.main(INTERACTION);
