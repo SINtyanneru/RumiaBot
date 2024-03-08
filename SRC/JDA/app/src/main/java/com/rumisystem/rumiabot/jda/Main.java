@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.DiscordLocale;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -85,8 +86,13 @@ public class Main {
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得")
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
 
+		OptionData WS_OPTION = new OptionData(OptionType.STRING, "size", "ヰンドウサイズ", false);
+		WS_OPTION.addChoice("フルHD", "1098x1080");
+		WS_OPTION.addChoice("フルサイズ", "FULL");
+
 		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
-				.addOption(OptionType.STRING, "url", "ウーエルエル", true);
+				.addOption(OptionType.STRING, "url", "ウーエルエル", true)
+				.addOptions(WS_OPTION);
 
 		SlashCommandData mazokupic = Commands.slash("mazokupic", "まちカドまぞくのイラストをランダムに");
 

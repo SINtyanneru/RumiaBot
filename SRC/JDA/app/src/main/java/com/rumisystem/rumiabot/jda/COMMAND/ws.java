@@ -2,10 +2,7 @@ package com.rumisystem.rumiabot.jda.COMMAND;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -16,6 +13,11 @@ public class ws {
 		try{
 			String URL = INTERACTION.getOption("url").getAsString();
 
+			//URLをチェック
+			if(!(URL.startsWith("http://") || URL.startsWith("https://"))){
+				URL = "https://" + URL;
+			}
+
 			FirefoxOptions BROWSER_OPTION = new FirefoxOptions();
 			BROWSER_OPTION.addArguments("--headless");
 
@@ -23,6 +25,22 @@ public class ws {
 			DRIVER.manage().window().setSize(new Dimension(1980, 1080));
 
 			DRIVER.get(URL);
+
+			//サイズのオプションがしていされているなら実行
+			if(INTERACTION.getOption("size") != null){
+				System.out.println("サイズ指定あり");
+				if(INTERACTION.getOption("size").getAsString().equals("FULL")){
+					System.out.println("サイズを取得する");
+					JavascriptExecutor JSE = (JavascriptExecutor) DRIVER;
+
+					//ページのサイズを取得
+					int PAGE_WIDTH = ((Number) JSE.executeScript("return document.body.scrollWidth")).intValue();
+					int PAGE_HEIGHT = ((Number) JSE.executeScript("return document.body.scrollHeight")).intValue();
+
+					//取得したサイズを適応する
+					DRIVER.manage().window().setSize(new Dimension(PAGE_WIDTH, PAGE_HEIGHT));
+				}
+			}
 
 			File SCREENSHOT = ((TakesScreenshot)DRIVER).getScreenshotAs(OutputType.FILE);
 
@@ -32,6 +50,7 @@ public class ws {
 			//終了
 			DRIVER.quit();
 		} catch (Exception EX) {
+			System.out.println("WS Errr");
 			EX.printStackTrace();
 			INTERACTION.getHook().editOriginal("無理でした").queue();
 		}
