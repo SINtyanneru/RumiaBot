@@ -101,6 +101,8 @@ public class Main {
 
 		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを前消しする");
 
+		SlashCommandData mandenburo = Commands.slash("mandenburo", "マンデンブロ集合を作る");
+
 		BOT.updateCommands().addCommands(
 				test,
 				help,
@@ -110,7 +112,8 @@ public class Main {
 				ws,
 				mazokupic,
 				ping,
-				wh_clear
+				wh_clear,
+				mandenburo
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");

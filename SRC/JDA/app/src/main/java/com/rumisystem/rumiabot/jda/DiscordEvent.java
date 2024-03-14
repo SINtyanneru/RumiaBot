@@ -173,6 +173,11 @@ public class DiscordEvent extends ListenerAdapter {
 					break;
 				}
 
+				case "mandenburo":{
+					mandenburo.main(INTERACTION);
+					break;
+				}
+
 				default:{
 					INTERACTION.getHook().editOriginal("？").queue();
 				}
