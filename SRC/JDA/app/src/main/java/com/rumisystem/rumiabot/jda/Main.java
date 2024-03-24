@@ -103,6 +103,14 @@ public class Main {
 
 		SlashCommandData mandenburo = Commands.slash("mandenburo", "マンデンブロ集合を作る");
 
+		OptionData VOICEVOX_OPTION = new OptionData(OptionType.STRING, "speeker", "話者", true);
+		VOICEVOX_OPTION.addChoice("ずんだもん/ノーマル", "3");
+		VOICEVOX_OPTION.addChoice("ずんだもん/あまあま", "1");
+
+		SlashCommandData voicevox = Commands.slash("voicevox", "VOICEVOXに音声を生成させます")
+				.addOption(OptionType.STRING, "text", "本文", true)
+				.addOptions(VOICEVOX_OPTION);
+
 		BOT.updateCommands().addCommands(
 				test,
 				help,
@@ -113,7 +121,8 @@ public class Main {
 				mazokupic,
 				ping,
 				wh_clear,
-				mandenburo
+				mandenburo,
+				voicevox
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");

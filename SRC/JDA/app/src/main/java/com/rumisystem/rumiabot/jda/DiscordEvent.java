@@ -125,7 +125,6 @@ public class DiscordEvent extends ListenerAdapter {
 
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
-			//TODO:VOICEVOXを復旧する
 
 			switch (INTERACTION.getName()){
 				case "test":{
@@ -175,6 +174,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 				case "mandenburo":{
 					mandenburo.main(INTERACTION);
+					break;
+				}
+
+				case "voicevox":{
+					VOICEVOX.main(INTERACTION);
 					break;
 				}
 

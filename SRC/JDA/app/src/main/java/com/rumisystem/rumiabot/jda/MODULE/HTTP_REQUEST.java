@@ -145,6 +145,48 @@ public class HTTP_REQUEST {
 		}
 	}
 
+	//VOICEVOX用のダウンロード
+	public boolean VOICEVOX_DOWNLOAD(String PATH, String QUERY){
+		try{
+			//名前が長すぎるので切り落としたよ
+			HttpURLConnection HUC = (HttpURLConnection) REQIEST_URI.openConnection();
+
+			//POSTだと主張する
+			HUC.setRequestMethod("POST");
+
+			//POST可能に
+			HUC.setDoInput(true);
+			HUC.setDoOutput(true);
+
+			HUC.setRequestProperty("accept", "audio/wav");
+			HUC.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+
+			HUC.connect();
+
+			//リクエストボディに送信したいデータを書き込む
+			PrintStream PS = new PrintStream(HUC.getOutputStream());
+			PS.print(QUERY);
+			PS.close();
+
+			//レスポンスコード
+			int RES_CODE = HUC.getResponseCode();
+			if(RES_CODE == HttpURLConnection.HTTP_OK){
+				//ファイルを保存する機構
+				InputStream IS = HUC.getInputStream();
+				FileOutputStream OS = new FileOutputStream(PATH);
+				byte[] BUFFER = new byte[4096];
+				int BYTES_READ;
+				while((BYTES_READ = IS.read(BUFFER)) != -1){
+					OS.write(BUFFER, 0, BYTES_READ);
+				}
+			}
+
+			return true;
+		}catch (Exception EX){
+			EX.printStackTrace();
+			return false;
+		}
+	}
 
 	//ダウンロード
 	public void DOWNLOAD(String PATH){
