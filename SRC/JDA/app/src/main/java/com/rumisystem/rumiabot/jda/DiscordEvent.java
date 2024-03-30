@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static com.rumisystem.rumiabot.jda.Main.BOT;
+import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class DiscordEvent extends ListenerAdapter {
 	@Override
@@ -32,6 +33,7 @@ public class DiscordEvent extends ListenerAdapter {
 				GUILD_NAME = E.getGuild().getName();
 			}
 
+			/*
 			//ログを出す部分
 			StringBuilder LOG_TEXT = new StringBuilder("┌[" + E.getAuthor().getName() + "@" + GUILD_NAME + "/" + E.getChannel().getName() + "]\n");
 			String[] TEXT_SPLIT = MESSAGE_CONTENT.split("\n");
@@ -44,6 +46,7 @@ public class DiscordEvent extends ListenerAdapter {
 				}
 			}
 			System.out.println(LOG_TEXT.toString());
+			 */
 
 			//検索機能
 			if(MESSAGE_CONTENT.startsWith("検索 ")){
