@@ -21,7 +21,7 @@ export class SQL {
 	}
 
 	main() {
-		this.SQL_CONNECTION.connect(ERR => {
+		this.SQL_CONNECTION.connect(async(ERR) => {
 			if (ERR) {
 				console.error("[ ERR ][ SQL ]" + ERR);
 				return;

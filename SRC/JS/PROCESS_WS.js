@@ -1,5 +1,6 @@
 import net from "net";
 import * as crypto from "node:crypto";
+import { SQL_OBJ } from "./Main.js";
 
 const SERVER_URL = "localhost";
 const SERVER_PORT = 3001;
@@ -10,16 +11,21 @@ export async function pws_main(){
 	TL_CONNECT.connect(SERVER_PORT, SERVER_URL, async ()=>{
 		console.log("[ PWS ][ OK ]Connected Telnet");
 
-		PWS_SEND_MSG("HELLO;JS").then((R) => {
-			console.log(R);
-		});
+		await PWS_SEND_MSG("HELLO;JS");
 	});
 
 
 	TL_CONNECT.addListener("data", async (DATA) =>{
 		const MSG = DATA.toString();
 		const CMD = MSG.split(";");
-		if(CMD[0] === "DISCORD"){
+
+		if(CMD[1] === "SQL"){
+			const SQL_RESULT = await SQL_OBJ.SCRIPT_RUN(
+				decodeURIComponent(atob(CMD[2])),
+				JSON.parse(decodeURIComponent(atob(CMD[3])))
+			);
+
+			TL_CONNECT.write(CMD[0] + ";" + btoa(encodeURIComponent(JSON.stringify(SQL_RESULT))) + ";200");
 		}
 	});
 }
@@ -61,7 +67,3 @@ export async function PWS_SEND_MSG(TEXT){
 		TL_CONNECT.write(UUID + ";" + TEXT);
 	});
 }
-
-/*
- * NodeにaddEventListnerはないらしい、addListenerを使おう
- */
