@@ -68,6 +68,14 @@ public class Main {
 				System.out.println("BOT Ready");
 
 				REGIST_SLASHCOMMAND();
+
+				//TELNETに接続
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						PT.main(3001);
+					}
+				}).start();
 			}
 		}catch (Exception EX){
 			EX.printStackTrace();

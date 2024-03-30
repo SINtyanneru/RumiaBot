@@ -29,7 +29,7 @@ public class Main {
 		//PS2.start();
 
 		Thread PS3 = new Thread( new ProcessStart("JAVA", new String[]{"java", "-jar", "./SRC/JAVA/app/build/libs/app-all.jar"}));
-		PS3.start();
+		//PS3.start();
 
 		Thread PS4 = new Thread( new ProcessStart("JS", new String[]{"node", "./SRC/JS/Main.js"}));
 		PS4.start();
