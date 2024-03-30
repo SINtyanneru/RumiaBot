@@ -1,5 +1,6 @@
 package com.rumisystem.rumiabot.jda.COMMAND;
 
+import com.rumisystem.rumiabot.jda.CONFIG;
 import com.rumisystem.rumiabot.jda.MODULE.FILE_WRITER;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -37,7 +38,7 @@ public class VOICEVOX {
 	private static String GET_QUERY(){
 		System.out.println("[ VOICEVOX ]VOICEVOXに問い合わせています。。。");
 
-		String RESULT = new HTTP_REQUEST("http://localhost:50021/audio_query?text=" + URLEncoder.encode(TEXT) + "&speaker=" + SEEKER).POST("");
+		String RESULT = new HTTP_REQUEST("http://" + CONFIG.CONFIG_DATA.get("VOICEVOX").get("HOST").asText() + ":" + CONFIG.CONFIG_DATA.get("VOICEVOX").get("PORT").asInt() + "/audio_query?text=" + URLEncoder.encode(TEXT) + "&speaker=" + SEEKER).POST("");
 
 		if(RESULT != null){
 			System.out.println("[ VOICEVOX ]返答がありました");
@@ -53,7 +54,7 @@ public class VOICEVOX {
 	private static boolean GENERATE(String QUERY){
 		System.out.println("[ VOICEVOX ]VOICEVOX音声を生成させています。。。");
 
-		boolean RESULT = new HTTP_REQUEST("http://localhost:50021/synthesis?speaker=" + SEEKER).VOICEVOX_DOWNLOAD(PATH + ID + ".wav", QUERY);
+		boolean RESULT = new HTTP_REQUEST("http://" + CONFIG.CONFIG_DATA.get("VOICEVOX").get("HOST").asText() + ":" + CONFIG.CONFIG_DATA.get("VOICEVOX").get("PORT").asInt() + "/synthesis?speaker=" + SEEKER).VOICEVOX_DOWNLOAD(PATH + ID + ".wav", QUERY);
 
 		if(RESULT){
 			System.out.println("[ VOICEVOX ]生成されました:" + ID);
