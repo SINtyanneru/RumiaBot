@@ -43,8 +43,15 @@ public class TELNET_HANDLER implements Runnable {
 				if(CMD[0].startsWith("REPLY_")){
 					String ID = CMD[0].replace("REPLY_", "");
 
+					System.out.println(ID + "/PTでリプライが来たので横流しします");
+
 					for(String KEY:CONNECTIONU.keySet()){
-						SEND_STRING(CONNECTIONU.get(KEY), CMD[0] + ";" + CMD_TO_STRING(CMD) + ";200");
+						if(CONNECTIONU.get(KEY) != null){
+							LOG(INFO_LOG_TAG, "SV -> " + KEY, 0);
+							SEND_STRING(CONNECTIONU.get(KEY), ID + ";" + CMD_TO_STRING(CMD));
+						} else {
+							LOG(INFO_LOG_TAG, "ERR:SV -> " + KEY, 1);
+						}
 					}
 				}
 
@@ -59,6 +66,8 @@ public class TELNET_HANDLER implements Runnable {
 
 								//成功と返す
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+
+								LOG(INFO_LOG_TAG, "SV -> JS", 0);
 								break;
 							case "PY": //Python
 								//接続一覧にOutputStreamを追加
@@ -66,6 +75,8 @@ public class TELNET_HANDLER implements Runnable {
 
 								//成功と返す
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+
+								LOG(INFO_LOG_TAG, "SV -> PY", 0);
 								break;
 							case "JAVA": //JAVA
 								//接続一覧にOutputStreamを追加
@@ -73,6 +84,8 @@ public class TELNET_HANDLER implements Runnable {
 
 								//成功と返す
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+
+								LOG(INFO_LOG_TAG, "SV -> JAVA", 0);
 								break;
 							case "JDA": //JDA
 								//接続一覧にOutputStreamを追加
@@ -80,6 +93,7 @@ public class TELNET_HANDLER implements Runnable {
 
 								//成功と返す
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+								LOG(INFO_LOG_TAG, "SV -> JDA", 0);
 								break;
 							default: //誰やねんお前
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";WHO_IS_YOU;403");
@@ -92,7 +106,7 @@ public class TELNET_HANDLER implements Runnable {
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
 							SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
 
-							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
+							//SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
 						} else {
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
 						}
@@ -102,9 +116,7 @@ public class TELNET_HANDLER implements Runnable {
 					case "SQL":
 						System.out.println("JSに横流しします");
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
-							SEND_STRING(CONNECTIONU.get("JS"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
-
-							//SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
+							SEND_STRING(CONNECTIONU.get("JAVA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
 						} else {
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
 						}

@@ -33,6 +33,10 @@ public class DiscordEvent extends ListenerAdapter {
 				GUILD_NAME = E.getGuild().getName();
 			}
 
+			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
+				System.out.println(SEND("SQL;SELECT * FROM `CONFIG`;[]"));
+			}
+
 			/*
 			//ログを出す部分
 			StringBuilder LOG_TEXT = new StringBuilder("┌[" + E.getAuthor().getName() + "@" + GUILD_NAME + "/" + E.getChannel().getName() + "]\n");
@@ -182,6 +186,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 				case "voicevox":{
 					VOICEVOX.main(INTERACTION);
+					break;
+				}
+
+				case "setting":{
+					SETTING.main(INTERACTION);
 					break;
 				}
 
