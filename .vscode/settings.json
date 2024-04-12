@@ -31,5 +31,6 @@
 	"[javascript]": {
 		// 利便性のためだ、許して
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+	},
+	"java.compile.nullAnalysis.mode": "automatic"
 }
