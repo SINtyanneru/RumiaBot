@@ -1,9 +1,6 @@
 {
 	"recommendations": [
 		"gruntfuggly.todo-tree",
-		"dbaeumer.vscode-eslint",
-		"christian-kohler.path-intellisense",
-		"esbenp.prettier-vscode",
 		"usernamehw.errorlens"
 	]
 }
