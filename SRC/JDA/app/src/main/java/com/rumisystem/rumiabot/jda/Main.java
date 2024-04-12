@@ -1,5 +1,9 @@
 package com.rumisystem.rumiabot.jda;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.rumisystem.rumiabot.jda.MODULE.FUNCTION;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -13,6 +17,13 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.Result;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
+import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class Main {
 	public static JDA BOT = null;
@@ -23,6 +34,10 @@ public class Main {
 
 			//設定ファイルをロード
 			CONFIG.LOAD();
+
+			//new SQL();
+			//ResultSet SQL_RESULT = SQL.RUN("SELECT * FROM `CONFIG` ", new Object[]{});
+			//System.out.println(SQL.SQL_RESULT_TO_JSON(SQL_RESULT));
 
 			//設定ファイルを読み込めたか
 			if(CONFIG.CONFIG_DATA != null){
@@ -130,9 +145,44 @@ public class Main {
 				ping,
 				wh_clear,
 				mandenburo,
-				voicevox
+				voicevox,
+				FUNCTION.CREATE_SLASH_COMMAND()
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");
+	}
+
+	public static void LOG(int LEVEL, String CLASS, String TEXT){
+		switch (LEVEL){
+			case 0:{
+				System.out.println("[  \u001B[32mOK\u001B[0m  ][" + CLASS + "] " + TEXT);
+				break;
+			}
+
+			case 1:{
+				System.out.println("[\u001B[31mFAILED\u001B[0m][" + CLASS + "] " + TEXT);
+				break;
+			}
+
+			case 2:{
+				System.out.println("[ INFO ][" + CLASS + "] " + TEXT);
+				break;
+			}
+
+			case 3:{
+				System.out.println("[ **** ][" + CLASS + "] " + TEXT);
+				break;
+			}
+
+			case 4:{
+				System.out.println("\u001B[1F[  \u001B[32mOK\u001B[0m  ]");
+				break;
+			}
+
+			case 5:{
+				System.out.println("\u001B[1F[\u001B[31mFAILED\u001B[0m]");
+				break;
+			}
+		}
 	}
 }
