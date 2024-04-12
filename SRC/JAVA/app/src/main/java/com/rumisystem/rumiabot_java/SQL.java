@@ -59,6 +59,7 @@ public class SQL {
 
 			for(int I = 0; I < PARAMS.length; I++){
 				Object PARAM = PARAMS[I];
+
 				//型に寄って動作をかえる
 				if(PARAM instanceof String){//Stringなら
 					STMT.setString(I + 1, PARAM.toString());
@@ -92,7 +93,7 @@ public class SQL {
 			}
 
 			if(PARAM instanceof Integer){//Intなら
-				STMT.setInt(I + 1, Integer.parseInt((String) PARAM.toString()));
+				STMT.setInt(I + 1, Integer.parseInt(PARAM.toString()));
 			}
 		}
 

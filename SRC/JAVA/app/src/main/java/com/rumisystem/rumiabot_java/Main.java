@@ -3,6 +3,7 @@ package com.rumisystem.rumiabot_java;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,25 @@ public class Main {
 		List<Object> ARRAY = new ArrayList<>();
 
 		for(JsonNode NODE:JN){
-			ARRAY.add(NODE);
+			//こうやって、型ごとに変換をしないと、
+			//「com.fasterxml.jackson.databind.node.TextNode」みたいになって面倒くさいので変換する
+			switch (NODE.getNodeType()){
+				case STRING:{
+					ARRAY.add(NODE.asText());
+				}
+
+				case NUMBER:{
+					ARRAY.add(NODE.asInt());
+				}
+
+				case BOOLEAN:{
+					ARRAY.add(NODE.asBoolean());
+				}
+
+				default:{
+					ARRAY.add(NODE);
+				}
+			}
 		}
 
 		return ARRAY;

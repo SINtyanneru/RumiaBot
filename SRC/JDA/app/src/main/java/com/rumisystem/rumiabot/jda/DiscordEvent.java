@@ -34,7 +34,8 @@ public class DiscordEvent extends ListenerAdapter {
 			}
 
 			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
-				System.out.println(SEND("SQL;SELECT * FROM `CONFIG`;[]"));
+				String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `GID` = ?;[\"" + E.getMessage().getGuild().getId() + "\"]");
+				E.getMessage().reply(SQL_RESULT).queue();
 			}
 
 			/*

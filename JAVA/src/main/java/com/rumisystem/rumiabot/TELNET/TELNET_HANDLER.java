@@ -37,13 +37,13 @@ public class TELNET_HANDLER implements Runnable {
 				String[] CMD = MSG.split(";");
 
 				//ログを吐く
-				LOG(INFO_LOG_TAG, "TELNET受信：" + MSG, 0);
+				LOG(INFO_LOG_TAG, "TELNET受信"/*"TELNET受信：" + MSG*/, 0);
 
 				//返信を受信したら
 				if(CMD[0].startsWith("REPLY_")){
 					String ID = CMD[0].replace("REPLY_", "");
 
-					System.out.println(ID + "/PTでリプライが来たので横流しします");
+					LOG(INFO_LOG_TAG, ID + "でPTからリプライが来たので横流しします" + MSG, 0);
 
 					for(String KEY:CONNECTIONU.keySet()){
 						if(CONNECTIONU.get(KEY) != null){
@@ -114,7 +114,6 @@ public class TELNET_HANDLER implements Runnable {
 
 					//SQL
 					case "SQL":
-						System.out.println("JSに横流しします");
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
 							SEND_STRING(CONNECTIONU.get("JAVA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
 						} else {
