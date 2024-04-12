@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.File;
 
@@ -17,6 +18,12 @@ public class ws {
 			if(!(URL.startsWith("http://") || URL.startsWith("https://"))){
 				URL = "https://" + URL;
 			}
+
+			FirefoxProfile FFP = new FirefoxProfile();
+			FFP.setPreference("browser.cache.disk.enable", false);
+			FFP.setPreference("browser.cache.memory.enable", false);
+			FFP.setPreference("browser.cache.offline.enable", false);
+			FFP.setPreference("network.http.use-cache", false);
 
 			FirefoxOptions BROWSER_OPTION = new FirefoxOptions();
 			BROWSER_OPTION.addArguments("--headless");
