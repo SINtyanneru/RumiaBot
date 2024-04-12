@@ -1,12 +1,17 @@
 package com.rumisystem.rumiabot.jda.MODULE;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class FUNCTION {
 	//機能一覧
@@ -61,7 +66,38 @@ public class FUNCTION {
 	}
 
 	//その鯖/チャンネルで機能が有効かどうかをチェックする
-	public static FUNCTION_CHECK_RESULT FUNCTION_CHECK(String GID, String CID){
-		return FUNCTION_CHECK_RESULT.ANY;
+	public static FUNCTION_CHECK_RESULT FUNCTION_CHECK(String GID, String CID, String FUNCTION_ID) throws IOException {
+		ObjectMapper OM = new ObjectMapper();
+		String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `GID` = ?;[\"" + GID + "\"]");
+
+		if(SQL_RESULT.split(";")[1].equals("200")){
+			JsonNode RESULT = OM.readTree(SQL_RESULT.split(";")[0]);
+
+			//リザルトから、指定された機能IDの設定を探す
+			for(int I = 0; I < RESULT.size(); I++){
+				JsonNode SETTING = RESULT.get(I);
+				if(SETTING.get("FUNC_ID").asText().equals(FUNCTION_ID)){
+					System.out.println("あった");
+					switch (SETTING.get("MODE").asInt()){
+						//鯖全体
+						case 1:{
+							return FUNCTION_CHECK_RESULT.ANY;
+						}
+
+						//チャンネルのみ
+						case 2:{
+							//チャンネルIDが一致するか？(しないならスキップ)
+							if(SETTING.get("CID").asText().equals(CID)){
+								return FUNCTION_CHECK_RESULT.CHANNEL_ONLY;
+							}
+						}
+					}
+				}
+			}
+
+			return FUNCTION_CHECK_RESULT.NONE;
+		}
+
+		return FUNCTION_CHECK_RESULT.NONE;
 	}
 }

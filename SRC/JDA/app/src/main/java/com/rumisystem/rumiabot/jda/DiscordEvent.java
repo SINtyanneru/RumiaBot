@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
+import static com.rumisystem.rumiabot.jda.MODULE.FUNCTION.FUNCTION_CHECK;
 import static com.rumisystem.rumiabot.jda.Main.BOT;
 import static com.rumisystem.rumiabot.jda.PT.SEND;
 
@@ -34,8 +35,27 @@ public class DiscordEvent extends ListenerAdapter {
 			}
 
 			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
-				String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `GID` = ?;[\"" + E.getMessage().getGuild().getId() + "\"]");
-				E.getMessage().reply(SQL_RESULT).queue();
+				switch (FUNCTION_CHECK(E.getGuild().getId(), E.getChannel().getId(), "vxtwitter")){
+					case GUILD_ONLY:{
+						E.getMessage().reply("鯖のみでVXTwitter変換が有効です").queue();
+						break;
+					}
+
+					case CHANNEL_ONLY:{
+						E.getMessage().reply("チャンネルのみでVXTwitter変換が有効です").queue();
+						break;
+					}
+
+					case ANY:{
+						E.getMessage().reply("鯖、チャンネル問わずVXTwitter変換が有効です").queue();
+						break;
+					}
+
+					case NONE:{
+						E.getMessage().reply("VXTwitter変換が有効化されていません").queue();
+						break;
+					}
+				}
 			}
 
 			/*

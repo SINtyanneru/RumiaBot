@@ -38,7 +38,7 @@ public class PT {
 			BYTES_READ = INPUT_STREAM.read(BUFFER);
 			if(BYTES_READ != -1){
 				String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
-				System.out.println("受信：" + MSG);
+				System.out.println("受信");
 				//IDが一致するまで待つ
 				if(MSG.split(";")[0].equals(ID)){
 					System.out.println("来た");
