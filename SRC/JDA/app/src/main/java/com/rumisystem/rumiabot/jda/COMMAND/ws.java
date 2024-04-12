@@ -26,6 +26,7 @@ public class ws {
 			FFP.setPreference("network.http.use-cache", false);
 
 			FirefoxOptions BROWSER_OPTION = new FirefoxOptions();
+			BROWSER_OPTION.setProfile(FFP);
 			BROWSER_OPTION.addArguments("--headless");
 
 			WebDriver DRIVER = new FirefoxDriver(BROWSER_OPTION);
