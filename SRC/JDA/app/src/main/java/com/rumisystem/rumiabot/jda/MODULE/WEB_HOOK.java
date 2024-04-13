@@ -52,12 +52,12 @@ public class WEB_HOOK {
 	}
 
 	//アバターを変更する
-	public void SET_USERNAME(String NAME){
+	public void setUSERNAME(String NAME){
 		WH_USER_NAME = NAME;
 	}
 
 	//アバターを変更する
-	public void SET_AVATOR(User USER){
+	public void setAVATOR(User USER){
 		WH_AVATOR_URL = USER.getAvatarUrl();
 	}
 
