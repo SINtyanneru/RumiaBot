@@ -57,8 +57,8 @@ public class WEB_HOOK {
 	}
 
 	//アバターを変更する
-	public void setAVATOR(User USER){
-		WH_AVATOR_URL = USER.getAvatarUrl();
+	public void setAVATOR(String URI){
+		WH_AVATOR_URL = URI;
 	}
 
 	//メッセージを送信する
