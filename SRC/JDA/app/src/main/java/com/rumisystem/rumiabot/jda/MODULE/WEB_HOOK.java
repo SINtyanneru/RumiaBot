@@ -1,5 +1,6 @@
 package com.rumisystem.rumiabot.jda.MODULE;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Webhook;
 import net.dv8tion.jda.api.entities.WebhookClient;
@@ -54,6 +55,22 @@ public class WEB_HOOK {
 	//アバターを変更する
 	public void setUSERNAME(String NAME){
 		WH_USER_NAME = NAME;
+	}
+	public void set_koi_Member_USERNAME(Member MEMBER){
+		//そのメンバーにニックネームが有るならニックネームにする
+		if(MEMBER.getNickname() != null){
+			WH_USER_NAME = MEMBER.getNickname();
+			return;
+		}
+
+		//そのメンバーにグローバル名が有るならそれにする
+		if(MEMBER.getUser().getGlobalName() != null){
+			WH_USER_NAME = MEMBER.getUser().getGlobalName();
+			return;
+		}
+
+		//どれでも無いのでユーザー名にする
+		WH_USER_NAME = MEMBER.getUser().getName();
 	}
 
 	//アバターを変更する
