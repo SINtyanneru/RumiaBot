@@ -37,8 +37,8 @@ public class FUNCTION {
 		}
 	};
 
-	//機能の有効チェック
-
+	//機能の設定のキャッシュ
+	private static ArrayList<JsonNode> FUNCTION_SETTING_CACHE = new ArrayList<>();
 
 	//スラッシュコマンドを生成する
 	public static SlashCommandData CREATE_SLASH_COMMAND(){
@@ -68,6 +68,30 @@ public class FUNCTION {
 	//その鯖/チャンネルで機能が有効かどうかをチェックする
 	public static FUNCTION_CHECK_RESULT FUNCTION_CHECK(String GID, String CID, String FUNCTION_ID) throws IOException {
 		ObjectMapper OM = new ObjectMapper();
+
+		//キャッシュから取得
+		for(JsonNode CACHE:FUNCTION_SETTING_CACHE){
+			if(CACHE.get("FUNC_ID").asText().equals(FUNCTION_ID)){
+				//キャッシュに設定があった
+
+				switch (CACHE.get("MODE").asInt()){
+					//鯖全体
+					case 1:{
+						return FUNCTION_CHECK_RESULT.ANY;
+					}
+
+					//チャンネルのみ
+					case 2:{
+						//チャンネルIDが一致するか？(しないならスキップ)
+						if(CACHE.get("CID").asText().equals(CID)){
+							return FUNCTION_CHECK_RESULT.CHANNEL_ONLY;
+						}
+					}
+				}
+			}
+		}
+
+		//キャッシュがないのでSQLから取得
 		String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `GID` = ?;[\"" + GID + "\"]");
 
 		if(SQL_RESULT.split(";")[1].equals("200")){
@@ -77,7 +101,11 @@ public class FUNCTION {
 			for(int I = 0; I < RESULT.size(); I++){
 				JsonNode SETTING = RESULT.get(I);
 				if(SETTING.get("FUNC_ID").asText().equals(FUNCTION_ID)){
-					System.out.println("あった");
+					//設定があった
+
+					//キャッシュに追加
+					FUNCTION_SETTING_CACHE.add(SETTING);
+
 					switch (SETTING.get("MODE").asInt()){
 						//鯖全体
 						case 1:{
@@ -95,9 +123,11 @@ public class FUNCTION {
 				}
 			}
 
+			//無かった場合
 			return FUNCTION_CHECK_RESULT.NONE;
 		}
 
+		//無かった場合
 		return FUNCTION_CHECK_RESULT.NONE;
 	}
 }
