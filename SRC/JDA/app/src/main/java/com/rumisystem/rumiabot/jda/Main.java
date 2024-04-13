@@ -69,6 +69,7 @@ public class Main {
 				JDA_BUILDER.setEventPassthrough(true);
 				JDA_BUILDER.addEventListeners(new DiscordEvent());
 				JDA_BUILDER.setMemberCachePolicy(MemberCachePolicy.ALL);
+				JDA_BUILDER.setAutoReconnect(true);
 
 				//ステータス
 				JDA_BUILDER.setActivity(Activity.watching("貴様"));
