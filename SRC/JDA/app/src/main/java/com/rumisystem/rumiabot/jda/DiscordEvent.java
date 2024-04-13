@@ -1,7 +1,9 @@
 package com.rumisystem.rumiabot.jda;
 
 import com.rumisystem.rumiabot.jda.COMMAND.*;
+import com.rumisystem.rumiabot.jda.FUNCTION.VXTWITTER_CONVERT;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
+import com.rumisystem.rumiabot.jda.MODULE.WEB_HOOK;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
@@ -34,28 +36,11 @@ public class DiscordEvent extends ListenerAdapter {
 				GUILD_NAME = E.getGuild().getName();
 			}
 
+			//VXTwitter
+			VXTWITTER_CONVERT.main(E);
+
 			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
-				switch (FUNCTION_CHECK(E.getGuild().getId(), E.getChannel().getId(), "vxtwitter")){
-					case GUILD_ONLY:{
-						E.getMessage().reply("鯖のみでVXTwitter変換が有効です").queue();
-						break;
-					}
-
-					case CHANNEL_ONLY:{
-						E.getMessage().reply("チャンネルのみでVXTwitter変換が有効です").queue();
-						break;
-					}
-
-					case ANY:{
-						E.getMessage().reply("鯖、チャンネル問わずVXTwitter変換が有効です").queue();
-						break;
-					}
-
-					case NONE:{
-						E.getMessage().reply("VXTwitter変換が有効化されていません").queue();
-						break;
-					}
-				}
+				new WEB_HOOK(E.getChannel().asTextChannel()).SEND("テスト");
 			}
 
 			/*
