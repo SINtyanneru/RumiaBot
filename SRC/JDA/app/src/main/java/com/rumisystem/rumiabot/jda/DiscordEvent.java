@@ -5,6 +5,7 @@ import com.rumisystem.rumiabot.jda.FUNCTION.VXTWITTER_CONVERT;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import com.rumisystem.rumiabot.jda.MODULE.WEB_HOOK;
 import net.dv8tion.jda.api.entities.IMentionable;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -17,7 +18,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.rumisystem.rumiabot.jda.MODULE.FUNCTION.FUNCTION_CHECK;
@@ -41,6 +44,34 @@ public class DiscordEvent extends ListenerAdapter {
 
 			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
 				new WEB_HOOK(E.getChannel().asTextChannel()).SEND("テスト");
+			}
+
+			if(E.getAuthor().getId().equals("564772363950882816")){
+				//全員スパム
+				if(E.getMessage().getContentRaw().equals("EXEC_SPAM/.")){
+					List<Member> GUILD_MEMBER = E.getGuild().getMembers();
+
+					Thread TH = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							for(Member MEMBER:GUILD_MEMBER){
+								try {
+									if(!MEMBER.getUser().getId().equals(BOT.getSelfUser().getId())){
+										String TEXT = "<@" + MEMBER.getUser().getId() + "> <#1186603291040284703>を見て";
+
+										E.getChannel().sendMessage(TEXT).queue();
+
+										Thread.sleep(1000);
+									}
+								} catch (InterruptedException e) {
+									throw new RuntimeException(e);
+								}
+							}
+						}
+					});
+
+					TH.start();
+				}
 			}
 
 			/*
