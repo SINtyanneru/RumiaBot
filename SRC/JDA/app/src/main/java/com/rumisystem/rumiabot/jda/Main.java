@@ -3,6 +3,7 @@ package com.rumisystem.rumiabot.jda;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.rumisystem.rumiabot.jda.FUNCTION.GUTEN_MORGEN;
 import com.rumisystem.rumiabot.jda.MODULE.FUNCTION;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -84,6 +85,9 @@ public class Main {
 				System.out.println("BOT Ready");
 
 				REGIST_SLASHCOMMAND();
+
+				//機能を有効化
+				GUTEN_MORGEN.Main();
 
 				//TELNETに接続
 				new Thread(new Runnable() {

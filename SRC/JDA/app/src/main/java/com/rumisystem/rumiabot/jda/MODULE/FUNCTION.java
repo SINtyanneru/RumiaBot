@@ -2,6 +2,8 @@ package com.rumisystem.rumiabot.jda.MODULE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -10,7 +12,9 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import static com.rumisystem.rumiabot.jda.Main.BOT;
 import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class FUNCTION {
@@ -129,5 +133,32 @@ public class FUNCTION {
 
 		//無かった場合
 		return FUNCTION_CHECK_RESULT.NONE;
+	}
+
+	public static List<Channel> GET_FUNCTION_TRUE_CHANNEL(String FUNC_ID) throws IOException {
+		List<Channel> CHANNEL_LIST = new ArrayList<>();
+		ObjectMapper OM = new ObjectMapper();
+
+		//キャッシュがないのでSQLから取得
+		String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `FUNC_ID` = ?;[\"" + FUNC_ID + "\"]");
+
+		if(SQL_RESULT.split(";")[1].equals("200")) {
+			JsonNode RESULT = OM.readTree(SQL_RESULT.split(";")[0]);
+
+			//リザルトから、指定された機能IDの設定を探す
+			for (int I = 0; I < RESULT.size(); I++) {
+				JsonNode SETTING = RESULT.get(I);
+				//キャッシュに追加
+				FUNCTION_SETTING_CACHE.add(SETTING);
+
+				Channel CHANNEL = BOT.getChannelById(Channel.class, SETTING.get("CID").asText());
+				if(CHANNEL != null){
+					//リストに追加
+					CHANNEL_LIST.add(CHANNEL);
+				}
+			}
+		}
+
+		return CHANNEL_LIST;
 	}
 }
