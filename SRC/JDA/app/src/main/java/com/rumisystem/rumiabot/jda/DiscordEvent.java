@@ -170,71 +170,76 @@ public class DiscordEvent extends ListenerAdapter {
 			//TODO:sns_set sns_removeを復旧する
 			//TODO:SETTINGを復旧する
 
-			switch (INTERACTION.getName()){
-				case "test":{
-					test.main(INTERACTION);
-					break;
-				}
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					switch (INTERACTION.getName()){
+						case "test":{
+							test.main(INTERACTION);
+							break;
+						}
 
-				case "help":{
-					help.main(INTERACTION);
-					break;
-				}
+						case "help":{
+							help.main(INTERACTION);
+							break;
+						}
 
-				case "ip":{
-					ip.main(INTERACTION);
-					break;
-				}
+						case "ip":{
+							ip.main(INTERACTION);
+							break;
+						}
 
-				case "info_server":{
-					info_server.main(INTERACTION);
-					break;
-				}
+						case "info_server":{
+							info_server.main(INTERACTION);
+							break;
+						}
 
-				case "info_user":{
-					info_user.main(INTERACTION);
-					break;
-				}
+						case "info_user":{
+							info_user.main(INTERACTION);
+							break;
+						}
 
-				case "ws":{
-					ws.main(INTERACTION);
-					break;
-				}
+						case "ws":{
+							ws.main(INTERACTION);
+							break;
+						}
 
-				case "mazokupic":{
-					mazokupic.main(INTERACTION);
-					break;
-				}
+						case "mazokupic":{
+							mazokupic.main(INTERACTION);
+							break;
+						}
 
-				case "ping":{
-					ping.main(INTERACTION);
-					break;
-				}
+						case "ping":{
+							ping.main(INTERACTION);
+							break;
+						}
 
-				case "wh_clear":{
-					wh_clear.main(INTERACTION);
-					break;
-				}
+						case "wh_clear":{
+							wh_clear.main(INTERACTION);
+							break;
+						}
 
-				case "mandenburo":{
-					mandenburo.main(INTERACTION);
-					break;
-				}
+						case "mandenburo":{
+							mandenburo.main(INTERACTION);
+							break;
+						}
 
-				case "voicevox":{
-					VOICEVOX.main(INTERACTION);
-					break;
-				}
+						case "voicevox":{
+							VOICEVOX.main(INTERACTION);
+							break;
+						}
 
-				case "setting":{
-					SETTING.main(INTERACTION);
-					break;
-				}
+						case "setting":{
+							SETTING.main(INTERACTION);
+							break;
+						}
 
-				default:{
-					INTERACTION.getHook().editOriginal("？").queue();
+						default:{
+							INTERACTION.getHook().editOriginal("？").queue();
+						}
+					}
 				}
-			}
+			}).start();
 		}catch (Exception EX){
 			EX.printStackTrace();
 		}
