@@ -86,7 +86,7 @@ public class Main {
 
 				REGIST_SLASHCOMMAND();
 
-				//機能を有効化
+				//機能を有効化する
 				GUTEN_MORGEN.Main();
 
 				//TELNETに接続
