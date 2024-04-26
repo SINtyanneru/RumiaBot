@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static com.rumisystem.rumiabot.jda.MODULE.FUNCTION.GET_FUNCTION_TRUE_CHANNEL;
 
@@ -15,8 +16,8 @@ public class GUTEN_MORGEN {
 				try {
 					while (true){
 						LocalDateTime DATETIME = LocalDateTime.now();
-						String NOW_TIME = DATETIME.format(DateTimeFormatter.ofPattern("h:m"));
-						if(NOW_TIME.equals("6:30")){
+						String NOW_TIME = DATETIME.format(DateTimeFormatter.ofPattern("ah:m", Locale.GERMANY));
+						if(NOW_TIME.equals("AM6:30")){
 							//挨拶が有効化サれているチャンネルを取得
 							for(Channel CHANNEL:GET_FUNCTION_TRUE_CHANNEL("guten_morgen")){
 								TextChannel TCH = (TextChannel) CHANNEL;

@@ -18,10 +18,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.rumisystem.rumiabot.jda.MODULE.FUNCTION.FUNCTION_CHECK;
 import static com.rumisystem.rumiabot.jda.Main.BOT;
@@ -95,7 +92,7 @@ public class DiscordEvent extends ListenerAdapter {
 			//日付
 			if(MESSAGE_CONTENT.equals("時間")){
 				LocalDateTime DATE = LocalDateTime.now();
-				E.getMessage().reply("現在の時刻は、\n" + DATE.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 h時m分s秒"))).queue();
+				E.getMessage().reply("現在の時刻は、\n" + DATE.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE))).queue();
 			}
 
 			//メンション時(everyoneじゃないなら実行)
