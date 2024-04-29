@@ -4,16 +4,19 @@ import com.rumisystem.rumiabot.jda.COMMAND.*;
 import com.rumisystem.rumiabot.jda.FUNCTION.VXTWITTER_CONVERT;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
 import com.rumisystem.rumiabot.jda.MODULE.WEB_HOOK;
-import net.dv8tion.jda.api.entities.IMentionable;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageType;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -68,6 +71,59 @@ public class DiscordEvent extends ListenerAdapter {
 					});
 
 					TH.start();
+				}
+
+				//カテゴリの権限をリセットする
+				if(E.getMessage().getContentRaw().equals("EXEC_CH_PARM_REST/.")){
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try{
+								List<Category> CATE_LIST = E.getGuild().getCategories();
+								for(Category CATE:CATE_LIST){
+									CATE.getPermissionOverrides().forEach(OD -> OD.delete().queue());
+									System.out.println(CATE.getName() + "の権限をリセットした！");
+								}
+							}catch (Exception EX){
+								EX.printStackTrace();
+							}
+						}
+					}).start();
+				}
+
+				//チャンネルの権限設定をカテゴリに同期
+				if(E.getMessage().getContentRaw().equals("EXEC_CH_PARM_SYNC/.")){
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try{
+								List<Category> CATE_LIST = E.getGuild().getCategories();
+								for(Category CATE:CATE_LIST){
+									System.out.println("┌" + CATE.getName() + "のチャンネルたちをいじくり倒す居");
+
+									for(TextChannel CH:CATE.getTextChannels()){
+										CH.getManager().sync(CATE).queue();
+
+										System.out.println("├" + CH.getName() + "の権限を同期した！");
+
+										Thread.sleep(1000);
+									}
+
+									for(VoiceChannel CH:CATE.getVoiceChannels()){
+										CH.getManager().sync(CATE).queue();
+
+										System.out.println(CH.getName() + "の権限を同期した！");
+
+										Thread.sleep(1000);
+									}
+
+									System.out.println("└────────────────────────────────────────────");
+								}
+							}catch (Exception EX){
+								EX.printStackTrace();
+							}
+						}
+					}).start();
 				}
 			}
 
