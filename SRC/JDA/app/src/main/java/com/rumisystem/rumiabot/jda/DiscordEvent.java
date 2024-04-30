@@ -37,6 +37,11 @@ public class DiscordEvent extends ListenerAdapter {
 			String MESSAGE_CONTENT = E.getMessage().getContentRaw();
 			String GUILD_NAME = "localhost";
 
+			//ブロック済みのユーザーなら此処で処理を中断する
+			if(CONFIG.CONFIG_DATA.get("BLOCK").toString().contains(E.getAuthor().getId())){
+				return;
+			}
+
 			//鯖でのメッセージなら、鯖名に鯖名を入れる
 			if(E.isFromGuild()){
 				GUILD_NAME = E.getGuild().getName();
@@ -208,6 +213,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if(CONFIG.CONFIG_DATA.get("BLOCK").toString().contains(INTERACTION.getUser().getId())){
+			return;
+		}
+
 		//ユーザーに待ってもらう
 		INTERACTION.deferReply().setEphemeral(true).queue();
 
@@ -236,6 +246,11 @@ public class DiscordEvent extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if(CONFIG.CONFIG_DATA.get("BLOCK").toString().contains(INTERACTION.getUser().getId())){
+			return;
+		}
+
 		try{
 			System.out.println(
 					"[ INFO ][ SL ]┌Interaction create:" +
