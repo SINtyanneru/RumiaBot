@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,6 +54,22 @@ public class PT {
 						} else {
 							//Nullの場合の処理
 							PW.print(CMD[0] + ";404");
+							PW.flush();
+						}
+						break;
+					}
+
+					case "SQL_UP":{
+						try{
+							SQL.UP_RUN(CMD[2], ARRAY_JSON_TO_ARRAYLIST(CMD[3]).toArray());
+
+							//実行して取得成功
+							PW.print(CMD[0] + ";200");
+							PW.flush();
+						}catch (SQLException EX){
+							EX.printStackTrace();
+
+							PW.print(CMD[0] + ";" + EX.getSQLState() + ";500");
 							PW.flush();
 						}
 						break;
