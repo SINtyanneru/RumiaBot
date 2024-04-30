@@ -139,6 +139,9 @@ public class Main {
 				.addOption(OptionType.STRING, "text", "本文", true)
 				.addOptions(VOICEVOX_OPTION);
 
+		SlashCommandData VERIFY_PANEL = Commands.slash("verify_panel", "認証パネルを設置します")
+				.addOption(OptionType.ROLE, "role", "ロール", true);
+
 		BOT.updateCommands().addCommands(
 				test,
 				help,
@@ -151,7 +154,8 @@ public class Main {
 				wh_clear,
 				mandenburo,
 				voicevox,
-				FUNCTION.CREATE_SLASH_COMMAND()
+				FUNCTION.CREATE_SLASH_COMMAND(),
+				VERIFY_PANEL
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");

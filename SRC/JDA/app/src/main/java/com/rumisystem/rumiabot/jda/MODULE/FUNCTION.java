@@ -142,7 +142,7 @@ public class FUNCTION {
 		//キャッシュがないのでSQLから取得
 		String SQL_RESULT = SEND("SQL;SELECT * FROM `CONFIG` WHERE `FUNC_ID` = ?;[\"" + FUNC_ID + "\"]");
 
-		if(SQL_RESULT.split(";")[1].equals("200")) {
+		if(SQL_RESULT.split(";")[SQL_RESULT.split(";").length - 1].equals("200")) {
 			JsonNode RESULT = OM.readTree(SQL_RESULT.split(";")[0]);
 
 			//リザルトから、指定された機能IDの設定を探す

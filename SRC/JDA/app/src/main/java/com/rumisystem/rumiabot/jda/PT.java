@@ -34,14 +34,19 @@ public class PT {
 	public static String REPLY_WAIT(String ID) throws IOException {
 		byte[] BUFFER = new byte[1024];
 		int BYTES_READ;
+
+		//繰り返す
 		while (true) {
 			BYTES_READ = INPUT_STREAM.read(BUFFER);
+
+			//応答を受信したか
 			if(BYTES_READ != -1){
 				String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
-				System.out.println("受信");
-				//IDが一致するまで待つ
+
+				System.out.println("受信：" + MSG);
+
+				//応答のIDが一致するまで待つ
 				if(MSG.split(";")[0].equals(ID)){
-					System.out.println("来た");
 					return MSG.replace(ID + ";", "");
 				}
 			}

@@ -14,9 +14,12 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.InteractionType;
 import org.checkerframework.checker.units.qual.C;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -41,10 +44,6 @@ public class DiscordEvent extends ListenerAdapter {
 
 			//VXTwitter
 			VXTWITTER_CONVERT.main(E);
-
-			if(E.getAuthor().getId().equals("564772363950882816") && E.getMessage().getContentRaw().equals("test")){
-				new WEB_HOOK(E.getChannel().asTextChannel()).SEND("テスト");
-			}
 
 			if(E.getAuthor().getId().equals("564772363950882816")){
 				//全員スパム
@@ -198,6 +197,30 @@ public class DiscordEvent extends ListenerAdapter {
 	}
 
 	@Override
+	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
+		//ユーザーに待ってもらう
+		INTERACTION.deferReply().setEphemeral(true).queue();
+
+		//IDによって処理を変える
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				switch (INTERACTION.getInteraction().getButton().getId().split("\\?")[0]){
+					//認証ボタン
+					case "verify_panel":{
+						VERIFY_PANEL.VERIFY(INTERACTION);
+						break;
+					}
+
+					default:{
+						INTERACTION.getHook().editOriginal("?").queue();
+					}
+				}
+			}
+		}).start();
+	}
+
+	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
 		try{
 			System.out.println(
@@ -224,70 +247,81 @@ public class DiscordEvent extends ListenerAdapter {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					switch (INTERACTION.getName()){
-						case "test":{
-							test.main(INTERACTION);
-							break;
-						}
+					try{
+						switch (INTERACTION.getName()){
+							case "test":{
+								test.main(INTERACTION);
+								break;
+							}
 
-						case "help":{
-							help.main(INTERACTION);
-							break;
-						}
+							case "help":{
+								help.main(INTERACTION);
+								break;
+							}
 
-						case "ip":{
-							ip.main(INTERACTION);
-							break;
-						}
+							case "ip":{
+								ip.main(INTERACTION);
+								break;
+							}
 
-						case "info_server":{
-							info_server.main(INTERACTION);
-							break;
-						}
+							case "info_server":{
+								info_server.main(INTERACTION);
+								break;
+							}
 
-						case "info_user":{
-							info_user.main(INTERACTION);
-							break;
-						}
+							case "info_user":{
+								info_user.main(INTERACTION);
+								break;
+							}
 
-						case "ws":{
-							ws.main(INTERACTION);
-							break;
-						}
+							case "ws":{
+								ws.main(INTERACTION);
+								break;
+							}
 
-						case "mazokupic":{
-							mazokupic.main(INTERACTION);
-							break;
-						}
+							case "mazokupic":{
+								mazokupic.main(INTERACTION);
+								break;
+							}
 
-						case "ping":{
-							ping.main(INTERACTION);
-							break;
-						}
+							case "ping":{
+								ping.main(INTERACTION);
+								break;
+							}
 
-						case "wh_clear":{
-							wh_clear.main(INTERACTION);
-							break;
-						}
+							case "wh_clear":{
+								wh_clear.main(INTERACTION);
+								break;
+							}
 
-						case "mandenburo":{
-							mandenburo.main(INTERACTION);
-							break;
-						}
+							case "mandenburo":{
+								mandenburo.main(INTERACTION);
+								break;
+							}
 
-						case "voicevox":{
-							VOICEVOX.main(INTERACTION);
-							break;
-						}
+							case "voicevox":{
+								VOICEVOX.main(INTERACTION);
+								break;
+							}
 
-						case "setting":{
-							SETTING.main(INTERACTION);
-							break;
-						}
+							case "setting":{
+								SETTING.main(INTERACTION);
+								break;
+							}
 
-						default:{
-							INTERACTION.getHook().editOriginal("？").queue();
+							case "verify_panel":{
+								VERIFY_PANEL.PANEL_CREATE(INTERACTION);
+								break;
+							}
+
+							default:{
+								INTERACTION.getHook().editOriginal("？").queue();
+							}
 						}
+					}catch (Exception EX){
+						EX.printStackTrace();
+
+						INTERACTION.getHook().editOriginal("JAVA エラー\n```\n" + EX.getMessage() + "\n```").queue();
 					}
 				}
 			}).start();
