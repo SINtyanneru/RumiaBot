@@ -93,18 +93,22 @@ public class Main {
 			switch (NODE.getNodeType()){
 				case STRING:{
 					ARRAY.add(NODE.asText());
+					break;
 				}
 
 				case NUMBER:{
 					ARRAY.add(NODE.asInt());
+					break;
 				}
 
 				case BOOLEAN:{
 					ARRAY.add(NODE.asBoolean());
+					break;
 				}
 
 				default:{
 					ARRAY.add(NODE);
+					break;
 				}
 			}
 		}
