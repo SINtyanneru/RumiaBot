@@ -124,6 +124,16 @@ public class DiscordEvent extends ListenerAdapter {
 						}
 					}).start();
 				}
+
+				if(E.getMessage().getContentRaw().startsWith("EXEC_LV/.")){
+					Guild GUILD = BOT.getGuildById(E.getMessage().getContentRaw().replace("EXEC_LV/.", ""));
+					if(GUILD != null){
+						GUILD.leave().queue();
+						E.getMessage().reply("OK").queue();
+					} else {
+						E.getMessage().reply("無い").queue();
+					}
+				}
 			}
 
 			//ログを出す部分
