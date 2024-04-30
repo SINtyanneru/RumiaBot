@@ -19,10 +19,12 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.Result;
+import org.checkerframework.checker.units.qual.K;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import static com.rumisystem.rumiabot.jda.PT.SEND;
 
@@ -193,5 +195,20 @@ public class Main {
 				break;
 			}
 		}
+	}
+
+	public static HashMap<String, String> URI_PARAM_PARSE(String URI){
+		HashMap<String, String> RESULT = new HashMap<>();
+
+		String[] SPLIT_URI = URI.split("\\?")[1].split("&");
+
+		for(int I = 0; I < SPLIT_URI.length; I++){
+			String KEY = SPLIT_URI[I].split("=")[0];
+			String VAL = SPLIT_URI[I].split("=")[1];
+
+			RESULT.put(KEY, VAL);
+		}
+
+		return RESULT;
 	}
 }

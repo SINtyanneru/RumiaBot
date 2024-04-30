@@ -1,5 +1,6 @@
 package com.rumisystem.rumiabot.jda.COMMAND;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.rumiabot.jda.MODULE.RND_COLOR;
@@ -11,8 +12,10 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
+import static com.rumisystem.rumiabot.jda.Main.URI_PARAM_PARSE;
 import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class VERIFY_PANEL {
@@ -59,6 +62,8 @@ public class VERIFY_PANEL {
 
 						INTERACTION.getHook().editOriginal("すでにあるので、呼び出しました").queue();
 					}
+				} else {
+					INTERACTION.getHook().editOriginal("エラー：SQL_CHECK").queue();
 				}
 			} else {
 				INTERACTION.getHook().editOriginal("ごめん、私そのロールを操作できないわ").queue();
@@ -69,7 +74,9 @@ public class VERIFY_PANEL {
 	}
 
 	//認証
-	public static void VERIFY(ButtonInteractionEvent INTERACTION){
+	public static void VERIFY(ButtonInteractionEvent INTERACTION) throws IOException {
+		HashMap<String, String> PARAM = URI_PARAM_PARSE(INTERACTION.getInteraction().getButton().getId().toString());
 
+		INTERACTION.getHook().editOriginal("[ここをクリックして認証してください](https://rumiserver.com/rumiabot/verify_panel?ID=" + PARAM.get("id") + "&uid=" + INTERACTION.getUser().getId() + ")").queue();
 	}
 }

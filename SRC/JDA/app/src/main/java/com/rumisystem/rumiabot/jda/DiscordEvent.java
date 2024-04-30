@@ -137,7 +137,7 @@ public class DiscordEvent extends ListenerAdapter {
 					LOG_TEXT.append("└" + TEXT + "\n");
 				}
 			}
-			System.out.println(LOG_TEXT.toString());
+			//System.out.println(LOG_TEXT.toString());
 
 			//検索機能
 			if(MESSAGE_CONTENT.startsWith("検索 ")){
@@ -205,16 +205,20 @@ public class DiscordEvent extends ListenerAdapter {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				switch (INTERACTION.getInteraction().getButton().getId().split("\\?")[0]){
-					//認証ボタン
-					case "verify_panel":{
-						VERIFY_PANEL.VERIFY(INTERACTION);
-						break;
-					}
+				try{
+					switch (INTERACTION.getInteraction().getButton().getId().split("\\?")[0]){
+						//認証ボタン
+						case "verify_panel":{
+							VERIFY_PANEL.VERIFY(INTERACTION);
+							break;
+						}
 
-					default:{
-						INTERACTION.getHook().editOriginal("?").queue();
+						default:{
+							INTERACTION.getHook().editOriginal("?").queue();
+						}
 					}
+				}catch (Exception EX){
+					EX.printStackTrace();
 				}
 			}
 		}).start();
