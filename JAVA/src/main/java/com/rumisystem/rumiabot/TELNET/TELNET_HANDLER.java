@@ -37,13 +37,13 @@ public class TELNET_HANDLER implements Runnable {
 				String[] CMD = MSG.split(";");
 
 				//ログを吐く
-				LOG(INFO_LOG_TAG, "TELNET受信"/*"TELNET受信：" + MSG*/, 0);
+				LOG(INFO_LOG_TAG, "TELNET受信" + MSG, 0);
 
 				//返信を受信したら
 				if(CMD[0].startsWith("REPLY_")){
 					String ID = CMD[0].replace("REPLY_", "");
 
-					LOG(INFO_LOG_TAG, ID + "でPTからリプライが来たので横流しします" + MSG, 0);
+					LOG(INFO_LOG_TAG, ID + "でPTからリプライが来たので横流しします", 0);
 
 					for(String KEY:CONNECTIONU.keySet()){
 						if(CONNECTIONU.get(KEY) != null){
@@ -53,76 +53,77 @@ public class TELNET_HANDLER implements Runnable {
 							LOG(INFO_LOG_TAG, "ERR:SV -> " + KEY, 1);
 						}
 					}
-				}
+				} else {
+					//コマンドに寄って処理を変える
+					switch (CMD[1]){
+						//認証
+						case "HELLO":
+							switch (CMD[2]) {
+								case "JS": //JS
+									//接続一覧にOutputStreamを追加
+									CONNECTIONU.put("JS", OUTPUT_STREAM);
 
-				//コマンドに寄って処理を変える
-				switch (CMD[1]){
-					//認証
-					case "HELLO":
-						switch (CMD[2]) {
-							case "JS": //JS
-								//接続一覧にOutputStreamを追加
-								CONNECTIONU.put("JS", OUTPUT_STREAM);
+									//成功と返す
+									SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 
-								//成功と返す
-								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+									LOG(INFO_LOG_TAG, "SV -> JS", 0);
+									break;
+								case "PY": //Python
+									//接続一覧にOutputStreamを追加
+									CONNECTIONU.put("PY", OUTPUT_STREAM);
 
-								LOG(INFO_LOG_TAG, "SV -> JS", 0);
-								break;
-							case "PY": //Python
-								//接続一覧にOutputStreamを追加
-								CONNECTIONU.put("PY", OUTPUT_STREAM);
+									//成功と返す
+									SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 
-								//成功と返す
-								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+									LOG(INFO_LOG_TAG, "SV -> PY", 0);
+									break;
+								case "JAVA": //JAVA
+									//接続一覧にOutputStreamを追加
+									CONNECTIONU.put("JAVA", OUTPUT_STREAM);
 
-								LOG(INFO_LOG_TAG, "SV -> PY", 0);
-								break;
-							case "JAVA": //JAVA
-								//接続一覧にOutputStreamを追加
-								CONNECTIONU.put("JAVA", OUTPUT_STREAM);
+									//成功と返す
+									SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
 
-								//成功と返す
-								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+									LOG(INFO_LOG_TAG, "SV -> JAVA", 0);
+									break;
+								case "JDA": //JDA
+									//接続一覧にOutputStreamを追加
+									CONNECTIONU.put("JDA", OUTPUT_STREAM);
 
-								LOG(INFO_LOG_TAG, "SV -> JAVA", 0);
-								break;
-							case "JDA": //JDA
-								//接続一覧にOutputStreamを追加
-								CONNECTIONU.put("JDA", OUTPUT_STREAM);
+									//成功と返す
+									SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
+									LOG(INFO_LOG_TAG, "SV -> JDA", 0);
+									break;
+								default: //誰やねんお前
+									SEND_STRING(OUTPUT_STREAM, CMD[0] + ";WHO_IS_YOU;403");
+									break;
+							}
+							break;
 
-								//成功と返す
-								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";HELLO;200");
-								LOG(INFO_LOG_TAG, "SV -> JDA", 0);
-								break;
-							default: //誰やねんお前
-								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";WHO_IS_YOU;403");
-								break;
-						}
-						break;
+						//Discord関連の命令(JSに横ながし)
+						case "DISCORD":
+							if(Objects.nonNull(CONNECTIONU.get("JS"))){
+								SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
 
-					//Discord関連の命令(JSに横ながし)
-					case "DISCORD":
-						if(Objects.nonNull(CONNECTIONU.get("JS"))){
-							SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
+								//SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
+							} else {
+								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
+							}
+							break;
 
-							//SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
-						} else {
-							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
-						}
-						break;
-
-					//SQL
-					case "SQL_UP":
-					case "SQL":
-						if(Objects.nonNull(CONNECTIONU.get("JS"))){
-							SEND_STRING(CONNECTIONU.get("JAVA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
-						} else {
-							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
-						}
-						break;
-					default:
-						SEND_STRING(OUTPUT_STREAM, CMD[0] + ";SIGNAL_NOT_FOUND;400");
+						//SQL
+						case "SQL_UP":
+						case "SQL":
+							if(Objects.nonNull(CONNECTIONU.get("JS"))){
+								SEND_STRING(CONNECTIONU.get("JAVA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
+							} else {
+								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
+							}
+							break;
+						default:
+							LOG(INFO_LOG_TAG,"不明なコマンドを受信しました", 0);
+							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";SIGNAL_NOT_FOUND;400");
+					}
 				}
 			}
 
