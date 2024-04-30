@@ -113,6 +113,7 @@ public class TELNET_HANDLER implements Runnable {
 						break;
 
 					//SQL
+					case "SQL_UP":
 					case "SQL":
 						if(Objects.nonNull(CONNECTIONU.get("JS"))){
 							SEND_STRING(CONNECTIONU.get("JAVA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
@@ -120,9 +121,8 @@ public class TELNET_HANDLER implements Runnable {
 							SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
 						}
 						break;
-
 					default:
-						SEND_STRING(OUTPUT_STREAM, CMD[0] + ";400");
+						SEND_STRING(OUTPUT_STREAM, CMD[0] + ";SIGNAL_NOT_FOUND;400");
 				}
 			}
 
