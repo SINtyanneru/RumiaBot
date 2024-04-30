@@ -42,10 +42,6 @@ public class PT {
 					case "SQL":{
 						ResultSet RESULT = SQL.RUN(CMD[2], ARRAY_JSON_TO_ARRAYLIST(CMD[3]).toArray());
 
-						for(Object ROW:ARRAY_JSON_TO_ARRAYLIST(CMD[3]).toArray()){
-							System.out.println(ROW.toString());
-						}
-
 						if(RESULT != null){
 							//実行して取得成功
 							JsonNode JSON_RESULT = SQL.SQL_RESULT_TO_JSON(RESULT);
