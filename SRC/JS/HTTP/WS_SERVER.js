@@ -8,6 +8,7 @@ export class WS_SERVER {
 	}
 
 	main() {
+		/*
 		this.SERVER = new WebSocketServer({ port: this.PORT });
 
 		this.SERVER.on("connection", SOCKET => {
@@ -18,5 +19,6 @@ export class WS_SERVER {
 				console.log("[ INFO ][ WS_SERVER ]Disconnected");
 			});
 		});
+		*/
 	}
 }

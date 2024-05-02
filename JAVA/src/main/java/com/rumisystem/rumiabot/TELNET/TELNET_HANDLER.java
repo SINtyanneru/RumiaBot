@@ -47,8 +47,10 @@ public class TELNET_HANDLER implements Runnable {
 
 					for(String KEY:CONNECTIONU.keySet()){
 						if(CONNECTIONU.get(KEY) != null){
-							LOG(INFO_LOG_TAG, "SV -> " + KEY, 0);
-							SEND_STRING(CONNECTIONU.get(KEY), ID + ";" + CMD_TO_STRING(CMD));
+							if(!CONNECTIONU.get(KEY).equals(OUTPUT_STREAM)){
+								LOG(INFO_LOG_TAG, "SV -> " + KEY, 0);
+								SEND_STRING(CONNECTIONU.get(KEY), ID + ";" + CMD_TO_STRING(CMD));
+							}
 						} else {
 							LOG(INFO_LOG_TAG, "ERR:SV -> " + KEY, 1);
 						}
@@ -102,10 +104,8 @@ public class TELNET_HANDLER implements Runnable {
 
 						//Discord関連の命令(JSに横ながし)
 						case "DISCORD":
-							if(Objects.nonNull(CONNECTIONU.get("JS"))){
-								SEND_STRING(CONNECTIONU.get("JS"), CMD_TO_STRING(CMD));
-
-								//SEND_STRING(OUTPUT_STREAM, CMD[0] + ";200");
+							if(Objects.nonNull(CONNECTIONU.get("JDA"))){
+								SEND_STRING(CONNECTIONU.get("JDA"), "REPLY_" + CMD[0] + ";" + CMD_TO_STRING(CMD));
 							} else {
 								SEND_STRING(OUTPUT_STREAM, CMD[0] + ";500");
 							}

@@ -25,6 +25,44 @@ public class PT {
 			PW = new PrintWriter(SOCKET.getOutputStream(), true);
 
 			SEND("HELLO;JDA");
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try{
+						//繰り返す
+						byte[] BUFFER = new byte[1024];
+						int BYTES_READ;
+						while (true) {
+							BYTES_READ = INPUT_STREAM.read(BUFFER);
+
+							//応答を受信したか
+							if(BYTES_READ != -1){
+								String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
+								String[] CMD = MSG.split(";");
+
+
+								if(CMD[1].equals("DISCORD")){
+									if(CMD[2].equals("VERIFY_PANEL_OK")){
+										System.out.println("200返すわ");
+										REPLY(CMD[0] + ";200");
+									} else {
+										REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
+									}
+								} else {
+									//これしたら無限ループしたわｗｗｗ
+									//理由は簡単、/JAVA/のPTを見てくれ、
+									//REPLY_が先頭についてるやつは、全プロセスに送るようにしてるんだけど、
+									//此れのせいで無限ループしたｗ
+									//REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
+								}
+							}
+						}
+					}catch (Exception EX){
+						EX.printStackTrace();
+					}
+				}
+			}).start();
 		} catch (Exception EX) {
 			System.err.println("TELNETエラー");
 			EX.printStackTrace();
@@ -61,5 +99,10 @@ public class PT {
 		PW.flush();
 
 		return REPLY_WAIT(GEN_UUID.toString());
+	}
+
+	public static void REPLY(String TEXT){
+		PW.print(TEXT);
+		PW.flush();
 	}
 }

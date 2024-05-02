@@ -1,14 +1,10 @@
 // @ts-check
 import * as HTTP from "node:http";
 import * as FS from "node:fs";
-import { client } from "../MODULES/loadClient.js";
 import { CONFIG } from "../MODULES/CONFIG.js";
-import { SQL_OBJ } from "../OLD/Main.js";
+import { SQL_OBJ } from "../Main.js";
+import { PWS_SEND_MSG } from "../PROCESS_WS.js";
 
-/**
- * @typedef {{ ID: string; NAME: string; TYPE: "GUILD_CATEGORY" | "GUILD_NEWS" | "GUILD_STAGE_VOICE" | "GUILD_STORE" | "GUILD_TEXT" | import("discord.js").ThreadChannelTypes | "GUILD_VOICE" | "GUILD_FORUM"; PARENT: import("discord.js").CategoryChannel | import("discord.js").NewsChannel | import("discord.js").ForumChannel | null; POS: any; }} CHANNEL
-
- */
 export class HTTP_SERVER {
 	constructor() {
 		this.HOST_NAME = "0.0.0.0";
@@ -57,232 +53,87 @@ export class HTTP_SERVER {
 			}
 
 			/**
-			 * API部分
-			 */
-			if (REQ_PATH.startsWith("/API")) {
-				//鯖一覧
-				if (REQ_PATH === "/API/GUILD_LIST_GET") {
-					const GUILDS = client.guilds.cache;
-					if (GUILDS) {
-						/**@type {{}[]} */
-						let GUILDS_ARRAY = [];
-						GUILDS.forEach((/** @type {{ id: any; name: any; iconURL: () => any; }} */ GUILD) => {
-							GUILDS_ARRAY.push({
-								"ID": GUILD.id,
-								"NAME": GUILD.name,
-								"ICON_URL": GUILD.iconURL()
-							});
-						});
-						res_send_api({
-							"STATUS": true,
-							"GUILDS": GUILDS_ARRAY
-						});
-					}
-				}
-				//チャンネル一覧
-				if (REQ_PATH === "/API/CHANNEL_LIST_GET") {
-					if (REQ.method === "GET") {
-						if (URI_PARAM["ID"]) {
-							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
-							if (GUILD) {
-								const CHANNELS = GUILD.channels.cache;
-								if (CHANNELS.size > 0) {
-									/**@type {CHANNEL[]} */
-									let CHANNEL_ARRAY = [];
-
-									CHANNELS.forEach(CHANNEL => {
-										CHANNEL_ARRAY.push({
-											"ID": CHANNEL.id,
-											"NAME": CHANNEL.name,
-											"TYPE": CHANNEL.type,
-											// @ts-expect-error アサーションで着ないので静かにさせた
-											"PARENT": CHANNEL.parent,
-											// @ts-expect-error アサーションできない、だるすぎ侍
-											"POS": CHANNEL.position || null
-										});
-									});
-									//成功
-									res_send_api({
-										"STATUS": true,
-										"CHANNELS": CHANNEL_ARRAY
-									});
-								}
-							} else {
-								//エラー
-								res_send_api({
-									"STATUS": false
-								});
-							}
-						} else {
-							//エラー
-							res_send_api({
-								"STATUS": false
-							});
-						}
-					}
-				}
-				//鯖の情報
-				if (REQ_PATH === "/API/GUILD_INFO_GET") {
-					if (REQ.method === "GET") {
-						if (URI_PARAM["ID"]) {
-							const GUILD = client.guilds.cache.get(URI_PARAM["ID"]);
-							if (GUILD) {
-								//成功
-								RES.end(
-									JSON.stringify({
-										"STATUS": true,
-										"GUILD": {
-											"ID": GUILD.id,
-											"NAME": GUILD.name
-										}
-									})
-								);
-							} else {
-								//エラー
-								RES.end(
-									JSON.stringify({
-										"STATUS": false
-									})
-								);
-							}
-						} else {
-							//エラー
-							RES.end(
-								JSON.stringify({
-									"STATUS": false
-								})
-							);
-						}
-					} else {
-						//エラー
-						RES.end(
-							JSON.stringify({
-								"STATUS": false
-							})
-						);
-					}
-				}
-				//チャンネルの情報
-				if (REQ_PATH === "/API/CHANNEL_INFO_GET") {
-					if (REQ.method === "GET") {
-						if (URI_PARAM["GID"] && URI_PARAM["CID"]) {
-							const GUILD = client.guilds.cache.get(URI_PARAM["GID"]);
-							if (GUILD) {
-								const CHANNEL = GUILD.channels.cache.get(URI_PARAM["CID"]);
-								if (CHANNEL) {
-									let MESSAGE_LOG = [];
-									Array.from(await CHANNEL.messages.fetch({ "limit": 10 })).forEach(MESSAGE => {
-										MESSAGE_LOG.push({
-											"MSG": {
-												"ID": MESSAGE[1].id,
-												"TEXT": MESSAGE[1].content
-											},
-											"AUTHOR": {
-												"ID": MESSAGE[1].author.id,
-												"NAME": MESSAGE[1].author.username,
-												"ICON": MESSAGE[1].author.avatarURL(),
-												"DEF_ICON": MESSAGE[1].author.defaultAvatarURL
-											}
-										});
-									});
-									//成功
-									RES.end(
-										JSON.stringify({
-											"STATUS": true,
-											"CHANNEL": {
-												"ID": CHANNEL.id,
-												"NAME": CHANNEL.name,
-												"MESSAGES": MESSAGE_LOG
-											}
-										})
-									);
-								} else {
-									//エラー
-									RES.end(
-										JSON.stringify({
-											"STATUS": false
-										})
-									);
-								}
-							} else {
-								//エラー
-								RES.end(
-									JSON.stringify({
-										"STATUS": false
-									})
-								);
-							}
-						} else {
-							//エラー
-							RES.end(
-								JSON.stringify({
-									"STATUS": false
-								})
-							);
-						}
-					} else {
-						//エラー
-						RES.end(
-							JSON.stringify({
-								"STATUS": false
-							})
-						);
-					}
-				}
-
-				//チャンネルの情報
-				if (REQ_PATH === "/API/MSG_SEND") {
-					if (REQ.method === "POST") {
-						let POST_BODY = "";
-
-						REQ.on("data", chunk => {
-							POST_BODY += chunk.toString();
-						});
-
-						REQ.on("end", () => {
-							const POST_RESULT = JSON.parse(POST_BODY);
-							const GUILD = client.guilds.cache.get(POST_RESULT.GID);
-							if (GUILD) {
-								/**@type { import("discord.js").TextChannel} */
-								// @ts-expect-error アサーションが(ry
-								const CHANNEL = GUILD.channels.cache.get(POST_RESULT.CID);
-								if (CHANNEL) {
-									if (POST_RESULT.TEXT) {
-										CHANNEL.send(POST_RESULT.TEXT);
-										RES.end(
-											JSON.stringify({
-												"STATUS": true
-											})
-										);
-										return;
-									}
-								}
-							}
-							//エラー
-							RES.end(
-								JSON.stringify({
-									"STATUS": false
-								})
-							);
-						});
-					} else {
-						//エラー
-						RES.end(
-							JSON.stringify({
-								"STATUS": false
-							})
-						);
-					}
-				}
-
-				//これ以上処理する必要がないので殺す
-				return;
-			}
-
-			/**
 			 * /user
 			 */
 			if (REQ_PATH.startsWith("/user")) {
+				/**
+				 * API部分
+				 */
+				if (REQ_PATH.startsWith("/user/API")) {
+					if(REQ_PATH.startsWith("/user/API/VERIFY_PANEL")){
+						if(REQ.method === "POST"){
+							let DATA = [];
+							//POSTされたデータを受信する
+							REQ.on("data", (CHUNK) => {
+								// 受信したデータを配列に追加
+								DATA.push(CHUNK);
+							});
+
+							//受信完了
+							REQ.on("end", async () => {
+								try{
+									const POST_DATA = JSON.parse(Buffer.concat(DATA).toString());
+
+									//TODO:戻す
+									/*
+									let AJAX = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+										method:"POST",
+										headers:{
+											"Content-Type":"application/json"//Content-Type入れないといけない系API死ね
+										},
+										body:JSON.stringify({
+											"secret":/*CONFIG.CAPTCHA.SIKRET_KEY*//*"1x0000000000000000000000000000000AA",
+											"response":POST_DATA.CFT_RESULT/*
+										})
+									});*/
+
+									//const CFT_AJAX_RESULT = await AJAX.json();
+									const CFT_AJAX_RESULT = {success:true};
+									
+									if(CFT_AJAX_RESULT.success){
+										const JAVA_RESULT = await PWS_SEND_MSG("DISCORD;VERIFY_PANEL_OK;" + POST_DATA.PANEL_ID + ";" + POST_DATA.UID);
+										
+										if(JAVA_RESULT[0] === "200"){
+											RES.statusCode = 200;
+											RES.end(JSON.stringify({"STATUS":true}));
+										} else {
+											RES.statusCode = 400;
+											RES.end(JSON.stringify({"STATUS":false, "MSG":"NOMAL_ERR"}));
+										}
+										return;
+									}
+
+									RES.statusCode = 400;
+									RES.end(JSON.stringify({"STATUS":false, "MSG":"NOMAL_ERR"}));
+								}catch(EX){
+									console.error(EX);
+									RES.statusCode = 500;
+									RES.end(JSON.stringify({"STATUS":false, "MSG":"SYSTEM_ERR", "EX":EX}));
+								}
+							});
+
+							//此のまま行くと404にまっしぐらなのでここで停止させる
+							return;
+						} else {
+							RES.statusCode = 405;
+							RES.end(JSON.stringify({"STATUS":false, "MSG":"POSTしろやカス"}));
+							return;
+						}
+					}
+				}
+				//認証パネル
+				if (REQ_PATH.startsWith("/user/verify_panel")) {
+					let FILE = await this.LOAD_FILE("/user/verify_panel/index.html");
+
+					//FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, CONFIG.CAPTCHA.SITE_KEY);
+					FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, "1x00000000000000000000AA");
+					//TODO:変える
+
+					RES.statusCode = 200;
+					RES.end(FILE.CONTENTS);
+					return;
+				}
+
 				//ログイン
 				if (REQ_PATH.startsWith("/user/login/misskey/")) {
 					const TYPE = REQ_PATH.replace("/user/login/misskey/", "").split("/")[0];
@@ -368,7 +219,7 @@ export class HTTP_SERVER {
 	LOAD_FILE(REQ_PATH){
 		return new Promise((resolve) => {
 			//ファイルを読み込む
-			FS.readFile("./SRC/HTTP/CONTENTS" + REQ_PATH, "utf8", (ERR, DATA) => {
+			FS.readFile("./SRC/JS/HTTP/CONTENTS" + REQ_PATH, "utf8", (ERR, DATA) => {
 				if (ERR) {
 					//ファイルがないのでindex.htmlが無いかをチェックする
 					FS.readFile("./SRC/HTTP/CONTENTS/" + REQ_PATH + "/index.html", "utf8", (ERR, DATA) => {

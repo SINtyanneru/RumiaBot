@@ -50,13 +50,7 @@ export async function PWS_SEND_MSG(TEXT){
 				//UUIDを殺す
 				RESULT.splice(0, 1);
 
-				//ステータスコードが200か
-				if(RESULT[RESULT.length - 1] === "200"){
-					//200なのでresolve
-					resolve(RESULT);
-				}else{//200以外なのでrejectする
-					reject(RESULT);
-				}
+				resolve(RESULT);
 			}
 		}
 

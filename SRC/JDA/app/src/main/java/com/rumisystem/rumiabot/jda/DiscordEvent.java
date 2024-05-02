@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionType;
 import org.checkerframework.checker.units.qual.C;
@@ -375,5 +376,10 @@ public class DiscordEvent extends ListenerAdapter {
 			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
 					"これで" + BOT.getGuilds().size() + "個の鯖になりました").queue();
 		}
+	}
+
+	@Override
+	public void onSessionDisconnect(SessionDisconnectEvent E) {
+		System.out.println("切断された");
 	}
 }
