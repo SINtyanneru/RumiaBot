@@ -18,6 +18,9 @@ public class VOICEVOX {
 	private static final String PATH = "./DOWNLOAD/VOICEVOX/";
 
 	public static void main(SlashCommandInteractionEvent INTERACTION) {
+		//処理を開始した時間を記録する
+		long START_TIME = System.nanoTime();
+
 		TEXT = INTERACTION.getOption("text").getAsString();
 		SEEKER = INTERACTION.getOption("speeker").getAsString();
 		ID = UUID.randomUUID().toString();
@@ -25,7 +28,11 @@ public class VOICEVOX {
 		String QUERY = GET_QUERY();
 		if(QUERY != null){
 			if(GENERATE(QUERY)){
-				INTERACTION.getHook().editOriginal("生成した").setAttachments(AttachedFile.fromData(new File(PATH + ID + ".wav"))).queue();
+				//処理が終了した時間を計算
+				long END_MICRO_SEC = ((System.nanoTime() - START_TIME) / 1000000);
+				double END_SEC = ((double) END_MICRO_SEC / 1000);
+
+				INTERACTION.getHook().editOriginal("生成した\n(" + END_SEC + "秒で生成完了)").setAttachments(AttachedFile.fromData(new File(PATH + ID + ".wav"))).queue();
 			} else {
 				INTERACTION.getHook().editOriginal("生成できませんでした").queue();
 			}
