@@ -4,12 +4,15 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class PT {
 	private static PrintWriter PW;
 	private static InputStream INPUT_STREAM;
+	private static List<String> MESSAGE_LIST = new ArrayList<>();
 
 	public static void main(int PORT) {
 		try{
@@ -24,8 +27,6 @@ public class PT {
 			INPUT_STREAM = SOCKET.getInputStream();
 			PW = new PrintWriter(SOCKET.getOutputStream(), true);
 
-			SEND("HELLO;JDA");
-
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -39,6 +40,16 @@ public class PT {
 							//応答を受信したか
 							if(BYTES_READ != -1){
 								String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
+
+								//配列に入れる
+								MESSAGE_LIST.add(MSG);
+								System.out.println("[  PT  ]配列に入れた");
+
+								//1000越えたら消す
+								if(MESSAGE_LIST.size() > 1000){
+									MESSAGE_LIST.removeFirst();
+								}
+
 								String[] CMD = MSG.split(";");
 
 
@@ -63,6 +74,9 @@ public class PT {
 					}
 				}
 			}).start();
+
+			//へろー
+			SEND("HELLO;JDA");
 		} catch (Exception EX) {
 			System.err.println("TELNETエラー");
 			EX.printStackTrace();
@@ -70,21 +84,12 @@ public class PT {
 	}
 
 	public static String REPLY_WAIT(String ID) throws IOException {
-		byte[] BUFFER = new byte[1024];
-		int BYTES_READ;
-
 		//繰り返す
 		while (true) {
-			BYTES_READ = INPUT_STREAM.read(BUFFER);
-
-			//応答を受信したか
-			if(BYTES_READ != -1){
-				String MSG = new String(BUFFER, 0, BYTES_READ, StandardCharsets.UTF_8);
-
-				System.out.println("受信：" + MSG);
-
+			for(String MSG:MESSAGE_LIST){
 				//応答のIDが一致するまで待つ
 				if(MSG.split(";")[0].equals(ID)){
+					System.out.println("受信：" + MSG);
 					return MSG.replace(ID + ";", "");
 				}
 			}
