@@ -153,7 +153,7 @@ public class DiscordEvent extends ListenerAdapter {
 					LOG_TEXT.append("└" + TEXT + "\n");
 				}
 			}
-			//System.out.println(LOG_TEXT.toString());
+			System.out.println(LOG_TEXT.toString());
 
 			//検索機能
 			if(MESSAGE_CONTENT.startsWith("検索 ")){
