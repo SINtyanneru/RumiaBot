@@ -74,21 +74,19 @@ export class HTTP_SERVER {
 								try{
 									const POST_DATA = JSON.parse(Buffer.concat(DATA).toString());
 
-									//TODO:戻す
-									/*
 									let AJAX = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
 										method:"POST",
 										headers:{
 											"Content-Type":"application/json"//Content-Type入れないといけない系API死ね
 										},
 										body:JSON.stringify({
-											"secret":/*CONFIG.CAPTCHA.SIKRET_KEY*//*"1x0000000000000000000000000000000AA",
-											"response":POST_DATA.CFT_RESULT/*
+											"secret":CONFIG.CAPTCHA.SIKRET_KEY/*"1x0000000000000000000000000000000AA"*/,
+											"response":POST_DATA.CFT_RESULT
 										})
-									});*/
+									});
 
-									//const CFT_AJAX_RESULT = await AJAX.json();
-									const CFT_AJAX_RESULT = {success:true};
+									const CFT_AJAX_RESULT = await AJAX.json();
+									//const CFT_AJAX_RESULT = {success:true}; デバッグ用
 
 									if(CFT_AJAX_RESULT.success){
 										const JAVA_RESULT = await PWS_SEND_MSG("DISCORD;VERIFY_PANEL_OK;" + POST_DATA.VERIFY_ID);
@@ -125,9 +123,8 @@ export class HTTP_SERVER {
 				if (REQ_PATH.startsWith("/user/verify_panel")) {
 					let FILE = await this.LOAD_FILE("/user/verify_panel/index.html");
 
-					//FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, CONFIG.CAPTCHA.SITE_KEY);
-					FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, "1x00000000000000000000AA");
-					//TODO:変える
+					FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, CONFIG.CAPTCHA.SITE_KEY);
+					//FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, "1x00000000000000000000AA");
 
 					RES.statusCode = 200;
 					RES.end(FILE.CONTENTS);
