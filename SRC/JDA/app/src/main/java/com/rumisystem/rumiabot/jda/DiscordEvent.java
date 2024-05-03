@@ -230,7 +230,7 @@ public class DiscordEvent extends ListenerAdapter {
 					switch (INTERACTION.getInteraction().getButton().getId().split("\\?")[0]){
 						//認証ボタン
 						case "verify_panel":{
-							VERIFY_PANEL.VERIFY(INTERACTION);
+							VERIFY_PANEL.VERIFY_BUTTON(INTERACTION);
 							break;
 						}
 

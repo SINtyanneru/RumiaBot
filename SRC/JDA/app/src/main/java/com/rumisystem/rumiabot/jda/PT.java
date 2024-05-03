@@ -1,13 +1,12 @@
 package com.rumisystem.rumiabot.jda;
 
+import com.rumisystem.rumiabot.jda.COMMAND.VERIFY_PANEL;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PT {
 	private static PrintWriter PW;
@@ -50,23 +49,31 @@ public class PT {
 									MESSAGE_LIST.removeFirst();
 								}
 
-								String[] CMD = MSG.split(";");
+								//受信した命令を処理する部分
+								new Thread(new Runnable() {
+									@Override
+									public void run() {
+										String[] CMD = MSG.split(";");
 
-
-								if(CMD[1].equals("DISCORD")){
-									if(CMD[2].equals("VERIFY_PANEL_OK")){
-										System.out.println("200返すわ");
-										REPLY(CMD[0] + ";200");
-									} else {
-										REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
+										if(CMD[1].equals("DISCORD")){
+											if(CMD[2].equals("VERIFY_PANEL_OK")){
+												if(VERIFY_PANEL.VERIFY(CMD[3])){
+													REPLY(CMD[0] + ";200");
+												} else {
+													REPLY(CMD[0] + ";500");
+												}
+											} else {
+												REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
+											}
+										} else {
+											//これしたら無限ループしたわｗｗｗ
+											//理由は簡単、/JAVA/のPTを見てくれ、
+											//REPLY_が先頭についてるやつは、全プロセスに送るようにしてるんだけど、
+											//此れのせいで無限ループしたｗ
+											//REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
+										}
 									}
-								} else {
-									//これしたら無限ループしたわｗｗｗ
-									//理由は簡単、/JAVA/のPTを見てくれ、
-									//REPLY_が先頭についてるやつは、全プロセスに送るようにしてるんだけど、
-									//此れのせいで無限ループしたｗ
-									//REPLY(CMD[0] + ";SIGN_NOT_FOUND;404");
-								}
+								}).start();
 							}
 						}
 					}catch (Exception EX){
@@ -83,20 +90,25 @@ public class PT {
 		}
 	}
 
-	public static String REPLY_WAIT(String ID) throws IOException {
+	public static String REPLY_WAIT(String ID) {
 		//繰り返す
 		while (true) {
-			for(String MSG:MESSAGE_LIST){
-				//応答のIDが一致するまで待つ
-				if(MSG.split(";")[0].equals(ID)){
-					System.out.println("受信：" + MSG);
-					return MSG.replace(ID + ";", "");
+			try{
+				for(String MSG:MESSAGE_LIST){
+					//応答のIDが一致するまで待つ
+					if(MSG.split(";")[0].equals(ID)){
+						System.out.println("受信：" + MSG);
+						return MSG.replace(ID + ";", "");
+					}
 				}
+			}catch (Exception EX){
+				//エラーを握り潰す
+				System.out.flush();
 			}
 		}
 	}
 
-	public static String SEND(String ARGS) throws IOException {
+	public static String SEND(String ARGS) {
 		Instant NOW_TIME = Instant.now();
 		UUID GEN_UUID = UUID.nameUUIDFromBytes(NOW_TIME.toString().getBytes(StandardCharsets.UTF_8));
 

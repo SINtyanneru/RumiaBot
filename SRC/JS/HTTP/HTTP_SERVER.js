@@ -89,9 +89,9 @@ export class HTTP_SERVER {
 
 									//const CFT_AJAX_RESULT = await AJAX.json();
 									const CFT_AJAX_RESULT = {success:true};
-									
+
 									if(CFT_AJAX_RESULT.success){
-										const JAVA_RESULT = await PWS_SEND_MSG("DISCORD;VERIFY_PANEL_OK;" + POST_DATA.PANEL_ID + ";" + POST_DATA.UID);
+										const JAVA_RESULT = await PWS_SEND_MSG("DISCORD;VERIFY_PANEL_OK;" + POST_DATA.VERIFY_ID);
 										
 										if(JAVA_RESULT[0] === "200"){
 											RES.statusCode = 200;
