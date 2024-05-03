@@ -37,7 +37,7 @@ public class TELNET_HANDLER implements Runnable {
 				String[] CMD = MSG.split(";");
 
 				//ログを吐く
-				LOG(INFO_LOG_TAG, "TELNET受信" + MSG, 0);
+				//LOG(INFO_LOG_TAG, "TELNET受信" + MSG, 0);
 
 				//返信を受信したら
 				if(CMD[0].startsWith("REPLY_")){

@@ -97,7 +97,7 @@ public class PT {
 				for(String MSG:MESSAGE_LIST){
 					//応答のIDが一致するまで待つ
 					if(MSG.split(";")[0].equals(ID)){
-						System.out.println("受信：" + MSG);
+						//System.out.println("受信：" + MSG);
 						return MSG.replace(ID + ";", "");
 					}
 				}
