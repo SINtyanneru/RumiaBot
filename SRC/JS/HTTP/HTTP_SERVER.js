@@ -188,8 +188,10 @@ export class HTTP_SERVER {
 					return;
 				}
 
-				RES.statusCode = 404;
-				RES.end("ページがないかも");
+				//ファイルを読み込む
+				let FILE = await this.LOAD_FILE(REQ_PATH);
+				RES.statusCode = FILE.STATUS;
+				RES.end(FILE.CONTENTS);
 				return;
 			}
 
@@ -214,34 +216,37 @@ export class HTTP_SERVER {
 	}
 
 	LOAD_FILE(REQ_PATH){
+		const CONTENTS_PATH = "./SRC/JS/HTTP/CONTENTS";
+
 		return new Promise((resolve) => {
-			//ファイルを読み込む
-			FS.readFile("./SRC/JS/HTTP/CONTENTS" + REQ_PATH, "utf8", (ERR, DATA) => {
-				if (ERR) {
-					//ファイルがないのでindex.htmlが無いかをチェックする
-					FS.readFile("./SRC/HTTP/CONTENTS/" + REQ_PATH + "/index.html", "utf8", (ERR, DATA) => {
-						if (ERR) {
-							//無いので死ぬ
-							resolve({
-								CONTENTS:"ファイルロード時にエラー",
-								STATUS:404
-							});
-						} else {
-							//ファイルの内容を返す
-							resolve({
-								CONTENTS:DATA,
-								STATUS:200
-							});
-						}
+			//指定のパスは存在するか？
+			if(FS.existsSync(CONTENTS_PATH + REQ_PATH)){
+				//指定のパスはファイルか？
+				if(FS.statSync(CONTENTS_PATH + REQ_PATH).isFile()){
+					resolve({
+						STATUS:200,
+						CONTENTS:FS.readFileSync(CONTENTS_PATH + REQ_PATH),
 					});
 				} else {
-					//ファイルの内容を返す
-					resolve({
-						CONTENTS:DATA,
-						STATUS:200
-					});
+					//ディレクトリなので、index.htmlが存在するかチェック
+					if(FS.existsSync(CONTENTS_PATH + REQ_PATH + "index.html")){
+						resolve({
+							STATUS:200,
+							CONTENTS:FS.readFileSync(CONTENTS_PATH + REQ_PATH + "index.html"),
+						});
+					} else {
+						resolve({
+							STATUS:404,
+							CONTENTS:null,
+						});
+					}
 				}
-			});
+			} else {
+				resolve({
+					STATUS:404,
+					CONTENTS:null,
+				});
+			}
 		});
 	}
 }
