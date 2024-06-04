@@ -29,6 +29,7 @@ import java.util.*;
 
 import static com.rumisystem.rumiabot.jda.MODULE.FUNCTION.FUNCTION_CHECK;
 import static com.rumisystem.rumiabot.jda.Main.BOT;
+import static com.rumisystem.rumiabot.jda.Main.URI_PARAM_PARSE;
 import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class DiscordEvent extends ListenerAdapter {
@@ -231,6 +232,11 @@ public class DiscordEvent extends ListenerAdapter {
 						//認証ボタン
 						case "verify_panel":{
 							VERIFY_PANEL.VERIFY_BUTTON(INTERACTION);
+							break;
+						}
+
+						case "MEDIA_DOWNLOAD":{
+							VXTWITTER_CONVERT.DOWNLOAD_MEDIA(INTERACTION);
 							break;
 						}
 
