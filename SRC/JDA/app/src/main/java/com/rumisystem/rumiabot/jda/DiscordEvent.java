@@ -144,17 +144,19 @@ public class DiscordEvent extends ListenerAdapter {
 			}
 
 			//ログを出す部分
-			StringBuilder LOG_TEXT = new StringBuilder("┌[" + E.getAuthor().getName() + "@" + GUILD_NAME + "/" + E.getChannel().getName() + "]\n");
-			String[] TEXT_SPLIT = MESSAGE_CONTENT.split("\n");
-			for(int I = 0; TEXT_SPLIT.length > I; I++){
-				String TEXT = TEXT_SPLIT[I];
-				if(TEXT_SPLIT.length > I + 1){
-					LOG_TEXT.append("├" + TEXT + "\n");
-				} else {
-					LOG_TEXT.append("└" + TEXT + "\n");
+			if(CONFIG.CONFIG_DATA.get("DISCORD").get("MESSAGE_LOG_PRINT").asBoolean()){
+				StringBuilder LOG_TEXT = new StringBuilder("┌[" + E.getAuthor().getName() + "@" + GUILD_NAME + "/" + E.getChannel().getName() + "]\n");
+				String[] TEXT_SPLIT = MESSAGE_CONTENT.split("\n");
+				for(int I = 0; TEXT_SPLIT.length > I; I++){
+					String TEXT = TEXT_SPLIT[I];
+					if(TEXT_SPLIT.length > I + 1){
+						LOG_TEXT.append("├" + TEXT + "\n");
+					} else {
+						LOG_TEXT.append("└" + TEXT + "\n");
+					}
 				}
+				System.out.println(LOG_TEXT.toString());
 			}
-			System.out.println(LOG_TEXT.toString());
 
 			//検索機能
 			if(MESSAGE_CONTENT.startsWith("検索 ")){
