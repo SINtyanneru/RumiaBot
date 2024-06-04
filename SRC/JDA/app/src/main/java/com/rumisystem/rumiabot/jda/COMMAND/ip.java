@@ -1,9 +1,7 @@
 package com.rumisystem.rumiabot.jda.COMMAND;
 
-import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
+import com.rumisystem.rumi_java_lib.HTTP_REQUEST;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-
-import java.io.File;
 
 public class ip {
 	public static void main(SlashCommandInteractionEvent INTERACTION) {
