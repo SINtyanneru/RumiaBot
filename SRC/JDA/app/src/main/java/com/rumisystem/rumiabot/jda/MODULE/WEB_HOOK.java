@@ -52,40 +52,13 @@ public class WEB_HOOK {
 		});
 	}
 
-	//アバターを変更する
-	public void setUSERNAME(String NAME){
-		WH_USER_NAME = NAME;
-	}
-	public void set_koi_Member_USERNAME(Member MEMBER){
-		//そのメンバーにニックネームが有るならニックネームにする
-		if(MEMBER.getNickname() != null){
-			WH_USER_NAME = MEMBER.getNickname();
-			return;
-		}
-
-		//そのメンバーにグローバル名が有るならそれにする
-		if(MEMBER.getUser().getGlobalName() != null){
-			WH_USER_NAME = MEMBER.getUser().getGlobalName();
-			return;
-		}
-
-		//どれでも無いのでユーザー名にする
-		WH_USER_NAME = MEMBER.getUser().getName();
-	}
-
-	//アバターを変更する
-	public void setAVATOR(String URI){
-		WH_AVATOR_URL = URI;
-	}
-
 	//メッセージを送信する
-	public void SEND(String TEXT){
+	public Webhook SEND(){
 		//準備完了まで待つ、待ち続ける。。。
 		while(true){
 			if(OK){
-				System.out.println("送信");
-				WH.sendMessage(TEXT).setAvatarUrl(WH_AVATOR_URL).setUsername(WH_USER_NAME).queue();
-				return;
+				System.out.println("Cek");
+				return WH;
 			} else {
 				//何らの処理が無いと動かない、たぶんJAVAの嫌がらせだと思う
 				System.out.flush();

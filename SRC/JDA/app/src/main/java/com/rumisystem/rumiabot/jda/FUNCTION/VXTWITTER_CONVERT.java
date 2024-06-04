@@ -33,11 +33,15 @@ public class VXTWITTER_CONVERT {
 
 				//もし変更点があるなら、置換する
 				if(!RESULT.toString().equals(TEXT)){
+					//ユーザー名もしくはニックネームを取得
+					String NAME = E.getMember().getUser().getGlobalName();
+					if(E.getMember().getNickname() != null){
+						NAME = E.getMember().getNickname();
+					}
+
 					//送信
 					WEB_HOOK WH = new WEB_HOOK(E.getChannel().asTextChannel());
-					WH.setAVATOR(E.getAuthor().getAvatarUrl());
-					WH.set_koi_Member_USERNAME(E.getMember());//←いや、、、Nullになる可能性0だろ。。。IntelliJ何いってんだ。。。
-					WH.SEND(RESULT.toString());
+					WH.SEND().sendMessage(RESULT.toString()).setUsername(NAME).setAvatarUrl(E.getAuthor().getAvatarUrl()).queue();
 
 					//元メッセージを削除
 					E.getMessage().delete().queue();
