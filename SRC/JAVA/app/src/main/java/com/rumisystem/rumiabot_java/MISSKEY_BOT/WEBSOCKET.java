@@ -55,11 +55,6 @@ public class WEBSOCKET extends WebSocketClient {
 					JsonNode NOTE_DATA = MESSAGE_JSON.get("body").get("body");
 
 					String AJAX = new HTTP_REQUEST("https://" + SERVER_URL.getHost() + "/api/notes/reactions/create").POST("{\"noteId\":\"" + NOTE_DATA.get("id").asText() + "\",\"reaction\":\":1039992459209490513:\",\"i\":\"" + TOKEN + "\"}");
-					System.out.println(AJAX);
-					/*
-					if(NOTE_DATA.get("text").asText().contains("")){
-						System.out.println("此征");
-					}*/
 					break;
 				}
 			}
