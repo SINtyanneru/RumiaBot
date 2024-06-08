@@ -1,5 +1,7 @@
 package com.rumisystem.rumiabot.jda;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.rumiabot.jda.COMMAND.*;
 import com.rumisystem.rumiabot.jda.FUNCTION.VXTWITTER_CONVERT;
 import com.rumisystem.rumiabot.jda.MODULE.HTTP_REQUEST;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.rumisystem.rumiabot.jda.Main.BOT;
+import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class DiscordEvent extends ListenerAdapter {
 	@Override
@@ -364,10 +367,30 @@ public class DiscordEvent extends ListenerAdapter {
 
 	@Override//鯖に参加
 	public void onGuildJoin(GuildJoinEvent E){
-		TextChannel CH = BOT.getTextChannelById("1128742498194444298");
-		if(CH != null){
-			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
-					"これで" + BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+		try{
+			//鯖がブラックリストに入っていないことを確認する
+			String SQL_RESULT = SEND("SQL;SELECT * FROM `GUILD_BLACKLIST` WHERE `GID` = ?;[\"" + E.getGuild().getId() + "\"]");
+			JsonNode RESULT = new ObjectMapper().readTree(SQL_RESULT.split(";")[0]);
+			if(RESULT.size() == 0){
+				//入っていない！
+				E.getGuild().getOwner().getUser().openPrivateChannel().queue((DM) -> {
+					DM.sendMessage("るみさんBOTの導入、ありがとうございます！\n[公式サイト](https://rumiserver.com/rumiabot/site/function)に機能一覧があります、どうぞお読みください。\n\n※一度脱退させると二度と導入できません。").queue();
+				});
+
+				TextChannel CH = BOT.getTextChannelById("1128742498194444298");
+				if(CH != null){
+					CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
+							"これで" + BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+				}
+			} else {
+				//入ってるぞ！抜けるわ
+				E.getGuild().getOwner().getUser().openPrivateChannel().queue((DM) -> {
+					DM.sendMessage("貴方のサーバーはブラックリストに入っています。\n理由↓\n```\n" + RESULT.get(0).get("RESON").asText() + "```\n").queue();
+					E.getGuild().leave().queue();
+				});
+			}
+		}catch (Exception EX){
+			EX.printStackTrace();
 		}
 	}
 
@@ -378,6 +401,11 @@ public class DiscordEvent extends ListenerAdapter {
 			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
 					"これで" + BOT.getGuilds().size() + "個の鯖になりました").queue();
 		}
+
+		//ブラックリストに入れる
+		SEND("SQL_UP;INSERT INTO `GUILD_BLACKLIST` (`GID`, `RESON`) VALUES (?, '" +
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE)) +
+				"脱退させられた');[\"" + E.getGuild().getId() + "\"]");
 	}
 
 	@Override
