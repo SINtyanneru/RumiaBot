@@ -1,32 +1,19 @@
 package com.rumisystem.rumiabot.jda;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.rumisystem.rumiabot.jda.FUNCTION.GUTEN_MORGEN;
 import com.rumisystem.rumiabot.jda.MODULE.FUNCTION;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.interactions.DiscordLocale;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.Result;
-import org.checkerframework.checker.units.qual.K;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.HashMap;
-
-import static com.rumisystem.rumiabot.jda.PT.SEND;
 
 public class Main {
 	public static JDA BOT = null;
@@ -105,17 +92,23 @@ public class Main {
 	}
 
 	public static void REGIST_SLASHCOMMAND(){
+		//test
 		SlashCommandData test = Commands.slash("test", "テスト用");
 
+		//help
 		SlashCommandData help = Commands.slash("help", "ヘルプコマンド");
 
+		//IP
 		SlashCommandData ip = Commands.slash("ip", "IPアドレスを開示します");
 
+		//鯖情報
 		SlashCommandData info_server = Commands.slash("info_server", "鯖の情報を取得");
 
+		//ユーザー情報
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報取得")
 				.addOption(OptionType.USER, "user", "ユーザーを指定しろ", false);
 
+		//ヱブサイトスクショ
 		OptionData WS_OPTION = new OptionData(OptionType.STRING, "size", "ヰンドウサイズ", false);
 		WS_OPTION.addChoice("フルHD", "1098x1080");
 		WS_OPTION.addChoice("フルサイズ", "FULL");
@@ -124,15 +117,20 @@ public class Main {
 				.addOption(OptionType.STRING, "url", "ウーエルエル", true)
 				.addOptions(WS_OPTION);
 
+		//まぞくイラスト
 		SlashCommandData mazokupic = Commands.slash("mazokupic", "まちカドまぞくのイラストをランダムに");
 
+		//ping
 		SlashCommandData ping = Commands.slash("ping", "pingする")
 				.addOption(OptionType.STRING, "ip", "ping先", true);
 
-		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを前消しする");
+		//Webhook全消し
+		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを全消しする");
 
+		//マンデンブロ
 		SlashCommandData mandenburo = Commands.slash("mandenburo", "マンデンブロ集合を作る");
 
+		//VOICEVOX
 		OptionData VOICEVOX_OPTION = new OptionData(OptionType.STRING, "speeker", "話者", true);
 		VOICEVOX_OPTION.addChoice("ずんだもん/ノーマル", "3");
 		VOICEVOX_OPTION.addChoice("ずんだもん/あまあま", "1");
@@ -141,9 +139,11 @@ public class Main {
 				.addOption(OptionType.STRING, "text", "本文", true)
 				.addOptions(VOICEVOX_OPTION);
 
+		//認証パネル
 		SlashCommandData VERIFY_PANEL = Commands.slash("verify_panel", "認証パネルを設置します")
 				.addOption(OptionType.ROLE, "role", "ロール", true);
 
+		//全部追加する
 		BOT.updateCommands().addCommands(
 				test,
 				help,
