@@ -143,6 +143,15 @@ public class Main {
 		SlashCommandData VERIFY_PANEL = Commands.slash("verify_panel", "認証パネルを設置します")
 				.addOption(OptionType.ROLE, "role", "ロール", true);
 
+		//QR生成
+		SlashCommandData QR = Commands.slash("qr", "QRを生成する")
+				.addOption(OptionType.STRING, "data", "内容", true);
+
+		OptionData QR_OPTION = new OptionData(OptionType.STRING, "type", "形式", true);
+		QR_OPTION.addChoice("QR", "QR");
+		QR_OPTION.addChoice("rMQR", "RMQR");
+		QR.addOptions(QR_OPTION);
+
 		//全部追加する
 		BOT.updateCommands().addCommands(
 				test,
@@ -157,7 +166,8 @@ public class Main {
 				mandenburo,
 				voicevox,
 				FUNCTION.CREATE_SLASH_COMMAND(),
-				VERIFY_PANEL
+				VERIFY_PANEL,
+				QR
 		).queue();
 
 		System.out.println("コマンドを全て登録しました");

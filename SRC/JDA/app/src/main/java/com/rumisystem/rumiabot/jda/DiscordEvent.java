@@ -349,6 +349,11 @@ public class DiscordEvent extends ListenerAdapter {
 								break;
 							}
 
+							case "qr":{
+								QR.main(INTERACTION);
+								break;
+							}
+
 							default:{
 								INTERACTION.getHook().editOriginal("？").queue();
 							}
