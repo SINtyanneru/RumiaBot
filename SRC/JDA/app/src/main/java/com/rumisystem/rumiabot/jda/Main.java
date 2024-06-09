@@ -150,6 +150,8 @@ public class Main {
 		OptionData QR_OPTION = new OptionData(OptionType.STRING, "type", "形式", true);
 		QR_OPTION.addChoice("QR", "QR");
 		QR_OPTION.addChoice("rMQR", "RMQR");
+		QR_OPTION.addChoice("tQR", "TQR");
+		QR_OPTION.addChoice("mQR", "MQR");
 		QR.addOptions(QR_OPTION);
 
 		//全部追加する

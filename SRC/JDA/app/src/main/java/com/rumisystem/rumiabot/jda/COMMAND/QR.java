@@ -13,7 +13,7 @@ public class QR {
 			String PATH = "./DOWNLOAD/QR/" + INTERACTION.getId() + ".png";
 
 			//安全対策
-			TYPE = TYPE.replaceAll("[^QRMr]", "");
+			TYPE = TYPE.replaceAll("[^QRMT]", "");
 			DATA = DATA.replaceAll("\"", "'");//"は\"に置換する
 
 			String[] CMD = {"/bin/sh", "-c", "qrean -t " + TYPE + " -l H -f PNG -o \"" + PATH + "\"" + " \"" + DATA + "\""};
