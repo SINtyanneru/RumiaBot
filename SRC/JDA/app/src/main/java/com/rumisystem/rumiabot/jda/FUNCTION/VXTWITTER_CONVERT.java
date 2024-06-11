@@ -1,6 +1,5 @@
 package com.rumisystem.rumiabot.jda.FUNCTION;
 
-import com.beust.ah.A;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.rumiabot.jda.MODULE.FUNCTION_CHECK_RESULT;
@@ -77,12 +76,16 @@ public class VXTWITTER_CONVERT {
 			String AJAX = new HTTP_REQUEST(URL).GET();
 			JsonNode AJAX_RESULT = new ObjectMapper().readTree(AJAX);
 
-			String PATH = "./DOWNLOAD/VXTWITTER/" + INTERACTION.getId();
+			String PATH = "./DOWNLOAD/VXTWITTER/" + AJAX_RESULT.get("conversationID").asText();
 			String MEDIA_URL = AJAX_RESULT.get("mediaURLs").get(0).asText();
 			String EXT = MEDIA_URL.split("\\.")[MEDIA_URL.split("\\.").length - 1];
 
 			if(EXT.equals("png") || EXT.equals("jpg") || EXT.equals("jpeg")){
+				//pngでフルサイズでDL
 				MEDIA_URL = MEDIA_URL + "?format=png&name=4096x4096";
+
+				//拡張子をpngに指定
+				EXT = "png";
 			}
 
 			new HTTP_REQUEST(MEDIA_URL).DOWNLOAD(PATH + "." + EXT);
