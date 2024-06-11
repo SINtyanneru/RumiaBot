@@ -123,11 +123,18 @@ export class HTTP_SERVER {
 				if (REQ_PATH.startsWith("/user/verify_panel")) {
 					let FILE = await this.LOAD_FILE("/user/verify_panel/index.html");
 
-					FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, CONFIG.CAPTCHA.SITE_KEY);
-					//FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, "1x00000000000000000000AA");
+					console.log(FILE);
 
-					RES.statusCode = 200;
-					RES.end(FILE.CONTENTS);
+					if(FILE.STATUS === 200){
+						FILE.CONTENTS = FILE.CONTENTS.toString().replace(/\$\{SITE_KEY\}/g, CONFIG.CAPTCHA.SITE_KEY);
+						//FILE.CONTENTS = FILE.CONTENTS.replace(/\$\{SITE_KEY\}/g, "1x00000000000000000000AA");
+	
+						RES.statusCode = 200;
+						RES.end(FILE.CONTENTS);
+					} else {
+						RES.statusCode = 500;
+						RES.end("サーバーエラー");
+					}
 					return;
 				}
 
