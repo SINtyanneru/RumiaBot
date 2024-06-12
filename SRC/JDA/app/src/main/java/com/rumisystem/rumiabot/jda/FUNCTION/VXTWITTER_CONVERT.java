@@ -80,16 +80,20 @@ public class VXTWITTER_CONVERT {
 			String MEDIA_URL = AJAX_RESULT.get("mediaURLs").get(0).asText();
 			String EXT = MEDIA_URL.split("\\.")[MEDIA_URL.split("\\.").length - 1];
 
-			if(EXT.equals("png") || EXT.equals("jpg") || EXT.equals("jpeg")){
-				//pngでフルサイズでDL
-				MEDIA_URL = MEDIA_URL + "?format=png&name=4096x4096";
+			//ダウンロードしてないなら落とす
+			if(!new File(PATH).exists()){
+				if(EXT.equals("png") || EXT.equals("jpg") || EXT.equals("jpeg")){
+					//pngでフルサイズでDL
+					MEDIA_URL = MEDIA_URL + "?format=png&name=4096x4096";
 
-				//拡張子をpngに指定
-				EXT = "png";
+					//拡張子をpngに指定
+					EXT = "png";
+				}
+
+				new HTTP_REQUEST(MEDIA_URL).DOWNLOAD(PATH + "." + EXT);
 			}
 
-			new HTTP_REQUEST(MEDIA_URL).DOWNLOAD(PATH + "." + EXT);
-
+			//ダウンロードしたものを返す
 			INTERACTION.getHook().editOriginal("どうぞ").setAttachments(FileUpload.fromData(new File(PATH + "." + EXT))).queue();
 		} catch (Exception EX) {
 			EX.printStackTrace();
