@@ -1,0 +1,26 @@
+plugins {
+	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id 'java'
+}
+
+group = "com.rumisystem.rumiabot.mainsystem"
+version = "1.0-SNAPSHOT"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//自作ライブラリ
+	implementation files("/home/rumisan/source/RumiJavaLib/build/libs/RumiJavaLib-1.0-all.jar")
+}
+
+jar {
+	manifest {
+		attributes "Main-Class": "com.rumisystem.rumiabot.mainsystem.Main"
+	}
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
