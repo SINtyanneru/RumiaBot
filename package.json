@@ -11,7 +11,7 @@
 		"install": "sh ./setup.sh",
 		"lint": "prettier -w ./",
 		"restart": "pm2 restart Rumiabot",
-		"debug": "java -jar ./JAVA/build/libs/RumiaBot-all.jar"
+		"debug": "java -jar ./src/MainSystem/app/build/libs/app-all.jar"
 	},
 	"keywords": [],
 	"author": "",
