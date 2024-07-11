@@ -23,7 +23,7 @@ public class DiscordEvent extends ListenerAdapter {
 				for(int I = 0; TEXT_SPLIT.length > I; I++){
 					String TEXT = TEXT_SPLIT[I];
 					if(TEXT_SPLIT.length > I + 1){
-						LOG(LOG_TYPE.INFO, "├" + TEXT + "\n");
+						LOG(LOG_TYPE.INFO, "├" + TEXT);
 					} else {
 						LOG(LOG_TYPE.INFO, "└" + TEXT);
 					}
