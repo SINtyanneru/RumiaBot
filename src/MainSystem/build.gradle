@@ -1,26 +1,19 @@
 plugins {
-	id "com.github.johnrengelman.shadow" version "7.1.2"
-	id 'java'
+    id 'java'
 }
 
-group = "com.rumisystem.rumiabot.mainsystem"
-version = "1.0-SNAPSHOT"
+group = 'com.rumisystem.rumiabot.mainsystem'
+version = '1.0-SNAPSHOT'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	//自作ライブラリ
-	implementation files("/home/rumisan/source/RumiJavaLib/build/libs/RumiJavaLib-1.0-all.jar")
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-jar {
-	manifest {
-		attributes "Main-Class": "com.rumisystem.rumiabot.mainsystem.Main"
-	}
-}
-
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+test {
+    useJUnitPlatform()
 }
