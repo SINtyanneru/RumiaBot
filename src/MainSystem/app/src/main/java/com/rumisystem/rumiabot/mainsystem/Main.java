@@ -33,6 +33,10 @@ public class Main {
 			DiscordAPI.Main();
 
 			LOG(LOG_TYPE.OK, "DiscordBOT start!");
+
+			LOG(LOG_TYPE.INFO, "Prosess start...");
+			Thread PS1 = new Thread( new ProcessStart("JDA", new String[]{"java", "-jar", "./src/DiscordBOT/app/build/libs/app-all.jar"}));
+			PS1.start();
 		}catch(Exception EX){
 			EX.printStackTrace();
 			System.exit(1);
