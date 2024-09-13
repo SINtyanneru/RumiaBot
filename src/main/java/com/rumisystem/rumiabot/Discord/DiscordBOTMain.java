@@ -1,0 +1,68 @@
+package com.rumisystem.rumiabot.Discord;
+
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+
+import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
+import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
+import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
+
+import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+
+public class DiscordBOTMain {
+	public static void START_DISCORD_BOT() throws InterruptedException {
+		//JDAビルダーを作る
+		JDABuilder JDA_BUILDER = JDABuilder.createDefault(
+				CONFIG_DATA.get("DISCORD").asString("TOKEN"),
+				GatewayIntent.GUILD_MEMBERS,
+				GatewayIntent.GUILD_MODERATION,
+				GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+				GatewayIntent.GUILD_WEBHOOKS,
+				GatewayIntent.GUILD_INVITES,
+				GatewayIntent.GUILD_VOICE_STATES,
+				GatewayIntent.GUILD_PRESENCES,
+				GatewayIntent.GUILD_MESSAGES,
+				GatewayIntent.GUILD_MESSAGE_REACTIONS,
+				GatewayIntent.GUILD_MESSAGE_TYPING,
+				GatewayIntent.DIRECT_MESSAGES,
+				GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+				GatewayIntent.DIRECT_MESSAGE_TYPING,
+				GatewayIntent.MESSAGE_CONTENT,
+				GatewayIntent.SCHEDULED_EVENTS,
+				GatewayIntent.AUTO_MODERATION_CONFIGURATION,
+				GatewayIntent.AUTO_MODERATION_EXECUTION
+		);
+
+		//設定
+		JDA_BUILDER.setRawEventsEnabled(true);
+		JDA_BUILDER.setEventPassthrough(true);
+		JDA_BUILDER.addEventListeners(new DiscordEventListener());
+		JDA_BUILDER.setMemberCachePolicy(MemberCachePolicy.ALL);
+		JDA_BUILDER.setAutoReconnect(true);
+
+		//ステータス
+		JDA_BUILDER.setActivity(Activity.watching("貴様"));
+		JDA_BUILDER.setStatus(OnlineStatus.ONLINE);
+
+		//ビルド
+		DISCORD_BOT = JDA_BUILDER.build();
+
+		//ログインするまで待つ
+		DISCORD_BOT.awaitReady();
+
+		LOG(LOG_TYPE.OK, "BOT ready!");
+	}
+	
+	public static void REGIST_SLASHCOMMAND(){
+		SlashCommandData test = Commands.slash("test", "テスト用");
+		
+		DISCORD_BOT.updateCommands().addCommands(
+			test
+		).queue();
+	}
+}
