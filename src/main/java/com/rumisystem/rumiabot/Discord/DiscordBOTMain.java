@@ -3,7 +3,9 @@ package com.rumisystem.rumiabot.Discord;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -60,9 +62,28 @@ public class DiscordBOTMain {
 	
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用");
-		
+
+		SlashCommandData ip = Commands.slash("ip", "IPを開示します");
+
+		SlashCommandData info_server = Commands.slash("info_server", "サーバー情報開示");
+
+		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報開示")
+			.addOption(OptionType.USER, "user", "ユーザー指定", false);
+
+		OptionData WS_OPTION = new OptionData(OptionType.STRING, "size", "ヰンドウサイズ", false);
+		WS_OPTION.addChoice("フルHD", "1098x1080");
+		WS_OPTION.addChoice("フルサイズ", "FULL");
+
+		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
+				.addOption(OptionType.STRING, "url", "ウーエルエル", true)
+				.addOptions(WS_OPTION);
+
 		DISCORD_BOT.updateCommands().addCommands(
-			test
+			test,
+			ip,
+			info_server,
+			info_user,
+			ws
 		).queue();
 	}
 }

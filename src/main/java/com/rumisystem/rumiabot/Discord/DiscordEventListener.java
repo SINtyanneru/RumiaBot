@@ -13,6 +13,10 @@ import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
 import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
 
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import com.rumisystem.rumiabot.Discord.COMMAND.info_server;
+import com.rumisystem.rumiabot.Discord.COMMAND.info_user;
+import com.rumisystem.rumiabot.Discord.COMMAND.ip;
+import com.rumisystem.rumiabot.Discord.COMMAND.ws;
 
 public class DiscordEventListener extends ListenerAdapter{
 	@Override
@@ -45,6 +49,26 @@ public class DiscordEventListener extends ListenerAdapter{
 		switch(INTERACTION.getName()) {
 			case "test":{
 				INTERACTION.getHook().editOriginal("あいうえお").queue();
+				break;
+			}
+
+			case "ip":{
+				ip.Main(INTERACTION);
+				break;
+			}
+
+			case "info_server":{
+				info_server.Main(INTERACTION);
+				break;
+			}
+			
+			case "info_user":{
+				info_user.Main(INTERACTION);
+				break;
+			}
+			
+			case "ws":{
+				ws.Main(INTERACTION);
 				break;
 			}
 		
