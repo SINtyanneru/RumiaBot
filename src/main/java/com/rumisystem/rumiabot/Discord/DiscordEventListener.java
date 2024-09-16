@@ -26,7 +26,7 @@ public class DiscordEventListener extends ListenerAdapter{
 		if (CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(E.getAuthor().getId())) {
 			return;
 		}
-		
+
 		if (E.getMessage().getAttachments().size() != 0) {
 			E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
 			//TODO:ロガーつけよかな
@@ -34,7 +34,7 @@ public class DiscordEventListener extends ListenerAdapter{
 
 		LOG(LOG_TYPE.INFO, E.getGuild().getName() + "/" + E.getChannel().getName() + "|" + E.getAuthor().getName() + "[" + E.getMessage().getContentRaw() + "]");
 	}
-	
+
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
 		//ブロック済みのユーザーなら此処で処理を中断する
