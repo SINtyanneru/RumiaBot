@@ -1,6 +1,7 @@
 package com.rumisystem.rumiabot.Discord;
 
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -22,8 +23,13 @@ public class DiscordEventListener extends ListenerAdapter{
 	@Override
 	public void onMessageReceived(MessageReceivedEvent E) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(E.getAuthor().getId())){
+		if (CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(E.getAuthor().getId())) {
 			return;
+		}
+		
+		if (E.getMessage().getAttachments().size() != 0) {
+			E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
+			//TODO:ロガーつけよかな
 		}
 
 		LOG(LOG_TYPE.INFO, E.getGuild().getName() + "/" + E.getChannel().getName() + "|" + E.getAuthor().getName() + "[" + E.getMessage().getContentRaw() + "]");
