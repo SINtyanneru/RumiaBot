@@ -20,6 +20,7 @@ import com.rumisystem.rumiabot.Discord.COMMAND.info_user;
 import com.rumisystem.rumiabot.Discord.COMMAND.ip;
 import com.rumisystem.rumiabot.Discord.COMMAND.wh_clear;
 import com.rumisystem.rumiabot.Discord.COMMAND.ws;
+import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
 
 public class DiscordEventListener extends ListenerAdapter{
 	@Override
@@ -33,6 +34,9 @@ public class DiscordEventListener extends ListenerAdapter{
 			E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
 			//TODO:ロガーつけよかな
 		}
+
+		//VXTwitter変換
+		VXTWITTER.Main(E);
 
 		LOG(LOG_TYPE.INFO, E.getGuild().getName() + "/" + E.getChannel().getName() + "|" + E.getAuthor().getName() + "[" + E.getMessage().getContentRaw() + "]");
 	}

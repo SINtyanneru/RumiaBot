@@ -86,7 +86,7 @@ public class DiscordBOTMain {
 		
 		OptionData SETTING_FUNCTION_OPTION = new OptionData(OptionType.STRING, "function", "設定項目", true);
 		SETTING_FUNCTION_OPTION.addChoice("VXTwitter変換", "vxtwitter");
-		
+
 		OptionData SETTING_TF_OPTION = new OptionData(OptionType.STRING, "tf", "有効無効", true);
 		SETTING_TF_OPTION.addChoice("true", "true");
 		SETTING_TF_OPTION.addChoice("false", "false");
