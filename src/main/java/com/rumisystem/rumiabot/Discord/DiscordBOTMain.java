@@ -62,6 +62,8 @@ public class DiscordBOTMain {
 	
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用");
+		
+		SlashCommandData help = Commands.slash("test", "テスト用");
 
 		SlashCommandData ip = Commands.slash("ip", "IPを開示します");
 
@@ -80,6 +82,7 @@ public class DiscordBOTMain {
 
 		DISCORD_BOT.updateCommands().addCommands(
 			test,
+			help,
 			ip,
 			info_server,
 			info_user,

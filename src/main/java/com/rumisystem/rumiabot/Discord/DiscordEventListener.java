@@ -57,6 +57,11 @@ public class DiscordEventListener extends ListenerAdapter{
 				INTERACTION.getHook().editOriginal("あいうえお").queue();
 				break;
 			}
+			
+			case "help":{
+				INTERACTION.getHook().editOriginal("ここで見れる\nhttps://rumiserver.com/rumiabot/site/function").queue();
+				break;
+			}
 
 			case "ip":{
 				ip.Main(INTERACTION);
