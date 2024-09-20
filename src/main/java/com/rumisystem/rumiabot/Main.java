@@ -1,11 +1,13 @@
 package com.rumisystem.rumiabot;
 
 import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
+import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
 
 import java.io.File;
 
 import com.rumisystem.rumi_java_lib.ArrayNode;
 import com.rumisystem.rumi_java_lib.CONFIG;
+import com.rumisystem.rumi_java_lib.SQL;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.DiscordBOTMain;
 
@@ -33,6 +35,15 @@ public class Main {
 				LOG(LOG_TYPE.PROCESS_END_FAILED, "Config.ini GA NAI!!!!!!!");
 				System.exit(1);
 			}
+			
+			//SQL用意
+			SQL.CONNECT(
+				CONFIG_DATA.get("SQL").asString("HOST"),
+				CONFIG_DATA.get("SQL").asString("PORT"),
+				CONFIG_DATA.get("SQL").asString("DB"),
+				CONFIG_DATA.get("SQL").asString("USER"),
+				CONFIG_DATA.get("SQL").asString("PASS")
+			);
 			
 			//DiscordBOT作成
 			DiscordBOTMain.START_DISCORD_BOT();

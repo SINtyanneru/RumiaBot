@@ -58,12 +58,14 @@ public class DiscordBOTMain {
 		DISCORD_BOT.awaitReady();
 
 		LOG(LOG_TYPE.OK, "BOT ready!");
+
+		REGIST_SLASHCOMMAND();
 	}
 	
 	public static void REGIST_SLASHCOMMAND(){
 		SlashCommandData test = Commands.slash("test", "テスト用");
 		
-		SlashCommandData help = Commands.slash("test", "テスト用");
+		SlashCommandData help = Commands.slash("help", "テスト用");
 
 		SlashCommandData ip = Commands.slash("ip", "IPを開示します");
 
@@ -80,13 +82,29 @@ public class DiscordBOTMain {
 				.addOption(OptionType.STRING, "url", "ウーエルエル", true)
 				.addOptions(WS_OPTION);
 
+		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを全消しする");
+		
+		OptionData SETTING_FUNCTION_OPTION = new OptionData(OptionType.STRING, "function", "設定項目", true);
+		SETTING_FUNCTION_OPTION.addChoice("VXTwitter変換", "vxtwitter");
+		
+		OptionData SETTING_TF_OPTION = new OptionData(OptionType.STRING, "tf", "有効無効", true);
+		SETTING_TF_OPTION.addChoice("true", "true");
+		SETTING_TF_OPTION.addChoice("false", "false");
+
+		SlashCommandData SETTING = Commands.slash("setting", "設定");
+		SETTING.addOptions(SETTING_FUNCTION_OPTION, SETTING_TF_OPTION);
+
 		DISCORD_BOT.updateCommands().addCommands(
 			test,
 			help,
 			ip,
 			info_server,
 			info_user,
-			ws
+			ws,
+			wh_clear,
+			SETTING
 		).queue();
+
+		LOG(LOG_TYPE.OK, "コマンドを登録");
 	}
 }
