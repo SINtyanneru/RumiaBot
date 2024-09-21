@@ -10,21 +10,25 @@ public class wh_clear {
 		try{
 			List<Webhook> WHU = IT.getChannel().asTextChannel().retrieveWebhooks().complete();
 
-			String CONTENTS = "";
+			if (WHU.size() != 0) {
+				String CONTENTS = "";
 
-			for(Webhook WH:WHU){
-				try{
-					WH.delete().queue();
+				for(Webhook WH:WHU){
+					try{
+						WH.delete().queue();
 
-					CONTENTS += "[  OK  ]削除：" + WH.getName() + "\n";
-				}catch (Exception EX){
-					CONTENTS += "[FAILED]失敗：" + WH.getName() + "\n";
+						CONTENTS += "[  OK  ]削除：" + WH.getName() + "\n";
+					}catch (Exception EX){
+						CONTENTS += "[FAILED]失敗：" + WH.getName() + "\n";
+					}
+
+					IT.getHook().editOriginal("```\n" + CONTENTS + "\n```").queue();
 				}
 
-				IT.getHook().editOriginal("```\n" + CONTENTS + "\n```").queue();
+				IT.getHook().editOriginal("```\n" + CONTENTS + "\n```\n完了").queue();
+			} else {
+				IT.getHook().editOriginal("このチャンネルにはWebHookが無いです").queue();
 			}
-
-			IT.getHook().editOriginal("```\n" + CONTENTS + "\n```\n完了").queue();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 			IT.getHook().editOriginal("失敗").queue();
