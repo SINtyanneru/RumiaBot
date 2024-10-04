@@ -13,6 +13,9 @@ import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
 import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.COMMAND.SETTING;
 import com.rumisystem.rumiabot.Discord.COMMAND.info_server;
@@ -21,6 +24,7 @@ import com.rumisystem.rumiabot.Discord.COMMAND.ip;
 import com.rumisystem.rumiabot.Discord.COMMAND.wh_clear;
 import com.rumisystem.rumiabot.Discord.COMMAND.ws;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
+import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
 
 public class DiscordEventListener extends ListenerAdapter{
 	@Override
@@ -33,6 +37,18 @@ public class DiscordEventListener extends ListenerAdapter{
 		if (E.getMessage().getAttachments().size() != 0) {
 			E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
 			//TODO:ロガーつけよかな
+		}
+
+		//時間
+		if (E.getMessage().getContentRaw().equals("時間")) {
+			E.getMessage().reply(
+					"現在時刻は\n"
+					+ "和暦：" + DATE_FORMAT.KOUKI(LocalDateTime.now().atOffset(ZoneOffset.ofHours(9)))
+					+"\n"
+					+"西暦：" + DATE_FORMAT.ZHUUNI_H(LocalDateTime.now().atOffset(ZoneOffset.ofHours(9)))
+					+"\n"
+					+"です"
+			).queue();
 		}
 
 		//VXTwitter変換
