@@ -23,6 +23,7 @@ import com.rumisystem.rumiabot.Discord.COMMAND.info_user;
 import com.rumisystem.rumiabot.Discord.COMMAND.ip;
 import com.rumisystem.rumiabot.Discord.COMMAND.wh_clear;
 import com.rumisystem.rumiabot.Discord.COMMAND.ws;
+import com.rumisystem.rumiabot.Discord.FUNCTION.MESSAGE_INFO;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
 import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
 
@@ -49,6 +50,13 @@ public class DiscordEventListener extends ListenerAdapter{
 					+"\n"
 					+"です"
 			).queue();
+		}
+
+		//メッセージ情報
+		if (E.getMessage().getContentRaw().equals("r>info")) {
+			if (E.getMessage().getReferencedMessage() != null) {
+				MESSAGE_INFO.Main(E.getMessage().getReferencedMessage(), E.getMessage());
+			}
 		}
 
 		//VXTwitter変換
