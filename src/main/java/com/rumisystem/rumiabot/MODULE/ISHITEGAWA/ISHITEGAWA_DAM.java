@@ -10,10 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,8 +22,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.rumisystem.rumi_java_lib.FILER;
-import com.rumisystem.rumi_java_lib.HTTP_REQUEST;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import com.rumisystem.rumi_java_lib.Misskey.Builder.NoteBuilder;
+import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
+
+import static com.rumisystem.rumiabot.Main.MisskeyBOT;
 
 public class ISHITEGAWA_DAM {
 	private static String DAM_ID = "1368080150020";
@@ -43,6 +46,12 @@ public class ISHITEGAWA_DAM {
 						//石手川ダムを取得
 						getDATA();
 						LOG(LOG_TYPE.OK, "石手川を取得しました");
+
+						//Misskeyに投稿する
+						NoteBuilder NB = new NoteBuilder();
+						NB.setTEXT(ISHITEGAWA_DAM.genTEXT() + "\n#石手川ダム");
+
+						MisskeyBOT.PostNote(NB.Build());
 					} else {
 						//次はジッコするうようにする
 						SHOKAI = true;
@@ -63,6 +72,16 @@ public class ISHITEGAWA_DAM {
 			}
 		};
 		SCHE.scheduleAtFixedRate(TASK, 0, 30, TimeUnit.MINUTES);
+	}
+
+	public static String genTEXT() {
+		StringBuilder SB = new StringBuilder();
+		SB.append("和暦" + DATE_FORMAT.KOUKI(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9))) + "\n");
+		SB.append("西暦" + DATE_FORMAT.ZHUUNI_H(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9))) + "\n");
+		SB.append("貯水率は" + STATUS.getPOSOS() + "です、\n");
+		SB.append("流入量は" + STATUS.getIN() + "㌧、放流量は" + STATUS.getOUT() + "㌧です。\n");
+
+		return SB.toString();
 	}
 
 	private static void getDATA() throws IOException, InterruptedException {

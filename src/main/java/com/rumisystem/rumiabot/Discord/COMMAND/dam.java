@@ -13,11 +13,7 @@ public class dam {
 		try{
 			DAM_STATUS STATUS = ISHITEGAWA_DAM.STATUS;
 
-			IT.getHook().editOriginal(
-				 DATE_FORMAT.KOUKI(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9)))
-				+"の貯水率は" + STATUS.getPOSOS() + "です、\n"
-				+"流入量は" + STATUS.getIN() + "㌧、放流量は" + STATUS.getOUT() + "㌧です。"
-			).queue();
+			IT.getHook().editOriginal(ISHITEGAWA_DAM.genTEXT()).queue();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 			IT.getHook().editOriginal("取得失敗").queue();

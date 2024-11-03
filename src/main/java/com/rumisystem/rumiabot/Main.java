@@ -9,16 +9,18 @@ import com.rumisystem.rumi_java_lib.ArrayNode;
 import com.rumisystem.rumi_java_lib.CONFIG;
 import com.rumisystem.rumi_java_lib.SQL;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import com.rumisystem.rumi_java_lib.Misskey.MisskeyClient;
 import com.rumisystem.rumiabot.Discord.DiscordBOTMain;
 import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
+import com.rumisystem.rumiabot.Misskey.MisskeyBotMain;
 
 import net.dv8tion.jda.api.JDA;
 
 public class Main {
 	public static ArrayNode CONFIG_DATA = null;
-	
 	public static JDA DISCORD_BOT = null;
-	
+	public static MisskeyClient MisskeyBOT = null;
+
 	public static void main(String[] args) {
 		try {
 			LOG(LOG_TYPE.INFO, "    ____                  _       ____  ____  ______    ");
@@ -51,6 +53,14 @@ public class Main {
 
 			//DiscordBOT作成
 			DiscordBOTMain.START_DISCORD_BOT();
+
+			//MisskeyBOT作成
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					MisskeyBotMain.Main();
+				}
+			}).start();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
