@@ -9,7 +9,10 @@ import com.rumisystem.rumi_java_lib.Misskey.Event.NewFollower;
 import com.rumisystem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumi_java_lib.Misskey.MisskeyClient;
+import com.rumisystem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import com.rumisystem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
+import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
+import com.rumisystem.rumiabot.Misskey.FUNCTION.DAM_NOTE;
 
 public class MisskeyBotMain {
 	public static void Main() {
@@ -21,6 +24,9 @@ public class MisskeyBotMain {
 					public void onReady() {
 						try {
 							LOG(LOG_TYPE.OK, "Misskeyサーバーに接続した");
+							NoteBuilder NB = new NoteBuilder();
+							NB.setTEXT("接続した");
+							MisskeyBOT.PostNote(NB.Build());
 						} catch (Exception EX) {
 							EX.printStackTrace();
 						}
@@ -29,12 +35,18 @@ public class MisskeyBotMain {
 					@Override
 					public void onNewNote(NewNoteEvent E) {
 						if (!E.getNOTE().isRN()) {
-							if (!E.getNOTE().isKaiMention()) {
-								LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんのノート「" + E.getNOTE().getTEXT() + "」");
-							} else {
-								LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんにメンションされました「" + E.getNOTE().getTEXT() + "」");
+							//ノート
+							LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんのノート「" + E.getNOTE().getTEXT() + "」");
+
+							if (E.getUSER().getUID().equals("Rumisan") && E.getNOTE().getTEXT().equals("@rumiabot 石手川ダム")) {
+								try {
+									DAM_NOTE.Main();
+								} catch (Exception EX) {
+									EX.printStackTrace();
+								}
 							}
 						} else {
+							//リノート
 							LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんがリノートしました");
 						}
 					}
@@ -45,7 +57,7 @@ public class MisskeyBotMain {
 					}
 				});
 			} else {
-				System.out.println("ログイン失敗");
+				LOG(LOG_TYPE.FAILED, "ログイン失敗");
 			}
 		} catch (Exception EX) {
 			EX.printStackTrace();

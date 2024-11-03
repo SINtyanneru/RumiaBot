@@ -25,6 +25,7 @@ import com.rumisystem.rumi_java_lib.FILER;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
+import com.rumisystem.rumiabot.Misskey.FUNCTION.DAM_NOTE;
 
 import static com.rumisystem.rumiabot.Main.MisskeyBOT;
 
@@ -48,10 +49,7 @@ public class ISHITEGAWA_DAM {
 						LOG(LOG_TYPE.OK, "石手川を取得しました");
 
 						//Misskeyに投稿する
-						NoteBuilder NB = new NoteBuilder();
-						NB.setTEXT(ISHITEGAWA_DAM.genTEXT() + "\n#石手川ダム");
-
-						MisskeyBOT.PostNote(NB.Build());
+						DAM_NOTE.Main();
 					} else {
 						//次はジッコするうようにする
 						SHOKAI = true;
