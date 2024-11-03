@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.COMMAND.SETTING;
+import com.rumisystem.rumiabot.Discord.COMMAND.dam;
 import com.rumisystem.rumiabot.Discord.COMMAND.info_server;
 import com.rumisystem.rumiabot.Discord.COMMAND.info_user;
 import com.rumisystem.rumiabot.Discord.COMMAND.ip;
@@ -26,6 +27,8 @@ import com.rumisystem.rumiabot.Discord.COMMAND.ws;
 import com.rumisystem.rumiabot.Discord.FUNCTION.MESSAGE_INFO;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
 import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
+import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.DAM_STATUS;
+import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
 
 public class DiscordEventListener extends ListenerAdapter{
 	@Override
@@ -36,7 +39,7 @@ public class DiscordEventListener extends ListenerAdapter{
 		}
 
 		if (E.getMessage().getAttachments().size() != 0) {
-			E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
+			//E.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
 			//TODO:ロガーつけよかな
 		}
 
@@ -122,7 +125,12 @@ public class DiscordEventListener extends ListenerAdapter{
 				SETTING.Main(INTERACTION);
 				break;
 			}
-		
+
+			case "dam":{
+				dam.Main(INTERACTION);
+				break;
+			}
+
 			default:{
 				INTERACTION.getHook().editOriginal("コマンドが見つからなかった").queue();
 			}

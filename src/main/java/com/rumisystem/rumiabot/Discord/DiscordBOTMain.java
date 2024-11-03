@@ -69,6 +69,8 @@ public class DiscordBOTMain {
 
 		SlashCommandData ip = Commands.slash("ip", "IPを開示します");
 
+		SlashCommandData dam = Commands.slash("dam", "石手川ダムの情報を取得します");
+
 		SlashCommandData info_server = Commands.slash("info_server", "サーバー情報開示");
 
 		SlashCommandData info_user = Commands.slash("info_user", "ユーザー情報開示")
@@ -102,7 +104,8 @@ public class DiscordBOTMain {
 			info_user,
 			ws,
 			wh_clear,
-			SETTING
+			SETTING,
+			dam
 		).queue();
 
 		LOG(LOG_TYPE.OK, "コマンドを登録");

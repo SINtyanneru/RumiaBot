@@ -10,6 +10,7 @@ import com.rumisystem.rumi_java_lib.CONFIG;
 import com.rumisystem.rumi_java_lib.SQL;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.DiscordBOTMain;
+import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
 
 import net.dv8tion.jda.api.JDA;
 
@@ -44,7 +45,10 @@ public class Main {
 				CONFIG_DATA.get("SQL").asString("USER"),
 				CONFIG_DATA.get("SQL").asString("PASS")
 			);
-			
+
+			//石手川ダムを起動
+			ISHITEGAWA_DAM.Main();
+
 			//DiscordBOT作成
 			DiscordBOTMain.START_DISCORD_BOT();
 		} catch (Exception EX) {
