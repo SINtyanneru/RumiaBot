@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rumisystem.rumi_java_lib.ArrayNode;
 import com.rumisystem.rumi_java_lib.SQL;
+import com.rumisystem.rumiabot.Discord.MODULE.RND_COLOR;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -57,7 +59,7 @@ public class VERIFY_PANEL {
 					ArrayNode PANEL_DATA = RESULT.get(0);
 
 					EmbedBuilder EB = new EmbedBuilder();
-					EB.setColor(Color.RED);
+					EB.setColor(new RND_COLOR().GEN_COLOR());
 					EB.setTitle("認証 ATESTADO");
 
 					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addActionRow(Button.primary("verify_panel?id=" + PANEL_DATA.asString(ID), "認証")).queue();
