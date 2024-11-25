@@ -77,6 +77,7 @@ public class MisskeyBotMain {
 					@Override
 					public void onNewFollower(NewFollower E) {
 						LOG(LOG_TYPE.INFO, "新しいフォロワー");
+						E.getUser().Follow();
 					}
 				});
 			} else {
