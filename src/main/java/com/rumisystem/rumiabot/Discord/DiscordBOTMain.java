@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
@@ -18,6 +19,8 @@ import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 
 public class DiscordBOTMain {
 	public static void START_DISCORD_BOT() throws InterruptedException {
+		JDALogger.setFallbackLoggerEnabled(false);
+
 		//JDAビルダーを作る
 		JDABuilder JDA_BUILDER = JDABuilder.createDefault(
 				CONFIG_DATA.get("DISCORD").asString("TOKEN"),

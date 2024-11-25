@@ -25,6 +25,7 @@ import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
 public class VERIFY_PANEL {
 	private static HashMap<String, HashMap<String, String>> VERIFY_LIST = new HashMap<>();
 
+	//パネル作成
 	public static void PANEL_CREATE(SlashCommandInteractionEvent INTERACTION) throws IOException {
 	}
 

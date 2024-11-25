@@ -16,6 +16,7 @@ import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import com.rumisystem.rumi_java_lib.EXCEPTION_READER;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.COMMAND.SETTING;
 import com.rumisystem.rumiabot.Discord.COMMAND.dam;
@@ -87,67 +88,80 @@ public class DiscordEventListener extends ListenerAdapter{
 			}
 		} catch (Exception EX) {
 			EX.printStackTrace();
+			String EX_TEXT = EXCEPTION_READER.READ(EX);
+			INTERACTION.getHook().editOriginal("システムエラー\n```\n" + EX_TEXT + "\n```").queue();
 		}
 	}
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
-		//ブロック済みのユーザーなら此処で処理を中断する
-		if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(INTERACTION.getUser().getId())){
-			return;
-		}
-
-		INTERACTION.deferReply().queue();
-		
-		switch(INTERACTION.getName()) {
-			case "test":{
-				INTERACTION.getHook().editOriginal("あいうえお").queue();
-				break;
-			}
-			
-			case "help":{
-				INTERACTION.getHook().editOriginal("ここで見れる\nhttps://rumiserver.com/rumiabot/site/function").queue();
-				break;
+		try {
+			//ブロック済みのユーザーなら此処で処理を中断する
+			if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(INTERACTION.getUser().getId())){
+				return;
 			}
 
-			case "ip":{
-				ip.Main(INTERACTION);
-				break;
-			}
+			INTERACTION.deferReply().queue();
+			
+			switch(INTERACTION.getName()) {
+				case "test":{
+					INTERACTION.getHook().editOriginal("あいうえお").queue();
+					break;
+				}
+				
+				case "help":{
+					INTERACTION.getHook().editOriginal("ここで見れる\nhttps://rumiserver.com/rumiabot/site/function").queue();
+					break;
+				}
 
-			case "info_server":{
-				info_server.Main(INTERACTION);
-				break;
-			}
-			
-			case "info_user":{
-				info_user.Main(INTERACTION);
-				break;
-			}
-			
-			case "ws":{
-				ws.Main(INTERACTION);
-				break;
-			}
-			
-			case "wh_clear":{
-				wh_clear.Main(INTERACTION);
-				break;
-			}
-			
-			case "setting":{
-				SETTING.Main(INTERACTION);
-				break;
-			}
+				case "ip":{
+					ip.Main(INTERACTION);
+					break;
+				}
 
-			case "dam":{
-				dam.Main(INTERACTION);
-				break;
-			}
+				case "info_server":{
+					info_server.Main(INTERACTION);
+					break;
+				}
+				
+				case "info_user":{
+					info_user.Main(INTERACTION);
+					break;
+				}
+				
+				case "ws":{
+					ws.Main(INTERACTION);
+					break;
+				}
+				
+				case "wh_clear":{
+					wh_clear.Main(INTERACTION);
+					break;
+				}
+				
+				case "setting":{
+					SETTING.Main(INTERACTION);
+					break;
+				}
 
-			default:{
-				INTERACTION.getHook().editOriginal("コマンドが見つからなかった").queue();
+				case "dam":{
+					dam.Main(INTERACTION);
+					break;
+				}
+
+				case "verify_panel": {
+					VERIFY_PANEL.PANEL_CREATE(INTERACTION);
+					break;
+				}
+
+				default:{
+					INTERACTION.getHook().editOriginal("コマンドが見つからなかった").queue();
+				}
 			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
+			String EX_TEXT = EXCEPTION_READER.READ(EX);
+			INTERACTION.getHook().editOriginal("システムエラー\n```\n" + EX_TEXT + "\n```").queue();
 		}
 	}
 

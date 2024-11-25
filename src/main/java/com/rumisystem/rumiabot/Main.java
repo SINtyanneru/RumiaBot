@@ -4,6 +4,7 @@ import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
 
 import java.io.File;
+import java.io.PrintStream;
 
 import com.rumisystem.rumi_java_lib.ArrayNode;
 import com.rumisystem.rumi_java_lib.CONFIG;
@@ -29,6 +30,16 @@ public class Main {
 			LOG(LOG_TYPE.INFO, " / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /        ");
 			LOG(LOG_TYPE.INFO, "/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/      ");
 			LOG(LOG_TYPE.INFO, "V1.1");
+
+			/*
+			//SLF4Jのエラーを潰すためにごにょごにょ
+			PrintStream SYSTEM_ERR_PS = System.err;
+			System.setErr(new PrintStream(new java.io.OutputStream() {
+				@Override
+				public void write(int b) {
+					//何もしない
+				}
+			}));*/
 			
 			LOG(LOG_TYPE.PROCESS, "Config load...");
 			if (new File("./Config.ini").exists()) {
@@ -63,6 +74,9 @@ public class Main {
 			}).start();
 
 			HTTP.Main();
+
+			//SLF4Jのエラーを潰すためにエラー出力を迂回させていたのを元に戻す
+			//System.setErr(SYSTEM_ERR_PS);
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
