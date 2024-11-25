@@ -109,8 +109,15 @@ public class DiscordBOTMain {
 		VOICEVOX_OPTION.addChoice("ずんだもん/あまあま", "1");
 
 		SlashCommandData voicevox = Commands.slash("voicevox", "VOICEVOXに音声を生成させます")
-				.addOption(OptionType.STRING, "text", "本文", true)
-				.addOptions(VOICEVOX_OPTION);
+			.addOption(OptionType.STRING, "text", "本文", true)
+			.addOptions(VOICEVOX_OPTION);
+
+		//まぞくイラスト
+		SlashCommandData mazokupic = Commands.slash("mazokupic", "まちカドまぞくのイラストをランダムに");
+
+		//ping
+		SlashCommandData ping = Commands.slash("ping", "pingする")
+			.addOption(OptionType.STRING, "ip", "ping先", true);
 
 		DISCORD_BOT.updateCommands().addCommands(
 			test,
@@ -123,7 +130,9 @@ public class DiscordBOTMain {
 			SETTING,
 			dam,
 			voicevox,
-			VERIFY_PANEL
+			VERIFY_PANEL,
+			mazokupic,
+			ping
 		).queue();
 
 		LOG(LOG_TYPE.OK, "コマンドを登録");
