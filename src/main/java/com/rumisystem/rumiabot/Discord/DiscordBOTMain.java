@@ -99,6 +99,10 @@ public class DiscordBOTMain {
 		SlashCommandData SETTING = Commands.slash("setting", "設定");
 		SETTING.addOptions(SETTING_FUNCTION_OPTION, SETTING_TF_OPTION);
 
+		//認証パネル
+		SlashCommandData VERIFY_PANEL = Commands.slash("verify_panel", "認証パネルを設置します")
+			.addOption(OptionType.ROLE, "role", "ロール", true);
+
 		DISCORD_BOT.updateCommands().addCommands(
 			test,
 			help,
