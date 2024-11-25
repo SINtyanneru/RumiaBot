@@ -24,9 +24,6 @@ public class MisskeyBotMain {
 					public void onReady() {
 						try {
 							LOG(LOG_TYPE.OK, "Misskeyサーバーに接続した");
-							//NoteBuilder NB = new NoteBuilder();
-							//NB.setTEXT("接続した");
-							//MisskeyBOT.PostNote(NB.Build());
 						} catch (Exception EX) {
 							EX.printStackTrace();
 						}
@@ -34,20 +31,46 @@ public class MisskeyBotMain {
 
 					@Override
 					public void onNewNote(NewNoteEvent E) {
-						if (!E.getNOTE().isRN()) {
-							//ノート
-							LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんのノート「" + E.getNOTE().getTEXT() + "」");
+						try {
+							if (!E.getNOTE().isRN()) {
+								//ノート
+								LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんのノート「" + E.getNOTE().getTEXT() + "」");
 
-							if (E.getUSER().getUID().equals("Rumisan") && E.getNOTE().getTEXT().equals("@rumiabot 石手川ダム")) {
-								try {
-									DAM_NOTE.Main();
-								} catch (Exception EX) {
-									EX.printStackTrace();
+								//メンション=コマンド
+								if (E.getNOTE().isKaiMention()) {
+									MisskeyBOT.CreateReaction(E.getNOTE(), ":1039992459209490513:");
+
+									switch(E.getNOTE().getTEXT().replace("@rumiabot ", "")) {
+										case "test": {
+											NoteBuilder NB = new NoteBuilder();
+											NB.setTEXT(":okey_hebrai:");
+											NB.setREPLY(E.getNOTE());
+											MisskeyBOT.PostNote(NB.Build());
+											break;
+										}
+
+										default: {
+											NoteBuilder NB = new NoteBuilder();
+											NB.setTEXT("こゃーん");
+											NB.setREPLY(E.getNOTE());
+											MisskeyBOT.PostNote(NB.Build());
+										}
+									}
 								}
+
+								if (E.getUSER().getUID().equals("Rumisan") && E.getNOTE().getTEXT().equals("@rumiabot 石手川ダム")) {
+									try {
+										DAM_NOTE.Main();
+									} catch (Exception EX) {
+										EX.printStackTrace();
+									}
+								}
+							} else {
+								//リノート
+								LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんがリノートしました");
 							}
-						} else {
-							//リノート
-							LOG(LOG_TYPE.INFO, E.getUSER().getNAME() + "さんがリノートしました");
+						} catch (Exception EX) {
+							EX.printStackTrace();
 						}
 					}
 
