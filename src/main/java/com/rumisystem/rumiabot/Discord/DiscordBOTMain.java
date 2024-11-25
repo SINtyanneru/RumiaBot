@@ -103,6 +103,15 @@ public class DiscordBOTMain {
 		SlashCommandData VERIFY_PANEL = Commands.slash("verify_panel", "認証パネルを設置します")
 			.addOption(OptionType.ROLE, "role", "ロール", true);
 
+		//VOICEVOX
+		OptionData VOICEVOX_OPTION = new OptionData(OptionType.STRING, "speeker", "話者", true);
+		VOICEVOX_OPTION.addChoice("ずんだもん/ノーマル", "3");
+		VOICEVOX_OPTION.addChoice("ずんだもん/あまあま", "1");
+
+		SlashCommandData voicevox = Commands.slash("voicevox", "VOICEVOXに音声を生成させます")
+				.addOption(OptionType.STRING, "text", "本文", true)
+				.addOptions(VOICEVOX_OPTION);
+
 		DISCORD_BOT.updateCommands().addCommands(
 			test,
 			help,
@@ -112,7 +121,9 @@ public class DiscordBOTMain {
 			ws,
 			wh_clear,
 			SETTING,
-			dam
+			dam,
+			voicevox,
+			VERIFY_PANEL
 		).queue();
 
 		LOG(LOG_TYPE.OK, "コマンドを登録");
