@@ -25,6 +25,7 @@ import com.rumisystem.rumiabot.Discord.COMMAND.ip;
 import com.rumisystem.rumiabot.Discord.COMMAND.wh_clear;
 import com.rumisystem.rumiabot.Discord.COMMAND.ws;
 import com.rumisystem.rumiabot.Discord.FUNCTION.MESSAGE_INFO;
+import com.rumisystem.rumiabot.Discord.FUNCTION.VERIFY_PANEL;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
 import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
 import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.DAM_STATUS;
@@ -70,9 +71,22 @@ public class DiscordEventListener extends ListenerAdapter{
 
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
-		//ブロック済みのユーザーなら此処で処理を中断する
-		if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(INTERACTION.getUser().getId())){
-			return;
+		try {
+			//ブロック済みのユーザーなら此処で処理を中断する
+			if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(INTERACTION.getUser().getId())){
+				return;
+			}
+
+			INTERACTION.deferReply(true).queue();
+
+			switch(INTERACTION.getComponentId().split("\\?")[0]) {
+				case "verify_panel": {
+					VERIFY_PANEL.VERIFY_BUTTON(INTERACTION);
+					break;
+				}
+			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 

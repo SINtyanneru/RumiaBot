@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>認証パネル</TITLE>
+
+		<LINK REL="stylesheet" HREF="https://cdn.rumia.me/CSS/reset.css">
+		<LINK REL="stylesheet" HREF="https://cdn.rumia.me/CSS/DEFAULT.css">
+
+		<SCRIPT SRC="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></SCRIPT>
+	</HEAD>
+	<BODY>
+		<DIV class="cf-turnstile" data-sitekey="${SITE_KEY}" data-callback="CFT_OK" data-language="ja"></DIV>
+	</BODY>
+</HTML>
+<SCRIPT>
+//CFT成功
+window.CFT_OK = async function (E) {
+	document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">しばし待たれよ。。。</H1>";
+
+	try{
+		//URIを解析
+		const PARAM = URI_PARAM_PARSE(window.location.toString());
+
+		let AJAX = await fetch("/rumiabot/api/VERIFY_PANEL", {
+		method:"POST",
+		body:JSON.stringify({
+			"VERIFY_ID":PARAM.ID,
+			"CFT_RESULT":E
+		})
+	});
+
+	const RESULT = await AJAX.json();
+	if(RESULT.STATUS){
+		document.body.style.backgroundColor = "lime";
+		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">成功したぞよ</H1>";
+	} else {
+		document.body.style.backgroundColor = "red";
+		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">失敗！</H1><BR>" + RESULT.MSG;
+	}
+	}catch(EX){
+		console.log(EX);
+
+		document.body.style.backgroundColor = "red";
+		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">失敗！</H1><BR>" + EX;
+	}
+}
+
+function URI_PARAM_PARSE(URI){
+	let RESULT = {};
+
+	//URLのパラメータ部分を抽出
+	URI = URI.split("?")[1];
+
+	URI_SPLIT = URI.split("&");
+	for (let I = 0; I < URI_SPLIT.length; I++) {
+		const KEY = URI_SPLIT[I].split("=")[0];
+		const VAL = URI_SPLIT[I].split("=")[1];
+
+		RESULT[KEY] = VAL;
+	}
+
+	return RESULT;
+}
+</SCRIPT>

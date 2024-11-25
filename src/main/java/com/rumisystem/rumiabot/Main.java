@@ -61,6 +61,8 @@ public class Main {
 					MisskeyBotMain.Main();
 				}
 			}).start();
+
+			HTTP.Main();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

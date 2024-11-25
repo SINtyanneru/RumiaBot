@@ -24,9 +24,9 @@ public class MisskeyBotMain {
 					public void onReady() {
 						try {
 							LOG(LOG_TYPE.OK, "Misskeyサーバーに接続した");
-							NoteBuilder NB = new NoteBuilder();
-							NB.setTEXT("接続した");
-							MisskeyBOT.PostNote(NB.Build());
+							//NoteBuilder NB = new NoteBuilder();
+							//NB.setTEXT("接続した");
+							//MisskeyBOT.PostNote(NB.Build());
 						} catch (Exception EX) {
 							EX.printStackTrace();
 						}
