@@ -1,5 +1,6 @@
 package com.rumisystem.rumiabot.Discord;
 
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -8,6 +9,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import static com.rumisystem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static com.rumisystem.rumiabot.Main.CONFIG_DATA;
@@ -15,8 +17,12 @@ import static com.rumisystem.rumiabot.Main.DISCORD_BOT;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
+import com.rumisystem.rumi_java_lib.ArrayNode;
 import com.rumisystem.rumi_java_lib.EXCEPTION_READER;
+import com.rumisystem.rumi_java_lib.SQL;
 import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumiabot.Discord.COMMAND.SETTING;
 import com.rumisystem.rumiabot.Discord.COMMAND.dam;
@@ -172,19 +178,62 @@ public class DiscordEventListener extends ListenerAdapter{
 
 	@Override//鯖に参加
 	public void onGuildJoin(GuildJoinEvent E){
-		TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
-		if(CH != null){
-			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
-					"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+		try {
+			//通知
+			TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
+			if(CH != null){
+				CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
+						"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+			}
+
+			//ブラックリスト
+			ArrayNode RESULT = SQL.RUN("SELECT * FROM `GUILD_BLACKLIST` WHERE `GID` = ?", new Object[] {E.getGuild().getId()});
+			if (RESULT.get(0) != null) {
+				ArrayNode INFO = RESULT.get(0);
+				if (E.getGuild().getOwner() != null) {
+					//オーナーのDMを開く
+					E.getGuild().getOwner().getUser().openPrivateChannel().queue((DM)->{
+						try {
+							StringBuilder TEXT = new StringBuilder();
+							TEXT.append("あなたのサーバーはブラックリストに入っています\n");
+							TEXT.append("理由：" + INFO.asString("RESON") + "\n");
+
+							//DM送信
+							DM.sendMessage(TEXT.toString()).queue();
+						} catch (Exception EX) {
+							EX.printStackTrace();
+						} finally {
+							//脱退
+							E.getGuild().leave().queue();
+						}
+					});
+				} else {
+					//脱退
+					E.getGuild().leave().queue();
+				}
+			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onGuildLeave(GuildLeaveEvent E){
-		TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
-		if(CH != null){
-			CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
-					"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖になりました").queue();
+		try {
+			//ブラックリスト
+			SQL.UP_RUN("INSERT INTO `GUILD_BLACKLIST` (`GID`, `RESON`) VALUES (?, ?)", new Object[] {
+				E.getGuild().getId(),
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE)) +"脱退させられた"
+			});
+
+			//通知
+			TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
+			if(CH != null){
+				CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
+						"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖になりました").queue();
+			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 }
