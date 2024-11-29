@@ -28,6 +28,7 @@ import com.rumisystem.rumiabot.Discord.COMMAND.ws;
 import com.rumisystem.rumiabot.Discord.FUNCTION.MESSAGE_INFO;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VERIFY_PANEL;
 import com.rumisystem.rumiabot.Discord.FUNCTION.VXTWITTER;
+import com.rumisystem.rumiabot.MODULE.COMMAND_INTERACTION;
 import com.rumisystem.rumiabot.MODULE.DATE_FORMAT;
 import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.DAM_STATUS;
 import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
@@ -100,22 +101,26 @@ public class DiscordEventListener extends ListenerAdapter{
 			if(CONFIG_DATA.get("BLOCK").asString("DISCORD").contains(INTERACTION.getUser().getId())){
 				return;
 			}
+			
+			COMMAND_INTERACTION CI = new COMMAND_INTERACTION(INTERACTION);
 
-			INTERACTION.deferReply().queue();
+			CI.deferReply();
 			
 			switch(INTERACTION.getName()) {
 				case "test":{
-					INTERACTION.getHook().editOriginal("あいうえお").queue();
+					CI.SetTEXT("あいうえお");
+					CI.Reply();
 					break;
 				}
 				
 				case "help":{
-					INTERACTION.getHook().editOriginal("ここで見れる\nhttps://rumiserver.com/rumiabot/site/function").queue();
+					CI.SetTEXT("ここで見れる\nhttps://rumiserver.com/rumiabot/site/function");
+					CI.Reply();
 					break;
 				}
 
 				case "ip":{
-					ip.Main(INTERACTION);
+					ip.Main(CI);
 					break;
 				}
 

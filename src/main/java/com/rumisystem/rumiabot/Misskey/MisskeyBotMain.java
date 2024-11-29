@@ -11,6 +11,8 @@ import com.rumisystem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import com.rumisystem.rumi_java_lib.Misskey.MisskeyClient;
 import com.rumisystem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import com.rumisystem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
+import com.rumisystem.rumiabot.Discord.COMMAND.ip;
+import com.rumisystem.rumiabot.MODULE.COMMAND_INTERACTION;
 import com.rumisystem.rumiabot.MODULE.ISHITEGAWA.ISHITEGAWA_DAM;
 import com.rumisystem.rumiabot.Misskey.FUNCTION.DAM_NOTE;
 
@@ -40,12 +42,17 @@ public class MisskeyBotMain {
 								if (E.getNOTE().isKaiMention()) {
 									MisskeyBOT.CreateReaction(E.getNOTE(), ":1039992459209490513:");
 
-									switch(E.getNOTE().getTEXT().replace("@rumiabot ", "")) {
+									COMMAND_INTERACTION CI = new COMMAND_INTERACTION(E.getNOTE());
+
+									switch(CI.GetNAME()) {
 										case "test": {
-											NoteBuilder NB = new NoteBuilder();
-											NB.setTEXT(":okey_hebrai:");
-											NB.setREPLY(E.getNOTE());
-											MisskeyBOT.PostNote(NB.Build());
+											CI.SetTEXT("あいうえお");
+											CI.Reply();
+											break;
+										}
+
+										case "ip":{
+											ip.Main(CI);
 											break;
 										}
 
