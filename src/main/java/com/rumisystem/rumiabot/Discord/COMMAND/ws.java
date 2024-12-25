@@ -21,10 +21,26 @@ public class ws {
 			}
 
 			FirefoxProfile FFP = new FirefoxProfile();
+			//キャッシュ無効化
 			FFP.setPreference("browser.cache.disk.enable", false);
 			FFP.setPreference("browser.cache.memory.enable", false);
 			FFP.setPreference("browser.cache.offline.enable", false);
 			FFP.setPreference("network.http.use-cache", false);
+			//ダウンロード無効化
+			FFP.setPreference("browser.helperApps.neverAsk.saveToDisk", "");
+			FFP.setPreference("browser.download.dir", "");
+			FFP.setPreference("browser.download.folderList", 2);
+			FFP.setPreference("browser.download.manager.showWhenStarting", false);
+			FFP.setPreference("browser.download.manager.focusWhenStarting", false);
+			FFP.setPreference("browser.download.manager.useWindow", false);
+			FFP.setPreference("browser.download.manager.showAlertOnComplete", false);
+			FFP.setPreference("browser.download.manager.closeWhenDone", true);
+			//いたずら対策
+			FFP.setPreference("dom.push.enabled", false);
+			FFP.setPreference("dom.ipc.processCount", 1);
+			FFP.setPreference("dom.storage.enabled", false);
+			FFP.setPreference("dom.disable_open_during_load", true);
+			FFP.setPreference("dom.serviceWorkers.enabled", false);
 
 			FirefoxOptions BROWSER_OPTION = new FirefoxOptions();
 			BROWSER_OPTION.setProfile(FFP);
