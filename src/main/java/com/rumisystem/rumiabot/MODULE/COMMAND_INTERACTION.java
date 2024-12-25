@@ -13,7 +13,7 @@ import static com.rumisystem.rumiabot.Main.MisskeyBOT;
 
 public class COMMAND_INTERACTION {
 	private String NAME;
-	private List<OPTION_ITEM> OPTION_LIST;
+	private List<OPTION_ITEM> OPTION_LIST = new ArrayList<COMMAND_INTERACTION.OPTION_ITEM>();
 	private SlashCommandInteractionEvent DISCORD_INTERACTION = null;
 	private Note MISSKEY_NOTE = null;
 	private boolean DEFER = false;

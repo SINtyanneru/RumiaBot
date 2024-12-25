@@ -85,7 +85,8 @@ public class DiscordBOTMain {
 
 		SlashCommandData ws = Commands.slash("ws", "ヱブサイトスクショ")
 				.addOption(OptionType.STRING, "url", "ウーエルエル", true)
-				.addOptions(WS_OPTION);
+				.addOptions(WS_OPTION)
+				.addOption(OptionType.BOOLEAN, "js", "JavaScriptの有効", false);
 
 		SlashCommandData wh_clear = Commands.slash("wh_clear", "WebHookを全消しする");
 		
