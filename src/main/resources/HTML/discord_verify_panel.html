@@ -7,58 +7,121 @@
 		<LINK REL="stylesheet" HREF="https://cdn.rumia.me/CSS/DEFAULT.css">
 
 		<SCRIPT SRC="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></SCRIPT>
+
+	<STYLE>
+/* ベーススタイル */
+body {
+    transition: background-color 0.5s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+ 
+/* メッセージコンテナ */
+.message-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+}
+ 
+h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+ 
+/* 成功状態 */
+body.success {
+    background-color: #4CAF50 !important;
+}
+ 
+/* 失敗状態 */
+body.failure {
+    background-color: #f44336 !important;
+}
+ 
+/* ローディングメッセージ */
+body.loading {
+    background-color: #2196F3 !important;
+}
+ 
+/* エラーメッセージ */
+.error-details {
+    font-size: 1rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 5px;
+    word-break: break-word;
+    margin-top: 1rem;
+}
+ 
+/* レスポンシブ対応 */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .message-container {
+        padding: 1rem;
+    }
+}
+</STYLE>
 	</HEAD>
 	<BODY>
 		<DIV class="cf-turnstile" data-sitekey="${SITE_KEY}" data-callback="CFT_OK" data-language="ja"></DIV>
 	</BODY>
 </HTML>
 <SCRIPT>
-//CFT成功
+// CFT成功
 window.CFT_OK = async function (E) {
-	document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">しばし待たれよ。。。</H1>";
-
-	try{
-		//URIを解析
-		const PARAM = URI_PARAM_PARSE(window.location.toString());
-
-		let AJAX = await fetch("/rumiabot/api/VERIFY_PANEL", {
-		method:"POST",
-		body:JSON.stringify({
-			"VERIFY_ID":PARAM.ID,
-			"CFT_RESULT":E
-		})
-	});
-
-	const RESULT = await AJAX.json();
-	if(RESULT.STATUS){
-		document.body.style.backgroundColor = "lime";
-		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">成功したぞよ</H1>";
-	} else {
-		document.body.style.backgroundColor = "red";
-		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">失敗！</H1><BR>" + RESULT.MSG;
-	}
-	}catch(EX){
-		console.log(EX);
-
-		document.body.style.backgroundColor = "red";
-		document.body.innerHTML = "<H1 STYLE=\"text-align: center;\">失敗！</H1><BR>" + EX;
-	}
-}
-
-function URI_PARAM_PARSE(URI){
-	let RESULT = {};
-
-	//URLのパラメータ部分を抽出
-	URI = URI.split("?")[1];
-
-	URI_SPLIT = URI.split("&");
-	for (let I = 0; I < URI_SPLIT.length; I++) {
-		const KEY = URI_SPLIT[I].split("=")[0];
-		const VAL = URI_SPLIT[I].split("=")[1];
-
-		RESULT[KEY] = VAL;
-	}
-
-	return RESULT;
+    document.body.classList.add('loading');
+    document.body.innerHTML = `
+        <div class="message-container">
+            <h1>しばし待たれよ。。。</h1>
+        </div>
+    `;
+ 
+    try {
+        const PARAM = URI_PARAM_PARSE(window.location.toString());
+        const AJAX = await fetch("/rumiabot/api/VERIFY_PANEL", {
+            method: "POST",
+            body: JSON.stringify({
+                "VERIFY_ID": PARAM.ID,
+                "CFT_RESULT": E
+            })
+        });
+ 
+        const RESULT = await AJAX.json();
+        document.body.classList.remove('loading');
+        document.body.classList.add(RESULT.STATUS ? 'success' : 'failure');
+        
+        document.body.innerHTML = `
+            <div class="message-container">
+                <h1>${RESULT.STATUS ? '成功したぞよ' : '失敗！'}</h1>
+                ${!RESULT.STATUS ? `<div class="error-details">${RESULT.MSG}</div>` : ''}
+            </div>
+        `;
+ 
+    } catch(EX) {
+        console.error(EX);
+        document.body.classList.remove('loading');
+        document.body.classList.add('failure');
+        document.body.innerHTML = `
+            <div class="message-container">
+                <h1>エラー発生！</h1>
+                <div class="error-details">${EX}</div>
+            </div>
+        `;
+    }
 }
 </SCRIPT>
