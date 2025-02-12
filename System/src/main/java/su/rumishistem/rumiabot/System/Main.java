@@ -2,11 +2,17 @@ package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
 import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
+import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import net.dv8tion.jda.api.JDA;
 
 public class Main {
@@ -14,6 +20,8 @@ public class Main {
 	public static JDA DISCORD_BOT = null;
 	public static MisskeyClient MisskeyBOT = null;
 	public static FunctionModuleLoader FML = null;
+	public static List<FunctionClass> FunctionModuleList = new ArrayList<FunctionClass>();
+	public static List<CommandData> CommandList = new ArrayList<CommandData>();
 
 	public static void main(String[] args) {
 		try {
@@ -47,6 +55,10 @@ public class Main {
 			FML.Load();
 
 			//DiscordBOTを起動
+			DiscordBOT.Init();
+
+			//MisskeyBOTを起動
+			//TODO:MisskeyBOT
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

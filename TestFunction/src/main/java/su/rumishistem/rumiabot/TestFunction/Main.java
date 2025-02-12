@@ -1,6 +1,10 @@
 package su.rumishistem.rumiabot.TestFunction;
 
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
+import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "Test";
@@ -18,5 +22,17 @@ public class Main implements FunctionClass {
 	@Override
 	public String FUNCTION_AUTOR() {
 		return FUNCTION_AUTOR;
+	}
+
+	@Override
+	public void Init() {
+		AddCommand(new CommandData("test", new CommandOption[] {}));
+	}
+
+	@Override
+	public void ReceiveMessage(ReceiveMessageEvent e) {
+		if (e.GetMessage().GetText().equals("<@869887786491183125> ping")) {
+			e.GetMessage().Reply("f**k");
+		}
 	}
 }

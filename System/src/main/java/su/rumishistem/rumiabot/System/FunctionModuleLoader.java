@@ -1,7 +1,8 @@
 package su.rumishistem.rumiabot.System;
 
+import static su.rumishistem.rumiabot.System.Main.CommandList;
+import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,17 +11,14 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
-
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 
 public class FunctionModuleLoader {
-	private List<FunctionClass> FunctionModuleList = new ArrayList<FunctionClass>();
-
 	public void Load() throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		List<Path> JAR_LIST = Files.list(Path.of(Paths.get("").toAbsolutePath().toString(), "FUNCTION"))
 								.filter(PATH->PATH.toString().endsWith(".jar"))
@@ -59,5 +57,15 @@ public class FunctionModuleLoader {
 		}
 
 		LOG(LOG_TYPE.OK, FunctionModuleList.size() + "個の機能を読み込みました");
+		LOG(LOG_TYPE.PROCESS, "機能を初期化しています");
+		for (FunctionClass Function:FunctionModuleList) {
+			Function.Init();
+			LOG(LOG_TYPE.OK, Function.FUNCTION_NAME() + "初期化Ok");
+		}
+		LOG(LOG_TYPE.OK, "機能を初期化しました");
+	}
+
+	public static void AddCommand(CommandData Command) {
+		CommandList.add(Command);
 	}
 }
