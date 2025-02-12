@@ -1,10 +1,7 @@
 package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-
 import java.io.File;
-import java.io.PrintStream;
-
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
 import su.rumishistem.rumi_java_lib.SQL;
@@ -16,6 +13,7 @@ public class Main {
 	public static ArrayNode CONFIG_DATA = null;
 	public static JDA DISCORD_BOT = null;
 	public static MisskeyClient MisskeyBOT = null;
+	public static FunctionModuleLoader FML = null;
 
 	public static void main(String[] args) {
 		try {
@@ -43,6 +41,12 @@ public class Main {
 				CONFIG_DATA.get("SQL").getData("USER").asString(),
 				CONFIG_DATA.get("SQL").getData("PASS").asString()
 			);
+
+			//モジュールをロード
+			FML = new FunctionModuleLoader();
+			FML.Load();
+
+			//DiscordBOTを起動
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

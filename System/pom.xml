@@ -38,8 +38,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>
-								${project.groupId}.${project.artifactId}.Main</mainClass>
+							<mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
