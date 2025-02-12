@@ -4,10 +4,12 @@ public class CommandOption {
 	private String Name;
 	private CommandOptionType Type;
 	private Object Value;
+	private boolean Require;
 
-	public CommandOption(String Name, CommandOptionType Type, Object Value) {
+	public CommandOption(String Name, CommandOptionType Type, Object Value, boolean Require) {
 		this.Name = Name;
 		this.Type = Type;
+		this.Require = Require;
 	}
 
 	public String GetName() {
@@ -24,5 +26,9 @@ public class CommandOption {
 
 	public int GetValueAsInt() {
 		return (int) Value;
+	}
+	
+	public boolean isRequire() {
+		return Require;
 	}
 }

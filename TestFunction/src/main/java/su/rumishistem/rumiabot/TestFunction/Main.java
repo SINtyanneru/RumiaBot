@@ -26,7 +26,7 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void Init() {
-		AddCommand(new CommandData("test", new CommandOption[] {}));
+		AddCommand(new CommandData("test", new CommandOption[] {}, false));
 	}
 
 	@Override

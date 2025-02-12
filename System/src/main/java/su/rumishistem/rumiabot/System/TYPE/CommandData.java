@@ -3,10 +3,12 @@ package su.rumishistem.rumiabot.System.TYPE;
 public class CommandData {
 	private String Name;
 	private CommandOption[] OptionList;
+	private boolean Private;
 
-	public CommandData(String Name, CommandOption[] OptionList) {
+	public CommandData(String Name, CommandOption[] OptionList, boolean Private) {
 		this.Name = Name;
 		this.OptionList = OptionList;
+		this.Private = Private;
 	}
 
 	public String GetName() {
@@ -25,5 +27,9 @@ public class CommandData {
 		}
 
 		return null;
+	}
+
+	public boolean isPrivate() {
+		return Private;
 	}
 }
