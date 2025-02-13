@@ -4,6 +4,8 @@ import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
@@ -14,6 +16,8 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
@@ -21,6 +25,7 @@ import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.MODULE.UserBlockCheck;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.MessageData;
 import su.rumishistem.rumiabot.System.TYPE.MessageUser;
@@ -55,12 +60,38 @@ public class DiscordEventListener extends ListenerAdapter {
 			//ブロック済みのユーザーなら此処で処理を中断する
 			if (!UserBlockCheck.isBlock(INTERACTION.getUser().getId())) {
 				CommandData Command = SearchCommand.Command(INTERACTION.getName());
+				List<CommandOption> OptionList = new ArrayList<CommandOption>();
 				FunctionClass Function = SearchCommand.Function(INTERACTION.getName());
 				if (Command != null && Function != null) {
+					//オプションを集計
+					for (CommandOption Option:Command.GetOptionList()) {
+						OptionMapping SlashOption = INTERACTION.getOption(Option.GetName());
+						if (SlashOption != null) {
+							//オプションが指定されている
+							OptionList.add(
+								new CommandOption(
+									Option.GetName(),
+									Option.GetType(),
+									SlashOption.getAsString(),
+									Option.isRequire()
+								)
+							);
+						} else if (SlashOption == null && Option.isRequire()) {
+							//されていない＆必要ならエラー
+							INTERACTION.reply( Option.GetName() + "がありません");
+							return;
+						}
+					}
+
+					//集計したものをセット(toArrayだけではダメ、Object[]になる)
+					Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
+
+					//プライベートじゃないならDeferReply
 					if (!Command.isPrivate()) {
 						INTERACTION.deferReply().queue();
 					}
 
+					//コマンドの実行をモジュールに通達
 					Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
 				} else {
 					INTERACTION.reply("コマンドか機能が見つかりませんでした").queue();
@@ -69,9 +100,10 @@ public class DiscordEventListener extends ListenerAdapter {
 				INTERACTION.reply("帰れ").queue();
 			}
 		} catch (Exception EX) {
+			EX.printStackTrace();
+
 			String EX_TEXT = EXCEPTION_READER.READ(EX);
 			INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
-			EX.printStackTrace();
 		}
 	}
 

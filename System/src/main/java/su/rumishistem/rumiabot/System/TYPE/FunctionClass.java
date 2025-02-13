@@ -9,5 +9,5 @@ public interface FunctionClass {
 	void ReceiveMessage(ReceiveMessageEvent e);
 
 	boolean GetAllowCommand(String Name);
-	void RunCommand(CommandInteraction CI);
+	void RunCommand(CommandInteraction CI) throws Exception;
 }

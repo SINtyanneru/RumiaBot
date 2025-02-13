@@ -13,6 +13,7 @@
     <module>System</module>
     <module>TestFunction</module>
     <module>IshitegawaDamFunction</module>
+    <module>PingFunction</module>
   </modules>
   <repositories>
     <repository>

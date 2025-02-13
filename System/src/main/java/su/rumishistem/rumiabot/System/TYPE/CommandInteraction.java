@@ -21,6 +21,10 @@ public class CommandInteraction {
 		}
 	}
 
+	public CommandData GetCommand() {
+		return Command;
+	}
+
 	public void Reply(String Text) {
 		if (Command.isPrivate()) {
 			//周りに見えないやつ

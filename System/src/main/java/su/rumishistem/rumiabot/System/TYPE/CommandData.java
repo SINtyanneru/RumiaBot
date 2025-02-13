@@ -11,6 +11,10 @@ public class CommandData {
 		this.Private = Private;
 	}
 
+	public void SetOptionList(CommandOption[] OptionList) {
+		this.OptionList = OptionList;
+	}
+
 	public String GetName() {
 		return Name;
 	}

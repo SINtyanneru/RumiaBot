@@ -9,6 +9,7 @@ public class CommandOption {
 	public CommandOption(String Name, CommandOptionType Type, Object Value, boolean Require) {
 		this.Name = Name;
 		this.Type = Type;
+		this.Value = Value;
 		this.Require = Require;
 	}
 
@@ -18,6 +19,10 @@ public class CommandOption {
 
 	public CommandOptionType GetType() {
 		return Type;
+	}
+
+	public Object GetValueAsObject() {
+		return Value;
 	}
 
 	public String GetValueAsString() {
