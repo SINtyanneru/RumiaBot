@@ -97,6 +97,7 @@ public class MisskeyBOTMain {
 										}
 									}
 								}).start();
+								return;
 							} else {
 								NoteBuilder NB = new NoteBuilder();
 								NB.setTEXT("コマンドがありません");
