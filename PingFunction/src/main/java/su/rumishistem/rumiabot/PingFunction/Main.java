@@ -93,10 +93,12 @@ public class Main implements FunctionClass {
 			RESULTText.append(PingResult[0] + "つパケット送信し、");
 			RESULTText.append(PingResult[3] + "つパケット受信し、");
 			RESULTText.append(PingResult[3] + "の損失がありました、");
-			RESULTText.append("合計時間は" + PingResult[9] + "です。");
+			RESULTText.append("合計時間は" + PingResult[9] + "です。\n");
 		} else {
 			RESULTText.append("送信できませんでした\n");
 		}
+
+		RESULTText.append("デバッグ用\n```\n" + PingTextB.toString() + "\n```");
 
 		//全部吐く
 		CI.Reply(RESULTText.toString());
