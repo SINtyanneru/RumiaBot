@@ -88,6 +88,7 @@ public class Main implements FunctionClass {
 					RESULTText.append(" ");
 					RESULTText.append("TTL:");
 					RESULTText.append(MatchStatus.group(4));
+					RESULTText.append(" ");
 					RESULTText.append("時間:");
 					RESULTText.append(MatchStatus.group(5) + "ms");
 					RESULTText.append("\n");
