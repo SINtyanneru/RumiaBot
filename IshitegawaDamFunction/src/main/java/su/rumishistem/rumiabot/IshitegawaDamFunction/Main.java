@@ -1,5 +1,9 @@
 package su.rumishistem.rumiabot.IshitegawaDamFunction;
 
+import static su.rumishistem.rumiabot.IshitegawaDamFunction.DAMDAM.DamSchedule;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
@@ -24,6 +28,14 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void Init() {
+		ScheduledExecutorService SCHE = Executors.newScheduledThreadPool(1);
+		Runnable TASK = new Runnable() {
+			@Override
+			public void run() {
+				DamSchedule();
+			}
+		};
+		SCHE.scheduleAtFixedRate(TASK, 0, 30, TimeUnit.MINUTES);
 	}
 
 	@Override

@@ -8,6 +8,7 @@
 		<artifactId>rumiabot</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+
 	<groupId>su.rumishistem.rumiabot</groupId>
 	<artifactId>System</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
