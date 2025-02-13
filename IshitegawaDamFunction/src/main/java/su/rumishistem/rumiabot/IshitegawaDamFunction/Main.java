@@ -2,6 +2,8 @@ package su.rumishistem.rumiabot.IshitegawaDamFunction;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 import static su.rumishistem.rumiabot.IshitegawaDamFunction.DAMDAM.DamSchedule;
+
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +55,7 @@ public class Main implements FunctionClass {
 	}
 
 	@Override
-	public void RunCommand(CommandInteraction CI) {
+	public void RunCommand(CommandInteraction CI) throws IOException {
 		CI.Reply(DAMDAM.genTEXT());
 	}
 

@@ -1,16 +1,26 @@
 package su.rumishistem.rumiabot.System.Misskey;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
+import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.Event.EVENT_LISTENER;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import su.rumishistem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
+import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.MessageData;
 import su.rumishistem.rumiabot.System.TYPE.MessageUser;
@@ -34,13 +44,71 @@ public class MisskeyBOTMain {
 					try {
 						//メンションされていればコマンドとして処理
 						if (e.getNOTE().isKaiMention()) {
-							MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
+							String Text = e.getNOTE().getTEXT().replaceAll("^@[^@\\s]+(?:@[^@\\s]+)?", "").replaceAll("^ ", "");
+							String[] CMD = Text.split(" ");
+							HashMap<String, Object> MisskeyOption = new HashMap<String, Object>();
+
+							//オプションを集計
+							for (int I = 1; I < CMD.length; I++) {
+								if (CMD[I].split("=").length == 2) {
+									MisskeyOption.put(CMD[I].split("=")[0], CMD[I].split("=")[1]);
+								} else {
+									return;
+								}
+							}
+
+							CommandData Command = SearchCommand.Command(CMD[0]);
+							List<CommandOption> OptionList = new ArrayList<CommandOption>();
+							FunctionClass Function = SearchCommand.Function(CMD[0]);
+							if (Command != null && Function != null) {
+								//オプションを加工してばーん
+								for (CommandOption Option:Command.GetOptionList()) {
+									if (MisskeyOption.get(Option.GetName()) != null) {
+										OptionList.add(
+											new CommandOption(
+												Option.GetName(),
+												Option.GetType(),
+												MisskeyOption.get(Option.GetName()),
+												Option.isRequire()
+											)
+										);
+									} else if (Option.isRequire()) {
+										//されていない＆必要ならエラー
+										NoteBuilder NB = new NoteBuilder();
+										NB.setTEXT("必要なオプションが不足しています:" + Option.GetName());
+										NB.setREPLY(e.getNOTE());
+										MisskeyBOT.PostNote(NB.Build());
+										return;
+									}
+								}
+								Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
+
+								//リアクション
+								MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
+
+								//実行
+								new Thread(new Runnable() {
+									@Override
+									public void run() {
+										try {
+											Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
+										} catch (Exception EX) {
+											EX.printStackTrace();
+										}
+									}
+								}).start();
+							} else {
+								NoteBuilder NB = new NoteBuilder();
+								NB.setTEXT("コマンドがありません");
+								NB.setREPLY(e.getNOTE());
+								MisskeyBOT.PostNote(NB.Build());
+							}
 						}
 
 						//イベント着火
 						for (FunctionClass Function:FunctionModuleList) {
 							Function.ReceiveMessage(new ReceiveMessageEvent(
-								SourceType.Discord,
+								SourceType.Misskey,
 								new MessageUser(),
 								new MessageData(
 									e.getNOTE().getID(),

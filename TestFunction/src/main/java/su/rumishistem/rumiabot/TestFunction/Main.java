@@ -9,6 +9,8 @@ import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
+import java.io.IOException;
+
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "Test";
 	private static final String FUNCTION_VERSION = "1.0";
@@ -47,7 +49,7 @@ public class Main implements FunctionClass {
 	}
 
 	@Override
-	public void RunCommand(CommandInteraction Interaction) {
+	public void RunCommand(CommandInteraction Interaction) throws IOException {
 		Interaction.Reply("はい");
 	}
 }
