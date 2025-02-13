@@ -54,6 +54,8 @@ public class FunctionModuleLoader {
 				LOG(LOG_TYPE.PROCESS_END_FAILED, "");
 				LOG(LOG_TYPE.FAILED, "MANIFESTが無い為、モジュールを読み込めませんでした");
 			}
+			CL.close();
+			JARFILE.close();
 		}
 
 		LOG(LOG_TYPE.OK, FunctionModuleList.size() + "個の機能を読み込みました");

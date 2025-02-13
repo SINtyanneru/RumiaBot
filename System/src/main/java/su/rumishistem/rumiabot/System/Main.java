@@ -58,7 +58,7 @@ public class Main {
 			DiscordBOT.Init();
 
 			//MisskeyBOTを起動
-			//TODO:MisskeyBOT
+			su.rumishistem.rumiabot.System.Misskey.MisskeyBOTMain.Init();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

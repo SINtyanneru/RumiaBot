@@ -1,7 +1,6 @@
 package su.rumishistem.rumiabot.System.Discord;
 
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
