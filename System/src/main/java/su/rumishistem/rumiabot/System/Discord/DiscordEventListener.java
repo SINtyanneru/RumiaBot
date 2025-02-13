@@ -56,54 +56,58 @@ public class DiscordEventListener extends ListenerAdapter {
 
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
-		try {
-			//ブロック済みのユーザーなら此処で処理を中断する
-			if (!UserBlockCheck.isBlock(INTERACTION.getUser().getId())) {
-				CommandData Command = SearchCommand.Command(INTERACTION.getName());
-				List<CommandOption> OptionList = new ArrayList<CommandOption>();
-				FunctionClass Function = SearchCommand.Function(INTERACTION.getName());
-				if (Command != null && Function != null) {
-					//オプションを集計
-					for (CommandOption Option:Command.GetOptionList()) {
-						OptionMapping SlashOption = INTERACTION.getOption(Option.GetName());
-						if (SlashOption != null) {
-							//オプションが指定されている
-							OptionList.add(
-								new CommandOption(
-									Option.GetName(),
-									Option.GetType(),
-									SlashOption.getAsString(),
-									Option.isRequire()
-								)
-							);
-						} else if (SlashOption == null && Option.isRequire()) {
-							//されていない＆必要ならエラー
-							INTERACTION.reply( Option.GetName() + "がありません");
-							return;
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (!UserBlockCheck.isBlock(INTERACTION.getUser().getId())) {
+			CommandData Command = SearchCommand.Command(INTERACTION.getName());
+			List<CommandOption> OptionList = new ArrayList<CommandOption>();
+			FunctionClass Function = SearchCommand.Function(INTERACTION.getName());
+			if (Command != null && Function != null) {
+				//オプションを集計
+				for (CommandOption Option:Command.GetOptionList()) {
+					OptionMapping SlashOption = INTERACTION.getOption(Option.GetName());
+					if (SlashOption != null) {
+						//オプションが指定されている
+						OptionList.add(
+							new CommandOption(
+								Option.GetName(),
+								Option.GetType(),
+								SlashOption.getAsString(),
+								Option.isRequire()
+							)
+						);
+					} else if (SlashOption == null && Option.isRequire()) {
+						//されていない＆必要ならエラー
+						INTERACTION.reply( Option.GetName() + "がありません");
+						return;
+					}
+				}
+
+				//集計したものをセット(toArrayだけではダメ、Object[]になる)
+				Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
+
+				//プライベートじゃないならDeferReply
+				if (!Command.isPrivate()) {
+					INTERACTION.deferReply().queue();
+				}
+
+				//コマンドの実行をモジュールに通達
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
+						} catch (Exception EX) {
+							EX.printStackTrace();
+							String EX_TEXT = EXCEPTION_READER.READ(EX);
+							INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
 						}
 					}
-
-					//集計したものをセット(toArrayだけではダメ、Object[]になる)
-					Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
-
-					//プライベートじゃないならDeferReply
-					if (!Command.isPrivate()) {
-						INTERACTION.deferReply().queue();
-					}
-
-					//コマンドの実行をモジュールに通達
-					Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
-				} else {
-					INTERACTION.reply("コマンドか機能が見つかりませんでした").queue();
-				}
+				}).start();
 			} else {
-				INTERACTION.reply("帰れ").queue();
+				INTERACTION.reply("コマンドか機能が見つかりませんでした").queue();
 			}
-		} catch (Exception EX) {
-			EX.printStackTrace();
-
-			String EX_TEXT = EXCEPTION_READER.READ(EX);
-			INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
+		} else {
+			INTERACTION.reply("帰れ").queue();
 		}
 	}
 
