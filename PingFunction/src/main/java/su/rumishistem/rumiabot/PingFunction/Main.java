@@ -71,12 +71,12 @@ public class Main implements FunctionClass {
 			//応答を解析する
 			StringBuilder RESULTText = new StringBuilder();
 
-			//タイトル
-			Matcher MatchTitle = Pattern.compile(" (.*) \\((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\) (.*)\\(").matcher(PingText[0]);
-			MatchTitle.find();
-			RESULTText.append(MatchTitle.group(1) + "(" + MatchTitle.group(2) + ")" + "にデータを送信します\n");
-
 			if (ExitCode == 0) {
+				//タイトル
+				Matcher MatchTitle = Pattern.compile(" (.*) \\((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\) (.*)\\(").matcher(PingText[0]);
+				MatchTitle.find();
+				RESULTText.append(MatchTitle.group(1) + "(" + MatchTitle.group(2) + ")" + "にデータを送信します\n");
+
 				for (int I = 1; I <= PING_LIMIT; I++) {
 					Matcher MatchStatus = Pattern.compile("(\\d{1,4}) bytes from (.*): icmp_seq=(\\d{1,4}) ttl=(\\d{1,4}) time=(.*) ms").matcher(PingText[I]);
 					MatchStatus.find();
