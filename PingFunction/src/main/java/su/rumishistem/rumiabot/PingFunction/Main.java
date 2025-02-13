@@ -4,6 +4,7 @@ import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
@@ -69,38 +70,43 @@ public class Main implements FunctionClass {
 
 			//応答を解析する
 			StringBuilder RESULTText = new StringBuilder();
-			RESULTText.append(PingText[0].split(" ")[1] + PingText[0].split(" ")[2] + "にデータを送信します\n");
+
+			//タイトル
+			Matcher MatchTitle = Pattern.compile(" (.*) \\((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\) (.*)\\(").matcher(PingText[0]);
+			MatchTitle.find();
+			RESULTText.append(MatchTitle.group(1) + "(" + MatchTitle.group(2) + ")" + "にデータを送信します\n");
 
 			if (ExitCode == 0) {
 				for (int I = 1; I <= PING_LIMIT; I++) {
-					String[] PingStatusText = PingText[I].split(" ");
-					RESULTText.append("`[" + PingStatusText[4].split("=")[1] + "]`");
-					RESULTText.append(PingStatusText[0]);
+					Matcher MatchStatus = Pattern.compile("(\\d{1,4}) bytes from (.*): icmp_seq=(\\d{1,4}) ttl=(\\d{1,4}) time=(.*) ms").matcher(PingText[I]);
+					MatchStatus.find();
+					RESULTText.append("`[" + MatchStatus.group(3) + "]`");
+					RESULTText.append(MatchStatus.group(1));
 					RESULTText.append("バイトを");
-					RESULTText.append(PingStatusText[3]);
+					RESULTText.append(MatchStatus.group(2));
 					RESULTText.append("に送信しました。");
 					RESULTText.append(" ");
 					RESULTText.append("TTL:");
-					RESULTText.append(PingStatusText[5].split("=")[1]);
+					RESULTText.append(MatchStatus.group(4));
 					RESULTText.append("時間:");
-					RESULTText.append(PingStatusText[6].split("=")[1] + "ms");
+					RESULTText.append(MatchStatus.group(5) + "ms");
 					RESULTText.append("\n");
 				}
 				
 				//結果
-				String[] PingResult = PingText[PING_LIMIT + 3].split(" ");
+				Matcher MatchResult = Pattern.compile("(\\d{1,9}) .*, (\\d{1,9}) .*, (\\d{1,3})% .*, time (.*)ms").matcher(PingText[PING_LIMIT + 3]);
+				MatchResult.find();
 
 				RESULTText.append("\n");
 				RESULTText.append("結果:");
-				RESULTText.append(PingResult[0] + "つパケット送信し、");
-				RESULTText.append(PingResult[3] + "つパケット受信し、");
-				RESULTText.append(PingResult[3] + "の損失がありました、");
-				RESULTText.append("合計時間は" + PingResult[9] + "です。\n");
+				RESULTText.append(MatchResult.group(1) + "つパケット送信し、");
+				RESULTText.append(MatchResult.group(2) + "つパケット受信し、");
+				RESULTText.append(MatchResult.group(3) + "の損失がありました、");
+				RESULTText.append("合計時間は" + MatchResult.group(4) + "msです。\n");
 			} else {
 				RESULTText.append("送信できませんでした\n");
+				RESULTText.append("デバッグ用\n```\n" + PingTextB.toString() + "\n```");
 			}
-
-			RESULTText.append("デバッグ用\n```\n" + PingTextB.toString() + "\n```");
 
 			//全部吐く
 			CI.Reply(RESULTText.toString());
