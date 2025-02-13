@@ -96,6 +96,7 @@ public class DiscordEventListener extends ListenerAdapter {
 							StringBuilder TEXT = new StringBuilder();
 							TEXT.append("あなたのサーバーはブラックリストに入っています\n");
 							TEXT.append("理由：" + INFO.getData("RESON").asString() + "\n");
+							TEXT.append("そのため、勝手ながら脱退させていただきます、さようなら。\n");
 
 							//DM送信
 							DM.sendMessage(TEXT.toString()).queue();
