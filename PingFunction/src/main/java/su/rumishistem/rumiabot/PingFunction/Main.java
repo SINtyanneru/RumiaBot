@@ -51,7 +51,7 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
-		String Host = CI.GetCommand().GetOption("host").GetValueAsString().replaceAll("[^0-9a-zA-Z:.-]", "");
+		String Host = CI.GetCommand().GetOption("host").GetValueAsString();
 		if (HostCheck(Host)) {
 			//プロセス生成
 			ProcessBuilder PB = new ProcessBuilder("ping", "-c", String.valueOf(PING_LIMIT), Host);
