@@ -43,11 +43,7 @@ public class Main implements FunctionClass {
 
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		if (Name.equals("test")) {
-			return true;
-		} else {
-			return false;
-		}
+		return Name.equals("test");
 	}
 
 	@Override
