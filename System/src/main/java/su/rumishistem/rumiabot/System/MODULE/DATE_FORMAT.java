@@ -14,4 +14,11 @@ public class DATE_FORMAT {
 
 		return DATE.format(DateTimeFormatter.ofPattern(NEN + "年MM月dd日E曜日 a hh時m分s秒"));
 	}
+
+	public static String KOUKI_SEIREKI(OffsetDateTime DATE) {
+		int SEIREKI = Integer.parseInt(DATE.format(DateTimeFormatter.ofPattern("yyyy")));
+		int KOUKI = SEIREKI + 660;
+
+		return DATE.format(DateTimeFormatter.ofPattern(KOUKI + "(" + SEIREKI + ")" + "年MM月dd日E曜日 a hh時m分s秒"));
+	}
 }
