@@ -137,7 +137,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖になりました").queue();
 			}
 		} catch (Exception EX) {
-			EX.printStackTrace();
+			//SQLが「Duplicate entry '' for key 'PRIMARY'」みたいなエラーを出すのでもみ消す
 		}
 	}
 }

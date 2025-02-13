@@ -3,16 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>su.rumishistem</groupId>
 		<artifactId>rumiabot</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>su.rumishistem.rumiabot</groupId>
-	<artifactId>TestFunction</artifactId>
-	<version>1.0</version>
-	<name>TestFunction</name>
 
+	<groupId>su.rumishistem.rumiabot</groupId>
+	<artifactId>IshitegawaDamFunction</artifactId>
+	<version>1.0</version>
+	<name>IshitegawaDamFunction</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -43,7 +44,8 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
+							<mainClass>
+								${project.groupId}.${project.artifactId}.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -59,8 +61,9 @@
 						</goals>
 						<configuration>
 							<target>
-								<move file="${project.build.directory}/${project.build.finalName}.jar"
-									tofile="../FUNCTION/${project.build.finalName}.jar"/>
+								<move
+									file="${project.build.directory}/${project.build.finalName}.jar"
+									tofile="../FUNCTION/${project.build.finalName}.jar" />
 							</target>
 						</configuration>
 					</execution>
