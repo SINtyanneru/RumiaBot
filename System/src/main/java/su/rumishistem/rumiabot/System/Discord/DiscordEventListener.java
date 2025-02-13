@@ -5,6 +5,7 @@ import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,6 +38,18 @@ public class DiscordEventListener extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent E) {
 		//ブロック済みのユーザーなら此処で処理を中断する
 		if (!UserBlockCheck.isBlock(E.getAuthor().getId())) {
+			if (E.getMessage().getContentRaw().endsWith("ち") || E.getMessage().getContentRaw().endsWith("ちん") || E.getMessage().getContentRaw().endsWith("ま") || E.getMessage().getContentRaw().endsWith("まん")) {
+				E.getMessage().reply("そういうのよくないと思うよ。").queue();
+			}
+
+			String[] NGWordList = new String[] {
+				"まんこ"
+			};
+
+			if (Arrays.asList(NGWordList).contains(E.getMessage().getContentRaw())) {
+				E.getMessage().reply("キモ...").queue();
+			}
+
 			//イベント着火
 			for (FunctionClass Function:FunctionModuleList) {
 				Function.ReceiveMessage(new ReceiveMessageEvent(

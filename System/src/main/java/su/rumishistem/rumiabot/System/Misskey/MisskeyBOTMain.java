@@ -10,6 +10,7 @@ import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
+import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
@@ -94,6 +95,14 @@ public class MisskeyBOTMain {
 											Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
 										} catch (Exception EX) {
 											EX.printStackTrace();
+											try {
+												NoteBuilder NB = new NoteBuilder();
+												NB.setTEXT("エラー\n```\n" + EXCEPTION_READER.READ(EX)+ "\n```");
+												NB.setREPLY(e.getNOTE());
+												MisskeyBOT.PostNote(NB.Build());
+											} catch (Exception EX2) {
+												//もみ消す
+											}
 										}
 									}
 								}).start();
