@@ -35,7 +35,7 @@ public class Main implements FunctionClass {
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
 		if (e.GetMessage().isKaiMention()) {
-			if (e.GetMessage().GetText().equals("<@869887786491183125> test") || e.GetMessage().GetText().equals("@rumiabot test")) {
+			if (e.GetMessage().GetText().contains("test")) {
 				e.GetMessage().Reply("f**k");
 			}
 		}
