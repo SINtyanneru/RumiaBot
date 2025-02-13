@@ -2,15 +2,20 @@ package su.rumishistem.rumiabot.System.Misskey;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
+import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
-import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.Event.EVENT_LISTENER;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import su.rumishistem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
+import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
+import su.rumishistem.rumiabot.System.TYPE.MessageData;
+import su.rumishistem.rumiabot.System.TYPE.MessageUser;
+import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class MisskeyBOTMain {
 	public static void Init() {
@@ -27,19 +32,24 @@ public class MisskeyBOTMain {
 				@Override
 				public void onNewNote(NewNoteEvent e) {
 					try {
+						//メンションされていればコマンドとして処理
 						if (e.getNOTE().isKaiMention()) {
 							MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
+						}
 
-							//ping
-							if (e.getNOTE().getTEXT().equals("@rumiabot ping")) {
-								NoteBuilder NB = new NoteBuilder();
-								NB.setTEXT("f**k");
-								NB.setREPLY(e.getNOTE());
-								MisskeyBOT.PostNote(NB.Build());
-								return;
-							}
-
-							//コマンド
+						//イベント着火
+						for (FunctionClass Function:FunctionModuleList) {
+							Function.ReceiveMessage(new ReceiveMessageEvent(
+								SourceType.Discord,
+								new MessageUser(),
+								new MessageData(
+									e.getNOTE().getID(),
+									e.getNOTE().getTEXT(),
+									null,
+									e.getNOTE(),
+									e.getNOTE().isKaiMention()
+								)
+							));
 						}
 					} catch (Exception EX) {
 						EX.printStackTrace();

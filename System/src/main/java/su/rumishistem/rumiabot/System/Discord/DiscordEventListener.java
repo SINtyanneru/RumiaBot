@@ -1,7 +1,7 @@
 package su.rumishistem.rumiabot.System.Discord;
 
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
-
+import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -29,7 +29,9 @@ public class DiscordEventListener extends ListenerAdapter {
 					new MessageData(
 						E.getMessageId(),
 						E.getMessage().getContentRaw(),
-						E.getMessage()
+						E.getMessage(),
+						null,
+						E.getMessage().getContentRaw().contains("<@" + DISCORD_BOT.getSelfUser().getId() + ">")
 					)
 				));
 			}
