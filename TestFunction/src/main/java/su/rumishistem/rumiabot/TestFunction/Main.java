@@ -1,9 +1,12 @@
 package su.rumishistem.rumiabot.TestFunction;
 
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
+
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
 public class Main implements FunctionClass {
@@ -34,5 +37,19 @@ public class Main implements FunctionClass {
 		if (e.GetMessage().GetText().equals("<@869887786491183125> ping")) {
 			e.GetMessage().Reply("f**k");
 		}
+	}
+
+	@Override
+	public boolean GetAllowCommand(String Name) {
+		if (Name.equals("test")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public void RunCommand(CommandInteraction Interaction) {
+		Interaction.Reply("はい");
 	}
 }

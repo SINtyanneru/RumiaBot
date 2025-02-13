@@ -7,4 +7,7 @@ public interface FunctionClass {
 
 	void Init();
 	void ReceiveMessage(ReceiveMessageEvent e);
+
+	boolean GetAllowCommand(String Name);
+	void RunCommand(CommandInteraction CI);
 }
