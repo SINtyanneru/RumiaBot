@@ -8,9 +8,12 @@ import java.util.List;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumi_java_lib.HTTP_SERVER.HTTP_SERVER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
+import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
+import su.rumishistem.rumiabot.System.HTTP.HTTP;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import net.dv8tion.jda.api.JDA;
@@ -22,6 +25,7 @@ public class Main {
 	public static FunctionModuleLoader FML = null;
 	public static List<FunctionClass> FunctionModuleList = new ArrayList<FunctionClass>();
 	public static List<CommandData> CommandList = new ArrayList<CommandData>();
+	public static SmartHTTP SH = null;
 
 	public static void main(String[] args) {
 		try {
@@ -49,6 +53,20 @@ public class Main {
 				CONFIG_DATA.get("SQL").getData("USER").asString(),
 				CONFIG_DATA.get("SQL").getData("PASS").asString()
 			);
+
+			//HTTPサーバー起動
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						HTTP.Init();
+					} catch (Exception EX) {
+						EX.printStackTrace();
+						LOG(LOG_TYPE.FAILED, "HTTPサーバー起動失敗");
+						System.exit(1);
+					}
+				}
+			}).start();
 
 			//モジュールをロード
 			FML = new FunctionModuleLoader();
