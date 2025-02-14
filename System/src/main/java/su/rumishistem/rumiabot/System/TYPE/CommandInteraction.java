@@ -30,6 +30,10 @@ public class CommandInteraction {
 		}
 	}
 
+	public SourceType GetSource() {
+		return Source;
+	}
+
 	public CommandData GetCommand() {
 		return Command;
 	}

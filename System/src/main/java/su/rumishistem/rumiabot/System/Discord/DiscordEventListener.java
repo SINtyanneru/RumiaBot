@@ -1,24 +1,21 @@
 package su.rumishistem.rumiabot.System.Discord;
 
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
-
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
@@ -123,6 +120,26 @@ public class DiscordEventListener extends ListenerAdapter {
 				}
 			}
 		}).start();
+	}
+
+
+	@Override
+	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
+		FunctionClass Function = SearchCommand.Function("Button:" + INTERACTION.getComponentId().split("\\?")[0]);
+		if (Function != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.RunButton(INTERACTION);
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
+		} else {
+			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+		}
 	}
 
 	@Override//鯖に参加

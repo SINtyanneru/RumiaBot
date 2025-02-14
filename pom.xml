@@ -17,6 +17,7 @@
 		<module>TestFunction</module>
 		<module>IshitegawaDamFunction</module>
 		<module>PingFunction</module>
+		<module>VerifyPanelFunction</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -28,7 +29,7 @@
 		<dependency>
 			<groupId>su.rumishistem</groupId>
 			<artifactId>rumi_java_lib</artifactId>
-			<version>13.13</version>
+			<version>13.14</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>
