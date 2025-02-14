@@ -14,6 +14,7 @@
     <module>TestFunction</module>
     <module>IshitegawaDamFunction</module>
     <module>PingFunction</module>
+    <module>HTTPServerFunction</module>
   </modules>
   <repositories>
     <repository>
