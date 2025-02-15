@@ -18,6 +18,7 @@
 		<module>IshitegawaDamFunction</module>
 		<module>PingFunction</module>
 		<module>VerifyPanelFunction</module>
+		<module>CalcFunction</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -40,6 +41,16 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>4.24.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.el</groupId>
+			<artifactId>jakarta.el-api</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish</groupId>
+			<artifactId>jakarta.el</artifactId>
+			<version>4.0.2</version>
 		</dependency>
 	</dependencies>
 </project>
