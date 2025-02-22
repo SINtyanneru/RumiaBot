@@ -1,7 +1,12 @@
 package su.rumishistem.rumiabot.System.TYPE;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import su.rumishistem.rumi_java_lib.ArrayNode;
+import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.Note;
 
@@ -45,7 +50,47 @@ public class MessageData {
 		}
 	}
 
+	public void Delete() {
+		if (DiscordMessage != null) {
+			DiscordMessage.delete().queue();
+		} else {
+			throw new Error("Discordのメッセージ以外を消すことはできません");
+		}
+	}
+
 	public boolean isKaiMention() {
 		return KaiMention;
+	}
+
+	public MessageChannel GetDiscordChannel() {
+		if (DiscordMessage != null) {
+			return DiscordMessage.getChannel();
+		} else {
+			return null;
+		}
+	}
+
+	public Guild GetDiscordGuild() {
+		if (DiscordMessage != null) {
+			return DiscordMessage.getGuild();
+		} else {
+			return null;
+		}
+	}
+
+	public boolean CheckDiscordGuildFunctionEnabled(DiscordFunction FunctionName) {
+		if (DiscordMessage != null) {
+			ArrayNode SQL_RESULT = SQL.RUN("SELECT * FROM `CONFIG` WHERE `GID` = ? AND `FUNC_ID` = ? AND `CID` = '';", new Object[] {
+				DiscordMessage.getGuildId(),
+				FunctionName.name()
+			});
+			if (SQL_RESULT.asArrayList().size() == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 }

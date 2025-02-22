@@ -119,7 +119,10 @@ public class MisskeyBOTMain {
 						for (FunctionClass Function:FunctionModuleList) {
 							Function.ReceiveMessage(new ReceiveMessageEvent(
 								SourceType.Misskey,
-								new MessageUser(),
+								new MessageUser(
+									null,
+									e.getUSER()
+								),
 								new MessageData(
 									e.getNOTE().getID(),
 									e.getNOTE().getTEXT(),

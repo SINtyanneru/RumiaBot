@@ -58,7 +58,10 @@ public class DiscordEventListener extends ListenerAdapter {
 			for (FunctionClass Function:FunctionModuleList) {
 				Function.ReceiveMessage(new ReceiveMessageEvent(
 					SourceType.Discord,
-					new MessageUser(),
+					new MessageUser(
+						E.getMember(),
+						null
+					),
 					new MessageData(
 						E.getMessageId(),
 						E.getMessage().getContentRaw(),
