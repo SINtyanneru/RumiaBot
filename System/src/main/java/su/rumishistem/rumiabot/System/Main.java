@@ -1,12 +1,18 @@
 package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
+import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.HTTP_SERVER.HTTP_SERVER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
@@ -26,15 +32,79 @@ public class Main {
 	public static List<FunctionClass> FunctionModuleList = new ArrayList<FunctionClass>();
 	public static List<CommandData> CommandList = new ArrayList<CommandData>();
 	public static SmartHTTP SH = null;
+	public static final int MaxLineSize = 25;
 
 	public static void main(String[] args) {
 		try {
-			LOG(LOG_TYPE.INFO, "    ____                  _       ____  ____  ______    ");
-			LOG(LOG_TYPE.INFO, "   / __ \\__  ______ ___  (_)___ _/ __ )/ __ \\/_  __/  ");
-			LOG(LOG_TYPE.INFO, "  / /_/ / / / / __ `__ \\/ / __ `/ __  / / / / / /      ");
-			LOG(LOG_TYPE.INFO, " / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /        ");
-			LOG(LOG_TYPE.INFO, "/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/      ");
-			LOG(LOG_TYPE.INFO, "V1.1");
+			//デフォの標準出力を保存
+			List<String> OutBuffer = new ArrayList<String>();
+			PrintStream SysOut = System.out;
+
+			//標準出力を傍受
+			ByteArrayOutputStream OutBAOS = new ByteArrayOutputStream();
+			PrintStream OutPS = new PrintStream(OutBAOS) {
+				@Override
+				public void print(String Line) {
+					if (OutBuffer.size() >= MaxLineSize) {
+						OutBuffer.remove(0);
+					}
+
+					OutBuffer.add(Line);
+				}
+			};
+			System.setOut(OutPS);
+
+			//標準エラー出力を傍受
+			ByteArrayOutputStream ErrBAOS = new ByteArrayOutputStream();
+			PrintStream ErrPS = new PrintStream(ErrBAOS) {
+				@Override
+				public void print(String Line) {
+					if (OutBuffer.size() >= MaxLineSize) {
+						OutBuffer.remove(0);
+					}
+
+					OutBuffer.add("\u001b[41m" + Line + "\u001b[0m");
+				}
+			};
+			System.setErr(ErrPS);
+
+			//TUI的なアレを描画するための関数
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					int LastLineIndex = 0;
+
+					while (true) {
+						if (OutBuffer.size() != LastLineIndex) {
+							SysOut.print("\u001b[2J");
+
+							//枠
+							SysOut.println("    ____                  _       ____  ____  ______    ");
+							SysOut.println("   / __ \\__  ______ ___  (_)___ _/ __ )/ __ \\/_  __/  ");
+							SysOut.println("  / /_/ / / / / __ `__ \\/ / __ `/ __  / / / / / /      ");
+							SysOut.println(" / _, _/ /_/ / / / / / / / /_/ / /_/ / /_/ / / /        ");
+							SysOut.println("/_/ |_|\\__,_/_/ /_/ /_/_/\\__,_/_____/\\____/ /_/      ");
+							SysOut.println("V1.1");
+							SysOut.println("--------------------------------------------------------");
+
+							//出力
+							for (int I = 0; I < MaxLineSize; I++) {
+								if (OutBuffer.size() >= MaxLineSize) {
+									String Line = OutBuffer.get(I);
+									SysOut.println(Line);
+								} else {
+									SysOut.println("");
+								}
+							}
+
+							SysOut.println("--------------------------------------------------------");
+							SysOut.print(">");
+
+							LastLineIndex = OutBuffer.size();
+						}
+					}
+				}
+			}).start();
 
 			LOG(LOG_TYPE.PROCESS, "Config load...");
 			if (new File("./Config.ini").exists()) {
