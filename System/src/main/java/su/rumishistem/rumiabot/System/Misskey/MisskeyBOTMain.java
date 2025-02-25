@@ -14,6 +14,7 @@ import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
+import su.rumishistem.rumi_java_lib.Misskey.Event.DisconnectEvent;
 import su.rumishistem.rumi_java_lib.Misskey.Event.EVENT_LISTENER;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
@@ -141,6 +142,11 @@ public class MisskeyBOTMain {
 				public void onNewFollower(NewFollower e) {
 					e.getUser().Follow();
 					LOG(LOG_TYPE.INFO, "フォローされたのでフォロバしました");
+				}
+
+				@Override
+				public void onDisconnect(DisconnectEvent e) {
+					System.out.println("切断されましたあああああああああああああ");
 				}
 			});
 		} else {
