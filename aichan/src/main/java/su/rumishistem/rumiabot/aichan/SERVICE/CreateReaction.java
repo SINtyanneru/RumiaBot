@@ -1,15 +1,8 @@
 package su.rumishistem.rumiabot.aichan.SERVICE;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import su.rumishistem.rumiabot.aichan.MODULE.GetDiscordMessage;
 
