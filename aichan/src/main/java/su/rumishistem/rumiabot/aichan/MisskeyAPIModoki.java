@@ -1,10 +1,12 @@
 package su.rumishistem.rumiabot.aichan;
 
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
-
+import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import su.rumishistem.rumi_java_lib.FETCH;
 import su.rumishistem.rumi_java_lib.FETCH_RESULT;
+import su.rumishistem.rumi_java_lib.Misskey.TYPE.User;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_REQUEST;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_RESULT;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
@@ -23,6 +26,7 @@ import su.rumishistem.rumi_java_lib.WebSocket.Server.CONNECT_EVENT.CONNECT_EVENT
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.CLOSE_EVENT;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.MESSAGE_EVENT;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.WS_EVENT_LISTENER;
+import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.aichan.SERVICE.CreateNote;
 import su.rumishistem.rumiabot.aichan.SERVICE.CreateReaction;
 
@@ -153,6 +157,44 @@ public class MisskeyAPIModoki {
 					CreateReaction.Create(Reaction, NoteID);
 
 					return new HTTP_RESULT(200, "{}".getBytes(), JSONMime);
+				} catch (Exception EX) {
+					EX.printStackTrace();
+					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
+				}
+			}
+		});
+
+		//ユーザー習得
+		SH.SetRoute("/api/users/show", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+			@Override
+			public HTTP_RESULT apply(HTTP_REQUEST r) {
+				try {
+					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
+
+					LinkedHashMap<String, Object> UserData = new LinkedHashMap<String, Object>();
+
+					String UID = POST_BODY.get("userId").asText();
+					if (UID.startsWith("Misskey_")) {
+						User MisskeyUser = MisskeyBOT.GetUserID(UID.replace("Misskey_", ""));
+						UserData.put("id", MisskeyUser.getID());
+						UserData.put("name", MisskeyUser.getNAME());
+						UserData.put("username", MisskeyUser.getUID());
+						UserData.put("host", null);
+						UserData.put("isFollowing", true);
+						UserData.put("isBot", false);
+					} else if (UID.startsWith("Discord_")) {
+						net.dv8tion.jda.api.entities.User DiscordUser = DISCORD_BOT.getUserById(UID.replace("Discord_", ""));
+						UserData.put("id", DiscordUser.getId());
+						UserData.put("name", DiscordUser.getName());
+						UserData.put("username", DiscordUser.getGlobalName());
+						UserData.put("host", "discord.com");
+						UserData.put("isFollowing", true);
+						UserData.put("isBot", DiscordUser.isBot());
+					} else {
+						throw new Error("MisskeyでもDiscordでもない");
+					}
+
+					return new HTTP_RESULT(200, new ObjectMapper().writeValueAsString(UserData).getBytes(), JSONMime);
 				} catch (Exception EX) {
 					EX.printStackTrace();
 					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
