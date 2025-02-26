@@ -47,76 +47,80 @@ public class MisskeyBOTMain {
 						//メンションされていればコマンドとして処理
 						if (e.getNOTE().isKaiMention()) {
 							String Text = e.getNOTE().getTEXT().replaceAll("^@[^@\\s]+(?:@[^@\\s]+)?", "").replaceAll("^ ", "");
-							String[] CMD = Text.split(" ");
-							HashMap<String, Object> MisskeyOption = new HashMap<String, Object>();
+							//先頭が>ならコマンド
+							if (Text.startsWith(">")) {
+								String[] CMD = Text.split(" ");
+								HashMap<String, Object> MisskeyOption = new HashMap<String, Object>();
 
-							//オプションを集計
-							for (int I = 1; I < CMD.length; I++) {
-								if (CMD[I].split("=").length == 2) {
-									MisskeyOption.put(CMD[I].split("=")[0], CMD[I].split("=")[1]);
-								} else {
-									return;
-								}
-							}
-
-							CommandData Command = SearchCommand.Command(CMD[0]);
-							List<CommandOption> OptionList = new ArrayList<CommandOption>();
-							FunctionClass Function = SearchCommand.Function(CMD[0]);
-							if (Command != null && Function != null) {
-								//オプションを加工してばーん
-								for (CommandOption Option:Command.GetOptionList()) {
-									if (MisskeyOption.get(Option.GetName()) != null) {
-										OptionList.add(
-											new CommandOption(
-												Option.GetName(),
-												Option.GetType(),
-												MisskeyOption.get(Option.GetName()),
-												Option.isRequire()
-											)
-										);
-									} else if (Option.isRequire()) {
-										//されていない＆必要ならエラー
-										NoteBuilder NB = new NoteBuilder();
-										NB.setTEXT("必要なオプションが不足しています:" + Option.GetName());
-										NB.setREPLY(e.getNOTE());
-										MisskeyBOT.PostNote(NB.Build());
+								//オプションを集計
+								for (int I = 1; I < CMD.length; I++) {
+									if (CMD[I].split("=").length == 2) {
+										MisskeyOption.put(CMD[I].split("=")[0], CMD[I].split("=")[1]);
+									} else {
 										return;
 									}
 								}
-								Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
 
-								//リアクション
-								MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
-
-								//実行
-								new Thread(new Runnable() {
-									@Override
-									public void run() {
-										try {
-											Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
-										} catch (Exception EX) {
-											EX.printStackTrace();
-											try {
-												NoteBuilder NB = new NoteBuilder();
-												NB.setTEXT("エラー\n```\n" + EXCEPTION_READER.READ(EX)+ "\n```");
-												NB.setREPLY(e.getNOTE());
-												MisskeyBOT.PostNote(NB.Build());
-											} catch (Exception EX2) {
-												//もみ消す
-											}
+								CommandData Command = SearchCommand.Command(CMD[0]);
+								List<CommandOption> OptionList = new ArrayList<CommandOption>();
+								FunctionClass Function = SearchCommand.Function(CMD[0]);
+								if (Command != null && Function != null) {
+									//オプションを加工してばーん
+									for (CommandOption Option:Command.GetOptionList()) {
+										if (MisskeyOption.get(Option.GetName()) != null) {
+											OptionList.add(
+												new CommandOption(
+													Option.GetName(),
+													Option.GetType(),
+													MisskeyOption.get(Option.GetName()),
+													Option.isRequire()
+												)
+											);
+										} else if (Option.isRequire()) {
+											//されていない＆必要ならエラー
+											NoteBuilder NB = new NoteBuilder();
+											NB.setTEXT("必要なオプションが不足しています:" + Option.GetName());
+											NB.setREPLY(e.getNOTE());
+											MisskeyBOT.PostNote(NB.Build());
+											return;
 										}
 									}
-								}).start();
-								return;
-							} else {
-								NoteBuilder NB = new NoteBuilder();
-								NB.setTEXT("コマンドがありません");
-								NB.setREPLY(e.getNOTE());
-								MisskeyBOT.PostNote(NB.Build());
+									Command.SetOptionList(OptionList.toArray(new CommandOption[0]));
+
+									//リアクション
+									MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
+
+									//実行
+									new Thread(new Runnable() {
+										@Override
+										public void run() {
+											try {
+												Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
+											} catch (Exception EX) {
+												EX.printStackTrace();
+												try {
+													NoteBuilder NB = new NoteBuilder();
+													NB.setTEXT("エラー\n```\n" + EXCEPTION_READER.READ(EX)+ "\n```");
+													NB.setREPLY(e.getNOTE());
+													MisskeyBOT.PostNote(NB.Build());
+												} catch (Exception EX2) {
+													//もみ消す
+												}
+											}
+										}
+									}).start();
+									return;
+								} else {
+									NoteBuilder NB = new NoteBuilder();
+									NB.setTEXT("コマンドがありません");
+									NB.setREPLY(e.getNOTE());
+									MisskeyBOT.PostNote(NB.Build());
+									return;
+								}
 							}
 						}
 
-						//イベント着火
+						//イベント着火(コマンドでは無い)
 						for (FunctionClass Function:FunctionModuleList) {
 							Function.ReceiveMessage(new ReceiveMessageEvent(
 								SourceType.Misskey,
