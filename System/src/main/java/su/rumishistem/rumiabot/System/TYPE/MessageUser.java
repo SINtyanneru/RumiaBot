@@ -33,9 +33,11 @@ public class MessageUser {
 		if (DiscordMember != null) {
 			//Discord
 			return DiscordMember.getUser().getId();
-		} else {
+		} else if (MisskeyUser != null) {
 			//Misskey
 			return MisskeyUser.getID();
+		} else {
+			return "";
 		}
 	}
 
@@ -49,9 +51,11 @@ public class MessageUser {
 				//グローバル名
 				return DiscordMember.getUser().getGlobalName();
 			}
-		} else {
+		} else if (MisskeyUser != null) {
 			//Misskey
 			return MisskeyUser.getNAME();
+		} else {
+			return "";
 		}
 	}
 
@@ -59,9 +63,11 @@ public class MessageUser {
 		if (DiscordMember != null) {
 			//Discord
 			return DiscordMember.getAvatarUrl();
-		} else {
+		} else if (MisskeyUser != null) {
 			//Misskey
 			return MisskeyUser.getICON_URL();
+		} else {
+			return "";
 		}
 	}
 }

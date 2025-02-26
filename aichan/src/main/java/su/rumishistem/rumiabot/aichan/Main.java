@@ -10,8 +10,11 @@ import java.util.LinkedHashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
+
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.MainChannnelID;
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.HomeTLChannnelID;
@@ -102,6 +105,13 @@ public class Main implements FunctionClass {
 			return;
 		}
 
+		//Discordなら機能が有効化されていることを確認
+		if (e.GetSource() == SourceType.Discord) {
+			if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.aichan)) {
+				return;
+			}
+		}
+
 		try {
 			LinkedHashMap<String, Object> WebSocketMessage = new LinkedHashMap<String, Object>();
 			WebSocketMessage.put("type", "channel");
@@ -118,12 +128,27 @@ public class Main implements FunctionClass {
 				Body.put("type", "mention");
 			}
 
+			//ID
+			String ID = "";
+			if (e.GetSource() == SourceType.Discord) {
+				ID = "Discord_" + e.GetMessage().GetDiscordChannel().getId() + "_" + e.GetMessage().GetID();
+			} else if (e.GetSource() == SourceType.Misskey) {
+				ID = "Misskey_" + e.GetMessage().GetID();
+			}
+
+			//本文
+			String Text = e.GetMessage().GetText();
+			if (e.GetSource() == SourceType.Discord) {
+				//Discordのメンションを置き換える
+				Text = Text.replaceAll("<@\\d{1,100}>", "@rumiabot");
+			}
+
 			//ノート
 			LinkedHashMap<String, Object> NoteBody = new LinkedHashMap<String, Object>();
-			NoteBody.put("id", e.GetSource().name() + "_" + e.GetMessage().GetID());
+			NoteBody.put("id", ID);
 			NoteBody.put("createAt", "2025-02-26T08:00:10.046Z");
 			NoteBody.put("userId", e.GetSource().name() + "_" + e.GetUser().GetID());
-			NoteBody.put("text", e.GetMessage().GetText());
+			NoteBody.put("text", Text);
 			NoteBody.put("cw", null);
 			NoteBody.put("visibility", "public");
 			NoteBody.put("localOnly", false);
@@ -162,6 +187,7 @@ public class Main implements FunctionClass {
 			String JSON = new ObjectMapper().writeValueAsString(WebSocketMessage);
 			SendWebSocket(JSON);
 		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 	@Override
