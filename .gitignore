@@ -4,6 +4,8 @@ DOWNLOAD/
 DATA/MUSIC/*.*
 FUNCTION/*.*
 
+ai/
+
 target/
 pom.xml.tag
 pom.xml.releaseBackup
