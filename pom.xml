@@ -17,6 +17,7 @@
     <module>VerifyPanelFunction</module>
     <module>CalcFunction</module>
     <module>VXTwitterFunction</module>
+    <module>aichan</module>
   </modules>
   <repositories>
     <repository>
