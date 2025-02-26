@@ -3,6 +3,8 @@ package su.rumishistem.rumiabot.aichan.SERVICE;
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import java.io.IOException;
 import java.util.HashMap;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.Message;
@@ -33,7 +35,7 @@ public class CreateNote {
 					MSG.reply(TEXT).queue();
 				}
 				//Discordはここで終了
-				return "";
+				return GenResult(TEXT);
 			} else {
 				throw new Error("どっちの投稿かわかりません");
 			}
@@ -41,7 +43,10 @@ public class CreateNote {
 
 		//投稿
 		MisskeyBOT.PostNote(NB.Build());
+		return GenResult(TEXT);
+	}
 
+	private static String GenResult(String TEXT) throws JsonProcessingException {
 		//misskey/note.tsの型に合うように作ったけどどうだろうか？
 		HashMap<String, Object> RETURN = new HashMap<String, Object>();
 		RETURN.put("id", "a");
