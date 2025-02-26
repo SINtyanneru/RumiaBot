@@ -45,11 +45,13 @@ public class Main {
 			PrintStream OutPS = new PrintStream(OutBAOS) {
 				@Override
 				public void print(String Line) {
+					/*
 					if (OutBuffer.size() >= MaxLineSize) {
 						OutBuffer.remove(0);
-					}
+					}*/
 
 					OutBuffer.add(Line);
+					SysOut.println(Line);
 				}
 			};
 			System.setOut(OutPS);
@@ -59,11 +61,13 @@ public class Main {
 			PrintStream ErrPS = new PrintStream(ErrBAOS) {
 				@Override
 				public void print(String Line) {
+					/*
 					if (OutBuffer.size() >= MaxLineSize) {
 						OutBuffer.remove(0);
-					}
+					}*/
 
 					OutBuffer.add("\u001b[41m" + Line + "\u001b[0m");
+					SysOut.println(Line);
 				}
 			};
 			System.setErr(ErrPS);
@@ -76,6 +80,7 @@ public class Main {
 
 					while (true) {
 						if (OutBuffer.size() != LastLineIndex) {
+							/*
 							SysOut.print("\u001b[2J");
 
 							//枠
@@ -99,7 +104,7 @@ public class Main {
 
 							SysOut.println("--------------------------------------------------------");
 							SysOut.print(">");
-
+							*/
 							LastLineIndex = OutBuffer.size();
 						}
 					}
@@ -138,15 +143,15 @@ public class Main {
 				}
 			}).start();
 
-			//モジュールをロード
-			FML = new FunctionModuleLoader();
-			FML.Load();
-
 			//DiscordBOTを起動
 			DiscordBOT.Init();
 
 			//MisskeyBOTを起動
 			su.rumishistem.rumiabot.System.Misskey.MisskeyBOTMain.Init();
+
+			//モジュールをロード
+			FML = new FunctionModuleLoader();
+			FML.Load();
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

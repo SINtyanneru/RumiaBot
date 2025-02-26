@@ -6,15 +6,22 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.LinkedHashMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
+import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.MainChannnelID;
+import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.HomeTLChannnelID;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "藍ちゃんを乗っとるやつ";
 	private static final String FUNCTION_VERSION = "1.0";
 	private static final String FUNCTION_AUTOR = "Rumisan";
+
+	public static boolean Enabled = false;
 
 	@Override
 	public String FUNCTION_NAME() {
@@ -42,6 +49,29 @@ public class Main implements FunctionClass {
 
 				//起動
 				Process P = PB.start();
+				Enabled = true;
+
+				//MisskeyAPIもどき起動
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							MisskeyAPIModoki.WebSocketStart();
+						} catch (Exception EX) {
+							EX.printStackTrace();
+						}
+					}
+				}).start();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							MisskeyAPIModoki.HTTPStart();
+						} catch (Exception EX) {
+							EX.printStackTrace();
+						}
+					}
+				}).start();
 
 				//標準出力
 				new Thread(new Runnable() {
@@ -51,7 +81,7 @@ public class Main implements FunctionClass {
 							BufferedReader BR = new BufferedReader(new InputStreamReader(P.getInputStream()));
 							String Line;
 							while ((Line = BR.readLine()) != null) {
-								System.out.println("[  藍  ]" + Line);
+								System.out.println("[  藍  ][SysOut]" + Line);
 							}
 						} catch (Exception EX) {
 							EX.printStackTrace();
@@ -68,6 +98,71 @@ public class Main implements FunctionClass {
 	}
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
+		if (!Enabled) {
+			return;
+		}
+
+		try {
+			LinkedHashMap<String, Object> WebSocketMessage = new LinkedHashMap<String, Object>();
+			WebSocketMessage.put("type", "channel");
+			//ぼでー
+			LinkedHashMap<String, Object> Body = new LinkedHashMap<String, Object>();
+
+			if (!e.GetMessage().isKaiMention()) {
+				//ただのノート
+				Body.put("id", HomeTLChannnelID);
+				Body.put("type", "note");
+			} else {
+				//メンション
+				Body.put("id", MainChannnelID);
+				Body.put("type", "mention");
+			}
+
+			//ノート
+			LinkedHashMap<String, Object> NoteBody = new LinkedHashMap<String, Object>();
+			NoteBody.put("id", e.GetSource().name() + "_" + e.GetMessage().GetID());
+			NoteBody.put("createAt", "2025-02-26T08:00:10.046Z");
+			NoteBody.put("userId", e.GetSource().name() + "_" + e.GetUser().GetID());
+			NoteBody.put("text", e.GetMessage().GetText());
+			NoteBody.put("cw", null);
+			NoteBody.put("visibility", "public");
+			NoteBody.put("localOnly", false);
+			NoteBody.put("reactionAcceptance", null);
+			NoteBody.put("renoteCount", 0);
+			NoteBody.put("repliesCount", 0);
+			NoteBody.put("reactionCount", 0);
+			NoteBody.put("reactions", new Object[] {});
+			NoteBody.put("reactionEmojis", new Object[] {});
+			NoteBody.put("reactionAndUserPairCache", new Object[] {});
+			NoteBody.put("emojis", new Object[] {});
+			NoteBody.put("fileIds", new Object[] {});
+			NoteBody.put("files", new Object[] {});
+			NoteBody.put("replyId", null);
+			NoteBody.put("renoteId", null);
+			if (e.GetMessage().isKaiMention()) {
+				//自分自身がメンションされてる
+				NoteBody.put("mentions", new String[] {"9pzfpcwe7o"});
+			}
+			NoteBody.put("clippedCount", 0);
+
+			//ユーザー
+			LinkedHashMap<String, Object> UserBody = new LinkedHashMap<String, Object>();
+			UserBody.put("id", e.GetSource().name() + "_" + e.GetUser().GetID());
+			UserBody.put("name", e.GetUser().GetName());
+			UserBody.put("username", e.GetUser().GetName());
+			UserBody.put("host", null);
+			UserBody.put("avatarUrl", e.GetUser().GetIconURL());
+			//ノートにユーザーを
+			NoteBody.put("user", UserBody);
+			//ノートをぼでーに
+			Body.put("body", NoteBody);
+			//ぼでーをメッセージに
+			WebSocketMessage.put("body", Body);
+
+			String JSON = new ObjectMapper().writeValueAsString(WebSocketMessage);
+			SendWebSocket(JSON);
+		} catch (Exception EX) {
+		}
 	}
 	@Override
 	public boolean GetAllowCommand(String Name) {

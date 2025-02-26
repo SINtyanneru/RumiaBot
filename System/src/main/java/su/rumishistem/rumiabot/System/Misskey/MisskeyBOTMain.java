@@ -49,7 +49,7 @@ public class MisskeyBOTMain {
 							String Text = e.getNOTE().getTEXT().replaceAll("^@[^@\\s]+(?:@[^@\\s]+)?", "").replaceAll("^ ", "");
 							//先頭が>ならコマンド
 							if (Text.startsWith(">")) {
-								String[] CMD = Text.split(" ");
+								String[] CMD = Text.replaceAll("^>", "").split(" ");
 								HashMap<String, Object> MisskeyOption = new HashMap<String, Object>();
 
 								//オプションを集計

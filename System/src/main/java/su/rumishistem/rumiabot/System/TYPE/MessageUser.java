@@ -29,6 +29,16 @@ public class MessageUser {
 		}
 	}
 
+	public String GetID() {
+		if (DiscordMember != null) {
+			//Discord
+			return DiscordMember.getUser().getId();
+		} else {
+			//Misskey
+			return MisskeyUser.getID();
+		}
+	}
+
 	public String GetName() {
 		if (DiscordMember != null) {
 			//Discord
