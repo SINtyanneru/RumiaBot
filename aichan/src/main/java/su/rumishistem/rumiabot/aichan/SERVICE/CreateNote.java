@@ -63,7 +63,7 @@ public class CreateNote {
 	private static String GenResult(String ID,String TEXT) throws JsonProcessingException {
 		//misskey/note.tsの型に合うように作ったけどどうだろうか？
 		HashMap<String, Object> RETURN = new HashMap<String, Object>();
-		RETURN.put("id", "a");
+		RETURN.put("id", ID);
 		RETURN.put("text", TEXT);
 		RETURN.put("reply", null);
 		RETURN.put("poll", null);
