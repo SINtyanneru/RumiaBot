@@ -27,7 +27,11 @@ public class CreateNote {
 				//Misskey返信
 				ReplyID = ReplyID.replace("Misskey_", "");
 				Note ReplyNote = MisskeyBOT.GetNote(ReplyID);
-				NB.setREPLY(ReplyNote);
+				if (ReplyNote != null) {
+					NB.setREPLY(ReplyNote);
+				} else {
+					throw new Error("リプライ先のノートが見つかりませんでした");
+				}
 			} else if (ReplyID.startsWith("Discord_")) {
 				//Discord返信
 				Message MSG = GetDiscordMessage.Get(ReplyID);

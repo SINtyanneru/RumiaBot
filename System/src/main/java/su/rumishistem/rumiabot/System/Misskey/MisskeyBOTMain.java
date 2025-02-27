@@ -38,7 +38,15 @@ public class MisskeyBOTMain {
 			MisskeyBOT.SET_EVENT_LISTENER(new EVENT_LISTENER() {
 				@Override
 				public void onReady() {
-					LOG(LOG_TYPE.OK, "MisskeyBOT:ready!");
+					try {
+						LOG(LOG_TYPE.OK, "MisskeyBOT:ready!");
+
+						NoteBuilder NB = new NoteBuilder();
+						NB.setTEXT("接続しました");
+						MisskeyBOT.PostNote(NB.Build());
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
 				}
 				
 				@Override
