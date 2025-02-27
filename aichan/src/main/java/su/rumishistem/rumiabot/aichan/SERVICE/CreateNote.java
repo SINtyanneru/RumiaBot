@@ -32,21 +32,35 @@ public class CreateNote {
 				//Discord返信
 				Message MSG = GetDiscordMessage.Get(ReplyID);
 				if (MSG != null) {
-					MSG.reply(TEXT).queue();
+					String[] PostMessageID = {null};
+					MSG.reply(TEXT).queue(
+						(PostMessage)->{
+							PostMessageID[0] = PostMessage.getId();
+						}
+					);
+					
+					//Discordはここで終了
+					while (true) {
+						if (PostMessageID[0] != null) {
+							return GenResult(PostMessageID[0], TEXT);
+						} else {
+							System.out.flush();
+						}
+					}
+				} else {
+					throw new Error("あ");
 				}
-				//Discordはここで終了
-				return GenResult(TEXT);
 			} else {
 				throw new Error("どっちの投稿かわかりません");
 			}
 		}
 
 		//投稿
-		MisskeyBOT.PostNote(NB.Build());
-		return GenResult(TEXT);
+		Note PostedNote = MisskeyBOT.PostNote(NB.Build());
+		return GenResult(PostedNote.getID(), TEXT);
 	}
 
-	private static String GenResult(String TEXT) throws JsonProcessingException {
+	private static String GenResult(String ID,String TEXT) throws JsonProcessingException {
 		//misskey/note.tsの型に合うように作ったけどどうだろうか？
 		HashMap<String, Object> RETURN = new HashMap<String, Object>();
 		RETURN.put("id", "a");
