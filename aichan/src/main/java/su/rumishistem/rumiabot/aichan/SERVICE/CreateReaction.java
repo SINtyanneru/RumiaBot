@@ -15,7 +15,7 @@ public class CreateReaction {
 			Message MSG = GetDiscordMessage.Get(NoteID);
 			if (MSG != null) {
 				//相互変換必須
-				String DiscordEmoji = "♥️";
+				String DiscordEmoji = Reaction;
 				switch (Reaction) {
 					case "love":
 						DiscordEmoji = "♥️";
