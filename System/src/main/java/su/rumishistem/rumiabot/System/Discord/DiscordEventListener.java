@@ -54,6 +54,12 @@ public class DiscordEventListener extends ListenerAdapter {
 				E.getMessage().reply(NENE_ZHUUSHO).queue();
 			}
 
+			if (E.getMessage().getContentRaw().equals("しらん人の住所")) {
+				String NENE_BASE64 = "5YyX5rW36YGT6Iur5bCP54mn5biC5ouT5YuH5p2x55S6NuS4geebrjMtNDM=";
+				String NENE_ZHUUSHO = new String(Base64.getDecoder().decode(NENE_BASE64));
+				E.getMessage().reply(NENE_ZHUUSHO).queue();
+			}
+
 			//イベント着火
 			for (FunctionClass Function:FunctionModuleList) {
 				Function.ReceiveMessage(new ReceiveMessageEvent(
