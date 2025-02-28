@@ -21,6 +21,7 @@ import net.dv8tion.jda.internal.utils.JDALogger;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 
 public class DiscordBOT {
 	public static void Init() throws InterruptedException {
@@ -96,8 +97,28 @@ public class DiscordBOT {
 			SlashCommandList.add(SlashCommand);
 		}
 
+		//機能設定用コマンド
+		SlashCommandList.add(GenFunctionSettingCommand());
+
 		//スラッシュコマンド登録
 		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).queue();
 		LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
+	}
+
+	private static SlashCommandData GenFunctionSettingCommand() {
+		SlashCommandData Command = Commands.slash("setting", "機能を設定します");
+
+		//機能一覧
+		OptionData FunctionOption = new OptionData(OptionType.STRING, "function", "機能", true);
+		for (DiscordFunction Function:DiscordFunction.values()) {
+			FunctionOption.addChoice(Function.name(), Function.name());
+		}
+		Command.addOptions(FunctionOption);
+
+		//有効化無効化
+		OptionData EnableOption = new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true);
+		Command.addOptions(EnableOption);
+
+		return Command;
 	}
 }

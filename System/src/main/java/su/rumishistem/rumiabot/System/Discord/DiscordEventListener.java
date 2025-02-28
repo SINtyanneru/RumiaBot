@@ -20,11 +20,14 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionEnable;
+import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionFind;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.MODULE.UserBlockCheck;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.MessageData;
 import su.rumishistem.rumiabot.System.TYPE.MessageUser;
@@ -92,6 +95,27 @@ public class DiscordEventListener extends ListenerAdapter {
 			@Override
 			public void run() {
 				try {
+					//機能の有効化無効化コマンド
+					if (INTERACTION.getName().equals("setting")) {
+						boolean Enable = INTERACTION.getOption("enable").getAsBoolean();
+						DiscordFunction Function = DiscordFunctionFind.Find(INTERACTION.getOption("function").getAsString());
+						INTERACTION.deferReply().queue();
+
+						if (Function != null) {
+							DiscordFunctionEnable.GuildSetting(Enable, INTERACTION.getGuild().getId(), Function);
+
+							if (Enable) {
+								INTERACTION.getHook().editOriginal("有効化しました").queue();
+							} else {
+								INTERACTION.getHook().editOriginal("無効化しました").queue();
+							}
+						} else {
+							INTERACTION.getHook().editOriginal("機能がありません").queue();
+						}
+						return;
+					}
+
+					//機能のコマンド
 					CommandData Command = SearchCommand.Command(INTERACTION.getName());
 					List<CommandOption> OptionList = new ArrayList<CommandOption>();
 					FunctionClass Function = SearchCommand.Function(INTERACTION.getName());
