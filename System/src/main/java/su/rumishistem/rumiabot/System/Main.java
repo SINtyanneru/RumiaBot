@@ -1,6 +1,8 @@
 package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
+import static su.rumishistem.rumiabot.System.Main.CommandList;
+import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -21,8 +23,14 @@ import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.HTTP.HTTP;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class Main {
 	public static ArrayNode CONFIG_DATA = null;
@@ -152,8 +160,62 @@ public class Main {
 			//モジュールをロード
 			FML = new FunctionModuleLoader();
 			FML.Load();
+
+			//スラッシュコマンド集計
+			List<SlashCommandData> SlashCommandList = new ArrayList<SlashCommandData>();
+			for (CommandData Command:CommandList) {
+				//オプション
+				List<OptionData> OptionList = new ArrayList<OptionData>();
+				for (CommandOption Option:Command.GetOptionList()) {
+					OptionType Type = null;
+					switch (Option.GetType()) {
+						case String: {
+							Type = OptionType.STRING;
+							break;
+						}
+
+						case Int: {
+							Type = OptionType.INTEGER;
+							break;
+						}
+					}
+
+					OptionData SlashOption = new OptionData(Type, Option.GetName(), "説明", Option.isRequire());
+					OptionList.add(SlashOption);
+				}
+
+				//コマンドの情報
+				SlashCommandData SlashCommand = Commands.slash(Command.GetName(), "説明");
+				SlashCommand.addOptions(OptionList);
+				//追加
+				SlashCommandList.add(SlashCommand);
+			}
+
+			//機能設定用コマンド
+			SlashCommandList.add(GenFunctionSettingCommand());
+
+			//スラッシュコマンド登録
+			DISCORD_BOT.updateCommands().addCommands(SlashCommandList).queue();
+			LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
+	}
+
+	private static SlashCommandData GenFunctionSettingCommand() {
+		SlashCommandData Command = Commands.slash("setting", "機能を設定します");
+
+		//機能一覧
+		OptionData FunctionOption = new OptionData(OptionType.STRING, "function", "機能", true);
+		for (DiscordFunction Function:DiscordFunction.values()) {
+			FunctionOption.addChoice(Function.name(), Function.name());
+		}
+		Command.addOptions(FunctionOption);
+
+		//有効化無効化
+		OptionData EnableOption = new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true);
+		Command.addOptions(EnableOption);
+
+		return Command;
 	}
 }
