@@ -18,6 +18,7 @@
     <module>CalcFunction</module>
     <module>VXTwitterFunction</module>
     <module>aichan</module>
+    <module>WsFunction</module>
   </modules>
   <repositories>
     <repository>
@@ -29,7 +30,7 @@
     <dependency>
       <groupId>su.rumishistem</groupId>
       <artifactId>rumi_java_lib</artifactId>
-      <version>13.25</version>
+      <version>13.27</version>
     </dependency>
     <dependency>
       <groupId>net.dv8tion</groupId>
