@@ -62,6 +62,15 @@ public class Main implements FunctionClass {
 		FFP.setPreference("browser.cache.memory.enable", false);
 		FFP.setPreference("browser.cache.offline.enable", false);
 		FFP.setPreference("network.http.use-cache", false);
+		//ダウンロード無効化
+		FFP.setPreference("browser.download.dir", "/tmp/");
+		//いたずら対策
+		FFP.setPreference("dom.push.enabled", false);
+		FFP.setPreference("dom.ipc.processCount", 1);
+		FFP.setPreference("dom.storage.enabled", false);
+		FFP.setPreference("dom.disable_open_during_load", true);
+		FFP.setPreference("dom.serviceWorkers.enabled", false);
+		FFP.setPreference("javascript.enabled", false);
 
 		FirefoxOptions BROWSER_OPTION = new FirefoxOptions();
 		BROWSER_OPTION.setProfile(FFP);
