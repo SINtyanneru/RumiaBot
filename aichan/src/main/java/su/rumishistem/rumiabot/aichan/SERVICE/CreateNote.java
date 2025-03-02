@@ -1,21 +1,25 @@
 package su.rumishistem.rumiabot.aichan.SERVICE;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.utils.FileUpload;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.Note;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.NoteVis;
 import su.rumishistem.rumiabot.aichan.MODULE.GetDiscordMessage;
 
 public class CreateNote {
-	public static String Create(String TEXT, String ReplyID) throws IOException {
+	public static String Create(String TEXT, String ReplyID, List<File> FileList) throws IOException {
 		TEXT = "藍:" + TEXT;
 
 		NoteBuilder NB = new NoteBuilder();
@@ -37,12 +41,19 @@ public class CreateNote {
 				Message MSG = GetDiscordMessage.Get(ReplyID);
 				if (MSG != null) {
 					String[] PostMessageID = {null};
-					MSG.reply(TEXT).queue(
+
+					//ファイル
+					List<FileUpload> DiscordFileList = new ArrayList<FileUpload>();
+					for (File F:FileList) {
+						DiscordFileList.add(FileUpload.fromData(F));
+					}
+
+					MSG.reply(TEXT).addFiles(DiscordFileList).queue(
 						(PostMessage)->{
 							PostMessageID[0] = PostMessage.getId();
 						}
 					);
-					
+
 					//Discordはここで終了
 					while (true) {
 						if (PostMessageID[0] != null) {
@@ -57,6 +68,11 @@ public class CreateNote {
 			} else {
 				throw new Error("どっちの投稿かわかりません");
 			}
+		}
+
+		//ファイル
+		for (File F:FileList) {
+			NB.AddFile(F);
 		}
 
 		//投稿

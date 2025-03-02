@@ -3,12 +3,21 @@ package su.rumishistem.rumiabot.aichan;
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import su.rumishistem.rumi_java_lib.FETCH;
 import su.rumishistem.rumi_java_lib.FETCH_RESULT;
+import su.rumishistem.rumi_java_lib.FormData;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.User;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_REQUEST;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_RESULT;
@@ -132,12 +142,23 @@ public class MisskeyAPIModoki {
 				try {
 					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
 					String ReplyID = null;
+					List<File> FileList = new ArrayList<File>();
 
 					if (POST_BODY.get("replyId") != null) {
 						ReplyID = POST_BODY.get("replyId").asText();
 					}
 
-					return new HTTP_RESULT(200, CreateNote.Create(POST_BODY.get("text").asText(), ReplyID).getBytes(), JSONMime);
+					if (POST_BODY.get("fileIds") != null) {
+						for (int I = 0; I < POST_BODY.get("fileIds").size(); I++) {
+							JsonNode FN = POST_BODY.get("fileIds").get(I);
+							File F = new File("/tmp/" + FN.asText());
+							if (F.exists()) {
+								FileList.add(F);
+							}
+						}
+					}
+
+					return new HTTP_RESULT(200, CreateNote.Create(POST_BODY.get("text").asText(), ReplyID, FileList).getBytes(), JSONMime);
 				} catch (Exception EX) {
 					EX.printStackTrace();
 					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
@@ -195,6 +216,35 @@ public class MisskeyAPIModoki {
 					}
 
 					return new HTTP_RESULT(200, new ObjectMapper().writeValueAsString(UserData).getBytes(), JSONMime);
+				} catch (Exception EX) {
+					EX.printStackTrace();
+					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
+				}
+			}
+		});
+
+		//ファイルアップロード
+		SH.SetRoute("/api/drive/files/create", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+			@Override
+			public HTTP_RESULT apply(HTTP_REQUEST r) {
+				try {
+					Matcher MTC = Pattern.compile("boundary=(.*);?").matcher(r.GetEVENT().getHEADER_DATA().get("CONTENT-TYPE"));
+					if (MTC.find()) {
+						String Boundary = MTC.group(1);
+						FormData FD = new FormData(r.GetEVENT().getPOST_DATA_BIN(), Boundary.getBytes());
+						String ID = UUID.randomUUID().toString();
+
+						//ファイルに書き込む
+						Files.createFile(Path.of("/tmp/" + ID));
+						FileOutputStream FOS = new FileOutputStream(new File("/tmp/" + ID));
+						FOS.write(FD.GetFile("file"));
+						FOS.flush();
+						FOS.close();
+
+						return new HTTP_RESULT(200, ("{\"id\":\"" + ID + "\"}").getBytes(), JSONMime);
+					} else {
+						return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
+					}
 				} catch (Exception EX) {
 					EX.printStackTrace();
 					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
