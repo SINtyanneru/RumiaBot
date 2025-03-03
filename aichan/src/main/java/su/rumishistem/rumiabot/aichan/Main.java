@@ -44,7 +44,7 @@ public class Main implements FunctionClass {
 		try {
 			String AIDir = Paths.get("").toAbsolutePath().toString() + "/ai/";
 			if (Files.exists(Path.of(AIDir))) {
-				ProcessBuilder PB = new ProcessBuilder("/home/rumisan/.nvm/versions/node/v20.15.0/bin/npm", "run", "start");
+				ProcessBuilder PB = new ProcessBuilder("npm", "run", "start");
 				PB.directory(new File(AIDir));
 				PB.redirectErrorStream(true);
 
