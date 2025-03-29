@@ -19,6 +19,7 @@
     <module>VXTwitterFunction</module>
     <module>aichan</module>
     <module>WsFunction</module>
+    <module>MisskeyReportFucker</module>
   </modules>
   <repositories>
     <repository>
