@@ -112,7 +112,7 @@ public class MisskeyAPIModoki {
 		WSS.START(CONFIG_DATA.get("AI").getData("WS").asInt());
 	}
 
-	public static void HTTPStart() throws IOException {
+	public static void HTTPStart() throws IOException, InterruptedException {
 		String DOMAIN = CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString();
 		String TOKEN = CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString();
 

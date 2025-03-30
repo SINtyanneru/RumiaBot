@@ -6,7 +6,7 @@ import java.io.IOException;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 
 public class HTTP {
-	public static void Init() throws IOException {
+	public static void Init() throws IOException, InterruptedException {
 		SH = new SmartHTTP(CONFIG_DATA.get("HTTP").getData("PORT").asInt());
 		SH.Start();
 	}
