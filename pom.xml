@@ -20,6 +20,7 @@
     <module>aichan</module>
     <module>WsFunction</module>
     <module>MisskeyReportFucker</module>
+    <module>DiscordWelcomeFuckyouMessage</module>
   </modules>
   <repositories>
     <repository>

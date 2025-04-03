@@ -12,6 +12,8 @@ import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -27,6 +29,9 @@ import su.rumishistem.rumiabot.System.MODULE.UserBlockCheck;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
+import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
+import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
 import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.MessageData;
@@ -83,6 +88,7 @@ public class DiscordEventListener extends ListenerAdapter {
 		}
 	}
 
+	//スラッシュコマンド
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
 		//ブロック済みのユーザーなら此処で処理を中断する
@@ -99,10 +105,19 @@ public class DiscordEventListener extends ListenerAdapter {
 					if (INTERACTION.getName().equals("setting")) {
 						boolean Enable = INTERACTION.getOption("enable").getAsBoolean();
 						DiscordFunction Function = DiscordFunctionFind.Find(INTERACTION.getOption("function").getAsString());
+						DiscordChannelFunction ChannelFunction = DiscordFunctionFind.FindChannel(INTERACTION.getOption("function").getAsString());
+
+						//でふぁー
 						INTERACTION.deferReply().queue();
 
-						if (Function != null) {
-							DiscordFunctionEnable.GuildSetting(Enable, INTERACTION.getGuild().getId(), Function);
+						if (Function != null || ChannelFunction != null) {
+							if (Function != null) {
+								//鯖全体の機能
+								DiscordFunctionEnable.GuildSetting(Enable, INTERACTION.getGuild().getId(), Function);
+							} else {
+								//チャンネルごとの機能
+								DiscordFunctionEnable.ChannelSetting(Enable, INTERACTION.getGuild().getId(), INTERACTION.getChannel().getId(), ChannelFunction);
+							}
 
 							if (Enable) {
 								INTERACTION.getHook().editOriginal("有効化しました").queue();
@@ -162,7 +177,7 @@ public class DiscordEventListener extends ListenerAdapter {
 		}).start();
 	}
 
-
+	//ボタン
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
 		FunctionClass Function = SearchCommand.Function("Button:" + INTERACTION.getComponentId().split("\\?")[0]);
@@ -182,7 +197,8 @@ public class DiscordEventListener extends ListenerAdapter {
 		}
 	}
 
-	@Override//鯖に参加
+	//鯖に入った
+	@Override
 	public void onGuildJoin(GuildJoinEvent E){
 		try {
 			//通知
@@ -228,6 +244,7 @@ public class DiscordEventListener extends ListenerAdapter {
 		}
 	}
 
+	//サーバーから叩き出された
 	@Override
 	public void onGuildLeave(GuildLeaveEvent E){
 		try {
@@ -245,6 +262,30 @@ public class DiscordEventListener extends ListenerAdapter {
 			}
 		} catch (Exception EX) {
 			//SQLが「Duplicate entry '' for key 'PRIMARY'」みたいなエラーを出すのでもみ消す
+		}
+	}
+
+	//サーバーにユーザーが参加
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent e) {
+		for (FunctionClass Function:FunctionModuleList) {
+			try {
+				Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberAdd, e.getGuild(), null));
+			} catch (Exception EX) {
+				EX.printStackTrace();
+			}
+		}
+	}
+
+	//サーバーからユーザーが脱退
+	@Override
+	public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
+		for (FunctionClass Function:FunctionModuleList) {
+			try {
+				Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberRemove, e.getGuild(), null));
+			} catch (Exception EX) {
+				EX.printStackTrace();
+			}
 		}
 	}
 }

@@ -8,11 +8,16 @@ public interface FunctionClass {
 	String FUNCTION_AUTOR();
 
 	void Init();
+
 	void ReceiveMessage(ReceiveMessageEvent e);
 
 	boolean GetAllowCommand(String Name);
+
 	void RunCommand(CommandInteraction CI) throws Exception;
+
 	default void RunButton(ButtonInteractionEvent BI) throws Exception {
 		BI.reply("このボタンの応答に対応する機能が存在しません").queue();
 	}
+
+	default void DiscordEventReceive(DiscordEvent e) throws Exception {}
 }

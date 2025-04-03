@@ -25,6 +25,7 @@ import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.HTTP.HTTP;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import net.dv8tion.jda.api.JDA;
@@ -136,6 +137,9 @@ public class Main {
 		//機能一覧
 		OptionData FunctionOption = new OptionData(OptionType.STRING, "function", "機能", true);
 		for (DiscordFunction Function:DiscordFunction.values()) {
+			FunctionOption.addChoice(Function.name(), Function.name());
+		}
+		for (DiscordChannelFunction Function:DiscordChannelFunction.values()) {
 			FunctionOption.addChoice(Function.name(), Function.name());
 		}
 		Command.addOptions(FunctionOption);
