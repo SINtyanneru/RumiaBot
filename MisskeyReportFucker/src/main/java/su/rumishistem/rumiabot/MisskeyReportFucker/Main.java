@@ -93,10 +93,6 @@ public class Main implements FunctionClass {
 		}
 	}
 
-	private static String Sanitize(String Text) {
-		return Text.replace("`", "'");
-	}
-
 	private static String GenNoteText(JsonNode R) {
 		String Content = R.get("comment").asText();
 		String Host = GetHost(R);
@@ -157,5 +153,17 @@ public class Main implements FunctionClass {
 		FETCH AJAX = new FETCH("https://" + CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString() + "/api/admin/resolve-abuse-user-report");
 		AJAX.SetHEADER("Content-Type", "application/json; charset=UTF-8");
 		AJAX.POST(("{\"reportId\":\"" + ID + "\",\"resolvedAs\":\"reject\",\"i\":\"" + AdminToken + "\"}").getBytes());
+	}
+
+	private static String Sanitize(String Text) {
+		String[] FuckingLetter = new String[] {
+			"`", "@", "'", "\"", "\\", "$"
+		};
+
+		for (String S:FuckingLetter) {
+			Text = Text.replace(S, "F");
+		}
+
+		return Text;
 	}
 }
