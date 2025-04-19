@@ -2,11 +2,13 @@ package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
@@ -41,10 +43,28 @@ public class Main implements FunctionClass{
 			GuildMemberJoinEvent JE = (GuildMemberJoinEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.welcomemessage);
 			if (Ch != null) {
-				EmbedBuilder EB = new EmbedBuilder();
-				EB.setTitle(JE.getUser().getName() + "が参加しました");
-				EB.setThumbnail(JE.getUser().getAvatarUrl());
-				Ch.sendMessageEmbeds(EB.build()).queue();
+				e.GetGuild().retrieveInvites().queue(InvList->{
+					String UseInvCode = "不明";
+
+					//使われた招待コードを探す
+					for (Invite Inv:InvList) {
+						int OldUse = DiscordBOT.InviteTable.get(e.GetGuild().getId()).get(Inv.getCode());
+						int NewUse = Inv.getUses();
+						if (NewUse > OldUse) {
+							UseInvCode = Inv.getCode();
+						}
+					}
+
+					//送信
+					EmbedBuilder EB = new EmbedBuilder();
+					EB.setTitle(JE.getUser().getName() + "が参加しました");
+					EB.setThumbnail(JE.getUser().getAvatarUrl());
+					EB.addField("使用された招待コード", UseInvCode, false);
+					Ch.sendMessageEmbeds(EB.build()).queue();
+
+					//招待コード同期
+					DiscordBOT.GetGuildInvite(e.GetGuild());
+				});
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
 			//脱退

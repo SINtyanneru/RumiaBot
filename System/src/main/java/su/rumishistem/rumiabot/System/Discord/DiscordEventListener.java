@@ -6,9 +6,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -17,11 +22,13 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionEnable;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionFind;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
@@ -40,6 +47,14 @@ import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class DiscordEventListener extends ListenerAdapter {
+	@Override
+	public void onReady(ReadyEvent r) {
+		//招待コードを全部取得
+		DiscordBOT.GetAllGuildInvite();
+
+		LOG(LOG_TYPE.OK, "DiscordBOT ready!");
+	}
+
 	@Override
 	public void onMessageReceived(MessageReceivedEvent E) {
 		//ブロック済みのユーザーなら此処で処理を中断する
@@ -238,6 +253,9 @@ public class DiscordEventListener extends ListenerAdapter {
 				if(CH != null){
 					CH.sendMessage("残念ながらブラックリスト入りしていたサーバーでした、脱退します").queue();
 				}
+			} else {
+				//招待コード同期
+				DiscordBOT.GetGuildInvite(E.getGuild());
 			}
 		} catch (Exception EX) {
 			EX.printStackTrace();
@@ -253,6 +271,9 @@ public class DiscordEventListener extends ListenerAdapter {
 				E.getGuild().getId(),
 				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE)) +"脱退させられた"
 			});
+
+			//招待コードをテーブルから削除
+			DiscordBOT.InviteTable.remove(E.getGuild().getId());
 
 			//通知
 			TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");

@@ -1,9 +1,8 @@
 package su.rumishistem.rumiabot.System.Discord;
 
-import static su.rumishistem.rumiabot.System.Main.CommandList;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
@@ -11,19 +10,16 @@ import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 
 public class DiscordBOT {
+	public static HashMap<String, HashMap<String, Integer>> InviteTable = new HashMap<String, HashMap<String, Integer>>();
+
 	public static void Init() throws InterruptedException {
 		JDALogger.setFallbackLoggerEnabled(false);
 
@@ -62,9 +58,22 @@ public class DiscordBOT {
 
 		//ビルド
 		DISCORD_BOT = JDA_BUILDER.build();
+	}
 
-		//ログイン待ち
-		DISCORD_BOT.awaitReady();
-		LOG(LOG_TYPE.OK, "DiscordBOT ready!");
+	public static void GetAllGuildInvite() {
+		for (Guild G:DISCORD_BOT.getGuilds()) {
+			GetGuildInvite(G);
+		}
+	}
+
+	public static void GetGuildInvite(Guild G) {
+		G.retrieveInvites().queue(InvList->{
+			HashMap<String, Integer> Data = new HashMap<String, Integer>();
+			for (Invite Inv:InvList) {
+				Data.put(Inv.getCode(), Inv.getUses());
+			}
+			InviteTable.put(G.getId(), Data);
+			LOG(LOG_TYPE.OK, "招待コード取得：" + G.getId());
+		});
 	}
 }
