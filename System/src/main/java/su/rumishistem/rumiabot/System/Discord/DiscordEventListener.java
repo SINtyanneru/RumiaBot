@@ -6,14 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
-
-import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -29,8 +25,11 @@ import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
+import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionEnable;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionFind;
+import su.rumishistem.rumiabot.System.MODULE.AdminManager;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.MODULE.UserBlockCheck;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
@@ -77,10 +76,27 @@ public class DiscordEventListener extends ListenerAdapter {
 				E.getMessage().reply(NENE_ZHUUSHO).queue();
 			}
 
-			if (E.getMessage().getContentRaw().equals("しらん人の住所")) {
-				String NENE_BASE64 = "5YyX5rW36YGT6Iur5bCP54mn5biC5ouT5YuH5p2x55S6NuS4geebrjMtNDM=";
-				String NENE_ZHUUSHO = new String(Base64.getDecoder().decode(NENE_BASE64));
-				E.getMessage().reply(NENE_ZHUUSHO).queue();
+			//管理者コマンド
+			if (AdminManager.IsAdmin(SourceType.Discord, E.getMember().getUser().getId())) {
+				String Content = E.getMessage().getContentRaw();
+				REON4213Parser P = new REON4213Parser(Content);
+				if (P.GetHacudouShi() != null) {
+					if (P.GetCls().get("RB") != null) {
+						for (VBlock V:P.GetCls().get("RB")) {
+							switch (V.GetVerb()) {
+								case "Block": {
+									E.getMessage().reply(V.GetObject() + "をブロックした").queue();
+									return;
+								}
+
+								default: {
+									E.getMessage().reply("未定義動作").queue();
+									return;
+								}
+							}
+						}
+					}
+				}
 			}
 
 			//イベント着火

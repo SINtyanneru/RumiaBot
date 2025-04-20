@@ -58,6 +58,9 @@ public class DiscordBOT {
 
 		//ビルド
 		DISCORD_BOT = JDA_BUILDER.build();
+
+		DISCORD_BOT.awaitReady();
+		LOG(LOG_TYPE.OK, "Discord Logined");
 	}
 
 	public static void GetAllGuildInvite() {

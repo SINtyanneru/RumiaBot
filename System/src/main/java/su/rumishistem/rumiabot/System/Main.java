@@ -20,9 +20,11 @@ import su.rumishistem.rumi_java_lib.HTTP_SERVER.HTTP_SERVER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Loger.LogerSystem;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
+import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.HTTP.HTTP;
+import su.rumishistem.rumiabot.System.MODULE.AdminManager;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
@@ -79,6 +81,9 @@ public class Main {
 					}
 				}
 			}).start();
+
+			//管理者マネージャーを初期化する
+			AdminManager.Init();
 
 			//DiscordBOTを起動
 			DiscordBOT.Init();
