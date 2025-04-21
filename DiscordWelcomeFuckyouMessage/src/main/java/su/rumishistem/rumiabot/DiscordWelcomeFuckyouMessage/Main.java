@@ -52,8 +52,12 @@ public class Main implements FunctionClass{
 						int NewUse = Inv.getUses();
 						if (NewUse > OldUse) {
 							UseInvCode = Inv.getCode();
+							break;
 						}
 					}
+
+					//招待コード同期
+					DiscordBOT.GetGuildInvite(e.GetGuild());
 
 					//送信
 					EmbedBuilder EB = new EmbedBuilder();
@@ -61,9 +65,6 @@ public class Main implements FunctionClass{
 					EB.setThumbnail(JE.getUser().getAvatarUrl());
 					EB.addField("使用された招待コード", UseInvCode, false);
 					Ch.sendMessageEmbeds(EB.build()).queue();
-
-					//招待コード同期
-					DiscordBOT.GetGuildInvite(e.GetGuild());
 				});
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
