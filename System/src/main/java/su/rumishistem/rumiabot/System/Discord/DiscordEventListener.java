@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -48,8 +51,13 @@ import su.rumishistem.rumiabot.System.TYPE.SourceType;
 public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onReady(ReadyEvent r) {
-		//招待コードを全部取得
-		DiscordBOT.GetAllGuildInvite();
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				//招待コードを全部取得
+				DiscordBOT.GetAllGuildInvite();
+			}
+		}, 3000);
 
 		LOG(LOG_TYPE.OK, "DiscordBOT ready!");
 	}
