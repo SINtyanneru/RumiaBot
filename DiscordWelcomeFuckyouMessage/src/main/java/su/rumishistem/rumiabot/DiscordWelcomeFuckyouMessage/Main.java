@@ -1,5 +1,10 @@
 package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -66,14 +71,43 @@ public class Main implements FunctionClass{
 					EB.addField("使用された招待コード", UseInvCode, false);
 					Ch.sendMessageEmbeds(EB.build()).queue();
 				});
+
+				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`) VALUES (?, ?, NOW())", new Object[] {
+					e.GetGuild().getId(),
+					JE.getUser().getId()
+				});
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
 			//脱退
 			GuildMemberRemoveEvent RE = (GuildMemberRemoveEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.fuckyoumessage);
 			if (Ch != null) {
+				//参加記録を遡る
+				ArrayNode JoinLogResult = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `GID` = ? AND `UID` = ?;", new Object[] {
+					RE.getGuild().getId(),
+					RE.getUser().getId()
+				});
+
 				EmbedBuilder EB = new EmbedBuilder();
 				EB.setTitle(RE.getUser().getName() + "が脱退しました");
+
+				//脱退RTA
+				if (JoinLogResult.asArrayList().size() == 1) {
+					OffsetDateTime NowDate = OffsetDateTime.now();
+					OffsetDateTime JoinDate = ((Timestamp) JoinLogResult.get(0).getData("REGIST_DATE").asObject()).toInstant().atOffset(ZoneOffset.ofHours(9));
+					Duration Du = Duration.between(JoinDate, NowDate);
+					String RTAText = "";
+
+					if (Du.getSeconds() <= 1) {
+						RTAText = Du.getSeconds() + "秒！早すぎる";
+					} else if (Du.getSeconds() <= 5) {
+						RTAText = Du.getSeconds() + "秒か、まあまあだな";
+					} else {
+						RTAText = Du.getSeconds() + "秒？おっそ、雑魚がよ";
+					}
+					EB.addField("脱退RTA", RTAText, false);
+				}
+
 				EB.setThumbnail(RE.getUser().getAvatarUrl());
 				Ch.sendMessageEmbeds(EB.build()).queue();
 			}
