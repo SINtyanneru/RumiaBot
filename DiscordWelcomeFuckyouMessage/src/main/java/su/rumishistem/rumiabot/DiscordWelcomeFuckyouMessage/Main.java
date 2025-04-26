@@ -48,6 +48,17 @@ public class Main implements FunctionClass{
 			GuildMemberJoinEvent JE = (GuildMemberJoinEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.welcomemessage);
 			if (Ch != null) {
+				//送信
+				EmbedBuilder EB = new EmbedBuilder();
+				EB.setTitle(JE.getUser().getName() + "が参加しました");
+				EB.setThumbnail(JE.getUser().getAvatarUrl());
+				Ch.sendMessageEmbeds(EB.build()).queue();
+
+				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`) VALUES (?, ?, NOW())", new Object[] {
+					e.GetGuild().getId(),
+					JE.getUser().getId()
+				});
+
 				e.GetGuild().retrieveInvites().queue(InvList->{
 					String UseInvCode = "不明";
 
@@ -63,18 +74,10 @@ public class Main implements FunctionClass{
 
 					//招待コード同期
 					DiscordBOT.GetGuildInvite(e.GetGuild());
-
 					//送信
-					EmbedBuilder EB = new EmbedBuilder();
-					EB.setTitle(JE.getUser().getName() + "が参加しました");
-					EB.setThumbnail(JE.getUser().getAvatarUrl());
-					EB.addField("使用された招待コード", UseInvCode, false);
-					Ch.sendMessageEmbeds(EB.build()).queue();
-				});
-
-				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`) VALUES (?, ?, NOW())", new Object[] {
-					e.GetGuild().getId(),
-					JE.getUser().getId()
+					EmbedBuilder EB2 = new EmbedBuilder();
+					EB2.addField("使用された招待コード", UseInvCode, false);
+					Ch.sendMessageEmbeds(EB2.build()).queue();
 				});
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
@@ -94,7 +97,7 @@ public class Main implements FunctionClass{
 				//脱退RTA
 				if (JoinLogResult.asArrayList().size() == 1) {
 					OffsetDateTime NowDate = OffsetDateTime.now();
-					OffsetDateTime JoinDate = ((Timestamp) JoinLogResult.get(0).getData("REGIST_DATE").asObject()).toInstant().atOffset(ZoneOffset.ofHours(9));
+					OffsetDateTime JoinDate = ((Timestamp) JoinLogResult.get(0).getData("DATE").asObject()).toInstant().atOffset(ZoneOffset.ofHours(9));
 					Duration Du = Duration.between(JoinDate, NowDate);
 					String RTAText = "";
 
