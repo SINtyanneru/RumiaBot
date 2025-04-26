@@ -54,6 +54,7 @@ public class Main implements FunctionClass{
 				EB.setThumbnail(JE.getUser().getAvatarUrl());
 				Ch.sendMessageEmbeds(EB.build()).queue();
 
+				//既に有るなら書き込まないようにするべき
 				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`) VALUES (?, ?, NOW())", new Object[] {
 					e.GetGuild().getId(),
 					JE.getUser().getId()
