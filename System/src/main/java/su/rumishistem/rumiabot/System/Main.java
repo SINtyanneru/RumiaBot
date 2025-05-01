@@ -112,6 +112,10 @@ public class Main {
 							Type = OptionType.INTEGER;
 							break;
 						}
+
+						case Role: {
+							Type = OptionType.ROLE;
+						}
 					}
 
 					OptionData SlashOption = new OptionData(Type, Option.GetName(), "説明", Option.isRequire());

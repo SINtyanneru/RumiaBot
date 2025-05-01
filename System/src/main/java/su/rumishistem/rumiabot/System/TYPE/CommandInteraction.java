@@ -5,9 +5,7 @@ import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
@@ -88,5 +86,9 @@ public class CommandInteraction {
 				MisskeyBOT.PostNote(NB.Build());
 			}
 		}
+	}
+
+	public SlashCommandInteractionEvent GetDiscordInteraction() {
+		return DiscordInteraction;
 	}
 }
