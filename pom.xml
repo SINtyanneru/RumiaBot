@@ -21,6 +21,7 @@
     <module>WsFunction</module>
     <module>MisskeyReportFucker</module>
     <module>DiscordWelcomeFuckyouMessage</module>
+    <module>Joke</module>
   </modules>
   <repositories>
     <repository>

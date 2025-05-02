@@ -66,24 +66,6 @@ public class DiscordEventListener extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent E) {
 		//ブロック済みのユーザーなら此処で処理を中断する
 		if (!UserBlockCheck.isBlock(E.getAuthor().getId())) {
-			if (E.getMessage().getContentRaw().equals("ち") || E.getMessage().getContentRaw().equals("ちん") || E.getMessage().getContentRaw().equals("ま") || E.getMessage().getContentRaw().equals("まん")) {
-				E.getMessage().reply("そういうのよくないと思うよ。").queue();
-			}
-
-			String[] NGWordList = new String[] {
-				"まんこ"
-			};
-
-			if (Arrays.asList(NGWordList).contains(E.getMessage().getContentRaw())) {
-				E.getMessage().reply("キモ...").queue();
-			}
-
-			if (E.getMessage().getContentRaw().equals("ぐるぐる住所")) {
-				String NENE_BASE64 = "44CSMTMzLTAwNTEg5p2x5Lqs6YO95rGf5oi45bed5Yy65YyX5bCP5bKpMeS4geebrjE04oiSNSDpg73llrbljJflsI/lsqnkuIDkuIHnm67jgqLjg5Hjg7zjg4jvvJXlj7fmo58g6YOo5bGL55Wq5Y+3MjA4Cg==";
-				String NENE_ZHUUSHO = new String(Base64.getDecoder().decode(NENE_BASE64));
-				E.getMessage().reply(NENE_ZHUUSHO).queue();
-			}
-
 			//管理者コマンド
 			if (AdminManager.IsAdmin(SourceType.Discord, E.getMember().getUser().getId())) {
 				String Content = E.getMessage().getContentRaw();
