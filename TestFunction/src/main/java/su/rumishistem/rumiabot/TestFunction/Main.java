@@ -1,14 +1,12 @@
 package su.rumishistem.rumiabot.TestFunction;
 
+import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
-
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
 import java.io.IOException;
 
 public class Main implements FunctionClass {
@@ -50,6 +48,20 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void RunCommand(CommandInteraction Interaction) throws IOException {
-		Interaction.Reply("はい");
+		StringBuilder SB = new StringBuilder();
+		SB.append("るみさんBOT\n");
+		SB.append("ビルド時刻：" + su.rumishistem.rumiabot.System.Main.BuildDate + "\n");
+		SB.append("インストール済みモジュール↓\n");
+		SB.append("```\n");
+
+		for (FunctionClass Func:FunctionModuleList) {
+			SB.append("┌[" + Func.FUNCTION_NAME() + "]\n");
+			SB.append("├V" + Func.FUNCTION_VERSION() + "\n");
+			SB.append("└" + Func.FUNCTION_AUTOR() + "\n");
+		}
+
+		SB.append("```\n");
+
+		Interaction.Reply(SB.toString());
 	}
 }

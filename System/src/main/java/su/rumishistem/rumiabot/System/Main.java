@@ -7,10 +7,12 @@ import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
@@ -21,6 +23,7 @@ import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Loger.LogerSystem;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
+import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.HTTP.HTTP;
@@ -45,6 +48,7 @@ public class Main {
 	public static List<CommandData> CommandList = new ArrayList<CommandData>();
 	public static SmartHTTP SH = null;
 	public static final int MaxLineSize = 25;
+	public static String BuildDate = "None";
 
 	public static void main(String[] args) {
 		try {
@@ -57,6 +61,16 @@ public class Main {
 			} else {
 				LOG(LOG_TYPE.PROCESS_END_FAILED, "Config.ini GA NAI!!!!!!!");
 				System.exit(1);
+			}
+
+			//ビルド時刻
+			try {
+				Properties props = new Properties();
+				props.load(Main.class.getResourceAsStream("/build.properties"));
+				BuildDate = props.getProperty("build.timestamp");
+				LOG(LOG_TYPE.INFO, "ビルド時刻:" + BuildDate);
+			} catch (Exception EX) {
+				EX.printStackTrace();
 			}
 
 			//SQL用意
