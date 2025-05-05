@@ -24,6 +24,7 @@ import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_REQUEST;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_RESULT;
+import su.rumishistem.rumi_java_lib.SmartHTTP.Type.EndpointFunction;
 import su.rumishistem.rumiabot.VerifyPanelFunction.MODULE.URIPARAMPARSE;
 
 public class PanelSystem {
@@ -31,9 +32,9 @@ public class PanelSystem {
 
 	public static void HTTPEP() {
 		//認証ページひらいた時
-		SH.SetRoute("/user/discord/verify_panel", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/user/discord/verify_panel", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST t) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					String BODY = new String(new RESOURCE_MANAGER(Main.class).getResourceData("/discord_verify_panel.html"));
 					BODY = BODY.replace("${SITE_KEY}", CONFIG_DATA.get("CAPTCHA").getData("SITE_KEY").asString());
@@ -46,9 +47,9 @@ public class PanelSystem {
 		});
 
 		//認証ページで認証をした後の処理
-		SH.SetRoute("/user/api/VERIFY_PANEL", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/user/api/VERIFY_PANEL", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					JsonNode POST_DATA = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
 					if (POST_DATA.get("CFT_RESULT") == null || POST_DATA.get("VERIFY_ID") == null) {

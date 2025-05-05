@@ -30,6 +30,7 @@ import su.rumishistem.rumi_java_lib.Misskey.TYPE.User;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_REQUEST;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_RESULT;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
+import su.rumishistem.rumi_java_lib.SmartHTTP.Type.EndpointFunction;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.WebSocketSERVER;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.CONNECT_EVENT.CONNECT_EVENT;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.CONNECT_EVENT.CONNECT_EVENT_LISTENER;
@@ -120,9 +121,9 @@ public class MisskeyAPIModoki {
 		SmartHTTP SH = new SmartHTTP(CONFIG_DATA.get("AI").getData("HTTP").asInt());
 
 		//自分自身を習得
-		SH.SetRoute("/api/i", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/api/i", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					FETCH AJAX = new FETCH("https://" + DOMAIN + "/api/i");
 					AJAX.SetHEADER("Content-Type", JSONMime);
@@ -136,9 +137,9 @@ public class MisskeyAPIModoki {
 		});
 
 		//ノート作成
-		SH.SetRoute("/api/notes/create", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/api/notes/create", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
 					String ReplyID = null;
@@ -167,9 +168,9 @@ public class MisskeyAPIModoki {
 		});
 
 		//ノートにリアクション
-		SH.SetRoute("/api/notes/reactions/create", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/api/notes/reactions/create", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
 					String Reaction = POST_BODY.get("reaction").asText();
@@ -186,9 +187,9 @@ public class MisskeyAPIModoki {
 		});
 
 		//ユーザー習得
-		SH.SetRoute("/api/users/show", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/api/users/show", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
 
@@ -224,9 +225,9 @@ public class MisskeyAPIModoki {
 		});
 
 		//ファイルアップロード
-		SH.SetRoute("/api/drive/files/create", new Function<HTTP_REQUEST, HTTP_RESULT>() {
+		SH.SetRoute("/api/drive/files/create", new EndpointFunction() {
 			@Override
-			public HTTP_RESULT apply(HTTP_REQUEST r) {
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					Matcher MTC = Pattern.compile("boundary=(.*);?").matcher(r.GetEVENT().getHEADER_DATA().get("CONTENT-TYPE"));
 					if (MTC.find()) {
