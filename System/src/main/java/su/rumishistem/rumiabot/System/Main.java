@@ -101,13 +101,40 @@ public class Main {
 			AdminManager.Init();
 
 			//DiscordBOTを起動
-			DiscordBOT.Init();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						DiscordBOT.Init();
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
 
 			//MisskeyBOTを起動
-			su.rumishistem.rumiabot.System.Misskey.MisskeyBOTMain.Init();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						su.rumishistem.rumiabot.System.Misskey.MisskeyBOTMain.Init();
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
 
 			//TelegramBOTを起動
-			TelegramBot.Main();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						TelegramBot.Main();
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
 
 			//モジュールをロード
 			FML = new FunctionModuleLoader();
