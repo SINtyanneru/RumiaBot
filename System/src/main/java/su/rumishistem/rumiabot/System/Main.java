@@ -33,6 +33,7 @@ import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
+import su.rumishistem.rumiabot.System.Telegram.TelegramBot;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -104,6 +105,9 @@ public class Main {
 
 			//MisskeyBOTを起動
 			su.rumishistem.rumiabot.System.Misskey.MisskeyBOTMain.Init();
+
+			//TelegramBOTを起動
+			TelegramBot.Main();
 
 			//モジュールをロード
 			FML = new FunctionModuleLoader();
