@@ -26,8 +26,9 @@ public class DiscordBOT {
 		JDALogger.setFallbackLoggerEnabled(false);
 
 		//JDAビルダー
-		JDABuilder JDA_BUILDER = JDABuilder.createDefault(
-			CONFIG_DATA.get("DISCORD").getData("TOKEN").asString(),
+		JDABuilder JDA_BUILDER = JDABuilder.createDefault(CONFIG_DATA.get("DISCORD").getData("TOKEN").asString());
+
+		JDA_BUILDER.enableIntents(
 			GatewayIntent.GUILD_MEMBERS,
 			GatewayIntent.GUILD_MODERATION,
 			GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
