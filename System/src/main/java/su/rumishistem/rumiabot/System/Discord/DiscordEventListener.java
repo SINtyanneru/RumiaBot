@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+import static su.rumishistem.rumiabot.System.Main.CommandList;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -24,6 +25,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
@@ -51,15 +56,75 @@ import su.rumishistem.rumiabot.System.TYPE.SourceType;
 public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onReady(ReadyEvent r) {
-		new Timer().schedule(new TimerTask() {
-			@Override
-			public void run() {
-				//招待コードを全部取得
-				DiscordBOT.GetAllGuildInvite();
+		//招待コードを全部取得
+		DiscordBOT.GetAllGuildInvite();
+
+		//スラッシュコマンド集計
+		List<SlashCommandData> SlashCommandList = new ArrayList<SlashCommandData>();
+		for (CommandData Command:CommandList) {
+			//オプション
+			List<OptionData> OptionList = new ArrayList<OptionData>();
+			for (CommandOption Option:Command.GetOptionList()) {
+				OptionType Type = null;
+				switch (Option.GetType()) {
+					case String: {
+						Type = OptionType.STRING;
+						break;
+					}
+
+					case Int: {
+						Type = OptionType.INTEGER;
+						break;
+					}
+
+					case Role: {
+						Type = OptionType.ROLE;
+					}
+
+					case User: {
+						Type = OptionType.USER;
+					}
+				}
+
+				OptionData SlashOption = new OptionData(Type, Option.GetName(), "説明", Option.isRequire());
+				OptionList.add(SlashOption);
 			}
-		}, 3000);
+
+			//コマンドの情報
+			SlashCommandData SlashCommand = Commands.slash(Command.GetName(), "説明");
+			SlashCommand.addOptions(OptionList);
+			//追加
+			SlashCommandList.add(SlashCommand);
+		}
+
+		//機能設定用コマンド
+		SlashCommandList.add(GenFunctionSettingCommand());
+
+		//スラッシュコマンド登録
+		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).queue();
+		LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
 
 		LOG(LOG_TYPE.OK, "DiscordBOT ready!");
+	}
+
+	private static SlashCommandData GenFunctionSettingCommand() {
+		SlashCommandData Command = Commands.slash("setting", "機能を設定します");
+
+		//機能一覧
+		OptionData FunctionOption = new OptionData(OptionType.STRING, "function", "機能", true);
+		for (DiscordFunction Function:DiscordFunction.values()) {
+			FunctionOption.addChoice(Function.name(), Function.name());
+		}
+		for (DiscordChannelFunction Function:DiscordChannelFunction.values()) {
+			FunctionOption.addChoice(Function.name(), Function.name());
+		}
+		Command.addOptions(FunctionOption);
+
+		//有効化無効化
+		OptionData EnableOption = new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true);
+		Command.addOptions(EnableOption);
+
+		return Command;
 	}
 
 	@Override
