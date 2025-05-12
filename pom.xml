@@ -22,6 +22,7 @@
     <module>MisskeyReportFucker</module>
     <module>DiscordWelcomeFuckyouMessage</module>
     <module>Joke</module>
+    <module>UserInfo</module>
   </modules>
   <repositories>
     <repository>

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -61,6 +62,11 @@ public class DiscordBOT {
 
 		DISCORD_BOT.awaitReady();
 		LOG(LOG_TYPE.OK, "Discord Logined");
+
+		TextChannel CH = DISCORD_BOT.getTextChannelById("1189877700807114862");
+		if(CH != null){
+			CH.sendMessage("参加済みの鯖数:" + DISCORD_BOT.getGuilds().size()).queue();
+		}
 	}
 
 	public static void GetAllGuildInvite() {
