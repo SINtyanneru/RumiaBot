@@ -161,6 +161,10 @@ public class Main {
 						case Role: {
 							Type = OptionType.ROLE;
 						}
+
+						case User: {
+							Type = OptionType.USER;
+						}
 					}
 
 					OptionData SlashOption = new OptionData(Type, Option.GetName(), "説明", Option.isRequire());

@@ -1,8 +1,23 @@
 package su.rumishistem.rumiabot.UserInfo;
 
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
+
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
+import su.rumishistem.rumi_java_lib.ArrayNode;
+import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumiabot.System.MODULE.DATE_FORMAT;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class Main implements FunctionClass{
 	private static final String FUNCTION_NAME = "ユーザー情報をぶちまけよう";
@@ -26,6 +41,9 @@ public class Main implements FunctionClass{
 
 	@Override
 	public void Init() {
+		AddCommand(new CommandData("userinfo", new CommandOption[] {
+			new CommandOption("user", CommandOptionType.String, null, true)
+		}, false));
 	}
 
 	@Override
@@ -34,10 +52,53 @@ public class Main implements FunctionClass{
 
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		return false;
+		return Name.equals("userinfo");
 	}
 
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
+		if (CI.GetSource() == SourceType.Discord) {
+			User U = CI.GetDiscordInteraction().getOption("user").getAsUser();
+			ArrayNode InviteSQL = SearchInvite(U.getId(), CI.GetDiscordInteraction().getGuild().getId());
+
+			//埋め込みを生成
+			EmbedBuilder EB = new EmbedBuilder();
+			EB.setThumbnail(U.getAvatarUrl());
+			EB.setTitle(U.getName());
+
+			try {
+				EB.addField("登録日", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)), false);
+			} catch (Exception EX) {
+				//EX.printStackTrace();
+			}
+
+			//招待コード
+			if (InviteSQL != null) {
+				EB.addField("使用した招待コード", InviteSQL.getData("INVITE_CODE").asString(), true);
+				EB.addField("招待した人", "<@" + InviteSQL.getData("INVITE_UID").asString() + ">", true);
+			}
+
+			CI.GetDiscordInteraction().replyEmbeds(EB.build()).queue();
+		} else if (CI.GetSource() == SourceType.Misskey) {
+			CI.Reply("Misskeyはまだ未対応です");
+		} else {
+			//？
+		}
+	}
+
+	private ArrayNode SearchInvite(String UID, String GID) {
+		ArrayNode R = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `UID` = ? AND `GID` = ?;", new Object[] {UID, GID});
+
+		if (R.asArrayList().size() == 1) {
+			return R.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	private OffsetDateTime ParseSnowFlake(User U) {
+		long userId = Long.parseUnsignedLong(U.getId());
+		long timestamp = (userId >> 22) + 1420070400000L;
+		return Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC);
 	}
 }
