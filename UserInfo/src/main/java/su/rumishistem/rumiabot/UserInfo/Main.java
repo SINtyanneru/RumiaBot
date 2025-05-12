@@ -42,7 +42,7 @@ public class Main implements FunctionClass{
 	@Override
 	public void Init() {
 		AddCommand(new CommandData("userinfo", new CommandOption[] {
-			new CommandOption("user", CommandOptionType.String, null, true)
+			new CommandOption("user", CommandOptionType.User, null, true)
 		}, false));
 	}
 
