@@ -58,27 +58,35 @@ public class Main implements FunctionClass{
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
 		if (CI.GetSource() == SourceType.Discord) {
-			User U = CI.GetDiscordInteraction().getOption("user").getAsUser();
-			ArrayNode InviteSQL = SearchInvite(U.getId(), CI.GetDiscordInteraction().getGuild().getId());
-
-			//埋め込みを生成
-			EmbedBuilder EB = new EmbedBuilder();
-			EB.setThumbnail(U.getAvatarUrl());
-			EB.setTitle(U.getName());
-
 			try {
-				EB.addField("登録日", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)), false);
+				User U = CI.GetDiscordInteraction().getOption("user").getAsUser();
+				ArrayNode InviteSQL = SearchInvite(U.getId(), CI.GetDiscordInteraction().getGuild().getId());
+
+				//埋め込みを生成
+				EmbedBuilder EB = new EmbedBuilder();
+				EB.setThumbnail(U.getAvatarUrl());
+				EB.setTitle(U.getName());
+
+				//登録日
+				try {
+					EB.addField("登録日", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)), false);
+				} catch (Exception EX) {
+					//EX.printStackTrace();
+				}
+
+				//サーバー参加日
+				EB.addField("参加日", DATE_FORMAT.ZHUUNI_H(CI.GetDiscordInteraction().getGuild().getMemberById(U.getId()).getTimeJoined()), false);
+
+				//招待コード
+				if (InviteSQL != null) {
+					EB.addField("使用した招待コード", InviteSQL.getData("INVITE_CODE").asString(), true);
+					EB.addField("招待した人", "<@" + InviteSQL.getData("INVITE_UID").asString() + ">", true);
+				}
+
+				CI.GetDiscordInteraction().getHook().editOriginalEmbeds(EB.build()).queue();
 			} catch (Exception EX) {
-				//EX.printStackTrace();
+				EX.printStackTrace();
 			}
-
-			//招待コード
-			if (InviteSQL != null) {
-				EB.addField("使用した招待コード", InviteSQL.getData("INVITE_CODE").asString(), true);
-				EB.addField("招待した人", "<@" + InviteSQL.getData("INVITE_UID").asString() + ">", true);
-			}
-
-			CI.GetDiscordInteraction().replyEmbeds(EB.build()).queue();
 		} else if (CI.GetSource() == SourceType.Misskey) {
 			CI.Reply("Misskeyはまだ未対応です");
 		} else {
