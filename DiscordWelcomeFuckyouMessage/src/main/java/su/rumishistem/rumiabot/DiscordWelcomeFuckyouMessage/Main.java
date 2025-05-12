@@ -54,31 +54,57 @@ public class Main implements FunctionClass{
 				EB.setThumbnail(JE.getUser().getAvatarUrl());
 				Ch.sendMessageEmbeds(EB.build()).queue();
 
-				//既に有るなら書き込まないようにするべき
-				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`) VALUES (?, ?, NOW())", new Object[] {
+				//記録
+				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`, `INVITE_CODE`, `INVITE_UID`) VALUES (?, ?, NOW(), NULL, NULL)", new Object[] {
 					e.GetGuild().getId(),
 					JE.getUser().getId()
 				});
 
 				e.GetGuild().retrieveInvites().queue(InvList->{
-					String UseInvCode = "不明";
+					Invite UseInvCode = null;
 
 					//使われた招待コードを探す
 					for (Invite Inv:InvList) {
 						int OldUse = DiscordBOT.InviteTable.get(e.GetGuild().getId()).get(Inv.getCode());
 						int NewUse = Inv.getUses();
 						if (NewUse > OldUse) {
-							UseInvCode = Inv.getCode();
+							UseInvCode = Inv;
 							break;
 						}
 					}
 
 					//招待コード同期
 					DiscordBOT.GetGuildInvite(e.GetGuild());
-					//送信
-					EmbedBuilder EB2 = new EmbedBuilder();
-					EB2.addField("使用された招待コード", UseInvCode, false);
-					Ch.sendMessageEmbeds(EB2.build()).queue();
+
+					//使った招待コードが判明したら処理
+					if (UseInvCode != null) {
+						try {
+							//SQL書き換え
+							SQL.UP_RUN("""
+									UPDATE
+										`DISCORD_USER_JOIN`
+									SET
+										`INVITE_CODE` = ?,
+										`INVITE_UID` = ?
+									WHERE
+										`DISCORD_USER_JOIN`.`GID` = ?
+									AND
+										`DISCORD_USER_JOIN`.`UID` = ?;
+								""", new Object[] {
+								UseInvCode.getCode(),
+								UseInvCode.getInviter().getId(),
+								e.GetGuild().getId(),
+								JE.getUser().getId()
+							});
+						} catch (Exception EX) {
+							EX.printStackTrace();
+						}
+
+						//送信
+						EmbedBuilder EB2 = new EmbedBuilder();
+						EB2.addField("使用された招待コード", UseInvCode.getCode(), false);
+						Ch.sendMessageEmbeds(EB2.build()).queue();
+					}
 				});
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
@@ -94,6 +120,12 @@ public class Main implements FunctionClass{
 
 				EmbedBuilder EB = new EmbedBuilder();
 				EB.setTitle(RE.getUser().getName() + "が脱退しました");
+
+				//削除
+				SQL.UP_RUN("DELETE FROM `DISCORD_USER_JOIN` WHERE `GID` = ? AND `UID` = ?;", new Object[] {
+					e.GetGuild().getId(),
+					RE.getUser().getId()
+				});
 
 				//脱退RTA
 				if (JoinLogResult.asArrayList().size() == 1) {
