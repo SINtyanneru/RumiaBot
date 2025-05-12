@@ -79,10 +79,12 @@ public class DiscordEventListener extends ListenerAdapter {
 
 					case Role: {
 						Type = OptionType.ROLE;
+						break;
 					}
 
 					case User: {
 						Type = OptionType.USER;
+						break;
 					}
 				}
 
