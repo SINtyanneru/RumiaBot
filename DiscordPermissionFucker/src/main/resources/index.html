@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>権限Fucker</TITLE>
+
+		<STYLE>
+			.MESSAGE_ITEM{
+				background-color: rgb(255, 255, 255);
+			}
+
+			.MESSAGE_ITEM:hover{
+				background-color: rgb(209, 204, 204);
+			}
+
+			.MESSAGE_ITEM > .USER > img{
+				width: 40px;
+				height: 40px;
+
+				vertical-align: middle;
+			}
+
+			.MESSAGE_ITEM > .USER > span{
+				vertical-align: middle;
+			}
+
+			.MESSAGE_ITEM > .TEXT{
+				margin-left: 50px;
+			}
+		</STYLE>
+	</HEAD>
+
+	<BODY>
+		<DIV>だるいので、上が最新で下に行くほど古いです。</DIV>
+
+		<DIV ID="HISTORY"></DIV>
+	</BODY>
+
+	<SCRIPT SRC="https://cdn.rumia.me/LIB/htmlspecialchars.js" defer></SCRIPT>
+	<SCRIPT>
+		window.addEventListener("load", async (e)=>{
+			const Param = new URLSearchParams(window.location.search);
+			const ID = Param.get("ID");
+			if (ID == null) {
+				return;
+			}
+
+			const ChannelGet = await fetch("./api/pf?ID=" + ID);
+			const ChannelResulut = await ChannelGet.json();
+			if (!ChannelResulut.STATUS) {
+				return;
+			}
+
+			document.title = `権限Fucker | ${ChannelResulut.CHANNEL.NAME}`;
+
+			const HistoryGet = await fetch("./api/pf_his?ID=" + ID);
+			const HistoryResulut = await HistoryGet.json();
+			if (!HistoryResulut.STATUS) {
+				return;
+			}
+
+			for (let I = 0; I < HistoryResulut.HISTORY.length; I++) {
+				const ROW = HistoryResulut.HISTORY[I];
+				const DOMP = new DOMParser();
+				const Doc = DOMP.parseFromString(await GenMessageItem(ROW.MESSAGE, ROW.USER), "text/html");
+				document.getElementById("HISTORY").appendChild(Doc.body.firstElementChild);
+			}
+		});
+
+		async function GenMessageItem(Message, User) {
+			return `
+				<DIV CLASS="MESSAGE_ITEM">
+					<DIV CLASS="USER">
+						<IMG SRC="${User.ICON}">
+						<SPAN>${htmlspecialchars(User.NAME)}</SPAN>
+						<SPAN> | ${Message.DATE}</SPAN>
+					</DIV>
+					<DIV CLASS="TEXT">
+						${htmlspecialchars(Message.TEXT).replaceAll("\n", "<BR>")}
+					</DIV>
+				</DIV>
+			`;
+		}
+	</SCRIPT>
+</HTML>

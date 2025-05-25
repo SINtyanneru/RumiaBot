@@ -23,6 +23,7 @@
     <module>DiscordWelcomeFuckyouMessage</module>
     <module>Joke</module>
     <module>UserInfo</module>
+    <module>DiscordPermissionFucker</module>
   </modules>
   <repositories>
     <repository>

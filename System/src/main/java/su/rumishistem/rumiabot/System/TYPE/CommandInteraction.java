@@ -62,7 +62,7 @@ public class CommandInteraction {
 		if (Command.isPrivate()) {
 			//周りに見えないやつ
 			if (Source == SourceType.Discord) {
-				DiscordInteraction.reply(Text).setFiles(DiscordUploadList).queue();
+				DiscordInteraction.reply(Text).setFiles(DiscordUploadList).setEphemeral(true).queue();
 			} else if (Source == SourceType.Misskey) {
 				NoteBuilder NB = new NoteBuilder();
 				NB.setTEXT(Text);
