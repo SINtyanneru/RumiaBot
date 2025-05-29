@@ -98,7 +98,7 @@ public class PanelSystem {
 		VerifyQueue.put(ID, VERIFY_DATA);
 
 		//URLを返す
-		BI.reply("[ここをクリックして認証してください](https://rumiserver.com/rumiabot/discord/verify_panel?ID=" + ID + ")").setEphemeral(true).queue();
+		BI.reply("[ここをクリックして認証してください](https://rumiabot.rumiserver.com/discord/verify_panel?ID=" + ID + ")").setEphemeral(true).queue();
 	}
 
 	public static boolean VerifyDone(String ID) {
