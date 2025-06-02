@@ -3,7 +3,6 @@ package su.rumishistem.rumiabot.CalcFunction;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import jakarta.el.ELProcessor;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "計算機";

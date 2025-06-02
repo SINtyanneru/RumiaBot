@@ -11,11 +11,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +35,6 @@ import su.rumishistem.rumi_java_lib.WebSocket.Server.CONNECT_EVENT.CONNECT_EVENT
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.CLOSE_EVENT;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.MESSAGE_EVENT;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.EVENT.WS_EVENT_LISTENER;
-import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.aichan.SERVICE.CreateNote;
 import su.rumishistem.rumiabot.aichan.SERVICE.CreateReaction;
 
@@ -51,7 +48,7 @@ public class MisskeyAPIModoki {
 	public static String ServerStatusChannnelID = "";
 	public static StringBuilder WebSocketReceiveBuffer = new StringBuilder();
 
-	public static void WebSocketStart() {
+	public static void WebSocketStart() throws InterruptedException {
 		//WebSocketサーバー
 		WebSocketSERVER WSS = new WebSocketSERVER();
 		WSS.SET_EVENT_VOID(new CONNECT_EVENT_LISTENER() {

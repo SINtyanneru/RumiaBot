@@ -109,7 +109,7 @@ public class DAMDAM {
 		HUC.setRequestMethod("GET");
 
 		//レスポンスコード
-		int RES_CODE = HUC.getResponseCode();
+		//int RES_CODE = HUC.getResponseCode();
 
 		BufferedReader BR = new BufferedReader(new InputStreamReader(HUC.getInputStream(), Charset.forName("SHIFT_JIS")));
 		StringBuilder RES_STRING = new StringBuilder();

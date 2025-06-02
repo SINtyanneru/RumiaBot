@@ -3,19 +3,15 @@ package su.rumishistem.rumiabot.MisskeyReportFucker;
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-
 import java.net.MalformedURLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import su.rumishistem.rumi_java_lib.FETCH;
-import su.rumishistem.rumi_java_lib.FETCH_RESULT;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.NoteVis;

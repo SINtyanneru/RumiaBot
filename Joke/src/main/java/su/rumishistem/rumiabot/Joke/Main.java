@@ -1,9 +1,5 @@
 package su.rumishistem.rumiabot.Joke;
 
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Random;
-
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
