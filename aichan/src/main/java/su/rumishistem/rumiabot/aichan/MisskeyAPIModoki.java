@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +47,7 @@ public class MisskeyAPIModoki {
 	public static String LocalTLChannnelID = "";
 	public static String OseloChannnelID = "";
 	public static String ServerStatusChannnelID = "";
+	public static HashMap<String, String> MisskeyOseloGameTable = new HashMap<String, String>();
 	public static StringBuilder WebSocketReceiveBuffer = new StringBuilder();
 
 	public static void WebSocketStart() throws InterruptedException {
@@ -72,7 +74,7 @@ public class MisskeyAPIModoki {
 							if (Body.get("type").asText().equals("connect")) {
 								String ID = Body.get("body").get("id").asText();
 								String Channel = Body.get("body").get("channel").asText();
-								switch (Body.get("body").get("channel").asText()) {
+								switch (Channel) {
 									case "main":
 										MainChannnelID = ID;
 										break;
@@ -81,6 +83,21 @@ public class MisskeyAPIModoki {
 										break;
 									case "reversi":
 										OseloChannnelID = ID;
+										//MisskeyオセロAPI
+										new Thread(new Runnable() {
+											@Override
+											public void run() {
+												try {
+													MisskeyReversiPass.Main();
+												} catch (Exception EX) {
+													EX.printStackTrace();
+												}
+											}
+										}).start();
+										break;
+									case "reversiGame":
+										MisskeyOseloGameTable.put(Body.get("body").get("params").get("gameId").asText(), ID);
+										MisskeyReversiPass.WebSocketSend(e.getMessage());
 										break;
 									case "localTimeline":
 										LocalTLChannnelID = ID;
@@ -91,6 +108,13 @@ public class MisskeyAPIModoki {
 								}
 
 								System.out.println("[  藍  ]チャンネル" + Channel + "に接続された！ ID:" + ID);
+							} else if (Body.get("type").asText().equals("ch")) {
+								for (String ID:MisskeyOseloGameTable.values()) {
+									if (ID.equals(Body.get("body").get("id").asText())) {
+										MisskeyReversiPass.WebSocketSend(e.getMessage());
+										return;
+									}
+								}
 							}
 						} catch (JsonEOFException EX) {
 							//JSONの構文エラーは虫
@@ -111,6 +135,12 @@ public class MisskeyAPIModoki {
 			}
 		});
 		WSS.START(CONFIG_DATA.get("AI").getData("WS").asInt());
+	}
+
+	public static void WebSocketSend(String Body) {
+		for (CONNECT_EVENT SESSION:WebSocketSession) {
+			SESSION.SendMessage(Body);
+		}
 	}
 
 	public static void HTTPStart() throws IOException, InterruptedException {
@@ -247,6 +277,38 @@ public class MisskeyAPIModoki {
 					} else {
 						return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
 					}
+				} catch (Exception EX) {
+					EX.printStackTrace();
+					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
+				}
+			}
+		});
+
+		//オセロ対局
+		SH.SetRoute("/api/reversi/match", new EndpointFunction() {
+			@Override
+			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
+				try {
+					JsonNode POST_BODY = new ObjectMapper().readTree(r.GetEVENT().getPOST_DATA());
+					String UID = POST_BODY.get("userId").asText();
+
+					if (UID.startsWith("M-")) {
+						//Misskey
+						FETCH Ajax = new FETCH("https://" + CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString() + "/api/reversi/match");
+						Ajax.SetHEADER("Content-Type", "application/json; charset=UTF-8");
+						HashMap<String, Object> PostBody = new HashMap<String, Object>();
+						PostBody.put("i", CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString());
+						PostBody.put("userId", UID.replace("M-", ""));
+						JsonNode ReturnBody = new ObjectMapper().readTree(Ajax.POST(new ObjectMapper().writeValueAsBytes(PostBody)).GetString());
+						if (ReturnBody.get("error") != null) {
+							throw new Error("Misskey APIでエラー:" + ReturnBody.get("error"));
+						}
+					} else {
+						//Discord
+						throw new Error("Discord未実装");
+					}
+
+					return new HTTP_RESULT(204, "".getBytes(), "application/json");
 				} catch (Exception EX) {
 					EX.printStackTrace();
 					return new HTTP_RESULT(500, "{}".getBytes(), JSONMime);
