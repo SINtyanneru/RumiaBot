@@ -54,11 +54,14 @@ public class MisskeyAPIModoki {
 		WSS.SET_EVENT_VOID(new CONNECT_EVENT_LISTENER() {
 			@Override
 			public void CONNECT_EVENT(CONNECT_EVENT SESSION) {
+				System.out.println("[  藍  ][WebSocket]接続");
+
 				SESSION.SET_EVENT_LISTENER(new WS_EVENT_LISTENER() {
 					@Override
 					public void MESSAGE(MESSAGE_EVENT e) {
+						System.out.println("[  藍  ][WebSocket]受信:" + e.getMessage());
+
 						try {
-							System.out.println("[  藍  ][WebSocket]受信:" + e.getMessage());
 							WebSocketReceiveBuffer.append(e.getMessage());
 							JsonNode Body = new ObjectMapper().readTree(WebSocketReceiveBuffer.toString());
 
