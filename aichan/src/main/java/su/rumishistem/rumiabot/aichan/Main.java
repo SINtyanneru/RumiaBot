@@ -186,7 +186,11 @@ public class Main implements FunctionClass {
 			UserBody.put("id", e.GetSource().name() + "_" + e.GetUser().GetID());
 			UserBody.put("name", e.GetUser().GetName());
 			UserBody.put("username", e.GetUser().GetName());
-			UserBody.put("host", null);
+			if (e.GetSource() == SourceType.Discord) {
+				UserBody.put("host", "discord.com");
+			} else {
+				UserBody.put("host", null);
+			}
 			UserBody.put("avatarUrl", e.GetUser().GetIconURL());
 			//ノートにユーザーを
 			NoteBody.put("user", UserBody);
