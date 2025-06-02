@@ -8,10 +8,10 @@ import su.rumishistem.rumiabot.aichan.MODULE.GetDiscordMessage;
 
 public class CreateReaction {
 	public static void Create(String Reaction, String NoteID) throws IOException {
-		if (NoteID.startsWith("Misskey_")) {
-			NoteID = NoteID.replace("Misskey_", "");
+		if (NoteID.startsWith("M-")) {
+			NoteID = NoteID.replace("M-", "");
 			MisskeyBOT.CreateReaction(MisskeyBOT.GetNote(NoteID), Reaction);
-		} else if (NoteID.startsWith("Discord_")) {
+		} else if (NoteID.startsWith("D-")) {
 			Message MSG = GetDiscordMessage.Get(NoteID);
 			if (MSG != null) {
 				//相互変換必須

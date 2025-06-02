@@ -196,16 +196,17 @@ public class MisskeyAPIModoki {
 					LinkedHashMap<String, Object> UserData = new LinkedHashMap<String, Object>();
 
 					String UID = POST_BODY.get("userId").asText();
-					if (UID.startsWith("Misskey_")) {
-						User MisskeyUser = MisskeyBOT.GetUserID(UID.replace("Misskey_", ""));
+					System.out.println(UID);
+					if (UID.startsWith("M-")) {
+						User MisskeyUser = MisskeyBOT.GetUserID(UID.replace("M-", ""));
 						UserData.put("id", MisskeyUser.getID());
 						UserData.put("name", MisskeyUser.getNAME());
 						UserData.put("username", MisskeyUser.getUID());
 						UserData.put("host", null);
 						UserData.put("isFollowing", true);
 						UserData.put("isBot", false);
-					} else if (UID.startsWith("Discord_")) {
-						net.dv8tion.jda.api.entities.User DiscordUser = DISCORD_BOT.getUserById(UID.replace("Discord_", ""));
+					} else if (UID.startsWith("D-")) {
+						net.dv8tion.jda.api.entities.User DiscordUser = DISCORD_BOT.getUserById(UID.replace("D-", ""));
 						UserData.put("id", DiscordUser.getId());
 						UserData.put("name", DiscordUser.getName());
 						UserData.put("username", DiscordUser.getGlobalName());

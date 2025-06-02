@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class GetDiscordMessage {
 	public static Message Get(String ID) {
-		Matcher IDMatcher = Pattern.compile("Discord_(\\d{1,100})_(\\d{1,100})").matcher(ID);
+		Matcher IDMatcher = Pattern.compile("D-(\\d{1,100})_(\\d{1,100})").matcher(ID);
 		if (IDMatcher.find()) {
 			String ChannelID = IDMatcher.group(1);
 			String MessageID = IDMatcher.group(2);

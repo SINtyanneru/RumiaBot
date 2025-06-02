@@ -27,16 +27,16 @@ public class CreateNote {
 		NB.setVIS(NoteVis.PUBLIC);
 
 		if (ReplyID != null) {
-			if (ReplyID.startsWith("Misskey_")) {
+			if (ReplyID.startsWith("M-")) {
 				//Misskey返信
-				ReplyID = ReplyID.replace("Misskey_", "");
+				ReplyID = ReplyID.replace("M-", "");
 				Note ReplyNote = MisskeyBOT.GetNote(ReplyID);
 				if (ReplyNote != null) {
 					NB.setREPLY(ReplyNote);
 				} else {
 					throw new Error("リプライ先のノートが見つかりませんでした");
 				}
-			} else if (ReplyID.startsWith("Discord_")) {
+			} else if (ReplyID.startsWith("D-")) {
 				//Discord返信
 				Message MSG = GetDiscordMessage.Get(ReplyID);
 				if (MSG != null) {

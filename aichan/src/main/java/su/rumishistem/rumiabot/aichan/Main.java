@@ -130,23 +130,35 @@ public class Main implements FunctionClass {
 			//ID
 			String ID = "";
 			if (e.GetSource() == SourceType.Discord) {
-				ID = "Discord_" + e.GetMessage().GetDiscordChannel().getId() + "_" + e.GetMessage().GetID();
+				ID = "D-" + e.GetMessage().GetDiscordChannel().getId() + "_" + e.GetMessage().GetID();
 			} else if (e.GetSource() == SourceType.Misskey) {
-				ID = "Misskey_" + e.GetMessage().GetID();
+				ID = "M-" + e.GetMessage().GetID();
 			}
 
 			//本文
 			String Text = e.GetMessage().GetText();
 			if (e.GetSource() == SourceType.Discord) {
 				//Discordのメンションを置き換える
-				Text = Text.replaceAll("<@\\d{1,100}>", "@rumiabot");
+				Text = Text.replaceAll("<@\\d{1,100}>", "@rumitest");
 			}
 
 			//ノート
 			LinkedHashMap<String, Object> NoteBody = new LinkedHashMap<String, Object>();
 			NoteBody.put("id", ID);
 			NoteBody.put("createAt", "2025-02-26T08:00:10.046Z");
-			NoteBody.put("userId", e.GetSource().name() + "_" + e.GetUser().GetID());
+			String UID = "";
+			switch (e.GetSource()) {
+				case Discord: {
+					UID = "D-" + e.GetUser().GetID();
+					break;
+				}
+
+				case Misskey: {
+					UID = "M-" + e.GetUser().GetID();
+					break;
+				}
+			}
+			NoteBody.put("userId", UID);
 			NoteBody.put("text", Text);
 			NoteBody.put("cw", null);
 			NoteBody.put("visibility", "public");
