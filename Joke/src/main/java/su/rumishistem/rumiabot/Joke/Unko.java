@@ -3,7 +3,7 @@ package su.rumishistem.rumiabot.Joke;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 
 public class Unko {
-	private static final int BaiBain = 5;
+	private static final int BaiBain = 0;
 
 	public static void Main(ReceiveMessageEvent e) {
 		String Content = e.GetMessage().GetText();

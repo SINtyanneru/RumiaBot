@@ -28,7 +28,9 @@ public class Main implements FunctionClass {
 
 
 	@Override
-	public void Init() {}
+	public void Init() {
+		
+	}
 
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {

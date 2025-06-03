@@ -139,7 +139,7 @@ public class Main implements FunctionClass {
 			String Text = e.GetMessage().GetText();
 			if (e.GetSource() == SourceType.Discord) {
 				//Discordのメンションを置き換える
-				Text = Text.replaceAll("<@\\d{1,100}>", "@rumitest");
+				Text = Text.replaceAll("<@\\d{1,100}>", "@rumiabot");
 			}
 
 			//ノート
