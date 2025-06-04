@@ -63,24 +63,32 @@ public class VOICEVOX {
 		}
 	}
 
-	public static File genAudio(int SpeakersIndex, String AudioQuery) {
+	public static byte[] genAudio(int SpeakersIndex, String AudioQuery) {
 		try {
 			FETCH Ajax = new FETCH(genURL()+"synthesis?speaker=" + SpeakersIndex);
 			Ajax.SetHEADER("Content-Type", "application/json; charset=UTF-8");
 			FETCH_RESULT Result = Ajax.POST(AudioQuery.getBytes());
 
 			if (Result.GetSTATUS_CODE() == 200) {
-				File F = new File("/tmp/" + UUID.randomUUID().toString());
-
-				FileOutputStream FOS = new FileOutputStream(F);
-				FOS.write(Result.GetRAW());
-				FOS.flush();
-				FOS.close();
-
-				return F;
+				return Result.GetRAW();
 			} else {
 				throw new Error("AudioQueryエラー:" + Result.GetString());
 			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
+			throw new Error("AudioQueryエラー");
+		}
+	}
+
+	public static File genAudioFile(int SpeakersIndex, String AudioQuery) {
+		try {
+			File F = new File("/tmp/" + UUID.randomUUID().toString());
+
+			FileOutputStream FOS = new FileOutputStream(F);
+			FOS.write(genAudio(SpeakersIndex, AudioQuery));
+			FOS.flush();
+			FOS.close();
+			return F;
 		} catch (Exception EX) {
 			EX.printStackTrace();
 			throw new Error("AudioQueryエラー");

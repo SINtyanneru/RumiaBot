@@ -2,12 +2,13 @@ package su.rumishistem.rumiabot.Voicevox;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
@@ -15,12 +16,15 @@ import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.Voicevox.GenAudio.GenCommand;
+import su.rumishistem.rumiabot.Voicevox.Jomiage.Jomiage;
 
 public class Main implements FunctionClass{
 	private static final String FUNCTION_NAME = "ユーザー情報をぶちまけよう";
 	private static final String FUNCTION_VERSION = "1.0";
 	private static final String FUNCTION_AUTOR = "Rumisan";
-	private static List<HashMap<String, String>> SpeakersList = null;
+	public static List<HashMap<String, String>> SpeakersList = null;
 
 	public static boolean Enabled = false;
 
@@ -54,30 +58,32 @@ public class Main implements FunctionClass{
 		AddCommand(new CommandData("voicevox", new CommandOption[] {
 			new CommandOption("text", CommandOptionType.String, null, true)
 		}, false));
+		AddCommand(new CommandData("jomiage", new CommandOption[] {}, false));
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
+	public void ReceiveMessage(ReceiveMessageEvent e) {
+		if (e.GetSource() == SourceType.Discord) {
+			Jomiage.ReceiveMessage(e.GetMessage());
+		}
+	}
 
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		return Name.equals("voicevox");
+		return (Name.equals("voicevox") || Name.equals("jomiage"));
 	}
 
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
-		HashMap<String, String> Speakers = SpeakersList.get(0);
-		int SpeakersIndex = 0;
+		if (CI.GetCommand().GetName().equals("voicevox")) {
+			GenCommand.RunCommand(CI);
+		} else {
+			if (CI.GetSource() != SourceType.Discord) {
+				CI.Reply("Discordでしか使えません。");
+				return;
+			}
 
-		String AudioQuery = VOICEVOX.genAudioQuery(SpeakersIndex, CI.GetCommand().GetOption("text").GetValueAsString());
-		File AudioFile = VOICEVOX.genAudio(SpeakersIndex, AudioQuery);
-		File AudioFileRename = new File("/tmp/" + UUID.randomUUID().toString() + ".wav");
-		AudioFile.renameTo(AudioFileRename);
-
-		CI.AddFile(AudioFileRename);
-		CI.Reply("生成した");
-
-		AudioFileRename.delete();
-		AudioFile.delete();
+			Jomiage.RunCommand(CI);
+		}
 	}
 }
