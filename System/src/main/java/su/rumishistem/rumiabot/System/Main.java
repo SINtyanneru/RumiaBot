@@ -1,44 +1,25 @@
 package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-import static su.rumishistem.rumiabot.System.Main.CommandList;
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.CONFIG;
-import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
 import su.rumishistem.rumi_java_lib.SQL;
-import su.rumishistem.rumi_java_lib.HTTP_SERVER.HTTP_SERVER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Loger.LogerSystem;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
-import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
-import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.HTTP.HTTP;
 import su.rumishistem.rumiabot.System.MODULE.AdminManager;
+import su.rumishistem.rumiabot.System.MODULE.BlockManager;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
-import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.Telegram.TelegramBot;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class Main {
 	public static ArrayNode CONFIG_DATA = null;
@@ -99,6 +80,9 @@ public class Main {
 
 			//管理者マネージャーを初期化する
 			AdminManager.Init();
+
+			//ブロックマネージャーを初期化する
+			BlockManager.Init();
 
 			//DiscordBOTを起動
 			new Thread(new Runnable() {
