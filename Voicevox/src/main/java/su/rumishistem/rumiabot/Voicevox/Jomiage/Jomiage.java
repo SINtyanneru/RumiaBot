@@ -135,29 +135,8 @@ public class Jomiage {
 			Text = Text.replaceAll(K, To);
 		}
 
-		//ファイルを錬成して再生
-		File F = VOICEVOX.genAudioFile(VoiceSpeakers, VOICEVOX.genAudioQuery(VoiceSpeakers, Text));
-		APM.loadItem(F.toString(), new AudioLoadResultHandler() {
-			@Override
-			public void trackLoaded(AudioTrack Track) {
-				//再生
-				AP.playTrack(Track);
-
-				//再生終わったら削除
-				AP.addListener(new AudioEventAdapter() {
-					@Override
-					public void onTrackEnd(AudioPlayer Player, AudioTrack Track, AudioTrackEndReason EndReason) {
-						F.delete();
-					}
-				});
-			}
-			@Override
-			public void playlistLoaded(AudioPlaylist Playlist) {}
-			@Override
-			public void noMatches() {}
-			@Override
-			public void loadFailed(FriendlyException EX) {}
-		});
+		//追加
+		J.addMessage(e.GetDiscordMember().getId(), Text);
 	}
 
 	public static void DisconnectVC(String ID) {
