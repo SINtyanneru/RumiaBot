@@ -70,7 +70,7 @@ public class Main implements FunctionClass{
 				return;
 			}
 
-			Jomiage.ReceiveMessage(e.GetMessage());
+			Jomiage.ReceiveMessage(e);
 		}
 	}
 

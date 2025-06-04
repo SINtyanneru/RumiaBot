@@ -18,8 +18,9 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.MessageData;
+import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class Jomiage {
@@ -31,11 +32,7 @@ public class Jomiage {
 		}
 	};
 
-	private static HashMap<String, AudioManager> AMTable = new HashMap<String, AudioManager>();								//ID→AM
-	public static HashMap<String, String> TextChannelTable = new HashMap<String, String>();										//チャンネルID→AMID
-	public static HashMap<String, AudioPlayerManager> AudioPlayerManagerTable = new HashMap<String, AudioPlayerManager>();	//AMID→AudioPlayerManager
-	public static HashMap<String, AudioPlayer> AudioPlayerTable = new HashMap<String, AudioPlayer>();							//AMID→AudioPlayer
-	private static HashMap<String, HashMap<String, Integer>> UserVoiceTable = new HashMap<String, HashMap<String,Integer>>();
+	private static HashMap<String, JomiageData> JomiageDataTable = new HashMap<String, JomiageData>();
 
 	public static void RunCommand(CommandInteraction CI) throws Exception {
 		Member M = CI.GetDiscordInteraction().getMember();
@@ -75,30 +72,61 @@ public class Jomiage {
 		AM.setSendingHandler(new LavaPlayerSendHandler(AP));
 		AM.openAudioConnection(VC);
 
-		AMTable.put(ID, AM);
-		TextChannelTable.put(CI.GetDiscordInteraction().getChannelId(), ID);
-		AudioPlayerManagerTable.put(ID, APM);
-		AudioPlayerTable.put(ID, AP);
+		JomiageDataTable.put(ID, new JomiageData(
+			AM,
+			APM,
+			AP,
+			CI.GetDiscordInteraction().getChannelId()
+		));
 
 		CI.Reply("おけ");
 	}
 
-	public static void ReceiveMessage(MessageData M) {
-		if (TextChannelTable.get(M.GetDiscordChannel().getId()) == null) {
+	private static String TextChannelIDToJomiageID(String ChID) {
+		for (String JomiageID:JomiageDataTable.keySet()) {
+			JomiageData J = JomiageDataTable.get(JomiageID);
+			if (J.getKikisen().getId().equals(ChID)) {
+				return JomiageID;
+			}
+		}
+
+		return null;
+	}
+
+	public static void ReceiveMessage(ReceiveMessageEvent e) {
+		String JomiageID = TextChannelIDToJomiageID(e.GetDiscordChannel().getId());
+		JomiageData J = JomiageDataTable.get(JomiageID);
+
+		if (JomiageID == null || J == null) {
+			return;
+		}
+
+		//BOTではないことを確認する
+		if (e.GetDiscordMember().getUser().isBot()) {
 			return;
 		}
 
 		//取得
-		String AMID = TextChannelTable.get(M.GetDiscordChannel().getId());
-		AudioPlayerManager APM = AudioPlayerManagerTable.get(AMID);
-		AudioPlayer AP = AudioPlayerTable.get(AMID);
+		AudioPlayerManager APM = J.getAPM();
+		AudioPlayer AP = J.getAP();
+		int VoiceSpeakers = 0;
+		String Text = e.GetMessage().GetText();
+
+		//話者を選ぶ
+		if (J.UserVoiceIsNone(e.GetDiscordMember().getUser().getId())) {
+			HashMap<String, Object> SelectedSpeakers = J.getUserVoice(e.GetDiscordMember().getUser().getId());
+			VoiceSpeakers = (int)SelectedSpeakers.get("SPEAKERS");
+
+			Text = "「" + new NameParse(e.GetDiscordMember()).getDisplayName() + "」が会話に参加しました。" + Text;
+			e.GetMessage().Reply("貴様の声：" + (String)SelectedSpeakers.get("NAME"));
+		} else {
+			VoiceSpeakers = (int)J.getUserVoice(e.GetDiscordMember().getUser().getId()).get("SPEAKERS");
+		}
 
 		//NullPointerException
 		if (APM == null || AP == null) {
 			return;
 		}
-
-		String Text = M .GetText();
 
 		//置換
 		for (String K:ConvertDict.keySet()) {
@@ -107,7 +135,7 @@ public class Jomiage {
 		}
 
 		//ファイルを錬成して再生
-		File F = VOICEVOX.genAudioFile(0, VOICEVOX.genAudioQuery(0, Text));
+		File F = VOICEVOX.genAudioFile(VoiceSpeakers, VOICEVOX.genAudioQuery(VoiceSpeakers, Text));
 		APM.loadItem(F.toString(), new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack Track) {
@@ -132,29 +160,16 @@ public class Jomiage {
 	}
 
 	public static void DisconnectVC(String ID) {
-		for (String AMID:AMTable.keySet()) {
-			AudioManager AM = AMTable.get(AMID);
-
-			if (AM.getConnectedChannel().getId().equals(ID)) {
-				AM.closeAudioConnection();
-
-				AudioPlayerManagerTable.remove(AMID);
-				AudioPlayerTable.remove(AMID);
-				AMTable.remove(AMID);
-
-				for (String ChID:TextChannelTable.keySet()) {
-					if (TextChannelTable.get(ChID).equals(AMID)) {
-						TextChannelTable.remove(ChID);
-						break;
-					}
-				}
-				return;
-			}
+		String JomiageID = TextChannelIDToJomiageID(ID);
+		if (JomiageID != null) {
+			JomiageDataTable.get(JomiageID).getAM().closeAudioConnection();
+			JomiageDataTable.remove(JomiageID);
 		}
 	}
 
 	public static void VCMemberUpdate(String Ch) {
-		for (AudioManager AM:AMTable.values()) {
+		for (JomiageData J:JomiageDataTable.values()) {
+			AudioManager AM = J.getAM();
 			if (AM.getConnectedChannel() != null && AM.getConnectedChannel().getId().equals(Ch)) {
 				if (AM.getConnectedChannel().getMembers().size() == 1) {
 					DisconnectVC(Ch);
