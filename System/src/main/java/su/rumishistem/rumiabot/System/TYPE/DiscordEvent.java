@@ -11,7 +11,8 @@ public class DiscordEvent {
 
 	public enum EventType {
 		GuildMemberAdd,
-		GuildMemberRemove
+		GuildMemberRemove,
+		VCMemberUpdate
 	}
 
 	public DiscordEvent(Object EventClass, EventType Type, Guild Server, Channel Ch) {

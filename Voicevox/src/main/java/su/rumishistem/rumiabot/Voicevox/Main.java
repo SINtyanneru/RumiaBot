@@ -4,16 +4,17 @@ import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 import java.util.HashMap;
 import java.util.List;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
-import net.dv8tion.jda.api.managers.AudioManager;
+
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import su.rumishistem.rumiabot.System.MODULE.BlockManager;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
+import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
+import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
@@ -64,6 +65,11 @@ public class Main implements FunctionClass{
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
 		if (e.GetSource() == SourceType.Discord) {
+			//ブロック済みのユーザーなら此処で処理を中断する
+			if (BlockManager.IsBlocked(SourceType.Discord, e.GetUser().GetID())) {
+				return;
+			}
+
 			Jomiage.ReceiveMessage(e.GetMessage());
 		}
 	}
@@ -84,6 +90,23 @@ public class Main implements FunctionClass{
 			}
 
 			Jomiage.RunCommand(CI);
+		}
+	}
+
+	@Override
+	public void DiscordEventReceive(DiscordEvent e) throws Exception {
+		if (e.GetType() == EventType.VCMemberUpdate) {
+			GuildVoiceUpdateEvent event = (GuildVoiceUpdateEvent)e.GetEventClass();
+
+			String Ch = null;
+
+			if (event.getChannelJoined() != null) {
+				Ch = event.getChannelJoined().getId();
+			} else if (event.getChannelLeft() != null) {
+				Ch = event.getChannelLeft().getId();
+			}
+
+			Jomiage.VCMemberUpdate(Ch);
 		}
 	}
 }

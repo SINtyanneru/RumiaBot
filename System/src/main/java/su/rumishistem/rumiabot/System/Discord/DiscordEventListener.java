@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -405,6 +406,18 @@ public class DiscordEventListener extends ListenerAdapter {
 		for (FunctionClass Function:FunctionModuleList) {
 			try {
 				Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberRemove, e.getGuild(), null));
+			} catch (Exception EX) {
+				EX.printStackTrace();
+			}
+		}
+	}
+
+	//VCから出入りした
+	@Override
+	public void onGuildVoiceUpdate(GuildVoiceUpdateEvent e) {
+		for (FunctionClass Function:FunctionModuleList) {
+			try {
+				Function.DiscordEventReceive(new DiscordEvent(e, EventType.VCMemberUpdate, e.getGuild(), null));
 			} catch (Exception EX) {
 				EX.printStackTrace();
 			}

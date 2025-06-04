@@ -13,7 +13,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -36,6 +35,7 @@ public class Jomiage {
 	public static HashMap<String, String> TextChannelTable = new HashMap<String, String>();										//チャンネルID→AMID
 	public static HashMap<String, AudioPlayerManager> AudioPlayerManagerTable = new HashMap<String, AudioPlayerManager>();	//AMID→AudioPlayerManager
 	public static HashMap<String, AudioPlayer> AudioPlayerTable = new HashMap<String, AudioPlayer>();							//AMID→AudioPlayer
+	private static HashMap<String, HashMap<String, Integer>> UserVoiceTable = new HashMap<String, HashMap<String,Integer>>();
 
 	public static void RunCommand(CommandInteraction CI) throws Exception {
 		Member M = CI.GetDiscordInteraction().getMember();
@@ -129,5 +129,38 @@ public class Jomiage {
 			@Override
 			public void loadFailed(FriendlyException EX) {}
 		});
+	}
+
+	public static void DisconnectVC(String ID) {
+		for (String AMID:AMTable.keySet()) {
+			AudioManager AM = AMTable.get(AMID);
+
+			if (AM.getConnectedChannel().getId().equals(ID)) {
+				AM.closeAudioConnection();
+
+				AudioPlayerManagerTable.remove(AMID);
+				AudioPlayerTable.remove(AMID);
+				AMTable.remove(AMID);
+
+				for (String ChID:TextChannelTable.keySet()) {
+					if (TextChannelTable.get(ChID).equals(AMID)) {
+						TextChannelTable.remove(ChID);
+						break;
+					}
+				}
+				return;
+			}
+		}
+	}
+
+	public static void VCMemberUpdate(String Ch) {
+		for (AudioManager AM:AMTable.values()) {
+			if (AM.getConnectedChannel() != null && AM.getConnectedChannel().getId().equals(Ch)) {
+				if (AM.getConnectedChannel().getMembers().size() == 1) {
+					DisconnectVC(Ch);
+					return;
+				}
+			}
+		}
 	}
 }
