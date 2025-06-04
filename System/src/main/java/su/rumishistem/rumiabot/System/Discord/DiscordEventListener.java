@@ -9,6 +9,8 @@ import java.util.Locale;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import static su.rumishistem.rumiabot.System.Main.CommandList;
+
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -33,8 +35,8 @@ import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionEnable;
 import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordFunctionFind;
 import su.rumishistem.rumiabot.System.MODULE.AdminManager;
+import su.rumishistem.rumiabot.System.MODULE.BlockManager;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
-import su.rumishistem.rumiabot.System.MODULE.UserBlockCheck;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
@@ -127,7 +129,11 @@ public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onMessageReceived(MessageReceivedEvent E) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (!UserBlockCheck.isBlock(E.getAuthor().getId())) {
+		if (BlockManager.IsBlocked(SourceType.Discord, E.getAuthor().getId())) {
+			return;
+		}
+
+		try {
 			//管理者コマンド
 			if (AdminManager.IsAdmin(SourceType.Discord, E.getMember().getUser().getId())) {
 				String Content = E.getMessage().getContentRaw();
@@ -137,6 +143,14 @@ public class DiscordEventListener extends ListenerAdapter {
 						for (VBlock V:P.GetCls().get("RB")) {
 							switch (V.GetVerb()) {
 								case "Block": {
+									User U = DISCORD_BOT.getUserById(V.GetObject());
+									if (U == null) {
+										E.getMessage().reply(V.GetObject() + "というユーザーが見つからなかった").queue();
+										return;
+									}
+
+									BlockManager.addBlock(SourceType.Discord, U.getId());
+
 									E.getMessage().reply(V.GetObject() + "をブロックした").queue();
 									return;
 								}
@@ -148,6 +162,17 @@ public class DiscordEventListener extends ListenerAdapter {
 							}
 						}
 					}
+				}
+
+				//help用
+				if (E.getMessage().getContentRaw().equals("adminhelp")) {
+					StringBuilder SB = new StringBuilder();
+					SB.append("Queli->{Cls(主語){EX[動詞]->{目的語};};}->ExeC->{発動子};").append("\n");
+					SB.append("\n");
+					SB.append("# 動詞").append("\n");
+					SB.append("Block：ユーザーをブロックします(目的語にはユーザーIDを)").append("\n");
+
+					E.getMessage().reply(SB.toString()).queue();
 				}
 			}
 
@@ -168,6 +193,8 @@ public class DiscordEventListener extends ListenerAdapter {
 					)
 				));
 			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 
@@ -175,8 +202,8 @@ public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent INTERACTION){
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (UserBlockCheck.isBlock(INTERACTION.getUser().getId())) {
-			INTERACTION.reply("帰れ").queue();
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
 			return;
 		}
 
@@ -263,6 +290,12 @@ public class DiscordEventListener extends ListenerAdapter {
 	//ボタン
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+			return;
+		}
+
 		FunctionClass Function = SearchCommand.Function("Button:" + INTERACTION.getComponentId().split("\\?")[0]);
 		if (Function != null) {
 			new Thread(new Runnable() {
