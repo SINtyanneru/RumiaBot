@@ -7,10 +7,13 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,6 +24,13 @@ import su.rumishistem.rumiabot.System.TYPE.MessageData;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class Jomiage {
+	private static final HashMap<String, String> ConvertDict = new HashMap<String, String>(){
+		{
+			put("\\@everyone", "全体メンション、");
+			put("\\@here", "全体メンション、");
+		}
+	};
+
 	private static HashMap<String, AudioManager> AMTable = new HashMap<String, AudioManager>();								//ID→AM
 	public static HashMap<String, String> TextChannelTable = new HashMap<String, String>();										//チャンネルID→AMID
 	public static HashMap<String, AudioPlayerManager> AudioPlayerManagerTable = new HashMap<String, AudioPlayerManager>();	//AMID→AudioPlayerManager
@@ -86,19 +96,35 @@ public class Jomiage {
 			return;
 		}
 
+		String Text = M .GetText();
+
+		for (String K:ConvertDict.keySet()) {
+			String To = ConvertDict.get(K);
+			Text = Text.replaceAll(K, To);
+		}
+
 		//ファイルを錬成して再生
-		File F = VOICEVOX.genAudioFile(0, VOICEVOX.genAudioQuery(0, M.GetText()));
+		File F = VOICEVOX.genAudioFile(0, VOICEVOX.genAudioQuery(0, Text));
 		APM.loadItem(F.toString(), new AudioLoadResultHandler() {
 			@Override
-			public void trackLoaded(AudioTrack track) {
-				AP.playTrack(track);
+			public void trackLoaded(AudioTrack Track) {
+				//再生
+				AP.playTrack(Track);
+
+				//再生終わったら削除
+				AP.addListener(new AudioEventAdapter() {
+					@Override
+					public void onTrackEnd(AudioPlayer Player, AudioTrack Track, AudioTrackEndReason EndReason) {
+						F.delete();
+					}
+				});
 			}
 			@Override
-			public void playlistLoaded(AudioPlaylist playlist) {}
+			public void playlistLoaded(AudioPlaylist Playlist) {}
 			@Override
 			public void noMatches() {}
 			@Override
-			public void loadFailed(FriendlyException exception) {}
+			public void loadFailed(FriendlyException EX) {}
 		});
 	}
 }
