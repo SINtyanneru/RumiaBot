@@ -87,6 +87,7 @@ public class Jomiage {
 			return;
 		}
 
+		//取得
 		String AMID = TextChannelTable.get(M.GetDiscordChannel().getId());
 		AudioPlayerManager APM = AudioPlayerManagerTable.get(AMID);
 		AudioPlayer AP = AudioPlayerTable.get(AMID);
@@ -98,6 +99,7 @@ public class Jomiage {
 
 		String Text = M .GetText();
 
+		//置換
 		for (String K:ConvertDict.keySet()) {
 			String To = ConvertDict.get(K);
 			Text = Text.replaceAll(K, To);
