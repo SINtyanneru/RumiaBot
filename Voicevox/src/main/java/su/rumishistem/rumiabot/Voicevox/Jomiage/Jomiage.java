@@ -28,6 +28,7 @@ public class Jomiage {
 		{
 			put("\\@everyone", "全体メンション、");
 			put("\\@here", "全体メンション、");
+			put("\\b([a-zA-Z][a-zA-Z0-9+\\-.]*):\\/\\/[^\\s\"'<>]+", "ユーアールエル");
 		}
 	};
 
