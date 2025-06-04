@@ -1,5 +1,6 @@
 package su.rumishistem.rumiabot.aichan;
 
+import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -13,7 +14,6 @@ import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
-
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.MainChannnelID;
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.HomeTLChannnelID;
@@ -139,7 +139,7 @@ public class Main implements FunctionClass {
 			String Text = e.GetMessage().GetText();
 			if (e.GetSource() == SourceType.Discord) {
 				//Discordのメンションを置き換える
-				Text = Text.replaceAll("<@\\d{1,100}>", "@rumiabot");
+				Text = Text.replaceAll("<@\\d{1,100}>", "@" + MisskeyBOT.GetSelfUser().getUID());
 			}
 
 			//ノート
