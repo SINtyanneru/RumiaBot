@@ -24,6 +24,7 @@
     <module>Joke</module>
     <module>UserInfo</module>
     <module>DiscordPermissionFucker</module>
+    <module>Voicevox</module>
   </modules>
   <repositories>
     <repository>
