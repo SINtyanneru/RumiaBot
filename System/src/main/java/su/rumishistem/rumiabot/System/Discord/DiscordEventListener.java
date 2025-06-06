@@ -84,6 +84,11 @@ public class DiscordEventListener extends ListenerAdapter {
 						Type = OptionType.USER;
 						break;
 					}
+
+					case File: {
+						Type = OptionType.ATTACHMENT;
+						break;
+					}
 				}
 
 				OptionData SlashOption = new OptionData(Type, Option.GetName(), "説明", Option.isRequire());

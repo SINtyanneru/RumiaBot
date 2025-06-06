@@ -1,12 +1,6 @@
 package su.rumishistem.rumiabot.Joke;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
-import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordWebHook;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
@@ -41,7 +35,8 @@ public class Main implements FunctionClass {
 	public void Init() {
 		AddCommand(new CommandData("cam", new CommandOption[] {
 			new CommandOption("user", CommandOptionType.User, null, true),
-			new CommandOption("text", CommandOptionType.String, null, true)
+			new CommandOption("text", CommandOptionType.String, null, true),
+			new CommandOption("file", CommandOptionType.File, null, false)
 		}, true));
 	}
 
@@ -76,15 +71,6 @@ public class Main implements FunctionClass {
 			return;
 		}
 
-		Member M = CI.GetDiscordInteraction().getOption("user").getAsMember();
-		String Text = CI.GetDiscordInteraction().getOption("text").getAsString();
-		DiscordWebHook WH = new DiscordWebHook(CI.GetDiscordInteraction().getChannel().asTextChannel());
-
-		WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(Text);
-		MSG.setUsername(new NameParse(M).getDisplayName());
-		MSG.setAvatarUrl(M.getUser().getAvatarUrl());
-		MSG.queue();
-
-		CI.Reply("Done");
+		cam.Command(CI);
 	}
 }

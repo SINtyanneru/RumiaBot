@@ -4,5 +4,6 @@ public enum CommandOptionType {
 	String,
 	Int,
 	Role,
-	User
+	User,
+	File
 }
