@@ -10,6 +10,7 @@ public class DiscordEvent {
 	private Channel Ch;
 
 	public enum EventType {
+		BOTReady,
 		GuildMemberAdd,
 		GuildMemberRemove,
 		VCMemberUpdate

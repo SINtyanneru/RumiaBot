@@ -17,8 +17,11 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -108,6 +111,14 @@ public class DiscordEventListener extends ListenerAdapter {
 		//スラッシュコマンド登録
 		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).queue();
 		LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
+
+		for (FunctionClass Function:FunctionModuleList) {
+			try {
+				Function.DiscordEventReceive(new DiscordEvent(r, EventType.BOTReady, null, null));
+			} catch (Exception EX) {
+				EX.printStackTrace();
+			}
+		}
 
 		LOG(LOG_TYPE.OK, "DiscordBOT ready!");
 	}
@@ -311,6 +322,81 @@ public class DiscordEventListener extends ListenerAdapter {
 				public void run() {
 					try {
 						Function.RunButton(INTERACTION);
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
+		} else {
+			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+		}
+	}
+
+	@Override
+	public void onMessageContextInteraction(MessageContextInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+			return;
+		}
+
+		FunctionClass Function = SearchCommand.Function("Message:" + INTERACTION.getName().split("\\?")[0]);
+		if (Function != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.RunMessageContext(INTERACTION);
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
+		} else {
+			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+		}
+	}
+
+	@Override
+	public void onModalInteraction(ModalInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+			return;
+		}
+
+		FunctionClass Function = SearchCommand.Function("Modal:" + INTERACTION.getModalId().split("\\?")[0]);
+		if (Function != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.ReturnModal(INTERACTION);
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
+		} else {
+			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+		}
+	}
+
+	@Override
+	public void onEntitySelectInteraction(EntitySelectInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+			return;
+		}
+
+		FunctionClass Function = SearchCommand.Function("EntitySelect:" + INTERACTION.getComponentId().split("\\?")[0]);
+		if (Function != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.ReturnEntitySelect(INTERACTION);
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}

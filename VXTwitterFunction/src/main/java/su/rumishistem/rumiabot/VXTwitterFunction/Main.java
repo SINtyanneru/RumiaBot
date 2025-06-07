@@ -36,34 +36,38 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
-		if (e.GetSource() == SourceType.Discord && !e.GetUser().isMe()) {
-			if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.vxtwitter)) {
-				//WebHook用意
-				TextChannel Channel = (TextChannel) e.GetMessage().GetDiscordChannel();
-				DiscordWebHook WH = new DiscordWebHook(Channel);
+		try {
+			if (e.GetSource() == SourceType.Discord && !e.GetUser().isMe()) {
+				if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.vxtwitter)) {
+					//WebHook用意
+					TextChannel Channel = (TextChannel) e.GetMessage().GetDiscordChannel();
+					DiscordWebHook WH = new DiscordWebHook(Channel);
 
-				//変換
-				StringBuilder RESULT = new StringBuilder();
-				Pattern PTN = Pattern.compile("https://(?:twitter|x)\\.com/([a-zA-Z0-9_]+/status/[0-9]+)(\\?s=[0-9]*)?");
-				Matcher MTC = PTN.matcher(e.GetMessage().GetText());
-				while(MTC.find()){
-					String REPLACERO_TEXT = "https://vxtwitter.com/" + MTC.group(1);
-					MTC.appendReplacement(RESULT, REPLACERO_TEXT);
-				}
-				MTC.appendTail(RESULT);
+					//変換
+					StringBuilder RESULT = new StringBuilder();
+					Pattern PTN = Pattern.compile("https://(?:twitter|x)\\.com/([a-zA-Z0-9_]+/status/[0-9]+)(\\?s=[0-9]*)?");
+					Matcher MTC = PTN.matcher(e.GetMessage().GetText());
+					while(MTC.find()){
+						String REPLACERO_TEXT = "https://vxtwitter.com/" + MTC.group(1);
+						MTC.appendReplacement(RESULT, REPLACERO_TEXT);
+					}
+					MTC.appendTail(RESULT);
 
-				//変更点が有れば元メッセージを消してWebHook化
-				if (!RESULT.toString().equals(e.GetMessage().GetText())) {
-					//送信
-					WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(RESULT.toString());
-					MSG.setUsername(e.GetUser().GetName());
-					MSG.setAvatarUrl(e.GetUser().GetIconURL());
-					MSG.queue();
+					//変更点が有れば元メッセージを消してWebHook化
+					if (!RESULT.toString().equals(e.GetMessage().GetText())) {
+						//送信
+						WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(RESULT.toString());
+						MSG.setUsername(e.GetUser().GetName());
+						MSG.setAvatarUrl(e.GetUser().GetIconURL());
+						MSG.queue();
 
-					//削除
-					e.GetMessage().Delete();
+						//削除
+						e.GetMessage().Delete();
+					}
 				}
 			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 
