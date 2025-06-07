@@ -30,7 +30,7 @@ public class RunInteractionEvent {
 	}
 
 	public MessageContextInteractionEvent getMessageContext() {
-		if (Type == InteractionType.Button) {
+		if (Type == InteractionType.MessageContext) {
 			return (MessageContextInteractionEvent) Interaction;
 		} else {
 			throw new Error("MessageContextではない。");

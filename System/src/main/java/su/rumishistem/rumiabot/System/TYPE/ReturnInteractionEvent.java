@@ -30,7 +30,7 @@ public class ReturnInteractionEvent {
 	}
 
 	public EntitySelectInteractionEvent getEntitySelect() {
-		if (Type == InteractionType.Modal) {
+		if (Type == InteractionType.EntitySelector) {
 			return (EntitySelectInteractionEvent) Interaction;
 		} else {
 			throw new Error("つぁｈ");
