@@ -146,10 +146,10 @@ public class Main implements FunctionClass {
 			if (ReplyCam_Message.get(ID) == null) return;
 
 			ReplyCam_UserName.put(ID, new NameParse(Interaction.getMentions().getMembers().get(0)).getDisplayName());
-			if (Interaction.getMentions().getMembers().get(0).getAvatarUrl() != null) {
-				ReplyCam_UserIconURL.put(ID, Interaction.getMentions().getMembers().get(0).getAvatarUrl());
+			if (Interaction.getMentions().getUsers().get(0).getAvatarUrl() != null) {
+				ReplyCam_UserIconURL.put(ID, Interaction.getMentions().getUsers().get(0).getAvatarUrl());
 			} else {
-				ReplyCam_UserIconURL.put(ID, Interaction.getMentions().getMembers().get(0).getDefaultAvatarUrl());
+				ReplyCam_UserIconURL.put(ID, Interaction.getMentions().getUsers().get(0).getDefaultAvatarUrl());
 			}
 
 			TextInput Text = TextInput.create("text", "本文", TextInputStyle.SHORT).setPlaceholder("うんこ").setRequired(true).build();
