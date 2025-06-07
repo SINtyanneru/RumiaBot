@@ -52,6 +52,9 @@ import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.MessageData;
 import su.rumishistem.rumiabot.System.TYPE.MessageUser;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent;
+import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent;
+import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent.InteractionType;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class DiscordEventListener extends ListenerAdapter {
@@ -321,7 +324,7 @@ public class DiscordEventListener extends ListenerAdapter {
 				@Override
 				public void run() {
 					try {
-						Function.RunButton(INTERACTION);
+						Function.RunInteraction(new RunInteractionEvent(INTERACTION, InteractionType.Button));
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}
@@ -346,7 +349,7 @@ public class DiscordEventListener extends ListenerAdapter {
 				@Override
 				public void run() {
 					try {
-						Function.RunMessageContext(INTERACTION);
+						Function.RunInteraction(new RunInteractionEvent(INTERACTION, InteractionType.MessageContext));
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}
@@ -371,7 +374,7 @@ public class DiscordEventListener extends ListenerAdapter {
 				@Override
 				public void run() {
 					try {
-						Function.ReturnModal(INTERACTION);
+						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.Modal));
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}
@@ -396,7 +399,7 @@ public class DiscordEventListener extends ListenerAdapter {
 				@Override
 				public void run() {
 					try {
-						Function.ReturnEntitySelect(INTERACTION);
+						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.EntitySelector));
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}

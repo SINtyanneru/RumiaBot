@@ -8,7 +8,9 @@ import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent.InteractionType;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "認証パネル";
@@ -55,7 +57,9 @@ public class Main implements FunctionClass {
 	}
 
 	@Override
-	public void RunButton(ButtonInteractionEvent BI) {
-		PanelSystem.ButtonFunction(BI);
+	public void RunInteraction(RunInteractionEvent Interaction) throws Exception {
+		if (Interaction.getType() == InteractionType.Button) {
+			PanelSystem.ButtonFunction(Interaction.getButton());
+		}
 	}
 }
