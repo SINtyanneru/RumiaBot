@@ -28,6 +28,7 @@ public class Main {
 	public static FunctionModuleLoader FML = null;
 	public static List<FunctionClass> FunctionModuleList = new ArrayList<FunctionClass>();
 	public static List<CommandData> CommandList = new ArrayList<CommandData>();
+	public static List<net.dv8tion.jda.api.interactions.commands.build.CommandData> DiscordContextmenuList = new ArrayList<net.dv8tion.jda.api.interactions.commands.build.CommandData>();
 	public static SmartHTTP SH = null;
 	public static final int MaxLineSize = 25;
 	public static String BuildDate = "None";

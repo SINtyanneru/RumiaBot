@@ -1,38 +1,10 @@
 package su.rumishistem.rumiabot.Joke;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddDiscordContextMenu;
 import net.dv8tion.jda.api.interactions.commands.Command.Type;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu.SelectTarget;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
-import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
-import net.dv8tion.jda.api.utils.FileUpload;
-import su.rumishistem.rumi_java_lib.FETCH;
-import su.rumishistem.rumi_java_lib.FETCH_RESULT;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordWebHook;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
@@ -75,17 +47,8 @@ public class Main implements FunctionClass {
 			new CommandOption("text", CommandOptionType.String, null, true),
 			new CommandOption("file", CommandOptionType.File, null, false)
 		}, true));
-	}
 
-	@Override
-	public void DiscordEventReceive(DiscordEvent e) throws Exception {
-		if (e.GetType() == EventType.BOTReady) {
-			//コンテキストメニュー
-			su.rumishistem.rumiabot.System.Main.DISCORD_BOT.upsertCommand(
-				Commands.context(Type.MESSAGE, "reply-cam")
-			).queue();
-			su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG(LOG_TYPE.OK, "cam用のコンテキストメニューを登録した");
-		}
+		AddDiscordContextMenu(Commands.context(Type.MESSAGE, "reply-cam"));
 	}
 
 	@Override

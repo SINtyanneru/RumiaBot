@@ -9,6 +9,7 @@ import java.util.Locale;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import static su.rumishistem.rumiabot.System.Main.CommandList;
+import static su.rumishistem.rumiabot.System.Main.DiscordContextmenuList;
 
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -112,7 +113,7 @@ public class DiscordEventListener extends ListenerAdapter {
 		SlashCommandList.add(GenFunctionSettingCommand());
 
 		//スラッシュコマンド登録
-		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).queue();
+		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).addCommands(DiscordContextmenuList).queue();
 		LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
 
 		for (FunctionClass Function:FunctionModuleList) {

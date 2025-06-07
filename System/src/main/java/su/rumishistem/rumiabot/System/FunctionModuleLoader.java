@@ -1,6 +1,7 @@
 package su.rumishistem.rumiabot.System;
 
 import static su.rumishistem.rumiabot.System.Main.CommandList;
+import static su.rumishistem.rumiabot.System.Main.DiscordContextmenuList;
 import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import java.io.File;
@@ -68,5 +69,9 @@ public class FunctionModuleLoader {
 
 	public static void AddCommand(CommandData Command) {
 		CommandList.add(Command);
+	}
+
+	public static void AddDiscordContextMenu(net.dv8tion.jda.api.interactions.commands.build.CommandData Command) {
+		DiscordContextmenuList.add(Command);
 	}
 }
