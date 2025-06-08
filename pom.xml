@@ -25,6 +25,7 @@
     <module>UserInfo</module>
     <module>DiscordPermissionFucker</module>
     <module>Voicevox</module>
+    <module>MakeItQuote</module>
   </modules>
   <repositories>
     <repository>
@@ -68,5 +69,5 @@
       <artifactId>lavaplayer</artifactId>
       <version>1.3.78</version>
     </dependency>
-   </dependencies>
+  </dependencies>
 </project>
