@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionE
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -401,6 +402,31 @@ public class DiscordEventListener extends ListenerAdapter {
 				public void run() {
 					try {
 						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.EntitySelector));
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			}).start();
+		} else {
+			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+		}
+	}
+
+	@Override
+	public void onStringSelectInteraction(StringSelectInteractionEvent INTERACTION) {
+		//ブロック済みのユーザーなら此処で処理を中断する
+		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
+			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+			return;
+		}
+
+		FunctionClass Function = SearchCommand.Function("StringSelect:" + INTERACTION.getComponentId().split("\\?")[0]);
+		if (Function != null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.StringSelector));
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}

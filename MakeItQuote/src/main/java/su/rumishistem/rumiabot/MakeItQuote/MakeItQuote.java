@@ -2,6 +2,7 @@ package su.rumishistem.rumiabot.MakeItQuote;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -9,21 +10,42 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import javax.imageio.ImageIO;
 
-public class miq {
+public class MakeItQuote {
 	private static final int ImageWidth = 1200;
 	private static final int ImageHeight = 630;
 	protected static BufferedImage BackgroundImage = null;
 
-	public static File Gen(String UserID, String UserName, String IconURL, String Text) throws MalformedURLException, IOException {
+	private Graphics2D G = null;
+
+	private String UserID = null;
+	private String UserName = null;
+	private BufferedImage IconImage = null;
+	private String Text = null;
+
+	public void setUserID(String UserID) {
+		this.UserID = UserID;
+	}
+
+	public void setUserName(String UserName) {
+		this.UserName = UserName;
+	}
+
+	public void setIcon(BufferedImage IconImage) {
+		this.IconImage = IconImage;
+	}
+
+	public void setText(String Text) {
+		this.Text = Text;
+	}
+
+	public File Gen() throws MalformedURLException, IOException, FontFormatException {
 		BufferedImage Image = new BufferedImage(ImageWidth, ImageHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D G = Image.createGraphics();
+		G = Image.createGraphics();
 
 		//アンチエイリアス有効化
 		G.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -34,12 +56,12 @@ public class miq {
 		G.fillRect(0, 0, ImageWidth, ImageHeight);
 
 		//アイコン描画
-		DrawIcon(IconURL, G);
+		DrawIcon();
 
 		//上にかぶせる例のアレ
 		G.drawImage(BackgroundImage, 0, 0, ImageWidth, ImageHeight, null);
 
-		DrawText(UserID, UserName, Text, G);
+		DrawText();
 
 		G.dispose();
 
@@ -48,17 +70,23 @@ public class miq {
 		return F;
 	}
 
-	private static void DrawIcon(String IconURL, Graphics2D G) throws MalformedURLException, IOException {
-		BufferedImage IconImage = ImageIO.read(new URL(IconURL));
+	private void DrawIcon() throws MalformedURLException, IOException {
+		//比率を保ったままリサイズして設置
 		double IconScale = (double)ImageHeight / (double)IconImage.getHeight();
 		int IconWidth = (int)(IconImage.getWidth() * IconScale);
 		G.drawImage(IconImage, 0, 0, IconWidth, ImageHeight, null);
 	}
 
-	private static void DrawText(String UserID, String UserName, String Text, Graphics2D G) {
-		Font TextFont = new Font("Serif", Font.BOLD, 64);
-		Font UserNameFont = new Font("Serif", Font.ITALIC, 40);
-		Font UserIDFont = new Font("Serif", Font.BOLD, 30);
+	private static Font LoadFont(int Style, int Size) throws FontFormatException, IOException {
+		Font F = Font.createFont(Font.TRUETYPE_FONT, new File("./DATA/FONT/").listFiles()[0]);
+		F = F.deriveFont(Style, Size);
+		return F;
+	}
+
+	private void DrawText() throws FontFormatException, IOException {
+		Font TextFont = LoadFont(Font.PLAIN, 64);
+		Font UserNameFont = LoadFont(Font.ITALIC, 40);
+		Font UserIDFont = LoadFont(Font.PLAIN, 30);
 
 		//フォント設定
 		G.setFont(TextFont);

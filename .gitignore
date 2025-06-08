@@ -2,6 +2,7 @@ Config.ini
 node_modules/
 DOWNLOAD/
 DATA/MUSIC/*.*
+DATA/FONT/*.*
 FUNCTION/*.*
 log/
 

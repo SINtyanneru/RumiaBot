@@ -2,6 +2,7 @@ package su.rumishistem.rumiabot.System.TYPE;
 
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 
 public class ReturnInteractionEvent {
 	private Object Interaction;
@@ -10,6 +11,7 @@ public class ReturnInteractionEvent {
 	public enum InteractionType {
 		Modal,
 		EntitySelector,
+		StringSelector
 	}
 
 	public ReturnInteractionEvent(Object Interaction, InteractionType Type) {
@@ -32,6 +34,14 @@ public class ReturnInteractionEvent {
 	public EntitySelectInteractionEvent getEntitySelect() {
 		if (Type == InteractionType.EntitySelector) {
 			return (EntitySelectInteractionEvent) Interaction;
+		} else {
+			throw new Error("つぁｈ");
+		}
+	}
+
+	public StringSelectInteractionEvent getStringSelect() {
+		if (Type == InteractionType.StringSelector) {
+			return (StringSelectInteractionEvent) Interaction;
 		} else {
 			throw new Error("つぁｈ");
 		}
