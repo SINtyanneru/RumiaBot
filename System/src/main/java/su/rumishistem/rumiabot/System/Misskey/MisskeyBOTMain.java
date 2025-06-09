@@ -48,13 +48,46 @@ public class MisskeyBOTMain {
 						EX.printStackTrace();
 					}
 				}
-				
+
 				@Override
 				public void onNewNote(NewNoteEvent e) {
+					//イベント着火(コマンドでは無い)
+					for (FunctionClass Function:FunctionModuleList) {
+						Function.ReceiveMessage(new ReceiveMessageEvent(
+							SourceType.Misskey,
+							new MessageUser(
+								null,
+								e.getUSER()
+							),
+							null, null,
+							new MessageData(
+								e.getNOTE().getID(),
+								e.getNOTE().getTEXT(),
+								null,
+								e.getNOTE(),
+								e.getNOTE().isKaiMention()
+							)
+						));
+					}
+				}
+				
+				@Override
+				public void onNewFollower(NewFollower e) {
+					e.getUser().Follow();
+					LOG(LOG_TYPE.INFO, "フォローされたのでフォロバしました");
+				}
+
+				@Override
+				public void onDisconnect(DisconnectEvent e) {
+					System.out.println("切断されましたあああああああああああああ");
+				}
+
+				@Override
+				public void onMention(NewNoteEvent e) {
 					try {
 						//メンションされていればコマンドとして処理
 						if (e.getNOTE().isKaiMention()) {
-							String Text = e.getNOTE().getTEXT().replaceAll("^@[^@\\s]+(?:@[^@\\s]+)?", "").replaceAll("^ ", "");
+							String Text = e.getNOTE().getTEXT().replaceFirst("^.*?(>\\w+)$", "$1");
 							//先頭が>ならコマンド
 							if (Text.startsWith(">")) {
 								String[] CMD = Text.replaceAll("^>", "").split(" ");
@@ -127,39 +160,9 @@ public class MisskeyBOTMain {
 								}
 							}
 						}
-
-						//イベント着火(コマンドでは無い)
-						for (FunctionClass Function:FunctionModuleList) {
-							Function.ReceiveMessage(new ReceiveMessageEvent(
-								SourceType.Misskey,
-								new MessageUser(
-									null,
-									e.getUSER()
-								),
-								null, null,
-								new MessageData(
-									e.getNOTE().getID(),
-									e.getNOTE().getTEXT(),
-									null,
-									e.getNOTE(),
-									e.getNOTE().isKaiMention()
-								)
-							));
-						}
 					} catch (Exception EX) {
 						EX.printStackTrace();
 					}
-				}
-				
-				@Override
-				public void onNewFollower(NewFollower e) {
-					e.getUser().Follow();
-					LOG(LOG_TYPE.INFO, "フォローされたのでフォロバしました");
-				}
-
-				@Override
-				public void onDisconnect(DisconnectEvent e) {
-					System.out.println("切断されましたあああああああああああああ");
 				}
 			});
 		} else {

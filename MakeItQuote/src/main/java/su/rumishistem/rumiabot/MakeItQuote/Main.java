@@ -1,6 +1,7 @@
 package su.rumishistem.rumiabot.MakeItQuote;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddDiscordContextMenu;
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
@@ -8,12 +9,15 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.interactions.commands.Command.Type;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent;
 import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent;
 import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent.InteractionType;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class Main implements FunctionClass{
 	private static final String FUNCTION_NAME = "よけ";
@@ -41,6 +45,7 @@ public class Main implements FunctionClass{
 			EX.printStackTrace();
 		}
 
+		AddCommand(new CommandData("miq", new CommandOption[] {}, false));
 		AddDiscordContextMenu(Commands.context(Type.MESSAGE, "miq"));
 	}
 
@@ -49,11 +54,17 @@ public class Main implements FunctionClass{
 
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		return Name.equals("Message:miq") || Name.equals("StringSelect:miq-icon-color-select");
+		return Name.equals("miq") || Name.equals("Message:miq") || Name.equals("StringSelect:miq-icon-color-select");
 	}
 
 	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {}
+	public void RunCommand(CommandInteraction CI) throws Exception {
+		if (CI.GetSource() == SourceType.Misskey) {
+			MisskeyMiq.Run(CI);
+		} else {
+			CI.Reply("Misskeyでのみ使用可能です。\nDiscordの場合はメッセージのコンテキストメニューから可能です。");
+		}
+	}
 
 	@Override
 	public void RunInteraction(RunInteractionEvent Interaction) throws Exception {

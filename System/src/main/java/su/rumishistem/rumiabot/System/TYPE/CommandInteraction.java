@@ -91,4 +91,8 @@ public class CommandInteraction {
 	public SlashCommandInteractionEvent GetDiscordInteraction() {
 		return DiscordInteraction;
 	}
+
+	public Note GetMisskeyNote() {
+		return MisskeyNote;
+	}
 }
