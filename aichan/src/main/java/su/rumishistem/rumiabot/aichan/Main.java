@@ -15,8 +15,8 @@ import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
-import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.MainChannnelID;
-import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.HomeTLChannnelID;
+import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.MainChannnelID;
+import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.HomeTLChannnelID;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "藍ちゃんを乗っとるやつ";
