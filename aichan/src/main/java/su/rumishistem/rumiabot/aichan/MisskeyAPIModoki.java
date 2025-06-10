@@ -8,7 +8,9 @@ import su.rumishistem.rumi_java_lib.WebSocket.Server.CONNECT_EVENT.CONNECT_EVENT
 import su.rumishistem.rumiabot.aichan.API.CreateFileAPI;
 import su.rumishistem.rumiabot.aichan.API.CreateNoteAPI;
 import su.rumishistem.rumiabot.aichan.API.CreateReactionAPI;
+import su.rumishistem.rumiabot.aichan.API.GetConversationAPI;
 import su.rumishistem.rumiabot.aichan.API.GetI;
+import su.rumishistem.rumiabot.aichan.API.GetNoteAPI;
 import su.rumishistem.rumiabot.aichan.API.ReversiMatchAPI;
 import su.rumishistem.rumiabot.aichan.API.StreamingAPI;
 import su.rumishistem.rumiabot.aichan.API.UserShowAPI;
@@ -41,11 +43,17 @@ public class MisskeyAPIModoki {
 		//自分自身を習得
 		SH.SetRoute("/api/i", new GetI());
 
+		//ノート取得
+		SH.SetRoute("/api/notes/show", new GetNoteAPI());
+
 		//ノート作成
 		SH.SetRoute("/api/notes/create", new CreateNoteAPI());
 
 		//ノートにリアクション
 		SH.SetRoute("/api/notes/reactions/create", new CreateReactionAPI());
+
+		//会話取得？
+		SH.SetRoute("/api/notes/conversation", new GetConversationAPI());
 
 		//ユーザー習得
 		SH.SetRoute("/api/users/show", new UserShowAPI());

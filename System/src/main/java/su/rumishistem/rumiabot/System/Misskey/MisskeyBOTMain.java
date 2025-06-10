@@ -59,7 +59,8 @@ public class MisskeyBOTMain {
 								null,
 								e.getUSER()
 							),
-							null, null,
+							null, null, null,
+							e.getNOTE(),
 							new MessageData(
 								e.getNOTE().getID(),
 								e.getNOTE().getTEXT(),

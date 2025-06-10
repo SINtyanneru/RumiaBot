@@ -208,6 +208,8 @@ public class DiscordEventListener extends ListenerAdapter {
 					),
 					E.getMember(),
 					E.getChannel().asTextChannel(),
+					E.getMessage(),
+					null,
 					new MessageData(
 						E.getMessageId(),
 						E.getMessage().getContentRaw(),

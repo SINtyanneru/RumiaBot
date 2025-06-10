@@ -14,6 +14,8 @@ import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.aichan.MODULE.ConvertType;
+
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
 import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.MainChannnelID;
 import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.HomeTLChannnelID;
@@ -128,74 +130,14 @@ public class Main implements FunctionClass {
 			}
 
 			//ID
-			String ID = "";
 			if (e.GetSource() == SourceType.Discord) {
-				ID = "D-" + e.GetMessage().GetDiscordChannel().getId() + "_" + e.GetMessage().GetID();
+				//Discord
+				Body.put("body", ConvertType.DiscordMessageToNote(e.GetDiscordMessage()));
 			} else if (e.GetSource() == SourceType.Misskey) {
-				ID = "M-" + e.GetMessage().GetID();
+				//Misskey
+				Body.put("body", ConvertType.NoteToNote(e.GetMisskeyNote()));
 			}
 
-			//本文
-			String Text = e.GetMessage().GetText();
-			if (e.GetSource() == SourceType.Discord) {
-				//Discordのメンションを置き換える
-				Text = Text.replaceAll("<@\\d{1,100}>", "@" + MisskeyBOT.GetSelfUser().getUID());
-			}
-
-			//ノート
-			LinkedHashMap<String, Object> NoteBody = new LinkedHashMap<String, Object>();
-			NoteBody.put("id", ID);
-			NoteBody.put("createAt", "2025-02-26T08:00:10.046Z");
-			String UID = "";
-			switch (e.GetSource()) {
-				case Discord: {
-					UID = "D-" + e.GetUser().GetID();
-					break;
-				}
-
-				case Misskey: {
-					UID = "M-" + e.GetUser().GetID();
-					break;
-				}
-			}
-			NoteBody.put("userId", UID);
-			NoteBody.put("text", Text);
-			NoteBody.put("cw", null);
-			NoteBody.put("visibility", "public");
-			NoteBody.put("localOnly", false);
-			NoteBody.put("reactionAcceptance", null);
-			NoteBody.put("renoteCount", 0);
-			NoteBody.put("repliesCount", 0);
-			NoteBody.put("reactionCount", 0);
-			NoteBody.put("reactions", new Object[] {});
-			NoteBody.put("reactionEmojis", new Object[] {});
-			NoteBody.put("reactionAndUserPairCache", new Object[] {});
-			NoteBody.put("emojis", new Object[] {});
-			NoteBody.put("fileIds", new Object[] {});
-			NoteBody.put("files", new Object[] {});
-			NoteBody.put("replyId", null);
-			NoteBody.put("renoteId", null);
-			if (e.GetMessage().isKaiMention()) {
-				//自分自身がメンションされてる
-				NoteBody.put("mentions", new String[] {"9pzfpcwe7o"});
-			}
-			NoteBody.put("clippedCount", 0);
-
-			//ユーザー
-			LinkedHashMap<String, Object> UserBody = new LinkedHashMap<String, Object>();
-			UserBody.put("id", e.GetSource().name() + "_" + e.GetUser().GetID());
-			UserBody.put("name", e.GetUser().GetName());
-			UserBody.put("username", e.GetUser().GetName());
-			if (e.GetSource() == SourceType.Discord) {
-				UserBody.put("host", "discord.com");
-			} else {
-				UserBody.put("host", null);
-			}
-			UserBody.put("avatarUrl", e.GetUser().GetIconURL());
-			//ノートにユーザーを
-			NoteBody.put("user", UserBody);
-			//ノートをぼでーに
-			Body.put("body", NoteBody);
 			//ぼでーをメッセージに
 			WebSocketMessage.put("body", Body);
 
