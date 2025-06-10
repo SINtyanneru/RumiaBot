@@ -19,6 +19,7 @@ import su.rumishistem.rumi_java_lib.Misskey.Event.EVENT_LISTENER;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import su.rumishistem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
+import su.rumishistem.rumiabot.System.LogSystem;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
@@ -141,8 +142,11 @@ public class MisskeyBOTMain {
 											} catch (Exception EX) {
 												EX.printStackTrace();
 												try {
+													LogSystem.error("実行されたインタラクション：https://ussr.rumiserver.com/notes/" + e.getNOTE().getID());
+													LogSystem.error(EXCEPTION_READER.READ(EX));
+
 													NoteBuilder NB = new NoteBuilder();
-													NB.setTEXT("エラー\n```\n" + EXCEPTION_READER.READ(EX)+ "\n```");
+													NB.setTEXT("エラー！");
 													NB.setREPLY(e.getNOTE());
 													MisskeyBOT.PostNote(NB.Build());
 												} catch (Exception EX2) {
