@@ -16,8 +16,8 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 public class MakeItQuote {
-	private static final int ImageWidth = 1200;
-	private static final int ImageHeight = 630;
+	private static final int ImageWidth = 1980;
+	private static final int ImageHeight = 1040;
 	protected static BufferedImage BackgroundImage = null;
 
 	private Graphics2D G = null;
@@ -85,17 +85,17 @@ public class MakeItQuote {
 
 	private void DrawText() throws FontFormatException, IOException {
 		Font TextFont = LoadFont(Font.PLAIN, 64);
-		Font UserNameFont = LoadFont(Font.ITALIC, 40);
-		Font UserIDFont = LoadFont(Font.PLAIN, 30);
+		Font UserNameFont = LoadFont(Font.ITALIC, 30);
+		Font UserIDFont = LoadFont(Font.PLAIN, 20);
 
 		//フォント設定
 		G.setFont(TextFont);
-
 		G.setColor(Color.WHITE);
 
 		//フォントメトリクス
 		FontMetrics FM = G.getFontMetrics();
-		int CX = 850;
+
+		int TextMaxWidth = 500;
 
 		//まずは文字を整理します
 		List<String> LineList = new ArrayList<String>();
@@ -105,7 +105,7 @@ public class MakeItQuote {
 			Line.append(C);
 
 			//横幅が最大サイズを超えた
-			if ((CX + FM.stringWidth(Line.toString())) - 300 > ImageWidth) {
+			if (FM.stringWidth(Line.toString()) > TextMaxWidth || C == '\n') {
 				//最後の1文字は次行へ
 				Line.deleteCharAt(Line.length() - 1);
 				//行に追加
@@ -122,29 +122,64 @@ public class MakeItQuote {
 			LineList.add(Line.toString());
 		}
 
-		//描画する
-		int LineHeight = FM.getHeight();
-		int TotalHeight = LineHeight * LineList.size();
-		int StartY = (ImageHeight / 2) - TotalHeight / 2 + FM.getAscent();
-		int LastY = 0;
+		int TotalHeight = FM.getHeight() * LineList.size();
+		BufferedImage TextImage = new BufferedImage(TextMaxWidth, TotalHeight, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D TG = TextImage.createGraphics();
+		//フォント設定
+		TG.setFont(TextFont);
+		TG.setColor(Color.WHITE);
 
+		//テキストの描画関係の情報を纏める
+		int StartY = FM.getAscent();
+		int LineHeight = FM.getHeight();
+		int LastY = 0;
 		for (int I = 0; I < LineList.size(); I++) {
 			String L = LineList.get(I);
 			int LineWidth = FM.stringWidth(L);
-			int X = CX - LineWidth / 2;
+			int X = (TextMaxWidth / 2) - (LineWidth / 2);
 			int Y = StartY + I * LineHeight;
-			G.drawString(L, X, Y);
+			TG.drawString(L, X, Y);
 			LastY = Y;
 		}
 
+		int CX = ImageWidth / 2 + 400;
+		int TextDrawMaxWidth = ImageWidth - CX;				//最大横幅
+		int TextDrawMaxHeight = ImageHeight - 300;			//最大縦幅
+		int TextDrawOriginalWidth = TextImage.getWidth();	//元画像の横幅
+		int TextDrawOriginalHeight = TextImage.getHeight();	//元画像の縦幅
+		int TextDrawWidth = TextDrawOriginalWidth;
+		int TextDrawHeight = TextDrawOriginalHeight;
+
+		double WidthRaito = (double) TextDrawMaxWidth / TextDrawOriginalWidth;
+		double HeightRaito = (double) TextDrawMaxHeight / TextDrawOriginalHeight;
+		double Scale = Math.min(WidthRaito, HeightRaito);
+
+		if (!(Scale >= 1.0)) {
+			TextDrawWidth = (int)(TextDrawOriginalWidth * Scale);
+			TextDrawHeight = (int)(TextDrawOriginalHeight * Scale);
+		}
+
+		int TextDrawX = CX - (TextDrawWidth / 2);
+		int TextDrawY = (ImageHeight / 2) - (TextDrawHeight / 2);
+
+		G.drawImage(
+			TextImage,
+			TextDrawX,
+			TextDrawY,
+			TextDrawWidth,
+			TextDrawHeight,
+			null
+		);
+
+		int UserInfoBaseY = TextDrawY + TextDrawHeight;
 
 		G.setFont(UserNameFont);
 		int UserNameLineHeight = G.getFontMetrics().getHeight();
-		G.drawString("-"+UserName, CX - G.getFontMetrics().stringWidth("-"+UserName) / 2, LastY + UserNameLineHeight);
+		G.drawString("-"+UserName, CX - G.getFontMetrics().stringWidth("-"+UserName) / 2, UserInfoBaseY + UserNameLineHeight);
 
 		G.setColor(Color.GRAY);
 		G.setFont(UserIDFont);
 		int UserIDLineHeight = G.getFontMetrics().getHeight();
-		G.drawString("@"+UserID, CX - G.getFontMetrics().stringWidth("@"+UserID) / 2, LastY + UserNameLineHeight + UserIDLineHeight);
+		G.drawString("@"+UserID, CX - G.getFontMetrics().stringWidth("@"+UserID) / 2, UserInfoBaseY + UserNameLineHeight + UserIDLineHeight);
 	}
 }
