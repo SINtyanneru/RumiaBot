@@ -62,7 +62,7 @@ public class MessageUser {
 	public String GetIconURL() {
 		if (DiscordMember != null) {
 			//Discord
-			return DiscordMember.getAvatarUrl();
+			return DiscordMember.getEffectiveAvatarUrl();
 		} else if (MisskeyUser != null) {
 			//Misskey
 			return MisskeyUser.getICON_URL();
