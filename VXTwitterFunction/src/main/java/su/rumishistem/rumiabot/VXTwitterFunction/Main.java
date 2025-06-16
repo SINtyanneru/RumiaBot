@@ -94,6 +94,8 @@ public class Main implements FunctionClass {
 							if (Row.get("type").asText().equals("video")) {
 								Text.append("\n");
 								Text.append("[動画"+(I+1)+"]("+Row.get("url").asText()+")");
+							} else {
+								EB.setImage(Row.get("url").asText());
 							}
 						}
 
