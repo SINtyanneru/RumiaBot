@@ -106,7 +106,7 @@ public class Main implements FunctionClass {
 					}
 
 					//送信
-					WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(Text.toString());
+					WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(Text.toString().replace("@everyone", "[全体メンション]").replace("@here", "[全体メンション]"));
 					MSG.setUsername(e.GetUser().GetName());
 					MSG.setAvatarUrl(e.GetUser().GetIconURL());
 					MSG.setEmbeds(EB.build());
