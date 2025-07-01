@@ -2,6 +2,8 @@ package su.rumishistem.rumiabot.System.TYPE;
 
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
 
+import java.sql.SQLException;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -78,7 +80,7 @@ public class MessageData {
 		}
 	}
 
-	public boolean CheckDiscordGuildFunctionEnabled(DiscordFunction FunctionName) {
+	public boolean CheckDiscordGuildFunctionEnabled(DiscordFunction FunctionName) throws SQLException {
 		if (DiscordMessage != null) {
 			ArrayNode SQL_RESULT = SQL.RUN("SELECT * FROM `CONFIG` WHERE `GID` = ? AND `FUNC_ID` = ? AND `CID` = '';", new Object[] {
 				DiscordMessage.getGuildId(),

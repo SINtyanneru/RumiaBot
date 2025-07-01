@@ -2,6 +2,7 @@ package su.rumishistem.rumiabot.UserInfo;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -94,7 +95,7 @@ public class Main implements FunctionClass{
 		}
 	}
 
-	private ArrayNode SearchInvite(String UID, String GID) {
+	private ArrayNode SearchInvite(String UID, String GID) throws SQLException {
 		ArrayNode R = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `UID` = ? AND `GID` = ?;", new Object[] {UID, GID});
 
 		if (R.asArrayList().size() == 1) {

@@ -53,20 +53,24 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
-		if (e.GetSource() == SourceType.Discord) {
-			//設定の有効化をチェック
-			if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.Joke)) {
-				return;
-			}
+		try {
+			if (e.GetSource() == SourceType.Discord) {
+				//設定の有効化をチェック
+				if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.Joke)) {
+					return;
+				}
 
-			//そういうのよくないよ
-			SouiunoYokunaiyo.Main(e);
-			//きも
-			Kimo.Main(e);
-			//住所
-			Zhuusho.Main(e);
-			//うんこ
-			Unko.Main(e);
+				//そういうのよくないよ
+				SouiunoYokunaiyo.Main(e);
+				//きも
+				Kimo.Main(e);
+				//住所
+				Zhuusho.Main(e);
+				//うんこ
+				Unko.Main(e);
+			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 	}
 

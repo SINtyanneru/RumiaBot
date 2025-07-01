@@ -54,6 +54,7 @@ public class Main implements FunctionClass {
 			public void run() {
 				try {
 					JsonNode B = ReportGet.Get(AdminToken);
+					System.out.println(B);
 					for (int I = 0; I < B.size(); I++) {
 						JsonNode R = B.get(I);
 						String Text = GenNoteText(R);
@@ -63,11 +64,6 @@ public class Main implements FunctionClass {
 						NB.setTEXT(Text);
 						NB.setVIS(NoteVis.PUBLIC);
 						MisskeyBOT.PostNote(NB.Build());
-
-						//リモートの通報は破棄する
-						if (!R.get("reporter").get("host").isNull()) {
-							ReportHaki(R.get("id").asText());
-						}
 					}
 
 					LOG(LOG_TYPE.OK, "通報をチェックしました");
@@ -134,21 +130,9 @@ public class Main implements FunctionClass {
 			SB.append("```\n" + Sanitize(Content) + "\n```\n");
 		}
 
-		//ローカルなら消さない
-		if (Host.equals(CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString())) {
-			SB.append("ローカルからの通報のため、通報は破棄しません！\n");
-			SB.append("@Rumisan");
-		} else {
-			SB.append("リモートからの通報のため、破棄しました！");
-		}
+		SB.append("@rumisan@fedi.rumi-room.net");
 
 		return SB.toString();
-	}
-	
-	private static void ReportHaki(String ID) throws MalformedURLException {
-		FETCH AJAX = new FETCH("https://" + CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString() + "/api/admin/resolve-abuse-user-report");
-		AJAX.SetHEADER("Content-Type", "application/json; charset=UTF-8");
-		AJAX.POST(("{\"reportId\":\"" + ID + "\",\"resolvedAs\":\"reject\",\"i\":\"" + AdminToken + "\"}").getBytes());
 	}
 
 	private static String Sanitize(String Text) {

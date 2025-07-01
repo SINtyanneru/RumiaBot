@@ -1,5 +1,6 @@
 package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -150,7 +151,7 @@ public class Main implements FunctionClass{
 		}
 	}
 
-	private TextChannel GetChannel(Guild G, DiscordChannelFunction F) {
+	private TextChannel GetChannel(Guild G, DiscordChannelFunction F) throws SQLException {
 		ArrayNode SR = SQL.RUN("SELECT `CID` FROM `CONFIG` WHERE `GID` = ? AND `FUNC_ID` = ?;", new Object[] {G.getId(), F.name()});
 		if (SR.asArrayList().size() == 1) {
 			TextChannel Ch = G.getTextChannelById(SR.get(0).getData("CID").asString());

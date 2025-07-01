@@ -1,5 +1,6 @@
 package su.rumishistem.rumiabot.System.MODULE;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import su.rumishistem.rumi_java_lib.ArrayNode;
@@ -10,7 +11,7 @@ public class AdminManager {
 	private static HashMap<String, String> MisskeyAdmin = new HashMap<String, String>();
 	private static HashMap<String, String> DiscordAdmin = new HashMap<String, String>();
 
-	public static void Init() {
+	public static void Init() throws SQLException {
 		ArrayNode RESULT = SQL.RUN("SELECT * FROM `ADMIN` ", new Object[] {});
 		for (int I = 0; I < RESULT.asArrayList().size(); I++) {
 			ArrayNode ROW = RESULT.get(I);

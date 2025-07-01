@@ -102,15 +102,19 @@ public class Main implements FunctionClass {
 	}
 	@Override
 	public void ReceiveMessage(ReceiveMessageEvent e) {
-		if (!Enabled) {
-			return;
-		}
-
-		//Discordなら機能が有効化されていることを確認
-		if (e.GetSource() == SourceType.Discord) {
-			if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.aichan)) {
+		try {
+			if (!Enabled) {
 				return;
 			}
+
+			//Discordなら機能が有効化されていることを確認
+			if (e.GetSource() == SourceType.Discord) {
+				if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.aichan)) {
+					return;
+				}
+			}
+		} catch (Exception EX) {
+			EX.printStackTrace();
 		}
 
 		try {

@@ -49,7 +49,7 @@ public class DiscordFunctionEnable {
 		}
 	}
 
-	private static boolean Exists(String GuildID, String ChannnelID, String Function) {
+	private static boolean Exists(String GuildID, String ChannnelID, String Function) throws SQLException {
 		ArrayNode RESULT = SQL.RUN("SELECT * FROM `CONFIG` WHERE `GID` = ? AND `CID` = ? AND `FUNC_ID` = ?;", new Object[] {
 			GuildID, ChannnelID, Function
 		});
