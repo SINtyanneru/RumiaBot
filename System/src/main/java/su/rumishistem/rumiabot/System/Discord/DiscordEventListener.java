@@ -113,6 +113,10 @@ public class DiscordEventListener extends ListenerAdapter {
 		//機能設定用コマンド
 		SlashCommandList.add(GenFunctionSettingCommand());
 
+		//脱退コマンド
+		SlashCommandData DattaiCommand = Commands.slash("dattai", "BOTを脱退させる");
+		SlashCommandList.add(DattaiCommand);
+
 		//スラッシュコマンド登録
 		DISCORD_BOT.updateCommands().addCommands(SlashCommandList).addCommands(DiscordContextmenuList).queue();
 		LOG(LOG_TYPE.OK, "DiscordBOT:" + SlashCommandList.size() + "個のスラッシュコマンドを登録しました");
@@ -263,6 +267,9 @@ public class DiscordEventListener extends ListenerAdapter {
 						} else {
 							INTERACTION.getHook().editOriginal("機能がありません").queue();
 						}
+						return;
+					} else if (INTERACTION.getName().equals("dattai")) {
+						INTERACTION.getGuild().leave().queue();
 						return;
 					}
 
