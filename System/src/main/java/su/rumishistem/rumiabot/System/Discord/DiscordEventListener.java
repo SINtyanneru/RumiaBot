@@ -269,6 +269,9 @@ public class DiscordEventListener extends ListenerAdapter {
 						}
 						return;
 					} else if (INTERACTION.getName().equals("dattai")) {
+						INTERACTION.deferReply().queue();
+						INTERACTION.getHook().editOriginal("さよなら〜〜〜〜〜〜〜〜〜〜").queue();
+
 						INTERACTION.getGuild().leave().queue();
 						return;
 					}
