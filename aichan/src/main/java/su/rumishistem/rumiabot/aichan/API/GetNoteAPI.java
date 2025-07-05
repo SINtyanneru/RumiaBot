@@ -36,6 +36,7 @@ public class GetNoteAPI implements EndpointFunction {
 			} else if (NoteID.startsWith("D-")) {
 				//Discord
 				Message TargetMessage = GetDiscordMessage.Get(NoteID);
+				System.out.println(TargetMessage.getContentRaw());
 				if (TargetMessage == null) return new HTTP_RESULT(404, "{}".getBytes(), MisskeyAPIModoki.JSONMime);
 
 				return new HTTP_RESULT(200, new ObjectMapper().writeValueAsString(ConvertType.DiscordMessageToNote(TargetMessage)).getBytes(), MisskeyAPIModoki.JSONMime);

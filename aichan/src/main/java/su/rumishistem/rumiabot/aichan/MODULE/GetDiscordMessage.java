@@ -1,6 +1,8 @@
 package su.rumishistem.rumiabot.aichan.MODULE;
 
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,20 +16,24 @@ public class GetDiscordMessage {
 			String MessageID = IDMatcher.group(2);
 			TextChannel Channel = DISCORD_BOT.getTextChannelById(ChannelID);
 			if (Channel != null) {
+				System.out.println("CID:" + ChannelID);
+				System.out.println("MID:" + MessageID);
+				CountDownLatch CDL = new CountDownLatch(1);
 				Message[] MSG = {null};
 				Channel.retrieveMessageById(MessageID).queue(
 					//↓ラムダ式しか使えないのクソ
 					(Message) -> {
 						MSG[0] = Message;
+						CDL.countDown();
 					}
 				);
 
-				while (true) {
-					if (MSG[0] != null) {
-						return MSG[0];
-					} else {
-						System.out.flush();
-					}
+				try {
+					CDL.await();
+					return MSG[0];
+				} catch (Exception EX) {
+					EX.printStackTrace();
+					throw new Error(EX.getMessage());
 				}
 			} else {
 				throw new Error("チャンネルがこの世にありません");

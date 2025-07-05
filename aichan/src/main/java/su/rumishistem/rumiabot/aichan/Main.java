@@ -1,19 +1,33 @@
 package su.rumishistem.rumiabot.aichan;
 
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.CountDownLatch;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.aichan.API.StreamingAPI;
 import su.rumishistem.rumiabot.aichan.MODULE.ConvertType;
 
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
@@ -92,6 +106,9 @@ public class Main implements FunctionClass {
 						}
 					}
 				}).start();
+
+				//aichatコマンド
+				AddCommand(new CommandData("aichat", new CommandOption[] {}, true));
 			} else {
 				System.out.println("藍が見つからなかったので特に何もしません");
 			}
@@ -151,11 +168,60 @@ public class Main implements FunctionClass {
 			EX.printStackTrace();
 		}
 	}
+
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		return false;
+		return (Name.equals("aichat") || Name.equals("Modal:aichat-modal"));
 	}
+
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
+		try {
+			TextInput Text = TextInput.create("text", "本文", TextInputStyle.PARAGRAPH).setPlaceholder("こんにちは").setRequired(true).build();
+			Modal M = Modal.create("aichat-modal", "あ").addComponents(ActionRow.of(Text)).build();
+			CI.GetDiscordInteraction().replyModal(M).queue();
+		} catch (Exception EX) {
+			EX.printStackTrace();
+		}
+	}
+
+	@Override
+	public void ReturnInteraction(ReturnInteractionEvent Interaction) throws Exception {
+		if (Interaction.getType() == su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.Modal) {
+			String Text = Interaction.getModal().getValue("text").getAsString();
+			Interaction.getModal().reply("お待ちください。").queue();
+
+			Interaction.getModal().getHook().retrieveOriginal().queue(SendMessage->{
+				try {
+					HashMap<String, Object> Body = new HashMap<String, Object>(){
+						{
+							put("type", "channel");
+							put("body", new HashMap<String, Object>(){
+								{
+									put("id", StreamingAPI.MainChannnelID);
+									put("type", "mention");
+									put("body", new HashMap<String, Object>(){
+										{
+											put("id", "D-" + Interaction.getModal().getChannel().getId() + "_" + SendMessage.getId());
+											put("userId", "D-"+Interaction.getModal().getMember().getUser().getId());
+											put("user", ConvertType.DiscordUserToRemoteUser(Interaction.getModal().getMember().getUser()));
+											put("text", "@" + MisskeyBOT.GetSelfUser().getUID() + " aichat " + Text);
+											put("cw", null);
+											put("visibility", "public");
+											put("localOnly", false);
+										}
+									});
+								}
+							});
+						}
+					};
+
+					MisskeyAPIModoki.SendWebSocket(new ObjectMapper().writeValueAsString(Body));
+				} catch (Exception EX) {
+					EX.printStackTrace();
+					Interaction.getModal().editMessage("エラー").queue();
+				}
+			});
+		}
 	}
 }
