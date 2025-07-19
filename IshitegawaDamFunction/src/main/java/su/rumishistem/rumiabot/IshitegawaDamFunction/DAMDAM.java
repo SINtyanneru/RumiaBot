@@ -60,7 +60,7 @@ public class DAMDAM {
 	public static String genTEXT() {
 		StringBuilder SB = new StringBuilder();
 		SB.append(DATE_FORMAT.KOUKI_SEIREKI(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9))) + "時点で\n");
-		SB.append("貯水率は" + STATUS.getPOSOS() + "です、\n");
+		SB.append("貯水率は" + STATUS.getPOSOS() + "%です、\n");
 		SB.append("流入量は" + STATUS.getIN() + "㌧、放流量は" + STATUS.getOUT() + "㌧です。\n");
 
 		return SB.toString();
