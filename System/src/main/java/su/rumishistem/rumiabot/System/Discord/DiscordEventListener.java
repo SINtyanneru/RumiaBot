@@ -11,6 +11,7 @@ import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import static su.rumishistem.rumiabot.System.Main.CommandList;
 import static su.rumishistem.rumiabot.System.Main.DiscordContextmenuList;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -270,9 +271,13 @@ public class DiscordEventListener extends ListenerAdapter {
 						return;
 					} else if (INTERACTION.getName().equals("dattai")) {
 						INTERACTION.deferReply().queue();
-						INTERACTION.getHook().editOriginal("さよなら〜〜〜〜〜〜〜〜〜〜").queue();
-
-						INTERACTION.getGuild().leave().queue();
+						if (INTERACTION.getMember() != null && INTERACTION.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+							INTERACTION.getHook().editOriginal("さよなら〜〜〜〜〜〜〜〜〜〜").queue(success -> {
+								INTERACTION.getGuild().leave().queue();
+							});
+						} else {
+							INTERACTION.getHook().editOriginal("黙れ失せろ").queue();
+						}
 						return;
 					}
 
