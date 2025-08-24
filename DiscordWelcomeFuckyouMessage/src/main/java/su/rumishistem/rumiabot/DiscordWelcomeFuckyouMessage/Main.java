@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
-import su.rumishistem.rumiabot.System.Discord.DiscordBOT;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
 import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
@@ -46,6 +45,8 @@ public class Main implements FunctionClass{
 	public void DiscordEventReceive(DiscordEvent e) throws Exception {
 		if (e.GetType() == EventType.GuildMemberAdd) {
 			//参加
+			Invite use_invite_code = JoinLog.join(e);
+
 			GuildMemberJoinEvent JE = (GuildMemberJoinEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.welcomemessage);
 			if (Ch != null) {
@@ -55,61 +56,15 @@ public class Main implements FunctionClass{
 				EB.setThumbnail(JE.getUser().getAvatarUrl());
 				Ch.sendMessageEmbeds(EB.build()).queue();
 
-				//記録
-				SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`, `INVITE_CODE`, `INVITE_UID`) VALUES (?, ?, NOW(), NULL, NULL)", new Object[] {
-					e.GetGuild().getId(),
-					JE.getUser().getId()
-				});
-
-				e.GetGuild().retrieveInvites().queue(InvList->{
-					Invite UseInvCode = null;
-
-					//使われた招待コードを探す
-					for (Invite Inv:InvList) {
-						int OldUse = DiscordBOT.InviteTable.get(e.GetGuild().getId()).get(Inv.getCode());
-						int NewUse = Inv.getUses();
-						if (NewUse > OldUse) {
-							UseInvCode = Inv;
-							break;
-						}
-					}
-
-					//招待コード同期
-					DiscordBOT.GetGuildInvite(e.GetGuild());
-
-					//使った招待コードが判明したら処理
-					if (UseInvCode != null) {
-						try {
-							//SQL書き換え
-							SQL.UP_RUN("""
-									UPDATE
-										`DISCORD_USER_JOIN`
-									SET
-										`INVITE_CODE` = ?,
-										`INVITE_UID` = ?
-									WHERE
-										`DISCORD_USER_JOIN`.`GID` = ?
-									AND
-										`DISCORD_USER_JOIN`.`UID` = ?;
-								""", new Object[] {
-								UseInvCode.getCode(),
-								UseInvCode.getInviter().getId(),
-								e.GetGuild().getId(),
-								JE.getUser().getId()
-							});
-						} catch (Exception EX) {
-							EX.printStackTrace();
-						}
-
-						//送信
-						EmbedBuilder EB2 = new EmbedBuilder();
-						EB2.addField("使用された招待コード", UseInvCode.getCode(), false);
-						Ch.sendMessageEmbeds(EB2.build()).queue();
-					}
-				});
+				//送信
+				EmbedBuilder EB2 = new EmbedBuilder();
+				EB2.addField("使用された招待コード", use_invite_code.getCode(), false);
+				Ch.sendMessageEmbeds(EB2.build()).queue();
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
 			//脱退
+			JoinLog.join(e);
+
 			GuildMemberRemoveEvent RE = (GuildMemberRemoveEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.fuckyoumessage);
 			if (Ch != null) {
@@ -121,12 +76,6 @@ public class Main implements FunctionClass{
 
 				EmbedBuilder EB = new EmbedBuilder();
 				EB.setTitle(RE.getUser().getName() + "が脱退しました");
-
-				//削除
-				SQL.UP_RUN("DELETE FROM `DISCORD_USER_JOIN` WHERE `GID` = ? AND `UID` = ?;", new Object[] {
-					e.GetGuild().getId(),
-					RE.getUser().getId()
-				});
 
 				//脱退RTA
 				if (JoinLogResult.asArrayList().size() == 1) {
