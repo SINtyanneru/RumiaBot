@@ -9,8 +9,6 @@ import java.util.function.Consumer;
 
 public class DiscordWebHook {
 	private Webhook WH = null;//WebHook
-	private String WH_AVATOR_URL = DISCORD_BOT.getSelfUser().getAvatarUrl();//アバターのURL(デフォルト値は自分のアイコン)
-	private String WH_USER_NAME = DISCORD_BOT.getSelfUser().getName();//名前(デフォルト値は自分)
 
 	public DiscordWebHook(TextChannel CHANNEL) throws InterruptedException{
 		CountDownLatch CDL = new CountDownLatch(1);

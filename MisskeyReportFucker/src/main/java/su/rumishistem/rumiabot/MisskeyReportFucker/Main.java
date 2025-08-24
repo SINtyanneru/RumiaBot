@@ -1,24 +1,17 @@
 package su.rumishistem.rumiabot.MisskeyReportFucker;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
-import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+import static su.rumishistem.rumiabot.System.Main.*;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-import java.net.MalformedURLException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import java.util.concurrent.*;
+import java.util.regex.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import su.rumishistem.rumi_java_lib.FETCH;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
 import su.rumishistem.rumi_java_lib.Misskey.TYPE.NoteVis;
 import su.rumishistem.rumiabot.MisskeyReportFucker.TypeDetect.Software;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.*;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "Misskey通報Fucker";

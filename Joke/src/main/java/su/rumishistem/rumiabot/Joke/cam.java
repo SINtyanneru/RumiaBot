@@ -1,18 +1,14 @@
 package su.rumishistem.rumiabot.Joke;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
-import net.dv8tion.jda.api.utils.AttachedFile;
 import net.dv8tion.jda.api.utils.FileUpload;
-import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordWebHook;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
+import su.rumishistem.rumiabot.System.Discord.MODULE.*;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 
 public class cam {
