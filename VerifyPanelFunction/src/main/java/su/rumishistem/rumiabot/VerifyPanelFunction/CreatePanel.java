@@ -47,7 +47,7 @@ public class CreatePanel {
 					EB.setColor(Color.CYAN);
 					EB.setTitle("認証 ATESTADO");
 
-					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addActionRow(Button.primary("verify_panel?id=" + PANEL_DATA.getData(ID).asString(), "認証")).queue();
+					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addActionRow(Button.primary("verify_panel?id=" + PANEL_DATA.getData("ID").asString(), "認証")).queue();
 
 					INTERACTION.getHook().editOriginal("すでにあるので、呼び出しました").queue();
 				}

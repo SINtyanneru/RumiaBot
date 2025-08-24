@@ -6,7 +6,6 @@ import static su.rumishistem.rumiabot.System.Main.SH;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Function;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,15 +69,15 @@ public class PanelSystem {
 						if (VerifyDone(POST_DATA.get("VERIFY_ID").asText())) {
 							return new HTTP_RESULT(200, "{\"STATUS\": true}".getBytes(), "application/json; charset=UTF-8");
 						} else {
-							return new HTTP_RESULT(400, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
+							return new HTTP_RESULT(400, "{\"STATUS\": false, \"ERR\": \"ID\"}".getBytes(), "application/json; charset=UTF-8");
 						}
 					} else {
 						//失敗
-						return new HTTP_RESULT(400, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
+						return new HTTP_RESULT(400, "{\"STATUS\": false, \"ERR\": \"CFT\"}".getBytes(), "application/json; charset=UTF-8");
 					}
 				} catch (Exception EX) {
 					EX.printStackTrace();
-					return new HTTP_RESULT(500, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
+					return new HTTP_RESULT(500, "{\"STATUS\": false, \"ERR\":\"SYSTEM_ERR\"}".getBytes(), "application/json; charset=UTF-8");
 				}
 			}
 		});
@@ -105,6 +104,7 @@ public class PanelSystem {
 		try{
 			HashMap<String, String> VERIFY_DATA = VerifyQueue.get(ID);
 			if(VERIFY_DATA != null){
+				System.out.println(VERIFY_DATA.get("PANEL_ID"));
 				ArrayNode SQL_RESULT = SQL.RUN("SELECT * FROM `VERIFY_PANEL` WHERE `ID` = ?;", new Object[] {VERIFY_DATA.get("PANEL_ID")});
 
 				if(SQL_RESULT.asArrayList().size() == 1) {
