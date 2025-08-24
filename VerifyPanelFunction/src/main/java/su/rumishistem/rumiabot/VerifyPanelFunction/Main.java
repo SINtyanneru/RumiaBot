@@ -32,7 +32,7 @@ public class Main implements FunctionClass {
 
 	@Override
 	public void Init() {
-		AddCommand(new CommandData("veryfy_panel", new CommandOption[] {
+		AddCommand(new CommandData("verify_panel", new CommandOption[] {
 			new CommandOption("role", CommandOptionType.Role, null, true)
 		}, false));
 		PanelSystem.HTTPEP();
