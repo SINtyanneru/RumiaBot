@@ -1,10 +1,13 @@
 package su.rumishistem.rumiabot.Trash;
 
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 
 public class Podman {
 	private static final String PODMAN_PATH = "/usr/bin/podman";
@@ -39,11 +42,49 @@ public class Podman {
 		ProcessBuilder pb = new ProcessBuilder(PODMAN_PATH, "build", "-t", IMAGE_NAME_DEBIAN, ".");
 		pb.directory(new File(System.getProperty("user.dir"), "Trash/Docker"));
 		Process p = pb.start();
+		BufferedReader stout = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		BufferedReader sterr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-		//TODO:エラーを受け取るべきかも？
+		try {
+			Thread out_read = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						String line;
+						while ((line = stout.readLine()) != null) {
+							LOG(LOG_TYPE.INFO, "[OUT]" + line);
+						}
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			});
 
-		if (p.waitFor() != 0) {
-			throw new RuntimeException("イメージファイルの構築に失敗しました");
+			Thread err_read = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						String line;
+						while ((line = sterr.readLine()) != null) {
+							LOG(LOG_TYPE.INFO, "[ERR]" + line);
+						}
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			});
+
+			out_read.start();
+			out_read.join();
+			err_read.start();
+			err_read.join();
+
+			if (p.waitFor() != 0) {
+				throw new RuntimeException("イメージファイルの構築に失敗しました");
+			}
+		} finally {
+			stout.close();
+			sterr.close();
 		}
 	}
 
