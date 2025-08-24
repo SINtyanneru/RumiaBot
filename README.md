@@ -85,3 +85,7 @@ sudo cp -a -p /dev/null /
 ./Start.sh
 ```
 で起動できます！
+
+# 必要なパッケージ
+・Docker<BR>
+・podman<BR>

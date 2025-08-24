@@ -26,6 +26,7 @@
     <module>DiscordPermissionFucker</module>
     <module>Voicevox</module>
     <module>MakeItQuote</module>
+    <module>Trash</module>
   </modules>
   <repositories>
     <repository>
