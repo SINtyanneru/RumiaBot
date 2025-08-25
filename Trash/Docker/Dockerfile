@@ -8,6 +8,6 @@ RUN apt update && \
 	#Bun
 	curl -fsSL https://bun.sh/install | bash && \
 	#クリーン
-	apt-get clean && rm -rf /var/lib/apt/lists/*
+	apt clean
 
 CMD ["bash"]
