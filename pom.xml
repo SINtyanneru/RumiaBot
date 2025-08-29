@@ -28,6 +28,7 @@
     <module>MakeItQuote</module>
     <module>Trash</module>
     <module>Rank</module>
+    <module>Auth</module>
   </modules>
   <repositories>
     <repository>
