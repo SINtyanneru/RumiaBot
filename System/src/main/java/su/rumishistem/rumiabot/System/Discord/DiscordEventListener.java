@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.events.interaction.component.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.*;
@@ -537,5 +538,17 @@ public class DiscordEventListener extends ListenerAdapter {
 				EX.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onMessageReactionAdd(MessageReactionAddEvent e) {
+		e.retrieveMessage().queue(message -> {
+			if (message.getAuthor().getId().equals(DISCORD_BOT.getSelfUser().getId()) == false) return;
+
+			//自分の投稿にブロックしてる人がリアクションしてきたら殺す
+			if (BlockManager.IsBlocked(SourceType.Discord, e.getUser().getId())) {
+				message.removeReaction(e.getReaction().getEmoji(), e.getUser()).queue();
+			}
+		});
 	}
 }
