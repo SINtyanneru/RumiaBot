@@ -27,6 +27,7 @@
     <module>Voicevox</module>
     <module>MakeItQuote</module>
     <module>Trash</module>
+    <module>Rank</module>
   </modules>
   <repositories>
     <repository>
