@@ -48,6 +48,8 @@ public class CreateNote {
 						DiscordFileList.add(FileUpload.fromData(F));
 					}
 
+					TEXT = TEXT.replace("@", "[AD]");
+
 					MSG.reply(TEXT).addFiles(DiscordFileList).queue(
 						(PostMessage)->{
 							PostMessageID[0] = PostMessage.getId();
