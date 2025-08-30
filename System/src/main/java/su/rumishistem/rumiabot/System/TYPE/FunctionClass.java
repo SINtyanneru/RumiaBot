@@ -1,8 +1,5 @@
 package su.rumishistem.rumiabot.System.TYPE;
 
-import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
-
 public interface FunctionClass {
 	String FUNCTION_NAME();
 	String FUNCTION_VERSION();

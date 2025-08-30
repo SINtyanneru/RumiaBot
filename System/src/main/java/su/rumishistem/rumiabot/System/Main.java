@@ -46,6 +46,9 @@ public class Main {
 				System.exit(1);
 			}
 
+			//スレッドプール初期化
+			ThreadPool.init();
+
 			//ビルド時刻
 			try {
 				Properties props = new Properties();

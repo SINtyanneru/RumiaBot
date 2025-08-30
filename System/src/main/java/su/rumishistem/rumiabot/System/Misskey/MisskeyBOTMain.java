@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
-import static su.rumishistem.rumiabot.System.Main.FunctionModuleList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
 import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
@@ -20,6 +19,7 @@ import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import su.rumishistem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
 import su.rumishistem.rumiabot.System.LogSystem;
+import su.rumishistem.rumiabot.System.ThreadPool;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
@@ -52,25 +52,23 @@ public class MisskeyBOTMain {
 
 				@Override
 				public void onNewNote(NewNoteEvent e) {
-					//イベント着火(コマンドでは無い)
-					for (FunctionClass Function:FunctionModuleList) {
-						Function.ReceiveMessage(new ReceiveMessageEvent(
-							SourceType.Misskey,
-							new MessageUser(
-								null,
-								e.getUSER()
-							),
-							null, null, null,
+					ReceiveMessageEvent rme = new ReceiveMessageEvent(
+						SourceType.Misskey,
+						new MessageUser(
+							null,
+							e.getUSER()
+						),
+						null, null, null,
+						e.getNOTE(),
+						new MessageData(
+							e.getNOTE().getID(),
+							e.getNOTE().getTEXT(),
+							null,
 							e.getNOTE(),
-							new MessageData(
-								e.getNOTE().getID(),
-								e.getNOTE().getTEXT(),
-								null,
-								e.getNOTE(),
-								e.getNOTE().isKaiMention()
-							)
-						));
-					}
+							e.getNOTE().isKaiMention()
+						)
+					);
+					ThreadPool.receive_message(SourceType.Misskey, rme);
 				}
 				
 				@Override
@@ -133,8 +131,7 @@ public class MisskeyBOTMain {
 									//リアクション
 									MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
 
-									//実行
-									new Thread(new Runnable() {
+									ThreadPool.run_command(new Runnable() {
 										@Override
 										public void run() {
 											try {
@@ -154,7 +151,7 @@ public class MisskeyBOTMain {
 												}
 											}
 										}
-									}).start();
+									});
 									return;
 								} else {
 									NoteBuilder NB = new NoteBuilder();

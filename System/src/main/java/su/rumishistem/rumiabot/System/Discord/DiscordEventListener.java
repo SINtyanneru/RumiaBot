@@ -28,6 +28,7 @@ import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
 import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
+import su.rumishistem.rumiabot.System.ThreadPool;
 import su.rumishistem.rumiabot.System.Discord.MODULE.*;
 import su.rumishistem.rumiabot.System.MODULE.*;
 import su.rumishistem.rumiabot.System.TYPE.*;
@@ -179,27 +180,26 @@ public class DiscordEventListener extends ListenerAdapter {
 				}
 			}
 
-			//イベント着火
-			for (FunctionClass Function:FunctionModuleList) {
-				Function.ReceiveMessage(new ReceiveMessageEvent(
-					SourceType.Discord,
-					new MessageUser(
-						E.getMember(),
-						null
-					),
+			ReceiveMessageEvent rme = new ReceiveMessageEvent(
+				SourceType.Discord,
+				new MessageUser(
 					E.getMember(),
-					E.getChannel().asTextChannel(),
+					null
+				),
+				E.getMember(),
+				E.getChannel().asTextChannel(),
+				E.getMessage(),
+				null,
+				new MessageData(
+					E.getMessageId(),
+					E.getMessage().getContentRaw(),
 					E.getMessage(),
 					null,
-					new MessageData(
-						E.getMessageId(),
-						E.getMessage().getContentRaw(),
-						E.getMessage(),
-						null,
-						E.getMessage().getContentRaw().contains("<@" + DISCORD_BOT.getSelfUser().getId() + ">")
-					)
-				));
-			}
+					E.getMessage().getContentRaw().contains("<@" + DISCORD_BOT.getSelfUser().getId() + ">")
+				)
+			);
+
+			ThreadPool.receive_message(SourceType.Discord, rme);
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
@@ -291,14 +291,23 @@ public class DiscordEventListener extends ListenerAdapter {
 						}
 
 						//コマンドの実行をモジュールに通達
-						Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
+						ThreadPool.run_command(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
+								} catch (Exception EX) {
+									EX.printStackTrace();
+									String EX_TEXT = EXCEPTION_READER.READ(EX);
+									INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
+								}
+							}
+						});
 					} else {
 						INTERACTION.reply("コマンドか機能が見つかりませんでした").queue();
 					}
 				} catch (Exception EX) {
 					EX.printStackTrace();
-					String EX_TEXT = EXCEPTION_READER.READ(EX);
-					INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
 				}
 			}
 		}).start();
@@ -315,7 +324,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 		FunctionClass Function = SearchCommand.Function("Button:" + INTERACTION.getComponentId().split("\\?")[0]);
 		if (Function != null) {
-			new Thread(new Runnable() {
+			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -324,7 +333,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						EX.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		} else {
 			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
@@ -340,7 +349,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 		FunctionClass Function = SearchCommand.Function("Message:" + INTERACTION.getName().split("\\?")[0]);
 		if (Function != null) {
-			new Thread(new Runnable() {
+			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -349,7 +358,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						EX.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		} else {
 			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
@@ -365,7 +374,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 		FunctionClass Function = SearchCommand.Function("Modal:" + INTERACTION.getModalId().split("\\?")[0]);
 		if (Function != null) {
-			new Thread(new Runnable() {
+			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -374,7 +383,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						EX.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		} else {
 			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
@@ -390,7 +399,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 		FunctionClass Function = SearchCommand.Function("EntitySelect:" + INTERACTION.getComponentId().split("\\?")[0]);
 		if (Function != null) {
-			new Thread(new Runnable() {
+			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -399,7 +408,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						EX.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		} else {
 			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
@@ -415,7 +424,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 		FunctionClass Function = SearchCommand.Function("StringSelect:" + INTERACTION.getComponentId().split("\\?")[0]);
 		if (Function != null) {
-			new Thread(new Runnable() {
+			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
@@ -424,7 +433,7 @@ public class DiscordEventListener extends ListenerAdapter {
 						EX.printStackTrace();
 					}
 				}
-			}).start();
+			});
 		} else {
 			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
@@ -433,86 +442,101 @@ public class DiscordEventListener extends ListenerAdapter {
 	//鯖に入った
 	@Override
 	public void onGuildJoin(GuildJoinEvent E){
-		try {
-			//通知
-			TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
-			if(CH != null){
-				CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
-						"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
-			}
+		ThreadPool.discord(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					//通知
+					TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
+					if(CH != null){
+						CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "に参加しました！\n" +
+								"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖に参加しました。").queue();
+					}
 
-			//ブラックリスト
-			ArrayNode RESULT = SQL.RUN("SELECT * FROM `GUILD_BLACKLIST` WHERE `GID` = ?", new Object[] {E.getGuild().getId()});
-			if (RESULT.get(0) != null) {
-				ArrayNode INFO = RESULT.get(0);
-				if (E.getGuild().getOwner() != null) {
-					//オーナーのDMを開く
-					E.getGuild().getOwner().getUser().openPrivateChannel().queue((DM)->{
-						try {
-							StringBuilder TEXT = new StringBuilder();
-							TEXT.append("あなたのサーバーはブラックリストに入っています\n");
-							TEXT.append("理由：" + INFO.getData("RESON").asString() + "\n");
-							TEXT.append("そのため、勝手ながら脱退させていただきます、さようなら。\n");
+					//ブラックリスト
+					ArrayNode RESULT = SQL.RUN("SELECT * FROM `GUILD_BLACKLIST` WHERE `GID` = ?", new Object[] {E.getGuild().getId()});
+					if (RESULT.get(0) != null) {
+						ArrayNode INFO = RESULT.get(0);
+						if (E.getGuild().getOwner() != null) {
+							//オーナーのDMを開く
+							E.getGuild().getOwner().getUser().openPrivateChannel().queue((DM)->{
+								try {
+									StringBuilder TEXT = new StringBuilder();
+									TEXT.append("あなたのサーバーはブラックリストに入っています\n");
+									TEXT.append("理由：" + INFO.getData("RESON").asString() + "\n");
+									TEXT.append("そのため、勝手ながら脱退させていただきます、さようなら。\n");
 
-							//DM送信
-							DM.sendMessage(TEXT.toString()).queue();
-						} catch (Exception EX) {
-							EX.printStackTrace();
-						} finally {
+									//DM送信
+									DM.sendMessage(TEXT.toString()).queue();
+								} catch (Exception EX) {
+									EX.printStackTrace();
+								} finally {
+									//脱退
+									E.getGuild().leave().queue();
+								}
+							});
+						} else {
 							//脱退
 							E.getGuild().leave().queue();
 						}
-					});
-				} else {
-					//脱退
-					E.getGuild().leave().queue();
-				}
 
-				if(CH != null){
-					CH.sendMessage("残念ながらブラックリスト入りしていたサーバーでした、脱退します").queue();
+						if(CH != null){
+							CH.sendMessage("残念ながらブラックリスト入りしていたサーバーでした、脱退します").queue();
+						}
+					} else {
+						//招待コード同期
+						DiscordBOT.GetGuildInvite(E.getGuild());
+					}
+				} catch (Exception EX) {
+					EX.printStackTrace();
 				}
-			} else {
-				//招待コード同期
-				DiscordBOT.GetGuildInvite(E.getGuild());
 			}
-		} catch (Exception EX) {
-			EX.printStackTrace();
-		}
+		});
 	}
 
 	//サーバーから叩き出された
 	@Override
 	public void onGuildLeave(GuildLeaveEvent E){
-		try {
-			//ブラックリスト
-			SQL.UP_RUN("INSERT INTO `GUILD_BLACKLIST` (`GID`, `RESON`) VALUES (?, ?)", new Object[] {
-				E.getGuild().getId(),
-				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE)) +"脱退させられた"
-			});
+		ThreadPool.discord(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					//ブラックリスト
+					SQL.UP_RUN("INSERT INTO `GUILD_BLACKLIST` (`GID`, `RESON`) VALUES (?, ?)", new Object[] {
+						E.getGuild().getId(),
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日E曜日 ah時m分s秒", Locale.JAPANESE)) +"脱退させられた"
+					});
 
-			//招待コードをテーブルから削除
-			DiscordBOT.InviteTable.remove(E.getGuild().getId());
+					//招待コードをテーブルから削除
+					DiscordBOT.InviteTable.remove(E.getGuild().getId());
 
-			//通知
-			TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
-			if(CH != null){
-				CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
-						"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖になりました").queue();
+					//通知
+					TextChannel CH = DISCORD_BOT.getTextChannelById("1128742498194444298");
+					if(CH != null){
+						CH.sendMessage( E.getGuild().getName().replace("@", "AD") + "から叩き出されました。。。\n" +
+								"これで" + DISCORD_BOT.getGuilds().size() + "個の鯖になりました").queue();
+					}
+				} catch (Exception EX) {
+					//SQLが「Duplicate entry '' for key 'PRIMARY'」みたいなエラーを出すのでもみ消す
+				}
 			}
-		} catch (Exception EX) {
-			//SQLが「Duplicate entry '' for key 'PRIMARY'」みたいなエラーを出すのでもみ消す
-		}
+		});
 	}
 
 	//サーバーにユーザーが参加
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent e) {
 		for (FunctionClass Function:FunctionModuleList) {
-			try {
-				Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberAdd, e.getGuild(), null));
-			} catch (Exception EX) {
-				EX.printStackTrace();
-			}
+			ThreadPool.discord(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberAdd, e.getGuild(), null));
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			});
 		}
 	}
 
@@ -520,11 +544,16 @@ public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
 		for (FunctionClass Function:FunctionModuleList) {
-			try {
-				Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberRemove, e.getGuild(), null));
-			} catch (Exception EX) {
-				EX.printStackTrace();
-			}
+			ThreadPool.discord(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberRemove, e.getGuild(), null));
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			});
 		}
 	}
 
@@ -532,11 +561,16 @@ public class DiscordEventListener extends ListenerAdapter {
 	@Override
 	public void onGuildVoiceUpdate(GuildVoiceUpdateEvent e) {
 		for (FunctionClass Function:FunctionModuleList) {
-			try {
-				Function.DiscordEventReceive(new DiscordEvent(e, EventType.VCMemberUpdate, e.getGuild(), null));
-			} catch (Exception EX) {
-				EX.printStackTrace();
-			}
+			ThreadPool.discord(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Function.DiscordEventReceive(new DiscordEvent(e, EventType.VCMemberUpdate, e.getGuild(), null));
+					} catch (Exception EX) {
+						EX.printStackTrace();
+					}
+				}
+			});
 		}
 	}
 
