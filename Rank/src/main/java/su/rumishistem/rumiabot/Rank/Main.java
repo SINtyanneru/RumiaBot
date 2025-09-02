@@ -131,7 +131,7 @@ public class Main implements FunctionClass{
 		} else if (CI.GetCommand().GetName().equals("ranking")) {
 			//ランキング
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
-			ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL`, `EXP` DESC;", new Object[] {
+			ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL` DESC, `EXP` DESC;", new Object[] {
 				guild_id
 			});
 
