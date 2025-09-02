@@ -2,12 +2,18 @@ package su.rumishistem.rumiabot.Rank;
 
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
+import java.io.ByteArrayInputStream;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
 import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
 import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
@@ -36,6 +42,13 @@ public class Main implements FunctionClass{
 
 	@Override
 	public void Init() {
+		try {
+			SelfRank.background_image = ImageIO.read(new ByteArrayInputStream(new RESOURCE_MANAGER(Main.class).getResourceData("/self_rank.png")));
+		} catch (Exception EX) {
+			EX.printStackTrace();
+			throw new RuntimeException("画像ロードエラー");
+		}
+
 		AddCommand(new CommandData("rank", new CommandOption[] {}, false));
 		AddCommand(new CommandData("ranking", new CommandOption[] {}, false));
 	}
@@ -102,22 +115,17 @@ public class Main implements FunctionClass{
 
 		if (CI.GetCommand().GetName().equals("rank")) {
 			//ランク
-			String user_id = CI.GetDiscordInteraction().getMember().getUser().getId();
+			User user = CI.GetDiscordInteraction().getUser();
+			String user_id = user.getId();
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
 
-			ArrayNode result = SQL.RUN("SELECT `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `UID` = ? AND `GUILD` = ?;", new Object[] {
-				user_id, guild_id
-			});
-
-			if (result.length() == 0) {
-				CI.Reply("データなし");
-				return;
-			}
-
-			long exp = result.get(0).getData("EXP").asLong();
-			long level = result.get(0).getData("LEVEL").asLong();
-
-			CI.Reply("貴様のレベル:" + level + "\n経験値:" + exp + "\nレベルアップに必要な経験値:" + (100 * level));
+			CI.AddFile(SelfRank.image_gen(
+				user_id,
+				guild_id,
+				ImageIO.read(new URL(user.getEffectiveAvatarUrl())),
+				user.getName()
+			));
+			CI.Reply("貴様のランク");
 		} else if (CI.GetCommand().GetName().equals("ranking")) {
 			//ランキング
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
