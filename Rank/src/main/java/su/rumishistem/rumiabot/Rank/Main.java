@@ -67,15 +67,15 @@ public class Main implements FunctionClass{
 					VALUES
 						(?, ?, ?, 1)
 					ON DUPLICATE KEY UPDATE
-						-- 経験値(レベルアップしたら0にもどす)
-						`EXP` = CASE
-							WHEN `EXP` + ? >= (100 * `LEVEL`) THEN 0
-							ELSE `EXP` + ?
-						END,
 						-- レベルアップ処理
 						`LEVEL` = CASE
 							WHEN `EXP` + ? >= (100 * `LEVEL`) THEN `LEVEL` + 1
 							ELSE `LEVEL`
+						END,
+						-- 経験値(レベルアップしたら0にもどす)
+						`EXP` = CASE
+							WHEN `EXP` + ? >= (100 * `LEVEL`) THEN 0
+							ELSE `EXP` + ?
 						END
 					-- レベルが上がったら上がったレベルを返す
 					RETURNING
@@ -92,7 +92,9 @@ public class Main implements FunctionClass{
 				if (result.length() == 1) {
 					long new_level = result.get(0).getData("LEVEL_UP").asLong();
 					if (new_level == 0) return;
-					//TODO:レベルアップ時の処理
+					SQL.UP_RUN("UPDATE `DISCORD_RANK` SET `EXP` = '0' WHERE `UID` = ? AND `GUILD` = ?; ", new Object[] {
+						user_id, guild_id
+					});
 				}
 			}
 		} catch (SQLException EX) {
