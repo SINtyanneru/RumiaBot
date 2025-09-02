@@ -84,102 +84,60 @@ public class MakeItQuote {
 	}
 
 	private void DrawText() throws FontFormatException, IOException {
-		Font TextFont = LoadFont(Font.PLAIN, 64);
-		Font UserNameFont = LoadFont(Font.ITALIC, 30);
+		Font TextFont = LoadFont(Font.PLAIN, 70);
+		Font UserNameFont = LoadFont(Font.ITALIC, 40);
 		Font UserIDFont = LoadFont(Font.PLAIN, 20);
 
-		//フォント設定
+		// フォント設定
 		G.setFont(TextFont);
 		G.setColor(Color.WHITE);
 
-		//フォントメトリクス
+		// フォントメトリクス
 		FontMetrics FM = G.getFontMetrics();
+		int TextMaxWidth = 1000;
 
-		int TextMaxWidth = 500;
-
-		//まずは文字を整理します
-		List<String> LineList = new ArrayList<String>();
+		// テキストを行ごとに分割
+		List<String> LineList = new ArrayList<>();
 		StringBuilder Line = new StringBuilder();
-		for (int I = 0; I < Text.length(); I++) {
-			char C = Text.charAt(I);
+		for (int i = 0; i < Text.length(); i++) {
+			char C = Text.charAt(i);
 			Line.append(C);
-
-			//横幅が最大サイズを超えた
 			if (FM.stringWidth(Line.toString()) > TextMaxWidth || C == '\n') {
-				//最後の1文字は次行へ
-				Line.deleteCharAt(Line.length() - 1);
-				//行に追加
+				// 最後の1文字は次行へ
+				if (C != '\n') Line.deleteCharAt(Line.length() - 1);
 				LineList.add(Line.toString());
-				//初期化
 				Line = new StringBuilder();
-				//次行の先頭に
-				Line.append(C);
+				if (C != '\n') Line.append(C);
 			}
 		}
+		if (!Line.isEmpty()) LineList.add(Line.toString());
 
-		//まだ行に文字が残ってるなら追加
-		if (!Line.isEmpty()) {
-			LineList.add(Line.toString());
-		}
-
+		// 全体の高さ計算
 		int TotalHeight = FM.getHeight() * LineList.size();
-		BufferedImage TextImage = new BufferedImage(TextMaxWidth, TotalHeight, BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D TG = TextImage.createGraphics();
-		//フォント設定
-		TG.setFont(TextFont);
-		TG.setColor(Color.WHITE);
 
-		//テキストの描画関係の情報を纏める
-		int StartY = FM.getAscent();
-		int LineHeight = FM.getHeight();
-		int LastY = 0;
-		for (int I = 0; I < LineList.size(); I++) {
-			String L = LineList.get(I);
-			int LineWidth = FM.stringWidth(L);
-			int X = (TextMaxWidth / 2) - (LineWidth / 2);
-			int Y = StartY + I * LineHeight;
-			TG.drawString(L, X, Y);
-			LastY = Y;
-		}
-
+		// テキストの描画開始位置
 		int CX = ImageWidth / 2 + 400;
-		int TextDrawMaxWidth = ImageWidth - CX;				//最大横幅
-		int TextDrawMaxHeight = ImageHeight - 300;			//最大縦幅
-		int TextDrawOriginalWidth = TextImage.getWidth();	//元画像の横幅
-		int TextDrawOriginalHeight = TextImage.getHeight();	//元画像の縦幅
-		int TextDrawWidth = TextDrawOriginalWidth;
-		int TextDrawHeight = TextDrawOriginalHeight;
+		int StartY = (ImageHeight - TotalHeight) / 2 + FM.getAscent();
 
-		double WidthRaito = (double) TextDrawMaxWidth / TextDrawOriginalWidth;
-		double HeightRaito = (double) TextDrawMaxHeight / TextDrawOriginalHeight;
-		double Scale = Math.min(WidthRaito, HeightRaito);
-
-		if (!(Scale >= 1.0)) {
-			TextDrawWidth = (int)(TextDrawOriginalWidth * Scale);
-			TextDrawHeight = (int)(TextDrawOriginalHeight * Scale);
+		for (int i = 0; i < LineList.size(); i++) {
+			String L = LineList.get(i);
+			int LineWidth = FM.stringWidth(L);
+			int X = CX - (LineWidth / 2);
+			int Y = StartY + i * FM.getHeight();
+			G.drawString(L, X, Y);
 		}
 
-		int TextDrawX = CX - (TextDrawWidth / 2);
-		int TextDrawY = (ImageHeight / 2) - (TextDrawHeight / 2);
-
-		G.drawImage(
-			TextImage,
-			TextDrawX,
-			TextDrawY,
-			TextDrawWidth,
-			TextDrawHeight,
-			null
-		);
-
-		int UserInfoBaseY = TextDrawY + TextDrawHeight;
-
+		// ユーザー名描画
 		G.setFont(UserNameFont);
 		int UserNameLineHeight = G.getFontMetrics().getHeight();
-		G.drawString("-"+UserName, CX - G.getFontMetrics().stringWidth("-"+UserName) / 2, UserInfoBaseY + UserNameLineHeight);
+		int UserInfoBaseY = StartY + TotalHeight;
+		G.drawString("-" + UserName, CX - G.getFontMetrics().stringWidth("-" + UserName) / 2, UserInfoBaseY + UserNameLineHeight);
 
+		// ユーザーID描画
 		G.setColor(Color.GRAY);
 		G.setFont(UserIDFont);
 		int UserIDLineHeight = G.getFontMetrics().getHeight();
-		G.drawString("@"+UserID, CX - G.getFontMetrics().stringWidth("@"+UserID) / 2, UserInfoBaseY + UserNameLineHeight + UserIDLineHeight);
+		G.drawString("@" + UserID, CX - G.getFontMetrics().stringWidth("@" + UserID) / 2, UserInfoBaseY + UserNameLineHeight + UserIDLineHeight);
 	}
+
 }
