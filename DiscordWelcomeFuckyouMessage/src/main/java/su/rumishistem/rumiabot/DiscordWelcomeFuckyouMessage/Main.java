@@ -63,7 +63,7 @@ public class Main implements FunctionClass{
 			}
 		} else if (e.GetType() == EventType.GuildMemberRemove) {
 			//脱退
-			JoinLog.join(e);
+			JoinLog.leave(e);
 
 			GuildMemberRemoveEvent RE = (GuildMemberRemoveEvent) e.GetEventClass();
 			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.fuckyoumessage);

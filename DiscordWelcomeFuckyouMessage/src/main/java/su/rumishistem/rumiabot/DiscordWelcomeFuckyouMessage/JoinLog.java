@@ -1,6 +1,7 @@
 package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.concurrent.CountDownLatch;
 
 import net.dv8tion.jda.api.entities.Invite;
@@ -13,6 +14,7 @@ import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
 public class JoinLog {
 	public static Invite join(DiscordEvent e) throws SQLException, InterruptedException {
 		Invite[] invite_code = {null};
+		CountDownLatch cdl = new CountDownLatch(1);
 		GuildMemberJoinEvent JE = (GuildMemberJoinEvent) e.GetEventClass();
 
 		//記録
@@ -21,11 +23,11 @@ public class JoinLog {
 				e.GetGuild().getId(),
 				JE.getUser().getId()
 			});
+		} catch (SQLIntegrityConstraintViolationException ex) {
+			//もみ消す
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
-
-		CountDownLatch cdl = new CountDownLatch(1);
 
 		e.GetGuild().retrieveInvites().queue(InvList->{
 			Invite UseInvCode = null;
@@ -65,8 +67,8 @@ public class JoinLog {
 					});
 
 					invite_code[0] = UseInvCode;
-				} catch (Exception EX) {
-					EX.printStackTrace();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
 				}
 			}
 
