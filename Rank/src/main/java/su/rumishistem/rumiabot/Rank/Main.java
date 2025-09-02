@@ -119,7 +119,7 @@ public class Main implements FunctionClass{
 			CI.Reply("貴様のレベル:" + level + "\n経験値:" + exp + "\nレベルアップに必要な経験値:" + (100 * level));
 		} else if (CI.GetCommand().GetName().equals("ranking")) {
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
-			ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL` DESC;", new Object[] {
+			ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL`, `EXP` DESC;", new Object[] {
 				guild_id
 			});
 
