@@ -3,6 +3,7 @@ package su.rumishistem.rumiabot.Rank;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -62,6 +63,17 @@ public class SelfRank {
 
 			g.setColor(Color.CYAN);
 			g.fillRect(0, height - progressbar_height, progress_width, progressbar_height);
+
+			//進捗(%)
+			String progres_text = ((int)(progress * 100)) + "%";
+			FontMetrics fm = g.getFontMetrics();
+			int text_width = fm.stringWidth(progres_text);
+			int text_height = 15;
+			Font progress_font = LoadFont(Font.PLAIN, text_height);
+
+			g.setFont(progress_font);
+			g.setColor(Color.WHITE);
+			g.drawString(progres_text, (width - text_width) / 2, height - progressbar_height + (text_height / 2));
 		} catch (SQLException EX) {
 			
 		} catch (RuntimeException EX) {
