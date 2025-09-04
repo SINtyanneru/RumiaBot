@@ -80,6 +80,8 @@ public class SelfRank {
 			
 		}
 
+		g.dispose();
+
 		ImageIO.write(image, "png", image_file);
 		return image_file;
 	}
