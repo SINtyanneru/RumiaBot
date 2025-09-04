@@ -3,6 +3,7 @@ package su.rumishistem.rumiabot.Rank;
 import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Random;
@@ -121,13 +122,17 @@ public class Main implements FunctionClass{
 			String user_id = user.getId();
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
 
-			CI.AddFile(SelfRank.image_gen(
+			File rank_file = SelfRank.image_gen(
 				user_id,
 				guild_id,
 				ImageIO.read(new URL(user.getEffectiveAvatarUrl())),
 				user.getName()
-			));
+			);
+
+			CI.AddFile(rank_file);
 			CI.Reply("貴様のランク");
+
+			rank_file.delete();
 		} else if (CI.GetCommand().GetName().equals("ranking")) {
 			//ランキング
 			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
