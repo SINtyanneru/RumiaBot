@@ -9,6 +9,7 @@ import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.CommandOption;
 import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class Main implements FunctionClass{
 	private static final String FUNCTION_NAME = "ランキング";
@@ -62,7 +63,17 @@ public class Main implements FunctionClass{
 	public void RunCommand(CommandInteraction CI) throws Exception {
 		Random rnd = new Random();
 		int select = rnd.nextInt(0, language_list.length);
+		Language lang = language_list[select];
 
-		CI.Reply(language_list[select].name);
+		if (CI.GetSource() == SourceType.Misskey) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("$[bg.color=00AAFF $[fg.color=FFFFFF $[ruby "+lang.name+" "+lang.ruby+"]]]");
+			sb.append("\n");
+			sb.append("https://eth.rumiserver.com/play/acagcidyeo6x0b5i");
+
+			CI.Reply(sb.toString());
+		} else if (CI.GetSource() == SourceType.Discord) {
+			CI.Reply(language_list[select].name + "("+language_list[select].ruby+")");
+		}
 	}
 }
