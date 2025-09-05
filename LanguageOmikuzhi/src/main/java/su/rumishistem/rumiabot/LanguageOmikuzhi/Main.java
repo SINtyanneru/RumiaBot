@@ -19,7 +19,17 @@ public class Main implements FunctionClass{
 		new Language("日本語", "日本語"),
 		new Language("Esperanto", "エスペラント"),
 		new Language("Jinghpaw", "チンポ語"),
-		new Language("Namfau", "アナル語")
+		new Language("Namfau", "アナル語"),
+		new Language("普通话", "標準中国語"),
+		new Language("臺灣華語", "台湾華語"),
+		new Language("Tâi-oân-oē", "台湾語"),
+		new Language("廣東話", "広東語"),
+		new Language("اللغة العربية", "アラビア語"),
+		new Language("ދިވެހި", "ディベヒ語"),
+		new Language("ᮘᮞ ᮞᮥᮔ᮪ᮓ", "スンダ語"),
+		new Language("ਪੰਜਾਬੀ", "パンジャーブ語"),
+		new Language("हिंदी", "ヒンディー語"),
+		new Language("Prākr̥tam", "プラークリット")
 	};
 
 	@Override
