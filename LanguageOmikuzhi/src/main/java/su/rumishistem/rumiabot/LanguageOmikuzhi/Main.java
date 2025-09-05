@@ -67,7 +67,7 @@ public class Main implements FunctionClass{
 
 		if (CI.GetSource() == SourceType.Misskey) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("$[bg.color=00AAFF $[fg.color=FFFFFF $[ruby "+lang.name+" "+lang.ruby+"]]]");
+			sb.append("$[x2 $[bg.color=00AAFF $[fg.color=FFFFFF $[ruby "+lang.name+" "+lang.ruby+"]]]]");
 			sb.append("\n");
 			sb.append("https://eth.rumiserver.com/play/acagcidyeo6x0b5i");
 
