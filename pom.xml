@@ -29,6 +29,7 @@
     <module>Trash</module>
     <module>Rank</module>
     <module>Auth</module>
+    <module>LanguageOmikuzhi</module>
   </modules>
   <repositories>
     <repository>

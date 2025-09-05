@@ -1,0 +1,58 @@
+package su.rumishistem.rumiabot.LanguageOmikuzhi;
+
+import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
+
+import java.util.Random;
+
+import su.rumishistem.rumiabot.System.TYPE.CommandData;
+import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumiabot.System.TYPE.CommandOption;
+import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
+import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+
+public class Main implements FunctionClass{
+	private static final String FUNCTION_NAME = "ランキング";
+	private static final String FUNCTION_VERSION = "1.0";
+	private static final String FUNCTION_AUTOR = "Rumisan";
+
+	private static final Language[] language_list = new Language[] {
+		new Language("日本語", "日本語"),
+		new Language("Esperanto", "エスペラント"),
+		new Language("Jinghpaw", "チンポ語"),
+		new Language("Namfau", "アナル語")
+	};
+
+	@Override
+	public String FUNCTION_NAME() {
+		return FUNCTION_NAME;
+	}
+	@Override
+	public String FUNCTION_VERSION() {
+		return FUNCTION_VERSION;
+	}
+	@Override
+	public String FUNCTION_AUTOR() {
+		return FUNCTION_AUTOR;
+	}
+
+	@Override
+	public void Init() {
+		AddCommand(new CommandData("language_omikuzhi", new CommandOption[] {}, false));
+	}
+
+	@Override
+	public void ReceiveMessage(ReceiveMessageEvent e) {}
+
+	@Override
+	public boolean GetAllowCommand(String Name) {
+		return Name.equals("language_omikuzhi");
+	}
+
+	@Override
+	public void RunCommand(CommandInteraction CI) throws Exception {
+		Random rnd = new Random();
+		int select = rnd.nextInt(0, language_list.length);
+
+		CI.Reply(language_list[select].name);
+	}
+}
