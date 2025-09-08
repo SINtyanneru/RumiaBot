@@ -30,6 +30,7 @@
     <module>Rank</module>
     <module>Auth</module>
     <module>LanguageOmikuzhi</module>
+    <module>AM4</module>
   </modules>
   <repositories>
     <repository>
