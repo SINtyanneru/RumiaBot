@@ -3,29 +3,31 @@ package su.rumishistem.rumiabot.Joke;
 import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 
 public class Unko {
-	private static final int BaiBain = 0;
-
 	public static void Main(ReceiveMessageEvent e) {
 		String Content = e.GetMessage().GetText();
 		String ReturnContent = null;
 
+		//う→んこ(ち)
 		if (Content.endsWith("う")) {
 			ReturnContent = "んこ";
-
-			if (e.GetMessage().GetDiscordGuild().getId().equals("1377631640662315080")) {
-				for (int I = 0; I < BaiBain; I++) {
-					ReturnContent += "\nんこ";
-				}
+			if (TeiKakuricu.get()) {
+				ReturnContent = "んち𝅙";
 			}
 		}
 
-		if (Content.endsWith("うん")) {
+		//うん/うーん→こ(ち)
+		if (Content.matches("うー*ん$")) {
 			ReturnContent = "こ";
+			if (TeiKakuricu.get()) {
+				ReturnContent = "ち𝅙";
+			}
+		}
 
-			if (e.GetMessage().GetDiscordGuild().getId().equals("1377631640662315080")) {
-				for (int I = 0; I < BaiBain; I++) {
-					ReturnContent += "\nこ";
-				}
+		//おん/おーん→こ(ち)
+		if (Content.matches("おー*ん$")) {
+			ReturnContent = "こ";
+			if (TeiKakuricu.get()) {
+				ReturnContent = "ち𝅙";
 			}
 		}
 
