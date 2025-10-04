@@ -27,7 +27,7 @@ public class ReversiMatchAPI implements EndpointFunction {
 				HashMap<String, Object> PostBody = new HashMap<String, Object>();
 				PostBody.put("i", CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString());
 				PostBody.put("userId", UID.replace("M-", ""));
-				JsonNode ReturnBody = new ObjectMapper().readTree(Ajax.POST(new ObjectMapper().writeValueAsBytes(PostBody)).GetString());
+				JsonNode ReturnBody = new ObjectMapper().readTree(Ajax.POST(new ObjectMapper().writeValueAsBytes(PostBody)).getString());
 				if (ReturnBody.get("error") != null) {
 					throw new Error("Misskey APIでエラー:" + ReturnBody.get("error"));
 				}

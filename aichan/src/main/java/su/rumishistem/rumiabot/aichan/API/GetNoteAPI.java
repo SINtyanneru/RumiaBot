@@ -32,7 +32,7 @@ public class GetNoteAPI implements EndpointFunction {
 				Ajax.SetHEADER("Content-Type", MisskeyAPIModoki.JSONMime);
 				FETCH_RESULT Result = Ajax.POST(new ObjectMapper().writeValueAsBytes(APIPostBody));
 
-				return new HTTP_RESULT(Result.GetSTATUS_CODE(), Result.GetString().getBytes(), MisskeyAPIModoki.JSONMime);
+				return new HTTP_RESULT(Result.getStatusCode(), Result.getString().getBytes(), MisskeyAPIModoki.JSONMime);
 			} else if (NoteID.startsWith("D-")) {
 				//Discord
 				Message TargetMessage = GetDiscordMessage.Get(NoteID);

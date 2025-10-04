@@ -69,13 +69,13 @@ public class Main implements FunctionClass{
 					post_body.put("SESSION", session_id);
 					FETCH check_ajax = new FETCH("https://account.rumiserver.com/api/AUTH/Check");
 					FETCH_RESULT check_result = check_ajax.POST(new ObjectMapper().writeValueAsString(post_body).getBytes());
-					JsonNode check = new ObjectMapper().readTree(check_result.GetString());
+					JsonNode check = new ObjectMapper().readTree(check_result.getString());
 					if (check.get("STATUS").asBoolean() == false) throw new RuntimeException("ERR");
 
 					String token = check.get("TOKEN").asText();
 					FETCH ajax = new FETCH("https://account.rumiserver.com/api/Session?ID="+token);
 					FETCH_RESULT result = ajax.GET();
-					JsonNode body = new ObjectMapper().readTree(result.GetString());
+					JsonNode body = new ObjectMapper().readTree(result.getString());
 					if (body.get("STATUS").asBoolean() == false) throw new RuntimeException("a");
 					String rsv_uid = body.get("ACCOUNT_DATA").get("ID").asText();
 

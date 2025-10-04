@@ -28,7 +28,7 @@ public class VOICEVOX {
 
 		try {
 			FETCH Ajax = new FETCH(genURL()+"speakers");
-			JsonNode Body = new ObjectMapper().readTree(Ajax.GET().GetString());
+			JsonNode Body = new ObjectMapper().readTree(Ajax.GET().getString());
 
 			for (int I = 0; I < Body.size(); I++) {
 				JsonNode Row = Body.get(I);
@@ -52,10 +52,10 @@ public class VOICEVOX {
 			FETCH Ajax = new FETCH(genURL()+"audio_query?text=" + URLEncoder.encode(Text) + "&speaker=" + SpeakersIndex);
 			FETCH_RESULT Result = Ajax.POST(new byte[] {});
 
-			if (Result.GetSTATUS_CODE() == 200) {
-				return Result.GetString().replace("\"text\":\"オ\"", "\"text\":\"ウォ\"");
+			if (Result.getStatusCode() == 200) {
+				return Result.getString().replace("\"text\":\"オ\"", "\"text\":\"ウォ\"");
 			} else {
-				throw new Error("AudioQueryエラー:" + Result.GetString());
+				throw new Error("AudioQueryエラー:" + Result.getString());
 			}
 		} catch (Exception EX) {
 			EX.printStackTrace();
@@ -69,10 +69,10 @@ public class VOICEVOX {
 			Ajax.SetHEADER("Content-Type", "application/json; charset=UTF-8");
 			FETCH_RESULT Result = Ajax.POST(AudioQuery.getBytes());
 
-			if (Result.GetSTATUS_CODE() == 200) {
-				return Result.GetRAW();
+			if (Result.getStatusCode() == 200) {
+				return Result.getRaw();
 			} else {
-				throw new Error("AudioQueryエラー:" + Result.GetString());
+				throw new Error("AudioQueryエラー:" + Result.getString());
 			}
 		} catch (Exception EX) {
 			EX.printStackTrace();

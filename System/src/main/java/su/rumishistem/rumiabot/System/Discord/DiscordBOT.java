@@ -14,6 +14,7 @@ import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 
 public class DiscordBOT {
 	public static HashMap<String, HashMap<String, Integer>> InviteTable = new HashMap<String, HashMap<String, Integer>>();
+	public static int join_guild_count = 0;
 
 	public static void Init() throws InterruptedException {
 		JDALogger.setFallbackLoggerEnabled(false);
@@ -57,6 +58,8 @@ public class DiscordBOT {
 
 		DISCORD_BOT.awaitReady();
 		LOG(LOG_TYPE.OK, "Discord Logined");
+
+		join_guild_count = DISCORD_BOT.getGuilds().size();
 	}
 
 	public static void GetAllGuildInvite() {

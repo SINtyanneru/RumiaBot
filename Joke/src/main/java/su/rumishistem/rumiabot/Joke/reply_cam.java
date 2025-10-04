@@ -1,11 +1,10 @@
 package su.rumishistem.rumiabot.Joke;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.Message;
@@ -55,7 +54,7 @@ public class reply_cam {
 		}
 	}
 
-	public static void ReturnModal(ModalInteractionEvent Interaction) throws InterruptedException, JsonProcessingException, MalformedURLException {
+	public static void ReturnModal(ModalInteractionEvent Interaction) throws InterruptedException, IOException {
 		if (Interaction.getModalId().startsWith("reply-cam-modal")) {
 			String ID = Interaction.getModalId().split("\\?")[1];
 			if (ReplyCam_Message.get(ID) == null) return;
@@ -82,7 +81,7 @@ public class reply_cam {
 			System.out.println(new ObjectMapper().writeValueAsString(PostBody));
 
 			FETCH_RESULT AjaxResult = Ajax.POST(new ObjectMapper().writeValueAsString(PostBody).getBytes());
-			System.out.println(AjaxResult.GetString());
+			System.out.println(AjaxResult.getString());
 
 			Interaction.reply("Done").setEphemeral(true).queue();
 		}

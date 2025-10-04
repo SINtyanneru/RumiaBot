@@ -64,7 +64,7 @@ public class PanelSystem {
 					AJAX_BODY.put("secret", CONFIG_DATA.get("CAPTCHA").getData("SIKRET_KEY").asString());
 
 					FETCH_RESULT CFT_RESULT = AJAX.POST(new ObjectMapper().writeValueAsString(AJAX_BODY).getBytes(Charsets.UTF_8));
-					if (new ObjectMapper().readTree(CFT_RESULT.GetString()).get("success").asBoolean()) {
+					if (new ObjectMapper().readTree(CFT_RESULT.getString()).get("success").asBoolean()) {
 						//成功
 						if (VerifyDone(POST_DATA.get("VERIFY_ID").asText())) {
 							return new HTTP_RESULT(200, "{\"STATUS\": true}".getBytes(), "application/json; charset=UTF-8");

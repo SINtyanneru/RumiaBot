@@ -442,6 +442,8 @@ public class DiscordEventListener extends ListenerAdapter {
 	//鯖に入った
 	@Override
 	public void onGuildJoin(GuildJoinEvent E){
+		DiscordBOT.join_guild_count += 1;
+
 		ThreadPool.discord(new Runnable() {
 			@Override
 			public void run() {
@@ -497,6 +499,8 @@ public class DiscordEventListener extends ListenerAdapter {
 	//サーバーから叩き出された
 	@Override
 	public void onGuildLeave(GuildLeaveEvent E){
+		DiscordBOT.join_guild_count -= 1;
+
 		ThreadPool.discord(new Runnable() {
 			@Override
 			public void run() {

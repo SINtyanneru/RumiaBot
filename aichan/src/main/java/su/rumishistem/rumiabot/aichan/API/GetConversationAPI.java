@@ -41,7 +41,7 @@ public class GetConversationAPI implements EndpointFunction{
 				Ajax.SetHEADER("Content-Type", MisskeyAPIModoki.JSONMime);
 				FETCH_RESULT Result = Ajax.POST(new ObjectMapper().writeValueAsBytes(APIPostBody));
 
-				return new HTTP_RESULT(Result.GetSTATUS_CODE(), Result.GetString().getBytes(), MisskeyAPIModoki.JSONMime);
+				return new HTTP_RESULT(Result.getStatusCode(), Result.getString().getBytes(), MisskeyAPIModoki.JSONMime);
 			} else if (NoteID.startsWith("D-")) {
 				//Discord
 				return new HTTP_RESULT(200, "[]".getBytes(), MisskeyAPIModoki.JSONMime);

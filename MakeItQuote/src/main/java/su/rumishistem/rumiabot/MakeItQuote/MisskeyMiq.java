@@ -38,7 +38,7 @@ public class MisskeyMiq {
 		FETCH WebpAjax = new FETCH(IconURL);
 		File WebpFile = new File(IconPath);
 		FileOutputStream FOS = new FileOutputStream(WebpFile);
-		FOS.write(WebpAjax.GET().GetRAW());
+		FOS.write(WebpAjax.GET().getRaw());
 		FOS.flush();
 		FOS.close();
 

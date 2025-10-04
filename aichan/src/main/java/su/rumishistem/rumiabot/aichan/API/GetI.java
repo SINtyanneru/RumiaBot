@@ -17,7 +17,7 @@ public class GetI implements EndpointFunction {
 			AJAX.SetHEADER("Content-Type", MisskeyAPIModoki.JSONMime);
 			FETCH_RESULT RESULT = AJAX.POST(("{\"i\": \"" + MisskeyAPIModoki.TOKEN + "\"}").getBytes());
 
-			return new HTTP_RESULT(200, RESULT.GetRAW(), MisskeyAPIModoki.JSONMime);
+			return new HTTP_RESULT(200, RESULT.getRaw(), MisskeyAPIModoki.JSONMime);
 		} catch (MalformedURLException EX) {
 			return new HTTP_RESULT(500, "{}".getBytes(), MisskeyAPIModoki.JSONMime);
 		}
