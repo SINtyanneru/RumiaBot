@@ -151,6 +151,6 @@ public class Main implements FunctionClass{
 
 		IDTable.put(ID, CID);
 
-		CI.Reply("https://rumiabot.rumiserver.com/pf?ID=" + ID);
+		CI.Reply("https://bot.rumi-room.net/pf?ID=" + ID);
 	}
 }
