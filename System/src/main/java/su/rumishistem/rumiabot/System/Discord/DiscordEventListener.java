@@ -138,6 +138,8 @@ public class DiscordEventListener extends ListenerAdapter {
 		}
 
 		try {
+			if (E.getMember() == null) return;
+
 			//管理者コマンド
 			if (AdminManager.IsAdmin(SourceType.Discord, E.getMember().getUser().getId())) {
 				String Content = E.getMessage().getContentRaw();
