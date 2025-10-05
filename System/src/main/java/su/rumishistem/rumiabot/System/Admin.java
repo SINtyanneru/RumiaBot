@@ -11,6 +11,7 @@ import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
 import su.rumishistem.rumiabot.System.MODULE.AdminManager;
 import su.rumishistem.rumiabot.System.MODULE.BlockManager;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.TYPE.ThreadPoolStatus;
 
 public class Admin {
 	public static void discord(MessageReceivedEvent e) {
@@ -41,6 +42,28 @@ public class Admin {
 								EX.printStackTrace();
 								return V.GetObject() + "をブロックできんかった！";
 							}
+						}
+
+						case "Show": {
+							ThreadPoolStatus status = null;
+							switch (V.GetObject()) {
+								case "command v pool":
+									status = ThreadPool.get_command_status();
+									break;
+
+								case "message v pool":
+									status = ThreadPool.get_message_status();
+									break;
+
+								case "discord v pool":
+									status = ThreadPool.get_discord_status();
+									break;
+
+								default:
+									return "そのオブジェクトは存在しません";
+							}
+
+							return status.max + "\\" + status.active;
 						}
 
 						default: {
