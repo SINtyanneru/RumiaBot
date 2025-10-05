@@ -28,6 +28,7 @@ import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
 import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
+import su.rumishistem.rumiabot.System.Admin;
 import su.rumishistem.rumiabot.System.ThreadPool;
 import su.rumishistem.rumiabot.System.Discord.MODULE.*;
 import su.rumishistem.rumiabot.System.MODULE.*;
@@ -142,33 +143,7 @@ public class DiscordEventListener extends ListenerAdapter {
 
 			//管理者コマンド
 			if (AdminManager.IsAdmin(SourceType.Discord, E.getMember().getUser().getId())) {
-				String Content = E.getMessage().getContentRaw();
-				REON4213Parser P = new REON4213Parser(Content);
-				if (P.GetHacudouShi() != null) {
-					if (P.GetCls().get("RB") != null) {
-						for (VBlock V:P.GetCls().get("RB")) {
-							switch (V.GetVerb()) {
-								case "Block": {
-									User U = DISCORD_BOT.getUserById(V.GetObject());
-									if (U == null) {
-										E.getMessage().reply(V.GetObject() + "というユーザーが見つからなかった").queue();
-										return;
-									}
-
-									BlockManager.addBlock(SourceType.Discord, U.getId());
-
-									E.getMessage().reply(V.GetObject() + "をブロックした").queue();
-									return;
-								}
-
-								default: {
-									E.getMessage().reply("未定義動作").queue();
-									return;
-								}
-							}
-						}
-					}
-				}
+				Admin.discord(E);
 
 				//help用
 				if (E.getMessage().getContentRaw().equals("adminhelp")) {
