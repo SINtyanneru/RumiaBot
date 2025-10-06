@@ -10,6 +10,7 @@ import su.rumishistem.rumiabot.aichan.API.CreateNoteAPI;
 import su.rumishistem.rumiabot.aichan.API.CreateReactionAPI;
 import su.rumishistem.rumiabot.aichan.API.GetConversationAPI;
 import su.rumishistem.rumiabot.aichan.API.GetI;
+import su.rumishistem.rumiabot.aichan.API.GetLocalTimeline;
 import su.rumishistem.rumiabot.aichan.API.GetNoteAPI;
 import su.rumishistem.rumiabot.aichan.API.ReversiMatchAPI;
 import su.rumishistem.rumiabot.aichan.API.StreamingAPI;
@@ -63,6 +64,9 @@ public class MisskeyAPIModoki {
 
 		//オセロ対局
 		SH.SetRoute("/api/reversi/match", new ReversiMatchAPI());
+
+		//タイムライン
+		SH.SetRoute("/api/notes/local-timeline", new GetLocalTimeline());
 
 		SH.Start();
 	}
