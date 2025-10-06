@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.concurrent.CountDownLatch;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
@@ -27,6 +28,10 @@ public class JoinLog {
 			//もみ消す
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+		}
+
+		if (!e.GetGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER)) {
+			return null;
 		}
 
 		e.GetGuild().retrieveInvites().queue(InvList->{
