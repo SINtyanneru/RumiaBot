@@ -47,7 +47,6 @@ public class Main implements FunctionClass {
 			public void run() {
 				try {
 					JsonNode B = ReportGet.Get(AdminToken);
-					System.out.println(B);
 					for (int I = 0; I < B.size(); I++) {
 						JsonNode R = B.get(I);
 						String Text = GenNoteText(R);
