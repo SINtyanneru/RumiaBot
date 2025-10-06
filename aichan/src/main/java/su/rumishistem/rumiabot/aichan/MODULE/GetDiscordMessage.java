@@ -16,8 +16,6 @@ public class GetDiscordMessage {
 			String MessageID = IDMatcher.group(2);
 			TextChannel Channel = DISCORD_BOT.getTextChannelById(ChannelID);
 			if (Channel != null) {
-				System.out.println("CID:" + ChannelID);
-				System.out.println("MID:" + MessageID);
 				CountDownLatch CDL = new CountDownLatch(1);
 				Message[] MSG = {null};
 				Channel.retrieveMessageById(MessageID).queue(
