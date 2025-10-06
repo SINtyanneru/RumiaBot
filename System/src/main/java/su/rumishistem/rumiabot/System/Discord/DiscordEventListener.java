@@ -8,6 +8,7 @@ import java.util.*;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -157,26 +158,28 @@ public class DiscordEventListener extends ListenerAdapter {
 				}
 			}
 
-			ReceiveMessageEvent rme = new ReceiveMessageEvent(
-				SourceType.Discord,
-				new MessageUser(
+			if (E.getChannel().getType() == ChannelType.TEXT) {
+				ReceiveMessageEvent rme = new ReceiveMessageEvent(
+					SourceType.Discord,
+					new MessageUser(
+						E.getMember(),
+						null
+					),
 					E.getMember(),
-					null
-				),
-				E.getMember(),
-				E.getChannel().asTextChannel(),
-				E.getMessage(),
-				null,
-				new MessageData(
-					E.getMessageId(),
-					E.getMessage().getContentRaw(),
+					E.getChannel().asTextChannel(),
 					E.getMessage(),
 					null,
-					E.getMessage().getContentRaw().contains("<@" + DISCORD_BOT.getSelfUser().getId() + ">")
-				)
-			);
+					new MessageData(
+						E.getMessageId(),
+						E.getMessage().getContentRaw(),
+						E.getMessage(),
+						null,
+						E.getMessage().getContentRaw().contains("<@" + DISCORD_BOT.getSelfUser().getId() + ">")
+					)
+				);
 
-			ThreadPool.receive_message(SourceType.Discord, rme);
+				ThreadPool.receive_message(SourceType.Discord, rme);
+			}
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}
