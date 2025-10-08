@@ -7,11 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -24,11 +22,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.*;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 import su.rumishistem.rumi_java_lib.ArrayNode;
-import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
+import su.rumishistem.rumi_java_lib.ExceptionRunnable;
 import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
-import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
 import su.rumishistem.rumiabot.System.Admin;
 import su.rumishistem.rumiabot.System.ThreadPool;
 import su.rumishistem.rumiabot.System.Discord.MODULE.*;
@@ -271,18 +267,12 @@ public class DiscordEventListener extends ListenerAdapter {
 						}
 
 						//コマンドの実行をモジュールに通達
-						ThreadPool.run_command(new Runnable() {
+						ThreadPool.run_discord_command(new ExceptionRunnable() {
 							@Override
-							public void run() {
-								try {
-									Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
-								} catch (Exception EX) {
-									EX.printStackTrace();
-									String EX_TEXT = EXCEPTION_READER.READ(EX);
-									INTERACTION.getHook().editOriginal("エラー\n```\n" + EX_TEXT + "\n```").queue();
-								}
+							public void run() throws Exception {
+								Function.RunCommand(new CommandInteraction(SourceType.Discord, INTERACTION, Command));
 							}
-						});
+						}, INTERACTION, !Command.isPrivate());
 					} else {
 						INTERACTION.reply("コマンドか機能が見つかりませんでした").queue();
 					}

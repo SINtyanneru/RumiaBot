@@ -9,7 +9,7 @@ import java.util.List;
 import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
-import su.rumishistem.rumi_java_lib.EXCEPTION_READER;
+import su.rumishistem.rumi_java_lib.ExceptionRunnable;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.Misskey.MisskeyClient;
 import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
@@ -18,7 +18,6 @@ import su.rumishistem.rumi_java_lib.Misskey.Event.EVENT_LISTENER;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewFollower;
 import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
 import su.rumishistem.rumi_java_lib.Misskey.RESULT.LOGIN_RESULT;
-import su.rumishistem.rumiabot.System.LogSystem;
 import su.rumishistem.rumiabot.System.ThreadPool;
 import su.rumishistem.rumiabot.System.MODULE.SearchCommand;
 import su.rumishistem.rumiabot.System.TYPE.CommandData;
@@ -131,27 +130,12 @@ public class MisskeyBOTMain {
 									//リアクション
 									MisskeyBOT.CreateReaction(e.getNOTE(), ":1039992459209490513:");
 
-									ThreadPool.run_command(new Runnable() {
+									ThreadPool.run_misskey_command(new ExceptionRunnable() {
 										@Override
-										public void run() {
-											try {
-												Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
-											} catch (Exception EX) {
-												EX.printStackTrace();
-												try {
-													LogSystem.error("実行されたインタラクション：https://ussr.rumiserver.com/notes/" + e.getNOTE().getID());
-													LogSystem.error(EXCEPTION_READER.READ(EX));
-
-													NoteBuilder NB = new NoteBuilder();
-													NB.setTEXT("エラー！");
-													NB.setREPLY(e.getNOTE());
-													MisskeyBOT.PostNote(NB.Build());
-												} catch (Exception EX2) {
-													//もみ消す
-												}
-											}
+										public void run() throws Exception {
+											Function.RunCommand(new CommandInteraction(SourceType.Misskey, e.getNOTE(), Command));
 										}
-									});
+									}, e);
 									return;
 								} else {
 									NoteBuilder NB = new NoteBuilder();
