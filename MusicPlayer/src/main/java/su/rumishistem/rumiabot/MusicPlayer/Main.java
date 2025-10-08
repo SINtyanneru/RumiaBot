@@ -8,8 +8,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import su.rumishistem.rumiabot.System.TYPE.*;
+import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
 
 public class Main implements FunctionClass {
 	private static final String FUNCTION_NAME = "音楽プレイヤー";
@@ -94,6 +96,26 @@ public class Main implements FunctionClass {
 			case "stop":
 				stop(CI.GetDiscordInteraction(), player, vc);
 				return;
+		}
+	}
+
+	@Override
+	public void DiscordEventReceive(DiscordEvent e) throws Exception {
+		if (e.GetType() == EventType.VCMemberUpdate) {
+			GuildVoiceUpdateEvent event = (GuildVoiceUpdateEvent)e.GetEventClass();
+
+			String Ch = null;
+			if (event.getChannelJoined() != null) {
+				Ch = event.getChannelJoined().getId();
+			} else if (event.getChannelLeft() != null) {
+				Ch = event.getChannelLeft().getId();
+			}
+
+			if (vc_id_table.get(Ch) == null) return;
+			Player player = player_list.get(vc_id_table.get(Ch));
+			if (player.get_person_count() == 0) {
+				player.stop();
+			}
 		}
 	}
 

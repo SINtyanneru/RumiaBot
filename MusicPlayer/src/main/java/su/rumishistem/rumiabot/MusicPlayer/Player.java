@@ -20,12 +20,13 @@ import net.dv8tion.jda.api.managers.AudioManager;
 
 public class Player {
 	private String id = UUID.randomUUID().toString();
+	private AudioManager am;
 	private AudioPlayerManager apm;
 	private AudioPlayer player;
 
 	public Player(Guild guild, AudioChannel vc) {
 		//LavaPlayer初期化
-		AudioManager am = guild.getAudioManager();
+		am = guild.getAudioManager();
 		apm = new DefaultAudioPlayerManager();
 		AudioSourceManagers.registerRemoteSources(apm);
 		AudioSourceManagers.registerLocalSource(apm);
@@ -41,6 +42,10 @@ public class Player {
 		return id;
 	}
 
+	public int get_person_count() {
+		return am.getConnectedChannel().getMembers().size();
+	}
+
 	public void set_volume(int vol) {
 		player.setVolume(vol);
 	}
@@ -48,6 +53,7 @@ public class Player {
 	public void stop() {
 		player.stopTrack();
 		player.destroy();
+		am.closeAudioConnection();
 	}
 
 	public void pause() {
