@@ -84,7 +84,7 @@ public class Admin {
 							}
 						}
 
-						case "Invite create": {
+						case "Invite": {
 							Guild g = DISCORD_BOT.getGuildById(V.GetObject());
 							if (g == null) return "サーバーが見つかりませんでした";
 							if (g.getTextChannels().size() == 0) return "チャンネルが無いようです";
@@ -94,6 +94,7 @@ public class Admin {
 							TextChannel ch = g.getTextChannels().get(0);
 							ch.createInvite().setMaxAge(0).setMaxUses(0).setTemporary(false).queue(inv -> {
 								invite_url[0] = inv.getUrl();
+								cdl.countDown();
 							});
 
 							try {
