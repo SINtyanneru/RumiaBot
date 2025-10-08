@@ -310,102 +310,110 @@ public class DiscordEventListener extends ListenerAdapter {
 	}
 
 	@Override
-	public void onMessageContextInteraction(MessageContextInteractionEvent INTERACTION) {
+	public void onMessageContextInteraction(MessageContextInteractionEvent e) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
-			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+		if (BlockManager.IsBlocked(SourceType.Discord, e.getUser().getId())) {
+			e.reply("帰れ").setEphemeral(true).queue();
 			return;
 		}
 
-		FunctionClass Function = SearchCommand.Function("Message:" + INTERACTION.getName().split("\\?")[0]);
+		FunctionClass Function = SearchCommand.Function("Message:" + e.getName().split("\\?")[0]);
 		if (Function != null) {
 			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						Function.RunInteraction(new RunInteractionEvent(INTERACTION, InteractionType.MessageContext));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+						Function.RunInteraction(new RunInteractionEvent(e, InteractionType.MessageContext));
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						e.reply("エラー:"+ex.getMessage()+"\n["+id+"]").queue();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
 		} else {
-			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+			e.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
 	}
 
 	@Override
-	public void onModalInteraction(ModalInteractionEvent INTERACTION) {
+	public void onModalInteraction(ModalInteractionEvent e) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
-			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+		if (BlockManager.IsBlocked(SourceType.Discord, e.getUser().getId())) {
+			e.reply("帰れ").setEphemeral(true).queue();
 			return;
 		}
 
-		FunctionClass Function = SearchCommand.Function("Modal:" + INTERACTION.getModalId().split("\\?")[0]);
+		FunctionClass Function = SearchCommand.Function("Modal:" + e.getModalId().split("\\?")[0]);
 		if (Function != null) {
 			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.Modal));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+						Function.ReturnInteraction(new ReturnInteractionEvent(e, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.Modal));
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						e.reply("エラー:"+ex.getMessage()+"\n["+id+"]").queue();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
 		} else {
-			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+			e.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
 	}
 
 	@Override
-	public void onEntitySelectInteraction(EntitySelectInteractionEvent INTERACTION) {
+	public void onEntitySelectInteraction(EntitySelectInteractionEvent e) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
-			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+		if (BlockManager.IsBlocked(SourceType.Discord, e.getUser().getId())) {
+			e.reply("帰れ").setEphemeral(true).queue();
 			return;
 		}
 
-		FunctionClass Function = SearchCommand.Function("EntitySelect:" + INTERACTION.getComponentId().split("\\?")[0]);
+		FunctionClass Function = SearchCommand.Function("EntitySelect:" + e.getComponentId().split("\\?")[0]);
 		if (Function != null) {
 			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.EntitySelector));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+						Function.ReturnInteraction(new ReturnInteractionEvent(e, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.EntitySelector));
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						e.reply("エラー:"+ex.getMessage()+"\n["+id+"]").queue();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
 		} else {
-			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+			e.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
 	}
 
 	@Override
-	public void onStringSelectInteraction(StringSelectInteractionEvent INTERACTION) {
+	public void onStringSelectInteraction(StringSelectInteractionEvent e) {
 		//ブロック済みのユーザーなら此処で処理を中断する
-		if (BlockManager.IsBlocked(SourceType.Discord, INTERACTION.getUser().getId())) {
-			INTERACTION.reply("帰れ").setEphemeral(true).queue();
+		if (BlockManager.IsBlocked(SourceType.Discord, e.getUser().getId())) {
+			e.reply("帰れ").setEphemeral(true).queue();
 			return;
 		}
 
-		FunctionClass Function = SearchCommand.Function("StringSelect:" + INTERACTION.getComponentId().split("\\?")[0]);
+		FunctionClass Function = SearchCommand.Function("StringSelect:" + e.getComponentId().split("\\?")[0]);
 		if (Function != null) {
 			ThreadPool.discord(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						Function.ReturnInteraction(new ReturnInteractionEvent(INTERACTION, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.StringSelector));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+						Function.ReturnInteraction(new ReturnInteractionEvent(e, su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent.InteractionType.StringSelector));
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						e.reply("エラー:"+ex.getMessage()+"\n["+id+"]").queue();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
 		} else {
-			INTERACTION.reply("このボタンの応答に対応する機能が存在しません").queue();
+			e.reply("このボタンの応答に対応する機能が存在しません").queue();
 		}
 	}
 
@@ -506,8 +514,9 @@ public class DiscordEventListener extends ListenerAdapter {
 				public void run() {
 					try {
 						Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberAdd, e.getGuild(), null));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
@@ -523,8 +532,9 @@ public class DiscordEventListener extends ListenerAdapter {
 				public void run() {
 					try {
 						Function.DiscordEventReceive(new DiscordEvent(e, EventType.GuildMemberRemove, e.getGuild(), null));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
@@ -540,8 +550,9 @@ public class DiscordEventListener extends ListenerAdapter {
 				public void run() {
 					try {
 						Function.DiscordEventReceive(new DiscordEvent(e, EventType.VCMemberUpdate, e.getGuild(), null));
-					} catch (Exception EX) {
-						EX.printStackTrace();
+					} catch (Exception ex) {
+						String id = UUID.randomUUID().toString();
+						ErrorPrinter.print(id, ex);
 					}
 				}
 			});
