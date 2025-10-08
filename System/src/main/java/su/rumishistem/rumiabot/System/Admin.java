@@ -4,6 +4,7 @@ import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.sql.SQLException;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
@@ -16,7 +17,7 @@ import su.rumishistem.rumiabot.System.TYPE.ThreadPoolStatus;
 public class Admin {
 	public static void discord(MessageReceivedEvent e) {
 		if (!AdminManager.IsAdmin(SourceType.Discord, e.getMember().getUser().getId())) return;
-		String result = parse(e.getMessage().getContentRaw(), e.getAuthor().getId(), SourceType.Discord);
+		String result = parse(e.getMessage().getContentRaw(), e.getAuthor().getId(), SourceType.Discord, e);
 		if (result == null) return;
 
 		e.getMessage().reply(result).queue();
@@ -24,7 +25,7 @@ public class Admin {
 
 	//TODO:Misskey
 
-	private static String parse(String text, String user_id, SourceType source) {
+	private static String parse(String text, String user_id, SourceType source, MessageReceivedEvent de) {
 		REON4213Parser P = new REON4213Parser(text);
 		if (P.GetHacudouShi() != null) {
 			if (P.GetCls().get("RB") != null) {
@@ -64,6 +65,21 @@ public class Admin {
 							}
 
 							return status.max + "\\" + status.active;
+						}
+
+						case "List": {
+							switch (V.GetObject()) {
+								case "discord v guild":
+									StringBuilder sb = new StringBuilder();
+									for (Guild g:DISCORD_BOT.getGuilds()) {
+										sb.append(g.getName());
+										sb.append("("+g.getId()+")");
+										sb.append("\n");
+									}
+									return sb.toString();
+								default:
+									return "？";
+							}
 						}
 
 						default: {
