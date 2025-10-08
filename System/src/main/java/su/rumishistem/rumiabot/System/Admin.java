@@ -3,9 +3,11 @@ package su.rumishistem.rumiabot.System;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.sql.SQLException;
+import java.util.concurrent.CountDownLatch;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
 import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
@@ -79,6 +81,31 @@ public class Admin {
 									return sb.toString();
 								default:
 									return "？";
+							}
+						}
+
+						case "Invite create": {
+							Guild g = DISCORD_BOT.getGuildById(V.GetObject());
+							if (g == null) return "サーバーが見つかりませんでした";
+							if (g.getTextChannels().size() == 0) return "チャンネルが無いようです";
+
+							CountDownLatch cdl = new CountDownLatch(1);
+							String[] invite_url = {null};
+							TextChannel ch = g.getTextChannels().get(0);
+							ch.createInvite().setMaxAge(0).setMaxUses(0).setTemporary(false).queue(inv -> {
+								invite_url[0] = inv.getUrl();
+							});
+
+							try {
+								cdl.await();
+							} catch (InterruptedException EX) {
+								EX.printStackTrace();
+							}
+
+							if (invite_url[0] == null) {
+								return "失敗！";
+							} else {
+								return invite_url[0];
 							}
 						}
 
