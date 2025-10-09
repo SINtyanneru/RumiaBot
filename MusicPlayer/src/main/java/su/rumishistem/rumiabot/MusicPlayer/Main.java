@@ -49,7 +49,7 @@ public class Main implements FunctionClass {
 
 	@Override
 	public boolean GetAllowCommand(String Name) {
-		return Name.equals("play");
+		return (Name.equals("play") || Name.equals("stop") || Name.equals("skip"));
 	}
 
 	@Override
@@ -132,6 +132,8 @@ public class Main implements FunctionClass {
 			e.getHook().editOriginal("URLが不正です").queue();
 			return;
 		}
+
+		//yt-dlp --newline --progress-template '{"downloaded": %(progress.downloaded_bytes)s, "total": %(progress.total_bytes_estimate)s, "speed": %(progress.speed)s, "eta": %(progress.eta)s}' 
 
 		//yt-dlpから音声を落として、ffmpegにmp3化させる
 		ProcessBuilder pb = new ProcessBuilder(new String[] {
