@@ -1,6 +1,5 @@
 package su.rumishistem.rumiabot.Voicevox.Jomiage;
 
-import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.Voicevox.Main.SpeakersList;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
@@ -15,7 +14,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
-import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class JomiageData {
@@ -36,33 +34,16 @@ public class JomiageData {
 		this.apm = apm;
 		this.player = player;
 		this.KikisenID = KikisenID;
-
 		UserVoiceTable = new HashMap<String, Integer>();
 
-		/*
-		MessageQueue.setOnAdd(new Consumer<HashMap<String,String>>() {
+		//終了時に終了処理を行う
+		JomiageData ctx = this;
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			@Override
-			public void accept(HashMap<String, String> a) {
-				try {
-					for (HashMap<String, String> Row:MessageQueue) {
-						CountDownLatch Latch = new CountDownLatch(1);
-
-						String UID = Row.get("UID");
-						String Text = Row.get("TEXT");
-						
-
-						//ファイルを錬成して再生
-						
-
-
-						Latch.await();
-						MessageQueue.RemoveFirst();
-					}
-				} catch (Exception EX) {
-					EX.printStackTrace();
-				}
+			public void run() {
+				ctx.close();
 			}
-		});*/
+		}));
 	}
 
 	public AudioManager get_am() {
