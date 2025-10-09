@@ -1,27 +1,14 @@
 package su.rumishistem.rumiabot.Voicevox.Jomiage;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.UUID;
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import java.util.*;
+import com.sedmelluq.discord.lavaplayer.player.*;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
+
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
+import su.rumishistem.rumiabot.System.TYPE.*;
 
 public class Jomiage {
 	private static final HashMap<String, String> ConvertDict = new HashMap<String, String>(){
@@ -108,7 +95,7 @@ public class Jomiage {
 		}
 
 		//取得
-		AudioPlayerManager APM = J.getAPM();
+		AudioPlayerManager APM = J.get_apm();
 		AudioPlayer AP = J.getAP();
 		int VoiceSpeakers = 0;
 		String Text = e.GetMessage().GetText();
@@ -142,16 +129,16 @@ public class Jomiage {
 	public static void DisconnectVC(String ID) {
 		String JomiageID = TextChannelIDToJomiageID(ID);
 		if (JomiageID != null) {
-			JomiageDataTable.get(JomiageID).getAM().closeAudioConnection();
+			JomiageDataTable.get(JomiageID).close();
 			JomiageDataTable.remove(JomiageID);
 		}
 	}
 
 	public static void VCMemberUpdate(String Ch) {
 		for (JomiageData J:JomiageDataTable.values()) {
-			AudioManager AM = J.getAM();
-			if (AM.getConnectedChannel() != null && AM.getConnectedChannel().getId().equals(Ch)) {
-				if (AM.getConnectedChannel().getMembers().size() == 1) {
+			AudioManager am = J.get_am();
+			if (am.getConnectedChannel() != null && am.getConnectedChannel().getId().equals(Ch)) {
+				if (am.getConnectedChannel().getMembers().size() == 1) {
 					DisconnectVC(Ch);
 					return;
 				}

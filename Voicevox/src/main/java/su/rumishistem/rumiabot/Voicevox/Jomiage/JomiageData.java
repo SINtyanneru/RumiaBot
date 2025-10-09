@@ -1,47 +1,45 @@
 package su.rumishistem.rumiabot.Voicevox.Jomiage;
 
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.Voicevox.Main.SpeakersList;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.concurrent.*;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.*;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.track.*;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class JomiageData {
-	private AudioManager AM = null;
+	private AudioManager am = null;
 	private String KikisenID = null;
-	private AudioPlayerManager APM = null;
-	private AudioPlayer AP = null;
+	private AudioPlayerManager apm = null;
+	private AudioPlayer player = null;
 	private int UserVoiceLast = 0;
 	private HashMap<String, Integer> UserVoiceTable = null;
-	private QueueList<HashMap<String, String>> MessageQueue = null;
+	private List<File> messgae_queue = new ArrayList<>();
+	private ThreadPoolExecutor playing_pool = new ThreadPoolExecutor(
+		1, 1, 0L, TimeUnit.MILLISECONDS,
+		new LinkedBlockingQueue<>()
+	);
 
-	public JomiageData(AudioManager AM, AudioPlayerManager APM, AudioPlayer AP, String KikisenID) {
-		this.AM = AM;
-		this.APM = APM;
-		this.AP = AP;
+	public JomiageData(AudioManager am, AudioPlayerManager apm, AudioPlayer player, String KikisenID) {
+		this.am = am;
+		this.apm = apm;
+		this.player = player;
 		this.KikisenID = KikisenID;
 
 		UserVoiceTable = new HashMap<String, Integer>();
-		MessageQueue = new QueueList<HashMap<String,String>>();
 
+		/*
 		MessageQueue.setOnAdd(new Consumer<HashMap<String,String>>() {
 			@Override
 			public void accept(HashMap<String, String> a) {
@@ -51,32 +49,11 @@ public class JomiageData {
 
 						String UID = Row.get("UID");
 						String Text = Row.get("TEXT");
-						int VoiceSpeakers = (int)getUserVoice(UID).get("SPEAKERS");
+						
 
 						//ファイルを錬成して再生
-						File F = VOICEVOX.genAudioFile(VoiceSpeakers, VOICEVOX.genAudioQuery(VoiceSpeakers, Text));
-						APM.loadItem(F.toString(), new AudioLoadResultHandler() {
-							@Override
-							public void trackLoaded(AudioTrack Track) {
-								//再生
-								AP.playTrack(Track);
+						
 
-								//再生終わったら削除
-								AP.addListener(new AudioEventAdapter() {
-									@Override
-									public void onTrackEnd(AudioPlayer Player, AudioTrack Track, AudioTrackEndReason EndReason) {
-										F.delete();
-										Latch.countDown();
-									}
-								});
-							}
-							@Override
-							public void playlistLoaded(AudioPlaylist Playlist) {}
-							@Override
-							public void noMatches() {}
-							@Override
-							public void loadFailed(FriendlyException EX) {}
-						});
 
 						Latch.await();
 						MessageQueue.RemoveFirst();
@@ -85,19 +62,19 @@ public class JomiageData {
 					EX.printStackTrace();
 				}
 			}
-		});
+		});*/
 	}
 
-	public AudioManager getAM() {
-		return AM;
+	public AudioManager get_am() {
+		return am;
 	}
 
-	public AudioPlayerManager getAPM() {
-		return APM;
+	public AudioPlayerManager get_apm() {
+		return apm;
 	}
 
 	public AudioPlayer getAP() {
-		return AP;
+		return player;
 	}
 
 	public TextChannel getKikisen() {
@@ -130,10 +107,59 @@ public class JomiageData {
 		return Return;
 	}
 
-	public void addMessage(String UID, String Text) {
-		HashMap<String, String> Data = new HashMap<String, String>();
-		Data.put("UID", UID);
-		Data.put("TEXT", Text);
-		MessageQueue.add(Data);
+	public void addMessage(String uid, String text) {
+		int VoiceSpeakers = (int)getUserVoice(uid).get("SPEAKERS");
+		File f = VOICEVOX.genAudioFile(VoiceSpeakers, VOICEVOX.genAudioQuery(VoiceSpeakers, text));
+		messgae_queue.add(f);
+
+		playing_pool.submit(new Runnable() {
+			@Override
+			public void run() {
+				CountDownLatch cdl = new CountDownLatch(1);
+				File f = messgae_queue.getFirst();
+				messgae_queue.removeFirst();
+
+				apm.loadItem(f.toString(), new AudioLoadResultHandler() {
+					@Override
+					public void trackLoaded(AudioTrack track) {
+						//再生
+						player.playTrack(track);
+
+						//再生終わったら削除
+						player.addListener(new AudioEventAdapter() {
+							@Override
+							public void onTrackEnd(AudioPlayer Player, AudioTrack Track, AudioTrackEndReason EndReason) {
+								f.delete();
+								cdl.countDown();
+							}
+						});
+					}
+					@Override
+					public void playlistLoaded(AudioPlaylist Playlist) {}
+					@Override
+					public void noMatches() {}
+					@Override
+					public void loadFailed(FriendlyException EX) {}
+				});
+
+				try {
+					cdl.await();
+				} catch (InterruptedException EX) {
+					//いつこれ起きるん？
+				}
+			}
+		});
+	}
+
+	public void close() {
+		am.closeAudioConnection();
+		playing_pool.getQueue().clear();
+		playing_pool.shutdown();
+
+		//残ったファイルを削除
+		for (File f:messgae_queue) {
+			f.delete();
+		}
+		messgae_queue.clear();
 	}
 }

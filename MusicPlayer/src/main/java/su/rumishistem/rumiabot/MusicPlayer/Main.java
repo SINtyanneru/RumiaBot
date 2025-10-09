@@ -111,6 +111,7 @@ public class Main implements FunctionClass {
 				Ch = event.getChannelLeft().getId();
 			}
 
+			//繋いでいるVCで誰も居なくなったら切断
 			if (vc_id_table.get(Ch) == null) return;
 			Player player = player_list.get(vc_id_table.get(Ch));
 			if (player.get_person_count() == 0) {
