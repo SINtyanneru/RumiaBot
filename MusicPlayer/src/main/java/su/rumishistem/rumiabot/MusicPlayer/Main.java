@@ -6,6 +6,11 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
@@ -120,12 +125,8 @@ public class Main implements FunctionClass {
 		}
 	}
 
-	private static void send_message(SlashCommandInteraction e, String text) {
-		e.getChannel().asTextChannel().sendMessage(text).queue();
-	}
-
 	private static void play(SlashCommandInteraction e, Player player) throws IOException, InterruptedException {
-		send_message(e, "音声を取得しています、暫くお待ち下さい。");
+		Message progress_msg = e.getChannel().asTextChannel().sendMessage("準備中...").complete();
 
 		String url = e.getOption("url").getAsString();
 		if (Pattern.compile("^(https?|ftp)://[\\w.-]+(?:\\.[\\w\\.-]+)+[/#?]?.*$").matcher(url).matches() == false) {
@@ -133,42 +134,61 @@ public class Main implements FunctionClass {
 			return;
 		}
 
-		//yt-dlp --newline --progress-template '{"downloaded": %(progress.downloaded_bytes)s, "total": %(progress.total_bytes_estimate)s, "speed": %(progress.speed)s, "eta": %(progress.eta)s}' 
-
-		//yt-dlpから音声を落として、ffmpegにmp3化させる
-		ProcessBuilder pb = new ProcessBuilder(new String[] {
-			"sh",
-			"-c",
-			"yt-dlp -f bestaudio --no-part -o - '"+url.replace("'", "")+"' | ffmpeg -i - -f mp3 -acodec libmp3lame -ar 44100 -ac 2 -"
-		});
-		Process p = pb.start();
-
 		//一時ファイルに書く
-		File temp_file = new File("/tmp/" + UUID.randomUUID().toString());
-		temp_file.createNewFile();
-		FileOutputStream fos = new FileOutputStream(temp_file);
+		File ytdlp_temp_file = new File("/tmp/" + UUID.randomUUID().toString());
+		ytdlp_temp_file.createNewFile();
 
-		//標準出力を読む
-		InputStream is = p.getInputStream();
-		byte[] buffer = new byte[8024];
-		int read_length = 0;
-		while ((read_length = is.read(buffer)) != -1) {
-			fos.write(buffer, 0, read_length);
-			fos.flush();
+		//yt-dlp経由で落とす
+		ProcessBuilder ytdlp_pb = new ProcessBuilder(
+			"yt-dlp",
+			"-f", "bestaudio",
+			"--no-part",
+			"-o", ytdlp_temp_file.toString(),
+			"--newline",
+			//"--print", "{\"title\": %(title)j}",
+			"--progress-template", "{\"downloaded\": %(progress.downloaded_bytes)s, \"total\": %(progress.total_bytes_estimate)s, \"speed\": %(progress.speed)s, \"eta\": %(progress.eta)s}",
+			url
+		);
+		ytdlp_pb.redirectErrorStream(true);
+		Process ytdlp = ytdlp_pb.start();
+
+		//ログ
+		BufferedReader ytdlp_br = new BufferedReader(new InputStreamReader(ytdlp.getInputStream()));
+		long last_time = 0;
+		String ytdlp_line;
+		while ((ytdlp_line = ytdlp_br.readLine()) != null) {
+			//yt-dlpがNAとかいうふざけたことを抜かすので置換する
+			ytdlp_line = ytdlp_line.replace(": NA", ": null");
+
+			try {
+				JsonNode body = new ObjectMapper().readTree(ytdlp_line);
+				if (body.get("eta").isNull() || body.get("downloaded").isNull()) {
+					continue;
+				}
+
+				//1秒ごとに出したい
+				if (System.currentTimeMillis() - last_time >= 1000) {
+					progress_msg.editMessage("残り秒数：" + body.get("eta").asInt() + "秒\n取得済み：" + body.get("downloaded").asInt() + "バイト").queue();
+					last_time = System.currentTimeMillis();
+				}
+			} catch (JsonParseException EX) {
+				//無視
+			}
 		}
-		fos.close();
+		progress_msg.editMessage("取得完了。").queue();
 
-		//成功？
-		int status = p.waitFor();
-		if (status != 0) {
-			temp_file.delete();
-			send_message(e, "エラー！再生失敗");
-			return;
-		}
+		//mp3化するファイル
+		File ffmpeg_temp_file = new File("/tmp/" + UUID.randomUUID().toString());
 
-		send_message(e, "終了、再生します。");
+		//ffmpegでmp3に変換する
+		progress_msg = e.getChannel().asTextChannel().sendMessage("変換中").complete();
+		ProcessBuilder ffmpeg_pb = new ProcessBuilder("ffmpeg", "-i", ytdlp_temp_file.toString(), "-f", "mp3", "-acodec", "libmp3lame", "-ar", "44100", "-ac", "2", "-progress", "pipe:1", "-nostats", ffmpeg_temp_file.toString());
+		Process ffmpeg = ffmpeg_pb.start();
+		ffmpeg.waitFor();
+		ytdlp_temp_file.delete();
 
-		player.play(temp_file);
+		progress_msg.editMessage("変換完了、再生します").queue();
+		player.play(ffmpeg_temp_file);
 	}
 
 	private static void stop(SlashCommandInteraction e, Player player, AudioChannel vc) throws IOException, InterruptedException {

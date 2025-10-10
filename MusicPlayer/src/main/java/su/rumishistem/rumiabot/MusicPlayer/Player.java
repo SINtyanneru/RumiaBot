@@ -36,6 +36,13 @@ public class Player {
 		//VCに参加
 		am.setSendingHandler(new LavaPlayerSendHandler(player));
 		am.openAudioConnection(vc);
+
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				stop();
+			}
+		}));
 	}
 
 	public String get_id() {
@@ -43,6 +50,7 @@ public class Player {
 	}
 
 	public int get_person_count() {
+		if (am.getConnectedChannel() == null) return 1;
 		return am.getConnectedChannel().getMembers().size();
 	}
 
