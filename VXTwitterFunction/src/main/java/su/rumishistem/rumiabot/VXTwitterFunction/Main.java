@@ -14,7 +14,7 @@ import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
 import su.rumishistem.rumiabot.System.TYPE.SourceType;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "VXTwitter変換";
+	private static final String FUNCTION_NAME = "VX/FXTwitter変換";
 	private static final String FUNCTION_VERSION = "1.0";
 	private static final String FUNCTION_AUTOR = "Rumisan";
 
@@ -38,32 +38,14 @@ public class Main implements FunctionClass {
 	public void ReceiveMessage(ReceiveMessageEvent e) {
 		try {
 			if (e.GetSource() == SourceType.Discord && !e.GetUser().isMe()) {
+				//WebHook用意
+				TextChannel ch = (TextChannel) e.GetMessage().GetDiscordChannel();
+				DiscordWebHook wh = new DiscordWebHook(ch);
+
 				if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.vxtwitter)) {
-					//WebHook用意
-					TextChannel Channel = (TextChannel) e.GetMessage().GetDiscordChannel();
-					DiscordWebHook WH = new DiscordWebHook(Channel);
-
-					//変換
-					StringBuilder RESULT = new StringBuilder();
-					Pattern PTN = Pattern.compile("https://(?:twitter|x)\\.com/([a-zA-Z0-9_]+/status/[0-9]+)(\\?s=[0-9]*)?");
-					Matcher MTC = PTN.matcher(e.GetMessage().GetText());
-					while(MTC.find()){
-						String REPLACERO_TEXT = "https://vxtwitter.com/" + MTC.group(1);
-						MTC.appendReplacement(RESULT, REPLACERO_TEXT);
-					}
-					MTC.appendTail(RESULT);
-
-					//変更点が有れば元メッセージを消してWebHook化
-					if (!RESULT.toString().equals(e.GetMessage().GetText())) {
-						//送信
-						WebhookMessageCreateAction<Message> MSG = WH.Send().sendMessage(RESULT.toString());
-						MSG.setUsername(e.GetUser().GetName());
-						MSG.setAvatarUrl(e.GetUser().GetIconURL());
-						MSG.queue();
-
-						//削除
-						e.GetMessage().Delete();
-					}
+					VXTwitter.main(e, ch, wh);
+				} else if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.fxtwitter)) {
+					FXTwitter.main(e, ch, wh);
 				}
 			}
 		} catch (Exception EX) {
