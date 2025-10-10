@@ -1,22 +1,18 @@
 package su.rumishistem.rumiabot.MusicPlayer;
 
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
+
 import java.io.File;
 import java.util.UUID;
-
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.*;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-
+import com.sedmelluq.discord.lavaplayer.track.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 
 public class Player {
 	private String id = UUID.randomUUID().toString();
@@ -41,6 +37,7 @@ public class Player {
 			@Override
 			public void run() {
 				stop();
+				LOG(LOG_TYPE.OK, "音楽プレイヤー["+id+"]の終了処理した");
 			}
 		}));
 	}

@@ -1,6 +1,7 @@
 package su.rumishistem.rumiabot.Voicevox.Jomiage;
 
 import static su.rumishistem.rumiabot.Voicevox.Main.SpeakersList;
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.io.File;
@@ -12,8 +13,10 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.*;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class JomiageData {
@@ -29,7 +32,7 @@ public class JomiageData {
 		new LinkedBlockingQueue<>()
 	);
 
-	public JomiageData(AudioManager am, AudioPlayerManager apm, AudioPlayer player, String KikisenID) {
+	public JomiageData(Guild guild, AudioManager am, AudioPlayerManager apm, AudioPlayer player, String KikisenID) {
 		this.am = am;
 		this.apm = apm;
 		this.player = player;
@@ -42,6 +45,7 @@ public class JomiageData {
 			@Override
 			public void run() {
 				ctx.close();
+				LOG(LOG_TYPE.OK, "読み上げBOTの終了処理した:" + guild.getId());
 			}
 		}));
 	}

@@ -61,6 +61,7 @@ public class Jomiage {
 		AM.openAudioConnection(VC);
 
 		JomiageDataTable.put(ID, new JomiageData(
+			CI.GetDiscordInteraction().getGuild(),
 			AM,
 			APM,
 			AP,
