@@ -48,7 +48,8 @@ public class Main implements FunctionClass {
 			new CommandOption("file", CommandOptionType.File, null, false)
 		}, true));
 
-		AddDiscordContextMenu(Commands.context(Type.MESSAGE, "reply-cam"));
+		//AddDiscordContextMenu(Commands.context(Type.MESSAGE, "reply-cam"));
+		AddDiscordContextMenu(Commands.context(Type.MESSAGE, "rvtr"));
 	}
 
 	@Override
@@ -78,10 +79,11 @@ public class Main implements FunctionClass {
 	public boolean GetAllowCommand(String Name) {
 		return (
 			Name.equals("cam") ||
+			Name.equals("Message:rvtr")
 
-			Name.equals("Message:reply-cam") ||
+			/*Name.equals("Message:reply-cam") ||
 			Name.equals("EntitySelect:reply-cam_user") ||
-			Name.equals("Modal:reply-cam-modal")
+			Name.equals("Modal:reply-cam-modal")*/
 		);
 	}
 
@@ -98,7 +100,8 @@ public class Main implements FunctionClass {
 	@Override
 	public void RunInteraction(RunInteractionEvent Interaction) throws Exception {
 		if (Interaction.getType() == InteractionType.MessageContext) {
-			reply_cam.RunContextmenu(Interaction.getMessageContext());
+			GjakuHonjaku.RunContextmenu(Interaction.getMessageContext());
+			//reply_cam.RunContextmenu(Interaction.getMessageContext());
 		}
 	}
 
