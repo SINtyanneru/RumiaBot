@@ -1,101 +1,26 @@
 package su.rumishistem.rumiabot.System;
 
-import static su.rumishistem.rumiabot.System.Main.*;
+import static su.rumishistem.rumiabot.System.Main.config;
 
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import su.rumishistem.rumi_java_lib.ArrayNode;
-import su.rumishistem.rumi_java_lib.ExceptionRunnable;
-import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
-import su.rumishistem.rumi_java_lib.Misskey.Event.NewNoteEvent;
-import su.rumishistem.rumiabot.System.MODULE.ErrorPrinter;
-import su.rumishistem.rumiabot.System.TYPE.*;
 
 public class ThreadPool {
-	private static ThreadPoolExecutor command = null;
-	private static ThreadPoolExecutor message_event = null;
-	private static ThreadPoolExecutor discord_event = null;
+	private static ThreadPoolExecutor command_pool;
+	private static ThreadPoolExecutor message_event;
+	private static ThreadPoolExecutor event_pool;
 
 	public static void init() {
-		ArrayNode config = CONFIG_DATA.get("THREAD_POOL");
+		ArrayNode pool_config = config.get("THREAD_POOL");
 
-		command = (ThreadPoolExecutor)Executors.newFixedThreadPool(config.getData("COMMAND").asInt());
-		message_event = (ThreadPoolExecutor)Executors.newFixedThreadPool(config.getData("MESSAGE_EVENT").asInt());
-		discord_event = (ThreadPoolExecutor)Executors.newFixedThreadPool(config.getData("DISCORD_EVENT").asInt());
+		command_pool = (ThreadPoolExecutor)Executors.newFixedThreadPool(pool_config.getData("COMMAND").asInt());
+		message_event = (ThreadPoolExecutor)Executors.newFixedThreadPool(pool_config.getData("MESSAGE_EVENT").asInt());
+		event_pool = (ThreadPoolExecutor)Executors.newFixedThreadPool(pool_config.getData("EVENT").asInt());
 	}
 
-	public static ThreadPoolStatus get_command_status() {
-		ArrayNode config = CONFIG_DATA.get("THREAD_POOL");
-		return new ThreadPoolStatus(command.getActiveCount(), config.getData("COMMAND").asInt());
-	}
-
-	public static ThreadPoolStatus get_message_status() {
-		ArrayNode config = CONFIG_DATA.get("THREAD_POOL");
-		return new ThreadPoolStatus(message_event.getActiveCount(), config.getData("MESSAGE_EVENT").asInt());
-	}
-
-	public static ThreadPoolStatus get_discord_status() {
-		ArrayNode config = CONFIG_DATA.get("THREAD_POOL");
-		return new ThreadPoolStatus(discord_event.getActiveCount(), config.getData("DISCORD_EVENT").asInt());
-	}
-
-	public static void receive_message(SourceType source, ReceiveMessageEvent e) {
-		//イベント着火
-		for (FunctionClass Function:FunctionModuleList) {
-			message_event.submit(new Runnable() {
-				@Override
-				public void run() {
-					Function.ReceiveMessage(e);
-				}
-			});
-		}
-	}
-
-	public static void run_discord_command(ExceptionRunnable fn, SlashCommandInteraction e, boolean defer) {
-		command.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fn.run();
-				} catch (Exception ex) {
-					String id = UUID.randomUUID().toString();
-					if (defer) {
-						e.getHook().editOriginal("エラー:" + ex.getMessage() + "\n["+id+"]").queue();
-					} else {
-						e.reply("エラー:" + ex.getMessage() + "\n["+id+"]").queue();
-					}
-					ErrorPrinter.print(id, ex);
-				}
-			}
-		});
-	}
-
-	public static void run_misskey_command(ExceptionRunnable fn, NewNoteEvent e) {
-		command.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fn.run();
-				} catch (Exception ex) {
-					String id = UUID.randomUUID().toString();
-					try {
-						NoteBuilder NB = new NoteBuilder();
-						NB.setTEXT("エラー:" + ex.getMessage() + "\n["+id+"]");
-						NB.setREPLY(e.getNOTE());
-						MisskeyBOT.PostNote(NB.Build());
-					} catch (IOException EX) {
-						//なにもしない
-					}
-					ErrorPrinter.print(id, ex);
-				}
-			}
-		});
-	}
-
-	public static void discord(Runnable fn) {
-		discord_event.submit(fn);
+	public static void run_command(Runnable task) {
+		command_pool.submit(task);
 	}
 }

@@ -6,11 +6,10 @@
 	<parent>
 		<groupId>su.rumishistem</groupId>
 		<artifactId>rumiabot</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 	<groupId>su.rumishistem.rumiabot</groupId>
 	<artifactId>TestFunction</artifactId>
-	<version>1.0</version>
 	<name>TestFunction</name>
 
 	<url>http://maven.apache.org</url>
@@ -23,15 +22,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>su.rumishistem.rumiabot</groupId>
 			<artifactId>System</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 
@@ -41,7 +34,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.4.2</version>
 				<configuration>
 					<archive>
 						<manifest>
