@@ -7,6 +7,7 @@ import java.sql.*;
 import java.time.*;
 import java.util.HashMap;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.*;
@@ -39,6 +40,10 @@ public class Main implements FunctionClass{
 	}
 
 	protected static void invite_sync(Guild g) {
+		if (!g.getSelfMember().hasPermission(Permission.MANAGE_SERVER) ) {
+			LOG(LOG_TYPE.INFO, "[DiscordWelcomeFuckyouMessage] 招待コード取得、ただし権限なしのため無視：" + g.getId());
+		}
+
 		g.retrieveInvites().queue(invite_list->{
 			HashMap<String, Integer> data = new HashMap<>();
 			for (Invite inv:invite_list) {
