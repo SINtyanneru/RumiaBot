@@ -13,6 +13,8 @@ import su.rumishistem.rumi_java_lib.Loger.LogerSystem;
 import su.rumishistem.rumiabot.System.Discord.DiscordBot;
 import su.rumishistem.rumiabot.System.HTTP.HTTPServer;
 import su.rumishistem.rumiabot.System.Misskey.MisskeyBot;
+import su.rumishistem.rumiabot.System.Module.AdminManager;
+import su.rumishistem.rumiabot.System.Module.BlockManager;
 
 public class Main {
 	public static ArrayNode config = null;
@@ -48,6 +50,9 @@ public class Main {
 				config.get("SQL").getData("USER").asString(),
 				config.get("SQL").getData("PASS").asString()
 			);
+
+			AdminManager.Init();
+			BlockManager.Init();
 
 			//ビルド時刻
 			try {
