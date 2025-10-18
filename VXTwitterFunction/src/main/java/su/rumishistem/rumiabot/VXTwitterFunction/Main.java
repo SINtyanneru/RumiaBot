@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 import su.rumishistem.rumiabot.System.Module.DiscordFunctionCheck;
@@ -35,6 +36,7 @@ public class Main implements FunctionClass {
 	public void message_receive(ReceiveMessageEvent e) {
 		if (e.get_source() != SourceType.Discord) return;
 		if (e.get_discord().getAuthor().isBot()) return;
+		if (e.get_discord().getChannel().getType() != ChannelType.TEXT) return;
 
 		try {
 			//WebHook用意
