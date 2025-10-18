@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.aichan.API;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
+import static su.rumishistem.rumiabot.System.Main.config;
 
 import java.util.HashMap;
 
@@ -22,10 +22,10 @@ public class ReversiMatchAPI implements EndpointFunction {
 
 			if (UID.startsWith("M-")) {
 				//Misskey
-				FETCH Ajax = new FETCH("https://" + CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString() + "/api/reversi/match");
+				FETCH Ajax = new FETCH("https://" + config.get("MISSKEY").getData("DOMAIN").asString() + "/api/reversi/match");
 				Ajax.SetHEADER("Content-Type", "application/json; charset=UTF-8");
 				HashMap<String, Object> PostBody = new HashMap<String, Object>();
-				PostBody.put("i", CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString());
+				PostBody.put("i", config.get("MISSKEY").getData("TOKEN").asString());
 				PostBody.put("userId", UID.replace("M-", ""));
 				JsonNode ReturnBody = new ObjectMapper().readTree(Ajax.POST(new ObjectMapper().writeValueAsBytes(PostBody)).getString());
 				if (ReturnBody.get("error") != null) {

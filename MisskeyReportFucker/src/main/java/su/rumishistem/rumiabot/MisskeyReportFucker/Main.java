@@ -8,39 +8,28 @@ import java.util.regex.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
-import su.rumishistem.rumi_java_lib.Misskey.TYPE.NoteVis;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Builder.NoteBuilder;
 import su.rumishistem.rumiabot.MisskeyReportFucker.TypeDetect.Software;
-import su.rumishistem.rumiabot.System.TYPE.*;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "Misskey通報Fucker";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-	private static final String AdminToken = CONFIG_DATA.get("MISSKEY").getData("ADMINTOKEN").asString();
+	private static final String AdminToken = config.get("MISSKEY").getData("ADMINTOKEN").asString();
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "Misskey通報Fucker";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
-	@Override
-	public boolean GetAllowCommand(String Name) {	return false;}
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {}
-
-	@Override
-	public void Init() {
+	public void init() {
 		ScheduledExecutorService SES = Executors.newScheduledThreadPool(1);
 		Runnable Task = new Runnable() {
 			@Override
@@ -52,10 +41,9 @@ public class Main implements FunctionClass {
 						String Text = GenNoteText(R);
 
 						//ノート
-						NoteBuilder NB = new NoteBuilder();
-						NB.setTEXT(Text);
-						NB.setVIS(NoteVis.PUBLIC);
-						MisskeyBOT.PostNote(NB.Build());
+						NoteBuilder nb = new NoteBuilder();
+						nb.set_text(Text);
+						su.rumishistem.rumiabot.System.Main.get_misskey_bot().get_client().create_note(nb);
 					}
 
 					LOG(LOG_TYPE.OK, "通報をチェックしました");
@@ -71,7 +59,7 @@ public class Main implements FunctionClass {
 
 	private static String GetHost(JsonNode Report) {
 		if (Report.get("reporter").get("host").isNull()) {
-			return CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString();
+			return config.get("MISSKEY").getData("DOMAIN").asString();
 		} else {
 			return Report.get("reporter").get("host").asText();
 		}

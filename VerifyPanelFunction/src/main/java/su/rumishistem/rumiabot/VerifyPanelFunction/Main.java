@@ -1,65 +1,54 @@
 package su.rumishistem.rumiabot.VerifyPanelFunction;
 
+import java.util.HashMap;
+
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
-import su.rumishistem.rumiabot.System.TYPE.RunInteractionEvent.InteractionType;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.OptionType;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "認証パネル";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "認証パネル";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
-		AddCommand(new CommandData("verify_panel", new CommandOption[] {
-			new CommandOption("role", CommandOptionType.Role, null, true)
-		}, false));
+	public void init() {
+		CommandRegister.add_command("verify_panel", new CommandOptionRegist[] {
+			new CommandOptionRegist("role", OptionType.DiscordRole, true)
+		}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				if (e.get_source() != SourceType.Discord) {
+					e.reply("Discordでのみ使用可能です");
+					return;
+				}
+
+				CreatePanel.Create(e.get_discprd_event());
+			}
+		});
+
 		PanelSystem.HTTPEP();
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
-	}
+	public void discord_button_event(String id, HashMap<String, String> param, ButtonInteractionEvent e) {
+		if (!id.equals("verify_panel")) return;
 
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return (Name.equals("verify_panel") || Name.equals("Button:verify_panel"));
-	}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		if (CI.GetSource() == SourceType.Discord) {
-			CreatePanel.Create(CI.GetDiscordInteraction());
-		} else {
-			CI.Reply("Discordでのみ使用できます!");
-		}
-	}
-
-	@Override
-	public void RunInteraction(RunInteractionEvent Interaction) throws Exception {
-		if (Interaction.getType() == InteractionType.Button) {
-			PanelSystem.ButtonFunction(Interaction.getButton());
-		}
+		PanelSystem.ButtonFunction(e);
 	}
 }

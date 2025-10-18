@@ -1,33 +1,14 @@
 package su.rumishistem.rumiabot.aichan;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
+import java.io.*;
+import java.nio.file.*;
 import java.util.LinkedHashMap;
-import java.util.concurrent.CountDownLatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.ReturnInteractionEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
-import su.rumishistem.rumiabot.aichan.API.StreamingAPI;
+import su.rumishistem.rumiabot.System.Module.DiscordFunctionCheck;
+import su.rumishistem.rumiabot.System.Type.*;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordGuildFunction;
 import su.rumishistem.rumiabot.aichan.MODULE.ConvertType;
 
 import static su.rumishistem.rumiabot.aichan.MisskeyAPIModoki.SendWebSocket;
@@ -35,27 +16,23 @@ import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.MainChannnelID;
 import static su.rumishistem.rumiabot.aichan.API.StreamingAPI.HomeTLChannnelID;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "藍ちゃんを乗っとるやつ";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	public static boolean Enabled = false;
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "藍ちゃんの脳を乗っとるやつ";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.5";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
+	public void init() {
 		try {
 			String AIDir = Paths.get("").toAbsolutePath().toString() + "/ai/";
 			if (Files.exists(Path.of(AIDir))) {
@@ -108,7 +85,7 @@ public class Main implements FunctionClass {
 				}).start();
 
 				//aichatコマンド
-				AddCommand(new CommandData("aichat", new CommandOption[] {}, true));
+				//AddCommand(new CommandData("aichat", new CommandOption[] {}, true));
 			} else {
 				System.out.println("藍が見つからなかったので特に何もしません");
 			}
@@ -117,16 +94,17 @@ public class Main implements FunctionClass {
 			System.exit(1);
 		}
 	}
+
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
+	public void message_receive(ReceiveMessageEvent e) {
 		try {
 			if (!Enabled) {
 				return;
 			}
 
 			//Discordなら機能が有効化されていることを確認
-			if (e.GetSource() == SourceType.Discord) {
-				if (!e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.aichan)) {
+			if (e.get_source() == SourceType.Discord) {
+				if (!DiscordFunctionCheck.guild(e.get_discord().getGuild().getId(), DiscordGuildFunction.aichan)) {
 					return;
 				}
 			}
@@ -140,7 +118,7 @@ public class Main implements FunctionClass {
 			//ぼでー
 			LinkedHashMap<String, Object> Body = new LinkedHashMap<String, Object>();
 
-			if (!e.GetMessage().isKaiMention()) {
+			if (!e.is_mention()) {
 				//ただのノート
 				Body.put("id", HomeTLChannnelID);
 				Body.put("type", "note");
@@ -151,12 +129,12 @@ public class Main implements FunctionClass {
 			}
 
 			//ID
-			if (e.GetSource() == SourceType.Discord) {
+			if (e.get_source() == SourceType.Discord) {
 				//Discord
-				Body.put("body", ConvertType.DiscordMessageToNote(e.GetDiscordMessage()));
-			} else if (e.GetSource() == SourceType.Misskey) {
+				Body.put("body", ConvertType.DiscordMessageToNote(e.get_discord().getMessage()));
+			} else if (e.get_source() == SourceType.Misskey) {
 				//Misskey
-				Body.put("body", ConvertType.NoteToNote(e.GetMisskeyNote()));
+				Body.put("body", ConvertType.NoteToNote(e.get_misskey().get_note()));
 			}
 
 			//ぼでーをメッセージに
@@ -169,11 +147,8 @@ public class Main implements FunctionClass {
 		}
 	}
 
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return (Name.equals("aichat") || Name.equals("Modal:aichat-modal"));
-	}
 
+	/*
 	@Override
 	public void RunCommand(CommandInteraction CI) throws Exception {
 		try {
@@ -223,5 +198,5 @@ public class Main implements FunctionClass {
 				}
 			});
 		}
-	}
+	}*/
 }

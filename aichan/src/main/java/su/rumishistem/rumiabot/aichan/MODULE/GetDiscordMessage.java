@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.aichan.MODULE;
 
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+import static su.rumishistem.rumiabot.System.Main.get_discord_bot;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
@@ -14,7 +14,7 @@ public class GetDiscordMessage {
 		if (IDMatcher.find()) {
 			String ChannelID = IDMatcher.group(1);
 			String MessageID = IDMatcher.group(2);
-			TextChannel Channel = DISCORD_BOT.getTextChannelById(ChannelID);
+			TextChannel Channel = get_discord_bot().get_primary_bot().getTextChannelById(ChannelID);
 			if (Channel != null) {
 				CountDownLatch CDL = new CountDownLatch(1);
 				Message[] MSG = {null};

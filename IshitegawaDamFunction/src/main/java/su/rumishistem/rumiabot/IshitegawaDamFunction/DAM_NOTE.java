@@ -1,16 +1,15 @@
 package su.rumishistem.rumiabot.IshitegawaDamFunction;
 
-import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
-import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Builder.NoteBuilder;
 
 public class DAM_NOTE {
 	public static void Main() {
 		try {
 			//Misskeyに投稿する
-			NoteBuilder NB = new NoteBuilder();
-			NB.setTEXT(DAMDAM.genTEXT() + "\n#石手川ダム");
+			NoteBuilder nb = new NoteBuilder();
+			nb.set_text(DAMDAM.genTEXT() + "\n#石手川ダム");
 
-			MisskeyBOT.PostNote(NB.Build());
+			su.rumishistem.rumiabot.System.Main.get_misskey_bot().get_client().create_note(nb);
 		} catch (Exception EX) {
 			EX.printStackTrace();
 		}

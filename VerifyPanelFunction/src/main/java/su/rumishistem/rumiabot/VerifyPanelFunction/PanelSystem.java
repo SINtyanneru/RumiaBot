@@ -1,8 +1,8 @@
 package su.rumishistem.rumiabot.VerifyPanelFunction;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
-import static su.rumishistem.rumiabot.System.Main.SH;
+import static su.rumishistem.rumiabot.System.Main.config;
+import static su.rumishistem.rumiabot.System.Main.get_discord_bot;
+import static su.rumishistem.rumiabot.System.Main.get_http;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -31,12 +31,12 @@ public class PanelSystem {
 
 	public static void HTTPEP() {
 		//認証ページひらいた時
-		SH.SetRoute("/user/discord/verify_panel", new EndpointFunction() {
+		get_http().get().SetRoute("/user/discord/verify_panel", new EndpointFunction() {
 			@Override
 			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
 					String BODY = new String(new RESOURCE_MANAGER(Main.class).getResourceData("/discord_verify_panel.html"));
-					BODY = BODY.replace("${SITE_KEY}", CONFIG_DATA.get("CAPTCHA").getData("SITE_KEY").asString());
+					BODY = BODY.replace("${SITE_KEY}", config.get("CAPTCHA").getData("SITE_KEY").asString());
 					return new HTTP_RESULT(200, BODY.getBytes(), "text/html; charset=UTF-8");
 				} catch (Exception EX) {
 					EX.printStackTrace();
@@ -46,7 +46,7 @@ public class PanelSystem {
 		});
 
 		//認証ページで認証をした後の処理
-		SH.SetRoute("/user/api/VERIFY_PANEL", new EndpointFunction() {
+		get_http().get().SetRoute("/user/api/VERIFY_PANEL", new EndpointFunction() {
 			@Override
 			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				try {
@@ -61,7 +61,7 @@ public class PanelSystem {
 					//いざPOST
 					HashMap<String, String> AJAX_BODY = new HashMap<String, String>();
 					AJAX_BODY.put("response", POST_DATA.get("CFT_RESULT").asText());
-					AJAX_BODY.put("secret", CONFIG_DATA.get("CAPTCHA").getData("SIKRET_KEY").asString());
+					AJAX_BODY.put("secret", config.get("CAPTCHA").getData("SIKRET_KEY").asString());
 
 					FETCH_RESULT CFT_RESULT = AJAX.POST(new ObjectMapper().writeValueAsString(AJAX_BODY).getBytes(Charsets.UTF_8));
 					if (new ObjectMapper().readTree(CFT_RESULT.getString()).get("success").asBoolean()) {
@@ -83,8 +83,8 @@ public class PanelSystem {
 		});
 	}
 
-	public static void ButtonFunction(ButtonInteractionEvent BI) {
-		HashMap<String, String> PARAM = URIPARAMPARSE.URI_PARAM_PARSE(BI.getInteraction().getButton().getId().toString());
+	public static void ButtonFunction(ButtonInteractionEvent BI) {											//↓getId()?
+		HashMap<String, String> PARAM = URIPARAMPARSE.URI_PARAM_PARSE(BI.getInteraction().getButton().getCustomId().toString());
 
 		String ID = UUID.randomUUID().toString();
 
@@ -112,7 +112,7 @@ public class PanelSystem {
 
 					if(RESULT != null){
 						//鯖を探す
-						for(Guild GUILD:DISCORD_BOT.getGuilds()){
+						for(Guild GUILD:get_discord_bot().get_primary_bot().getGuilds()){
 							if(GUILD.getId().equals(RESULT.getData("GID").asString())){
 								//鯖を見つけたので、メンバーとロールを探す
 								Member MEMBER = GUILD.getMemberById(VERIFY_DATA.get("UID"));

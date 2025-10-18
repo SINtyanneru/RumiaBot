@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.aichan;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
+import static su.rumishistem.rumiabot.System.Main.config;
 import java.io.IOException;
 import su.rumishistem.rumi_java_lib.SmartHTTP.SmartHTTP;
 import su.rumishistem.rumi_java_lib.WebSocket.Server.WebSocketSERVER;
@@ -25,7 +25,7 @@ public class MisskeyAPIModoki {
 		//WebSocketサーバー
 		WebSocketSERVER WSS = new WebSocketSERVER();
 		WSS.SET_EVENT_VOID(new StreamingAPI());
-		WSS.START(CONFIG_DATA.get("AI").getData("WS").asInt());
+		WSS.START(config.get("AI").getData("WS").asInt());
 	}
 
 	public static void WebSocketSend(String Body) {
@@ -35,11 +35,11 @@ public class MisskeyAPIModoki {
 	}
 
 	public static void HTTPStart() throws IOException, InterruptedException {
-		DOMAIN = CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString();
-		TOKEN = CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString();
+		DOMAIN = config.get("MISSKEY").getData("DOMAIN").asString();
+		TOKEN = config.get("MISSKEY").getData("TOKEN").asString();
 
 		//HTTPサーバー
-		SmartHTTP SH = new SmartHTTP(CONFIG_DATA.get("AI").getData("HTTP").asInt());
+		SmartHTTP SH = new SmartHTTP(config.get("AI").getData("HTTP").asInt());
 
 		//自分自身を習得
 		SH.SetRoute("/api/i", new GetI());

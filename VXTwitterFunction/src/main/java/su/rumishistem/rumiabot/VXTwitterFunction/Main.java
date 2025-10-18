@@ -1,65 +1,55 @@
 package su.rumishistem.rumiabot.VXTwitterFunction;
 
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
-import su.rumishistem.rumiabot.System.Discord.MODULE.DiscordWebHook;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.DiscordFunction;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.Module.DiscordFunctionCheck;
+import su.rumishistem.rumiabot.System.Module.DiscordWebHook;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.SourceType;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordGuildFunction;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "VX/FXTwitter変換";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "VX/FXTwitter変換";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
-	}
-	@Override
-	public void Init() {
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
+	public void init() {}
+
+	@Override
+	public void message_receive(ReceiveMessageEvent e) {
+		if (e.get_source() != SourceType.Discord) return;
+		if (e.get_discord().getAuthor().isBot()) return;
+
 		try {
-			if (e.GetSource() == SourceType.Discord && !e.GetUser().isMe()) {
-				//WebHook用意
-				TextChannel ch = (TextChannel) e.GetMessage().GetDiscordChannel();
-				DiscordWebHook wh = new DiscordWebHook(ch);
+			//WebHook用意
+			TextChannel ch = (TextChannel) e.get_discord().getChannel();
+			DiscordWebHook wh = new DiscordWebHook(ch);
 
-				if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.vxtwitter)) {
-					VXTwitter.main(e, ch, wh);
-				} else if (e.GetMessage().CheckDiscordGuildFunctionEnabled(DiscordFunction.fxtwitter)) {
-					FXTwitter.main(e, ch, wh);
-				}
+			if (DiscordFunctionCheck.guild(e.get_discord().getGuild().getId(), DiscordGuildFunction.vxtwitter)) {
+				VXTwitter.main(e, ch, wh);
+			} else if (DiscordFunctionCheck.guild(e.get_discord().getGuild().getId(), DiscordGuildFunction.fxtwitter)) {
+				FXTwitter.main(e, ch, wh);
 			}
-		} catch (Exception EX) {
-			EX.printStackTrace();
+		} catch (SQLException ex) {
+			//あ
+		} catch (InterruptedException ex) {
+			//い
 		}
 	}
-
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return false;
-	}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-	}
-
 }

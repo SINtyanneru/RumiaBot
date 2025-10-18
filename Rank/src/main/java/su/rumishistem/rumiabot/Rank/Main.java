@@ -1,7 +1,5 @@
 package su.rumishistem.rumiabot.Rank;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
@@ -15,34 +13,31 @@ import net.dv8tion.jda.api.entities.User;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
 import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Module.NameParse;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "ランキング";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "ランキング";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
+	public void init() {
 		try {
 			SelfRank.background_image = ImageIO.read(new ByteArrayInputStream(new RESOURCE_MANAGER(Main.class).getResourceData("/self_rank.png")));
 		} catch (Exception EX) {
@@ -50,16 +45,64 @@ public class Main implements FunctionClass{
 			throw new RuntimeException("画像ロードエラー");
 		}
 
-		AddCommand(new CommandData("rank", new CommandOption[] {}, false));
-		AddCommand(new CommandData("ranking", new CommandOption[] {}, false));
+		CommandRegister.add_command("rank", new CommandOptionRegist[] {}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				//ランク
+				User user = e.get_discprd_event().getUser();
+				String user_id = user.getId();
+				String guild_id = e.get_discprd_event().getGuild().getId();
+
+				File rank_file = SelfRank.image_gen(
+					user_id,
+					guild_id,
+					ImageIO.read(new URL(user.getEffectiveAvatarUrl())),
+					user.getName()
+				);
+
+				e.add_file(rank_file);
+				e.reply("貴様のランク");
+
+				rank_file.delete();
+			}
+		});
+
+		CommandRegister.add_command("ranking", new CommandOptionRegist[] {}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				//ランキング
+				String guild_id = e.get_discprd_event().getGuild().getId();
+				ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL` DESC, `EXP` DESC;", new Object[] {
+					guild_id
+				});
+
+				StringBuilder sb = new StringBuilder();
+
+				for (int i = 0; i < result.length(); i++) {
+					ArrayNode row = result.get(i);
+					String name = row.getData("UID").asString();
+
+					Member member = e.get_discprd_event().getGuild().getMemberById(row.getData("UID").asString());
+					if (member != null) {
+						name = new NameParse(member).getDisplayName();
+					}
+
+					name = name.replace("@", "[AD]");
+
+					sb.append((i+1)+"位 レベル["+row.getData("LEVEL").asLong()+"]:" + name).append("\n");
+				}
+
+				e.reply(sb.toString());
+			}
+		});
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
+	public void message_receive(ReceiveMessageEvent e) {
 		try {
-			if (e.GetSource() == SourceType.Discord) {
-				String user_id = e.GetUser().GetID();
-				String guild_id = e.GetDiscordMessage().getGuildId();
+			if (e.get_source() == SourceType.Discord) {
+				String user_id = e.get_discord().getAuthor().getId();
+				String guild_id = e.get_discord().getGuild().getId();
 				long get_exp = new Random().nextLong(10) + 5;
 
 				ArrayNode result = SQL.RUN("""
@@ -98,65 +141,8 @@ public class Main implements FunctionClass{
 					});
 				}
 			}
-		} catch (SQLException EX) {
-			EX.printStackTrace();
-		}
-	}
-
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return (Name.equals("rank") || Name.equals("ranking"));
-	}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		//TODO:Misskey対応
-		if (CI.GetSource() != SourceType.Discord) {
-			CI.Reply("Discord以外の対応はしばらくおまちください");
-			return;
-		}
-
-		if (CI.GetCommand().GetName().equals("rank")) {
-			//ランク
-			User user = CI.GetDiscordInteraction().getUser();
-			String user_id = user.getId();
-			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
-
-			File rank_file = SelfRank.image_gen(
-				user_id,
-				guild_id,
-				ImageIO.read(new URL(user.getEffectiveAvatarUrl())),
-				user.getName()
-			);
-
-			CI.AddFile(rank_file);
-			CI.Reply("貴様のランク");
-
-			rank_file.delete();
-		} else if (CI.GetCommand().GetName().equals("ranking")) {
-			//ランキング
-			String guild_id = CI.GetDiscordInteraction().getGuild().getId();
-			ArrayNode result = SQL.RUN("SELECT `UID`, `EXP`, `LEVEL` FROM `DISCORD_RANK` WHERE `GUILD` = ? ORDER BY `LEVEL` DESC, `EXP` DESC;", new Object[] {
-				guild_id
-			});
-
-			StringBuilder sb = new StringBuilder();
-
-			for (int i = 0; i < result.length(); i++) {
-				ArrayNode row = result.get(i);
-				String name = row.getData("UID").asString();
-
-				Member member = CI.GetDiscordInteraction().getGuild().getMemberById(row.getData("UID").asString());
-				if (member != null) {
-					name = new NameParse(member).getDisplayName();
-				}
-
-				name = name.replace("@", "[AD]");
-
-				sb.append((i+1)+"位 レベル["+row.getData("LEVEL").asLong()+"]:" + name).append("\n");
-			}
-
-			CI.Reply(sb.toString());
+		} catch (SQLException ex) {
+			ex.printStackTrace();
 		}
 	}
 }

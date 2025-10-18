@@ -2,18 +2,18 @@ package su.rumishistem.rumiabot.Joke;
 
 import java.util.Arrays;
 
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
 
 public class Kimo {
 	public static void Main(ReceiveMessageEvent e) {
-		String Content = e.GetMessage().GetText();
+		String Content = e.get_discord().getMessage().getContentRaw();
 
 		String[] NGWordList = new String[] {
 			"まんこ"
 		};
 
 		if (Arrays.asList(NGWordList).contains(Content)) {
-			e.GetMessage().Reply("キモ...");
+			e.get_discord().getMessage().reply("キモ...").queue();
 		}
 	}
 }

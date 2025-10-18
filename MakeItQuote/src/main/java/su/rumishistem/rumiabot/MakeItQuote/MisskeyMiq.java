@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,22 +16,25 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import su.rumishistem.rumi_java_lib.FETCH;
-import su.rumishistem.rumi_java_lib.Misskey.TYPE.Note;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Type.Note;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Type.User;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
 
 public class MisskeyMiq {
 	public static void Run(CommandInteraction CI) throws Exception {
-		if (CI.GetMisskeyNote().getReply() == null) {
-			CI.Reply("リプライ先がありません死ね");
+		if (CI.get_misskey_event().get_reply() == null) {
+			CI.reply("リプライ先がありません死ね");
 			return;
 		}
-		Note Target = CI.GetMisskeyNote().getReply();
-		String IconURL = Target.getUSER().getICON_URL();
+
+		Note Target = CI.get_misskey_event().get_reply();
+		User target_user = Target.get_user();
+		String IconURL = target_user.get_icon_url();
 		String IconPath = "/tmp/" + UUID.randomUUID().toString();
 		BufferedImage IconImage = null;
 
 		if (!CheckIconSize(IconURL)) {
-			CI.Reply("アイコンサイズオーバー");
+			CI.reply("アイコンサイズオーバー");
 			return;
 		}
 
@@ -68,7 +72,7 @@ public class MisskeyMiq {
 				Files.delete(Path.of(OutPath));
 			} else {
 				//失敗
-				CI.Reply("アイコンをWebpからPNGに変換しようとしたら出来ませんでした。\n\nFFMPEGの応答↓\n```\n" + FFMPEB_SB.toString() + "\n```");
+				CI.reply("アイコンをWebpからPNGに変換しようとしたら出来ませんでした。\n\nFFMPEGの応答↓\n```\n" + FFMPEB_SB.toString() + "\n```");
 				return;
 			}
 		} else {
@@ -78,40 +82,47 @@ public class MisskeyMiq {
 
 		//生成
 		MakeItQuote miq = new MakeItQuote();
-		miq.setUserID(Target.getUSER().getUID() + "@" + Target.getUSER().getHost());
-		if (!Target.getUSER().getNAME().equals("null")) {
-			miq.setUserName(Target.getUSER().getNAME());
-		} else {
-			miq.setUserName(Target.getUSER().getUID());
-		}
+		miq.setUserID(target_user.get_username() + "@" + target_user.get_host());
+		miq.setUserName(target_user.get_name());
 		miq.setIcon(IconImage);
-		if (!Target.getTEXT().equals("null")) {
-			miq.setText(Target.getTEXT());
+		if (Target.get_text() != null) {
+			miq.setText(Target.get_text());
 		} else {
-			miq.setText(Target.getCW());
+			miq.setText(Target.get_cw());
 		}
 
 		//返す
 		File F = miq.Gen();
-		CI.AddFile(F);
-		CI.Reply("ほい");
+		CI.add_file(F);
+		CI.reply("ほい");
 		F.delete();
 	}
 
 	private static boolean CheckIconSize(String IconURL) throws IOException {
-		URL U = new URL(IconURL);
-		HttpURLConnection HUC = (HttpURLConnection)U.openConnection();
-		HUC.setRequestMethod("HEAD");
-		HUC.connect();
+		URL url = new URL(IconURL);
+		HttpURLConnection huc = (HttpURLConnection)url.openConnection();
+		huc.setRequestMethod("GET");
+		huc.connect();
 
-		int MaxSizeByte = 5 * 1024 * 1024; //5MB
-		int ResCode = HUC.getResponseCode();
-		if (ResCode == HttpURLConnection.HTTP_OK) {
-			int ContentLength = HUC.getContentLength();
-			return ContentLength >= 0 && ContentLength <= MaxSizeByte;
-		} else {
+		int max_size_byte = 10 * 1024 * 1024; //10MB
+		int code = huc.getResponseCode();
+
+		if (code != 200) {
 			return false;
 		}
+
+		InputStream is = huc.getInputStream();
+		byte[] buffer = new byte[8192];
+		int total = 0;
+		int read_length;
+		while ((read_length = is.read(buffer)) != -1) {
+			total += read_length;
+			if (total > max_size_byte) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static String CheckFile(String FilePath) throws IOException, InterruptedException {

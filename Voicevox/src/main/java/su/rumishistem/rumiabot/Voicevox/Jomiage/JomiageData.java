@@ -2,7 +2,6 @@ package su.rumishistem.rumiabot.Voicevox.Jomiage;
 
 import static su.rumishistem.rumiabot.Voicevox.Main.SpeakersList;
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 
 import java.io.File;
 import java.util.*;
@@ -17,6 +16,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import su.rumishistem.rumiabot.System.Main;
 import su.rumishistem.rumiabot.Voicevox.VOICEVOX;
 
 public class JomiageData {
@@ -63,7 +63,7 @@ public class JomiageData {
 	}
 
 	public TextChannel getKikisen() {
-		return DISCORD_BOT.getTextChannelById(KikisenID);
+		return Main.get_discord_bot().get_primary_bot().getTextChannelById(KikisenID);
 	}
 
 	public boolean UserVoiceIsNone(String UID) {

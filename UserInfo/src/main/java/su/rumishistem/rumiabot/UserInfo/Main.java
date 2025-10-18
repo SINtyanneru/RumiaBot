@@ -1,99 +1,82 @@
 package su.rumishistem.rumiabot.UserInfo;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
-import su.rumishistem.rumiabot.System.MODULE.DATE_FORMAT;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Module.DateFormat;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.OptionType;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "ユーザー情報をぶちまけよう";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
-	public static boolean Enabled = false;
-
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "ユーザー情報をぶちまけよう";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
-		AddCommand(new CommandData("userinfo", new CommandOption[] {
-			new CommandOption("user", CommandOptionType.User, null, true)
-		}, false));
-	}
+	public void init() {
+		CommandRegister.add_command("userinfo", new CommandOptionRegist[] {
+			new CommandOptionRegist("user", OptionType.User, true)
+		}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				if (e.get_source() == SourceType.Discord) {
+					Member member = (Member) e.get_option("user");
+					if (member == null) {
+						e.reply("エラー");
+					}
 
-	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
-	}
+					ArrayNode InviteSQL = SearchInvite(member.getId(), e.get_discprd_event().getGuild().getId());
 
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return Name.equals("userinfo");
-	}
+					//埋め込みを生成
+					EmbedBuilder EB = new EmbedBuilder();
+					EB.setThumbnail(member.getEffectiveAvatarUrl());
+					EB.setTitle(member.getEffectiveName());
 
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		if (CI.GetSource() == SourceType.Discord) {
-			try {
-				User U = CI.GetDiscordInteraction().getOption("user").getAsUser();
-				ArrayNode InviteSQL = SearchInvite(U.getId(), CI.GetDiscordInteraction().getGuild().getId());
+					//登録日
+					try {
+						EB.addField("登録日", DateFormat._12H(ParseSnowFlake(member.getUser())), false);
+					} catch (Exception EX) {
+						//EX.printStackTrace();
+					}
 
-				//埋め込みを生成
-				EmbedBuilder EB = new EmbedBuilder();
-				EB.setThumbnail(U.getAvatarUrl());
-				EB.setTitle(U.getName());
+					//サーバー参加日
+					EB.addField("参加日", DateFormat._12H(e.get_discprd_event().getGuild().getMemberById(member.getId()).getTimeJoined()), false);
 
-				//登録日
-				try {
-					EB.addField("登録日", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)), false);
-				} catch (Exception EX) {
-					//EX.printStackTrace();
+					//招待コード
+					if (InviteSQL != null) {
+						EB.addField("使用した招待コード", InviteSQL.getData("INVITE_CODE").asString(), true);
+						EB.addField("招待した人", "<@" + InviteSQL.getData("INVITE_UID").asString() + ">", true);
+					}
+
+					e.get_discprd_event().getHook().editOriginalEmbeds(EB.build()).queue();
+				} else if (e.get_source() == SourceType.Misskey) {
+					e.reply("Misskey未実装");
 				}
-
-				//サーバー参加日
-				EB.addField("参加日", DATE_FORMAT.ZHUUNI_H(CI.GetDiscordInteraction().getGuild().getMemberById(U.getId()).getTimeJoined()), false);
-
-				//招待コード
-				if (InviteSQL != null) {
-					EB.addField("使用した招待コード", InviteSQL.getData("INVITE_CODE").asString(), true);
-					EB.addField("招待した人", "<@" + InviteSQL.getData("INVITE_UID").asString() + ">", true);
-				}
-
-				CI.GetDiscordInteraction().getHook().editOriginalEmbeds(EB.build()).queue();
-			} catch (Exception EX) {
-				EX.printStackTrace();
 			}
-		} else if (CI.GetSource() == SourceType.Misskey) {
-			CI.Reply("Misskeyはまだ未対応です");
-		} else {
-			//？
-		}
+		});
 	}
+
 
 	private ArrayNode SearchInvite(String UID, String GID) throws SQLException {
 		ArrayNode R = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `UID` = ? AND `GID` = ?;", new Object[] {UID, GID});

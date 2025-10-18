@@ -1,19 +1,19 @@
 package su.rumishistem.rumiabot.Joke;
 
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
 
 public class SouiunoYokunaiyo {
 	public static void Main(ReceiveMessageEvent e) {
-		String Content = e.GetMessage().GetText();
+		String Content = e.get_discord().getMessage().getContentRaw();
 		if (Content.equals("ち") || Content.equals("ちん") || Content.equals("ま") || Content.equals("まん")) {
 			if (TeiKakuricu.get()) {
 				if (Content.endsWith("ん")) {
-					e.GetMessage().Reply("こ");
+					e.get_discord().getMessage().reply("こ").queue();
 				} else {
-					e.GetMessage().Reply("んこ");
+					e.get_discord().getMessage().reply("んこ").queue();
 				}
 			} else {
-				e.GetMessage().Reply("そういうのよくないと思うよ。");
+				e.get_discord().getMessage().reply("そういうのよくないと思うよ。").queue();
 			}
 		}
 	}

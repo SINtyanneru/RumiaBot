@@ -7,9 +7,10 @@ import java.util.UUID;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
 
@@ -37,7 +38,7 @@ public class CreatePanel {
 					EB.setColor(Color.CYAN);
 					EB.setTitle("認証 ATESTADO");
 
-					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addActionRow(Button.primary("verify_panel?id=" + ID, "認証")).queue();
+					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addComponents(ActionRow.of(Button.primary("verify_panel?id=" + ID, "認証"))).queue();
 					INTERACTION.getHook().deleteOriginal().queue();
 				} else {
 					//存在するので、もっかい出す
@@ -47,7 +48,7 @@ public class CreatePanel {
 					EB.setColor(Color.CYAN);
 					EB.setTitle("認証 ATESTADO");
 
-					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addActionRow(Button.primary("verify_panel?id=" + PANEL_DATA.getData("ID").asString(), "認証")).queue();
+					INTERACTION.getChannel().sendMessageEmbeds(EB.build()).addComponents(ActionRow.of(Button.primary("verify_panel?id=" + PANEL_DATA.getData("ID").asString(), "認証"))).queue();
 
 					INTERACTION.getHook().editOriginal("すでにあるので、呼び出しました").queue();
 				}

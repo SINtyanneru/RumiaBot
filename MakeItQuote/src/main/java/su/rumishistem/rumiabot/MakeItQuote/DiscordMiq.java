@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.MakeItQuote;
 
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
+import static su.rumishistem.rumiabot.System.Main.get_discord_bot;
 
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
@@ -11,18 +11,19 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.SelectOption;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
+import su.rumishistem.rumiabot.System.Module.NameParse;
 
 public class DiscordMiq {
 	public static void RunMessageContext(MessageContextInteractionEvent Interaction) throws MalformedURLException, IOException, FontFormatException {
@@ -43,7 +44,7 @@ public class DiscordMiq {
 		F.delete();
 
 		//応答
-		Interaction.getHook().sendFiles(FU).addActionRow(GenIconColorSelect(MSG.getId(), MSG.getChannelId(), null)).queue();
+		Interaction.getHook().sendFiles(FU).setComponents(ActionRow.of(GenIconColorSelect(MSG.getId(), MSG.getChannelId(), null))).queue();
 	}
 
 	public static void ChangeSetting(StringSelectInteractionEvent Interaction) throws MalformedURLException, IOException, FontFormatException {
@@ -52,7 +53,7 @@ public class DiscordMiq {
 		String ChannelID = ResolveData.split(":")[1];
 		GrayScaleConvert.ConvertMode IconColorMode = null;
 
-		TextChannel Channel = DISCORD_BOT.getTextChannelById(ChannelID);
+		TextChannel Channel = get_discord_bot().get_primary_bot().getTextChannelById(ChannelID);
 		Message MSG = null;
 		if (Channel != null) {
 			MSG = Channel.retrieveMessageById(MessageID).complete();
@@ -95,7 +96,7 @@ public class DiscordMiq {
 		//元のメッセージを編集する
 		MessageEditBuilder MEB = new MessageEditBuilder();
 		MEB.setFiles(FU);
-		MEB.setActionRow(GenIconColorSelect(MSG.getId(), MSG.getChannelId(), IconColorMode));
+		MEB.setComponents(ActionRow.of(GenIconColorSelect(MSG.getId(), MSG.getChannelId(), IconColorMode)));
 		Interaction.getMessage().editMessage(MEB.build()).queue();
 
 		//インタラクションのアレを消し飛ばす

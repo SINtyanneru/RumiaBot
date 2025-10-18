@@ -7,12 +7,11 @@
 	<parent>
 		<groupId>su.rumishistem</groupId>
 		<artifactId>rumiabot</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 	<groupId>su.rumishistem.rumiabot</groupId>
 	<artifactId>Rank</artifactId>
-	<version>1.0</version>
 	<name>Rank</name>
 	<url>http://maven.apache.org</url>
 
@@ -24,15 +23,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>su.rumishistem.rumiabot</groupId>
 			<artifactId>System</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 

@@ -1,102 +1,115 @@
 package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import static su.rumishistem.rumiabot.System.Main.get_discord_bot;
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 
+import java.sql.*;
+import java.time.*;
+import java.util.HashMap;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import su.rumishistem.rumi_java_lib.ArrayNode;
-import su.rumishistem.rumi_java_lib.SQL;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.DiscordChannelFunction;
-import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
-import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import net.dv8tion.jda.api.events.guild.member.*;
+import su.rumishistem.rumi_java_lib.*;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
+import su.rumishistem.rumiabot.System.Type.*;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordChannelFunction;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "DiscordようこそFuckyouメッセージ";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
-	public static boolean Enabled = false;
+	protected static HashMap<String, HashMap<String, Integer>> invite_table = new HashMap<>();
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "DiscordようこそFuckyouメッセージ";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void DiscordEventReceive(DiscordEvent e) throws Exception {
-		if (e.GetType() == EventType.GuildMemberAdd) {
-			//参加
-			Invite use_invite_code = JoinLog.join(e);
+	public void init() {
+		for (Guild g:get_discord_bot().get_primary_bot().getGuilds()) {
+			invite_sync(g);
+		}
+	}
 
-			GuildMemberJoinEvent JE = (GuildMemberJoinEvent) e.GetEventClass();
-			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.welcomemessage);
-			if (Ch != null) {
-				//送信
-				EmbedBuilder EB = new EmbedBuilder();
-				EB.setTitle(JE.getUser().getName() + "が参加しました");
-				EB.setThumbnail(JE.getUser().getAvatarUrl());
-				Ch.sendMessageEmbeds(EB.build()).queue();
-
-				//送信
-				EmbedBuilder EB2 = new EmbedBuilder();
-				EB2.addField("使用された招待コード", use_invite_code.getCode(), false);
-				Ch.sendMessageEmbeds(EB2.build()).queue();
+	protected static void invite_sync(Guild g) {
+		g.retrieveInvites().queue(invite_list->{
+			HashMap<String, Integer> data = new HashMap<>();
+			for (Invite inv:invite_list) {
+				data.put(inv.getCode(), inv.getUses());
 			}
-		} else if (e.GetType() == EventType.GuildMemberRemove) {
-			//脱退
-			JoinLog.leave(e);
+			invite_table.put(g.getId(), data);
 
-			GuildMemberRemoveEvent RE = (GuildMemberRemoveEvent) e.GetEventClass();
-			TextChannel Ch = GetChannel(e.GetGuild(), DiscordChannelFunction.fuckyoumessage);
-			if (Ch != null) {
-				//参加記録を遡る
-				ArrayNode JoinLogResult = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `GID` = ? AND `UID` = ?;", new Object[] {
-					RE.getGuild().getId(),
-					RE.getUser().getId()
-				});
+			LOG(LOG_TYPE.OK, "[DiscordWelcomeFuckyouMessage] 招待コード取得：" + g.getId());
+		});
+	}
 
-				EmbedBuilder EB = new EmbedBuilder();
-				EB.setTitle(RE.getUser().getName() + "が脱退しました");
+	@Override
+	public void event_receive(EventReceiveEvent e) {
+		try {
+			if (e.get_type() == EventReceiveType.DiscordGuildMemberJoin) {
+				//参加
+				Invite use_invite_code = JoinLog.join(e.get_as_discord_guild_member_join());
 
-				//脱退RTA
-				if (JoinLogResult.asArrayList().size() == 1) {
-					OffsetDateTime NowDate = OffsetDateTime.now();
-					OffsetDateTime JoinDate = ((Timestamp) JoinLogResult.get(0).getData("DATE").asObject()).toInstant().atOffset(ZoneOffset.ofHours(9));
-					Duration Du = Duration.between(JoinDate, NowDate);
-					String RTAText = "";
+				GuildMemberJoinEvent JE = e.get_as_discord_guild_member_join();
+				TextChannel Ch = GetChannel(JE.getGuild(), DiscordChannelFunction.welcomemessage);
+				if (Ch != null) {
+					//送信
+					EmbedBuilder EB = new EmbedBuilder();
+					EB.setTitle(JE.getUser().getName() + "が参加しました");
+					EB.setThumbnail(JE.getUser().getAvatarUrl());
+					Ch.sendMessageEmbeds(EB.build()).queue();
 
-					if (Du.getSeconds() <= 1) {
-						RTAText = Du.getSeconds() + "秒！早すぎる";
-					} else if (Du.getSeconds() <= 5) {
-						RTAText = Du.getSeconds() + "秒か、まあまあだな";
-					} else {
-						RTAText = Du.getSeconds() + "秒？おっそ、雑魚がよ";
-					}
-					EB.addField("脱退RTA", RTAText, false);
+					//送信
+					EmbedBuilder EB2 = new EmbedBuilder();
+					EB2.addField("使用された招待コード", use_invite_code.getCode(), false);
+					Ch.sendMessageEmbeds(EB2.build()).queue();
 				}
+			} else if (e.get_type() == EventReceiveType.DiscordGuildMemberLeave) {
+				//脱退
+				JoinLog.leave(e.get_as_discord_guild_member_leave());
 
-				EB.setThumbnail(RE.getUser().getAvatarUrl());
-				Ch.sendMessageEmbeds(EB.build()).queue();
+				GuildMemberRemoveEvent RE = e.get_as_discord_guild_member_leave();
+				TextChannel Ch = GetChannel(RE.getGuild(), DiscordChannelFunction.fuckyoumessage);
+				if (Ch != null) {
+					//参加記録を遡る
+					ArrayNode JoinLogResult = SQL.RUN("SELECT * FROM `DISCORD_USER_JOIN` WHERE `GID` = ? AND `UID` = ?;", new Object[] {
+						RE.getGuild().getId(),
+						RE.getUser().getId()
+					});
+
+					EmbedBuilder EB = new EmbedBuilder();
+					EB.setTitle(RE.getUser().getName() + "が脱退しました");
+
+					//脱退RTA
+					if (JoinLogResult.asArrayList().size() == 1) {
+						OffsetDateTime NowDate = OffsetDateTime.now();
+						OffsetDateTime JoinDate = ((Timestamp) JoinLogResult.get(0).getData("DATE").asObject()).toInstant().atOffset(ZoneOffset.ofHours(9));
+						Duration Du = Duration.between(JoinDate, NowDate);
+						String RTAText = "";
+
+						if (Du.getSeconds() <= 1) {
+							RTAText = Du.getSeconds() + "秒！早すぎる";
+						} else if (Du.getSeconds() <= 5) {
+							RTAText = Du.getSeconds() + "秒か、まあまあだな";
+						} else {
+							RTAText = Du.getSeconds() + "秒？おっそ、雑魚がよ";
+						}
+						EB.addField("脱退RTA", RTAText, false);
+					}
+
+					EB.setThumbnail(RE.getUser().getAvatarUrl());
+					Ch.sendMessageEmbeds(EB.build()).queue();
+				}
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
@@ -113,16 +126,4 @@ public class Main implements FunctionClass{
 			return null;
 		}
 	}
-
-	@Override
-	public void Init() {}
-
-	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
-
-	@Override
-	public boolean GetAllowCommand(String Name) {return false;}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {}
 }

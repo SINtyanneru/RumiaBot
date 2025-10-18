@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import su.rumishistem.rumi_java_lib.FILER;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumiabot.System.MODULE.DATE_FORMAT;
+import su.rumishistem.rumiabot.System.Module.DateFormat;
 import su.rumishistem.rumiabot.IshitegawaDamFunction.TYPE.DAM_STATUS;
 
 public class DAMDAM {
@@ -59,7 +59,7 @@ public class DAMDAM {
 
 	public static String genTEXT() {
 		StringBuilder SB = new StringBuilder();
-		SB.append(DATE_FORMAT.KOUKI_SEIREKI(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9))) + "時点で\n");
+		SB.append(DateFormat._12H(STATUS.getDATE().atOffset(ZoneOffset.ofHours(9))) + "時点で\n");
 		SB.append("貯水率は" + STATUS.getPOSOS() + "%です、\n");
 		SB.append("流入量は" + STATUS.getIN() + "㌧、放流量は" + STATUS.getOUT() + "㌧です。\n");
 

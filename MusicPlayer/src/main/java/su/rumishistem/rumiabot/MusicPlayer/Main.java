@@ -1,7 +1,5 @@
 package su.rumishistem.rumiabot.MusicPlayer;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.UUID;
@@ -13,59 +11,59 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.*;
-import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.OptionType;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Main implements FunctionClass {
-	private static final String FUNCTION_NAME = "音楽プレイヤー";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	private static HashMap<String, String> vc_id_table = new HashMap<>();
 	private static HashMap<String, Player> player_list = new HashMap<>();
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "音楽プレイヤー";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
-	}
-
-	@Override
-	public void Init() {
-		AddCommand(new CommandData("play", new CommandOption[] {
-			new CommandOption("url", CommandOptionType.String, null, true)
-		}, false));
-
-		AddCommand(new CommandData("stop", new CommandOption[] {}, false));
-		AddCommand(new CommandData("skip", new CommandOption[] {}, false));
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
+	public void init() {
+		CommandRegister.add_command("play", new CommandOptionRegist[] {
+			new CommandOptionRegist("url", OptionType.String, true)
+		}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				RunCommand(e, "play");
+			}
+		});
 
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return (Name.equals("play") || Name.equals("stop") || Name.equals("skip"));
+		CommandRegister.add_command("play", new CommandOptionRegist[] {}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				RunCommand(e, "stop");
+			}
+		});
 	}
 
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		if (CI.GetSource() != SourceType.Discord) {
-			CI.Reply("Discordでのみ使用可能なコマンドです");
+	public void RunCommand(CommandInteraction e, String name) throws Exception {
+		if (e.get_source() != SourceType.Discord) {
+			e.reply("Discordでのみ使用可能です");
 			return;
 		}
 
 		//メンバー取得
-		Member member = CI.GetDiscordInteraction().getMember();
+		Member member = e.get_discprd_event().getMember();
 		if (member == null) throw new RuntimeException("メンバーが無い");
 
 		//サーバーを取得
@@ -88,22 +86,23 @@ public class Main implements FunctionClass {
 			player_list.put(player.get_id(), player);
 			vc_id_table.put(vc.getId(), player.get_id());
 
-			CI.Reply("プレイヤー["+player.get_id()+"]を作成しました！");
+			e.reply("プレイヤー["+player.get_id()+"]を作成しました！");
 		} else {
 			player = player_list.get(vc_id_table.get(vc.getId()));
-			CI.Reply("プレイヤー["+player.get_id()+"]に命令...");
+			e.reply("プレイヤー["+player.get_id()+"]を命令...");
 		}
 
-		switch (CI.GetCommand().GetName()) {
+		switch (name) {
 			case "play":
-				play(CI.GetDiscordInteraction(), player);
+				play(e.get_discprd_event(), player);
 				return;
 			case "stop":
-				stop(CI.GetDiscordInteraction(), player, vc);
+				stop(e.get_discprd_event(), player, vc);
 				return;
 		}
 	}
 
+	/*
 	@Override
 	public void DiscordEventReceive(DiscordEvent e) throws Exception {
 		if (e.GetType() == EventType.VCMemberUpdate) {
@@ -123,7 +122,7 @@ public class Main implements FunctionClass {
 				player.stop();
 			}
 		}
-	}
+	}*/
 
 	private static void play(SlashCommandInteraction e, Player player) throws IOException, InterruptedException {
 		Message progress_msg = e.getChannel().asTextChannel().sendMessage("準備中...").complete();

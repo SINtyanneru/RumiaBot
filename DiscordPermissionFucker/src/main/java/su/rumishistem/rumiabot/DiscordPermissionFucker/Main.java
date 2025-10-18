@@ -1,6 +1,5 @@
 package su.rumishistem.rumiabot.DiscordPermissionFucker;
 
-import static su.rumishistem.rumiabot.System.Main.SH;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +10,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import su.rumishistem.rumi_java_lib.RESOURCE.RESOURCE_MANAGER;
@@ -20,40 +17,52 @@ import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_REQUEST;
 import su.rumishistem.rumi_java_lib.SmartHTTP.HTTP_RESULT;
 import su.rumishistem.rumi_java_lib.SmartHTTP.Type.EndpointEntrie.Method;
 import su.rumishistem.rumi_java_lib.SmartHTTP.Type.EndpointFunction;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.OptionType;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "Discord権限Fucker";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	private static HashMap<String, String> IDTable = new HashMap<String, String>();
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "Discord権限Fucker";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
-		AddCommand(new CommandData("pf", new CommandOption[] {
-			new CommandOption("id", CommandOptionType.String, null, true)
-		}, true));
+	public void init() {
+		CommandRegister.add_command("pf", new CommandOptionRegist[] {
+			new CommandOptionRegist("id", OptionType.String, true)
+		}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				String ID = UUID.randomUUID().toString();
+				String CID = e.get_option_as_string("id");
 
-		SH.SetRoute("/user/pf", new EndpointFunction() {
+				TextChannel Ch = su.rumishistem.rumiabot.System.Main.get_discord_bot().get_primary_bot().getTextChannelById(CID);
+				if (Ch == null) {
+					e.reply("...?");
+					return;
+				}
+
+				IDTable.put(ID, CID);
+
+				e.reply("https://bot.rumi-room.net/pf?ID=" + ID);
+			}
+		});
+
+		su.rumishistem.rumiabot.System.Main.get_http().get().SetRoute("/user/pf", new EndpointFunction() {
 			@Override
 			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				String BODY = new String(new RESOURCE_MANAGER(Main.class).getResourceData("/index.html"));
@@ -61,7 +70,7 @@ public class Main implements FunctionClass{
 			}
 		});
 
-		SH.SetRoute("/user/api/pf", Method.GET, new EndpointFunction() {
+		su.rumishistem.rumiabot.System.Main.get_http().get().SetRoute("/user/api/pf", Method.GET, new EndpointFunction() {
 			@Override
 			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				if (r.GetEVENT().getURI_PARAM().get("ID") == null) {
@@ -69,7 +78,7 @@ public class Main implements FunctionClass{
 				}
 
 				//Channel Ch = DISCORD_BOT.getChannelById(Channel.class, r.GetEVENT().getURI_PARAM().get("ID"));
-				TextChannel Ch = DISCORD_BOT.getTextChannelById(IDTable.get(r.GetEVENT().getURI_PARAM().get("ID")));
+				TextChannel Ch = su.rumishistem.rumiabot.System.Main.get_discord_bot().get_primary_bot().getTextChannelById(IDTable.get(r.GetEVENT().getURI_PARAM().get("ID")));
 
 				if (Ch == null) {
 					return new HTTP_RESULT(404, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
@@ -91,14 +100,14 @@ public class Main implements FunctionClass{
 			}
 		});
 		
-		SH.SetRoute("/user/api/pf_his", Method.GET, new EndpointFunction() {
+		su.rumishistem.rumiabot.System.Main.get_http().get().SetRoute("/user/api/pf_his", Method.GET, new EndpointFunction() {
 			@Override
 			public HTTP_RESULT Run(HTTP_REQUEST r) throws Exception {
 				if (r.GetEVENT().getURI_PARAM().get("ID") == null) {
 					return new HTTP_RESULT(400, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
 				}
 
-				TextChannel Ch = DISCORD_BOT.getTextChannelById(IDTable.get(r.GetEVENT().getURI_PARAM().get("ID")));
+				TextChannel Ch = su.rumishistem.rumiabot.System.Main.get_discord_bot().get_primary_bot().getTextChannelById(IDTable.get(r.GetEVENT().getURI_PARAM().get("ID")));
 
 				if (Ch == null) {
 					return new HTTP_RESULT(404, "{\"STATUS\": false}".getBytes(), "application/json; charset=UTF-8");
@@ -128,29 +137,5 @@ public class Main implements FunctionClass{
 				return new HTTP_RESULT(200, new ObjectMapper().writeValueAsString(Return).getBytes(), "application/json; charset=UTF-8");
 			}
 		});
-	}
-
-	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
-
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return Name.equals("pf");
-	}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		String ID = UUID.randomUUID().toString();
-		String CID = CI.GetCommand().GetOption("id").GetValueAsString();
-
-		TextChannel Ch = DISCORD_BOT.getTextChannelById(CID);
-		if (Ch == null) {
-			CI.Reply("...?");
-			return;
-		}
-
-		IDTable.put(ID, CID);
-
-		CI.Reply("https://bot.rumi-room.net/pf?ID=" + ID);
 	}
 }

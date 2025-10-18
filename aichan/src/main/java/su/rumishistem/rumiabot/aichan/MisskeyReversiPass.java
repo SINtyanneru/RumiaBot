@@ -1,14 +1,9 @@
 package su.rumishistem.rumiabot.aichan;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
-import java.util.LinkedHashMap;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static su.rumishistem.rumiabot.System.Main.config;
+import com.fasterxml.jackson.databind.*;
 import su.rumishistem.rumi_java_lib.WebSocket.Client.WebSocketClient;
-import su.rumishistem.rumi_java_lib.WebSocket.Client.EVENT.CLOSE_EVENT;
-import su.rumishistem.rumi_java_lib.WebSocket.Client.EVENT.CONNECT_EVENT;
-import su.rumishistem.rumi_java_lib.WebSocket.Client.EVENT.MESSAGE_EVENT;
-import su.rumishistem.rumi_java_lib.WebSocket.Client.EVENT.WS_EVENT_LISTENER;
+import su.rumishistem.rumi_java_lib.WebSocket.Client.EVENT.*;
 import su.rumishistem.rumiabot.aichan.API.StreamingAPI;
 
 public class MisskeyReversiPass {
@@ -52,7 +47,7 @@ public class MisskeyReversiPass {
 		});
 
 		System.out.println(LOG_PREFIX+"オセロAPIのパススルー起動");
-		WS.CONNECT("wss://" + CONFIG_DATA.get("MISSKEY").getData("DOMAIN").asString() + "/streaming?i=" + CONFIG_DATA.get("MISSKEY").getData("TOKEN").asString());
+		WS.CONNECT("wss://" + config.get("MISSKEY").getData("DOMAIN").asString() + "/streaming?i=" + config.get("MISSKEY").getData("TOKEN").asString());
 	}
 
 	public static void WebSocketSend(String Body) {

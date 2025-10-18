@@ -1,10 +1,10 @@
 package su.rumishistem.rumiabot.Joke;
 
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
 
 public class Unko {
 	public static void Main(ReceiveMessageEvent e) {
-		String Content = e.GetMessage().GetText();
+		String Content = e.get_discord().getMessage().getContentRaw();
 		String ReturnContent = null;
 
 		//う→んこ(ち)
@@ -32,7 +32,7 @@ public class Unko {
 		}
 
 		if (ReturnContent != null) {
-			e.GetMessage().GetDiscordChannel().sendMessage(ReturnContent).queue();
+			e.get_discord().getChannel().asTextChannel().sendMessage(ReturnContent).queue();
 		}
 	}
 }

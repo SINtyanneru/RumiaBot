@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>su.rumishistem</groupId>
 	<artifactId>rumiabot</artifactId>
@@ -12,13 +13,12 @@
 	<modules>
 		<module>System</module>
 		<module>TestFunction</module>
-		<!--<module>IshitegawaDamFunction</module>
+		<module>WsFunction</module>
+		<module>IshitegawaDamFunction</module>
 		<module>PingFunction</module>
 		<module>VerifyPanelFunction</module>
-		<module>CalcFunction</module>
 		<module>VXTwitterFunction</module>
 		<module>aichan</module>
-		<module>WsFunction</module>
 		<module>MisskeyReportFucker</module>
 		<module>DiscordWelcomeFuckyouMessage</module>
 		<module>Joke</module>
@@ -28,10 +28,10 @@
 		<module>MakeItQuote</module>
 		<module>Trash</module>
 		<module>Rank</module>
-		<module>Auth</module>
+		<!--<module>Auth</module>-->
 		<module>LanguageOmikuzhi</module>
 		<module>AM4</module>
-		<module>MusicPlayer</module>-->
+		<module>MusicPlayer</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>su.rumishistem</groupId>
 			<artifactId>rumi_java_lib</artifactId>
-			<version>13.70</version>
+			<version>13.71</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>

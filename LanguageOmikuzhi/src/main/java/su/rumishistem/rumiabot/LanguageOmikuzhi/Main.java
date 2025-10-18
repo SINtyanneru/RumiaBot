@@ -1,21 +1,15 @@
 package su.rumishistem.rumiabot.LanguageOmikuzhi;
 
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
-
 import java.util.Random;
 
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "ランキング";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
-
 	private static final Language[] language_list = new Language[] {
 		new Language("日本語", "日本語"),
 		new Language("Esperanto", "エスペラント"),
@@ -34,46 +28,38 @@ public class Main implements FunctionClass{
 	};
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "言語おみくじ";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "0.5";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
-	}
-
-	@Override
-	public void Init() {
-		AddCommand(new CommandData("language_omikuzhi", new CommandOption[] {}, false));
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {}
+	public void init() {
+		CommandRegister.add_command("language_omikuzhi", new CommandOptionRegist[] {}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				Random rnd = new Random();
+				int select = rnd.nextInt(0, language_list.length);
+				Language lang = language_list[select];
 
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return Name.equals("language_omikuzhi");
-	}
+				if (e.get_source() == SourceType.Misskey) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("$[x2 $[bg.color=00AAFF $[fg.color=FFFFFF $[ruby "+lang.name+" "+lang.ruby+"]]]]");
+					sb.append("\n");
+					sb.append("https://eth.rumiserver.com/play/acagcidyeo6x0b5i");
 
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		Random rnd = new Random();
-		int select = rnd.nextInt(0, language_list.length);
-		Language lang = language_list[select];
-
-		if (CI.GetSource() == SourceType.Misskey) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("$[x2 $[bg.color=00AAFF $[fg.color=FFFFFF $[ruby "+lang.name+" "+lang.ruby+"]]]]");
-			sb.append("\n");
-			sb.append("https://eth.rumiserver.com/play/acagcidyeo6x0b5i");
-
-			CI.Reply(sb.toString());
-		} else if (CI.GetSource() == SourceType.Discord) {
-			CI.Reply(language_list[select].name + "("+language_list[select].ruby+")");
-		}
+					e.reply(sb.toString());
+				} else {
+					e.reply(language_list[select].name + "("+language_list[select].ruby+")");
+				}
+			}
+		});
 	}
 }

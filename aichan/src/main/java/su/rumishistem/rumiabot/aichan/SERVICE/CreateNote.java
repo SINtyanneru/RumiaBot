@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.aichan.SERVICE;
 
-import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+import static su.rumishistem.rumiabot.System.Main.get_misskey_bot;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.FileUpload;
-import su.rumishistem.rumi_java_lib.Misskey.Builder.NoteBuilder;
-import su.rumishistem.rumi_java_lib.Misskey.TYPE.Note;
-import su.rumishistem.rumi_java_lib.Misskey.TYPE.NoteVis;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Builder.NoteBuilder;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Type.Note;
 import su.rumishistem.rumiabot.aichan.MODULE.GetDiscordMessage;
 
 public class CreateNote {
@@ -23,16 +22,15 @@ public class CreateNote {
 		TEXT = "藍:" + TEXT;
 
 		NoteBuilder NB = new NoteBuilder();
-		NB.setTEXT(TEXT);
-		NB.setVIS(NoteVis.PUBLIC);
+		NB.set_text(TEXT);
 
 		if (ReplyID != null) {
 			if (ReplyID.startsWith("M-")) {
 				//Misskey返信
 				ReplyID = ReplyID.replace("M-", "");
-				Note ReplyNote = MisskeyBOT.GetNote(ReplyID);
+				Note ReplyNote = get_misskey_bot().get_client().get_note_from_id(ReplyID);
 				if (ReplyNote != null) {
-					NB.setREPLY(ReplyNote);
+					NB.set_reply(ReplyNote);
 				} else {
 					throw new Error("リプライ先のノートが見つかりませんでした");
 				}
@@ -74,12 +72,12 @@ public class CreateNote {
 
 		//ファイル
 		for (File F:FileList) {
-			NB.AddFile(F);
+			NB.add_file(F);
 		}
 
 		//投稿
-		Note PostedNote = MisskeyBOT.PostNote(NB.Build());
-		return GenResult(PostedNote.getID(), TEXT);
+		String PostedNote = get_misskey_bot().get_client().create_note(NB);
+		return GenResult(PostedNote, TEXT);
 	}
 
 	private static String GenResult(String ID,String TEXT) throws JsonProcessingException {

@@ -1,7 +1,7 @@
 package su.rumishistem.rumiabot.aichan.MODULE;
 
-import static su.rumishistem.rumiabot.System.Main.DISCORD_BOT;
-import static su.rumishistem.rumiabot.System.Main.MisskeyBOT;
+import static su.rumishistem.rumiabot.System.Main.get_discord_bot;
+import static su.rumishistem.rumiabot.System.Main.get_misskey_bot;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import su.rumishistem.rumi_java_lib.Misskey.TYPE.Note;
-import su.rumishistem.rumiabot.System.MODULE.DATE_FORMAT;
+import su.rumishistem.rumi_java_lib.MisskeyBot.Type.Note;
+import su.rumishistem.rumiabot.System.Module.DateFormat;
 
 public class ConvertType {
 	private static OffsetDateTime ParseSnowFlake(User U) {
@@ -32,10 +32,10 @@ public class ConvertType {
 		LinkedHashMap<String, Object> Body = new LinkedHashMap<String, Object>();
 
 		String Text = M.getContentRaw();
-		Text = Text.replace("<@" + DISCORD_BOT.getSelfUser().getId() + ">", "@" + MisskeyBOT.GetSelfUser().getUID());
+		Text = Text.replace("<@" + get_discord_bot().get_primary_bot().getSelfUser().getId() + ">", "@" + get_misskey_bot().get_client().get_self().get_user().get_username());
 
 		Body.put("id", "D-" + M.getChannelId() + "_" + M.getId());
-		Body.put("createdAt", DATE_FORMAT.ZHUUNI_H(M.getTimeCreated()));
+		Body.put("createdAt", DateFormat._12H(M.getTimeCreated()));
 		Body.put("deletedAt", null);
 		Body.put("text", Text);
 		Body.put("cw", null);
@@ -98,9 +98,9 @@ public class ConvertType {
 		Body.put("url", null);
 		Body.put("uri", null);
 		Body.put("movedTo", null);
-		Body.put("createdAt", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)));
+		Body.put("createdAt", DateFormat._12H(ParseSnowFlake(U)));
 		Body.put("description", "Discord user");
-		Body.put("birthday", DATE_FORMAT.ZHUUNI_H(ParseSnowFlake(U)));
+		Body.put("birthday", DateFormat._12H(ParseSnowFlake(U)));
 		Body.put("lang", "ja-JP");
 		Body.put("isFollowing", true);
 		Body.put("isFollowed", true);
@@ -112,16 +112,16 @@ public class ConvertType {
 		ObjectMapper OM = new ObjectMapper();
 		LinkedHashMap<String, Object> Body = new LinkedHashMap<String, Object>();
 
-		Body.put("id", "M-" + N.getID());
+		Body.put("id", "M-" + N.get_id());
 		Body.put("createdAt", "");
 		Body.put("deletedAt", null);
-		Body.put("text", N.getTEXT());
+		Body.put("text", N.get_text());
 		Body.put("cw", null);
-		Body.put("userId", "M-" + N.getUSER().getID());
-		Body.put("user", NoteUserToUser(N.getUSER()));
+		Body.put("userId", "M-" + N.get_user().get_id());
+		Body.put("user", NoteUserToUser(N.get_user()));
 		try {
-			Note ReplyNote = N.getReply();
-			Body.put("replyId", ReplyNote.getID());
+			Note ReplyNote = N.get_reply();
+			Body.put("replyId", ReplyNote.get_id());
 			Body.put("reply", NoteToNote(ReplyNote));
 		} catch (Exception EX) {
 			Body.put("replyId", null);
@@ -145,15 +145,19 @@ public class ConvertType {
 		return OM.readTree(OM.writeValueAsString(Body));
 	}
 
-	public static JsonNode NoteUserToUser(su.rumishistem.rumi_java_lib.Misskey.TYPE.User U) throws JsonMappingException, JsonProcessingException {
+	public static JsonNode NoteUserToUser(su.rumishistem.rumi_java_lib.MisskeyBot.Type.User U) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper OM = new ObjectMapper();
 		LinkedHashMap<String, Object> Body = new LinkedHashMap<String, Object>();
 
-		Body.put("id", "M-" + U.getID());
-		Body.put("name", U.getNAME());
-		Body.put("username", U.getUID());
-		Body.put("host", U.getHost());
-		Body.put("avatarUrl", U.getICON_URL());
+		Body.put("id", "M-" + U.get_id());
+		Body.put("name", U.get_name());
+		Body.put("username", U.get_username());
+		if (U.is_local()) {
+			Body.put("host", null);
+		} else {
+			Body.put("host", U.get_host());
+		}
+		Body.put("avatarUrl", U.get_icon_url());
 		Body.put("avatarBlurhash", null);
 		Body.put("avatarDecorations", new ArrayList<String>());
 		Body.put("isBot", false);

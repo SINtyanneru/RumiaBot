@@ -1,6 +1,6 @@
 package su.rumishistem.rumiabot.Voicevox;
 
-import static su.rumishistem.rumiabot.System.Main.CONFIG_DATA;
+import static su.rumishistem.rumiabot.System.Main.config;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +18,8 @@ import su.rumishistem.rumi_java_lib.FETCH_RESULT;
 
 public class VOICEVOX {
 	private static String genURL() {
-		String Host = CONFIG_DATA.get("VOICEVOX").getData("HOST").asString();
-		String Port = CONFIG_DATA.get("VOICEVOX").getData("PORT").asString();
+		String Host = config.get("VOICEVOX").getData("HOST").asString();
+		String Port = config.get("VOICEVOX").getData("PORT").asString();
 		return "http://" + Host + ":" + Port + "/";
 	}
 

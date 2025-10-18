@@ -23,4 +23,8 @@ public class ThreadPool {
 	public static void run_command(Runnable task) {
 		command_pool.submit(task);
 	}
+
+	public static void run_message_event(Runnable task) {
+		message_event.submit(task);
+	}
 }

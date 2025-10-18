@@ -1,49 +1,42 @@
 package su.rumishistem.rumiabot.Voicevox;
 
 import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
-import static su.rumishistem.rumiabot.System.FunctionModuleLoader.AddCommand;
 import java.util.HashMap;
 import java.util.List;
 
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
-import su.rumishistem.rumiabot.System.MODULE.BlockManager;
-import su.rumishistem.rumiabot.System.TYPE.CommandData;
-import su.rumishistem.rumiabot.System.TYPE.CommandInteraction;
-import su.rumishistem.rumiabot.System.TYPE.CommandOption;
-import su.rumishistem.rumiabot.System.TYPE.CommandOptionType;
-import su.rumishistem.rumiabot.System.TYPE.DiscordEvent;
-import su.rumishistem.rumiabot.System.TYPE.DiscordEvent.EventType;
-import su.rumishistem.rumiabot.System.TYPE.FunctionClass;
-import su.rumishistem.rumiabot.System.TYPE.ReceiveMessageEvent;
-import su.rumishistem.rumiabot.System.TYPE.SourceType;
+import su.rumishistem.rumiabot.System.CommandRegister;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
+import su.rumishistem.rumiabot.System.Type.FunctionClass;
+import su.rumishistem.rumiabot.System.Type.OptionType;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.RunCommand;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 import su.rumishistem.rumiabot.Voicevox.GenAudio.GenCommand;
 import su.rumishistem.rumiabot.Voicevox.Jomiage.Jomiage;
 
 public class Main implements FunctionClass{
-	private static final String FUNCTION_NAME = "ユーザー情報をぶちまけよう";
-	private static final String FUNCTION_VERSION = "1.0";
-	private static final String FUNCTION_AUTOR = "Rumisan";
 	public static List<HashMap<String, String>> SpeakersList = null;
-
 	public static boolean Enabled = false;
 
 	@Override
-	public String FUNCTION_NAME() {
-		return FUNCTION_NAME;
+	public String function_name() {
+		return "VOICEVOX";
 	}
 	@Override
-	public String FUNCTION_VERSION() {
-		return FUNCTION_VERSION;
+	public String function_version() {
+		return "1.0";
 	}
 	@Override
-	public String FUNCTION_AUTOR() {
-		return FUNCTION_AUTOR;
+	public String function_author() {
+		return "るみ";
 	}
 
 	@Override
-	public void Init() {
+	public void init() {
 		SpeakersList = VOICEVOX.getSpeakers();
 
 		if (SpeakersList.size() != 0) {
@@ -56,43 +49,31 @@ public class Main implements FunctionClass{
 			throw new Error("VOICEVOX：話者一覧の取得に失敗");
 		}
 
-		AddCommand(new CommandData("voicevox", new CommandOption[] {
-			new CommandOption("text", CommandOptionType.String, null, true)
-		}, false));
-		AddCommand(new CommandData("jomiage", new CommandOption[] {}, false));
-	}
-
-	@Override
-	public void ReceiveMessage(ReceiveMessageEvent e) {
-		if (e.GetSource() == SourceType.Discord) {
-			//ブロック済みのユーザーなら此処で処理を中断する
-			if (BlockManager.IsBlocked(SourceType.Discord, e.GetUser().GetID())) {
-				return;
+		CommandRegister.add_command("voicevox", new CommandOptionRegist[] {
+			new CommandOptionRegist("text", OptionType.String, true)
+		}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) throws Exception {
+				GenCommand.RunCommand(e);
 			}
+		});
 
-			Jomiage.ReceiveMessage(e);
-		}
-	}
-
-	@Override
-	public boolean GetAllowCommand(String Name) {
-		return (Name.equals("voicevox") || Name.equals("jomiage"));
-	}
-
-	@Override
-	public void RunCommand(CommandInteraction CI) throws Exception {
-		if (CI.GetCommand().GetName().equals("voicevox")) {
-			GenCommand.RunCommand(CI);
-		} else {
-			if (CI.GetSource() != SourceType.Discord) {
-				CI.Reply("Discordでしか使えません。");
-				return;
+		CommandRegister.add_command("jomiage", new CommandOptionRegist[] {}, false, new RunCommand() {
+			@Override
+			public void run(CommandInteraction e) {
+				if (e.get_source() != SourceType.Discord) {
+					e.reply("Discordでしか使えません。");
+				}
 			}
-
-			Jomiage.RunCommand(CI);
-		}
+		});
 	}
 
+	@Override
+	public void message_receive(ReceiveMessageEvent e) {
+		Jomiage.ReceiveMessage(e);
+	}
+
+	/*
 	@Override
 	public void DiscordEventReceive(DiscordEvent e) throws Exception {
 		if (e.GetType() == EventType.VCMemberUpdate) {
@@ -108,5 +89,5 @@ public class Main implements FunctionClass{
 
 			Jomiage.VCMemberUpdate(Ch);
 		}
-	}
+	}*/
 }

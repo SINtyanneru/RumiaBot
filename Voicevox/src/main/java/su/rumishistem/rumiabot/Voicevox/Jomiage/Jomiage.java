@@ -7,8 +7,9 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
-import su.rumishistem.rumiabot.System.Discord.MODULE.NameParse;
-import su.rumishistem.rumiabot.System.TYPE.*;
+import su.rumishistem.rumiabot.System.Module.NameParse;
+import su.rumishistem.rumiabot.System.Type.CommandInteraction;
+import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
 
 public class Jomiage {
 	private static final HashMap<String, String> ConvertDict = new HashMap<String, String>(){
@@ -22,28 +23,28 @@ public class Jomiage {
 
 	private static HashMap<String, JomiageData> JomiageDataTable = new HashMap<String, JomiageData>();
 
-	public static void RunCommand(CommandInteraction CI) throws Exception {
-		Member M = CI.GetDiscordInteraction().getMember();
+	public static void RunCommand(CommandInteraction e) throws Exception {
+		Member M = e.get_discprd_event().getMember();
 		if (M == null) {
-			CI.Reply("エラー");
+			e.reply("エラー");
 			return;
 		}
 
 		GuildVoiceState VoiceState = M.getVoiceState();
 		if (VoiceState == null || !VoiceState.inAudioChannel()) {
-			CI.Reply("貴様がどこのVCに参加しているのか分かりませんでした。");
+			e.reply("貴様がどこのVCに参加しているのか分かりませんでした。");
 			return;
 		}
 
 		AudioChannel VC = VoiceState.getChannel();
 		if (VC == null) {
-			CI.Reply("VCを取得できませんでした。");
+			e.reply("VCを取得できませんでした。");
 			return;
 		}
 
-		Guild G = CI.GetDiscordInteraction().getGuild();
+		Guild G = e.get_discprd_event().getGuild();
 		if (G == null) {
-			CI.Reply("サーバーを取得できませんでした。");
+			e.reply("サーバーを取得できませんでした。");
 			return;
 		}
 
@@ -61,14 +62,14 @@ public class Jomiage {
 		AM.openAudioConnection(VC);
 
 		JomiageDataTable.put(ID, new JomiageData(
-			CI.GetDiscordInteraction().getGuild(),
+			e.get_discprd_event().getGuild(),
 			AM,
 			APM,
 			AP,
-			CI.GetDiscordInteraction().getChannelId()
+			e.get_discprd_event().getChannelId()
 		));
 
-		CI.Reply("おけ");
+		e.reply("おけ");
 	}
 
 	private static String TextChannelIDToJomiageID(String ChID) {
@@ -83,7 +84,7 @@ public class Jomiage {
 	}
 
 	public static void ReceiveMessage(ReceiveMessageEvent e) {
-		String JomiageID = TextChannelIDToJomiageID(e.GetDiscordChannel().getId());
+		String JomiageID = TextChannelIDToJomiageID(e.get_discord().getChannel().getId());
 		JomiageData J = JomiageDataTable.get(JomiageID);
 
 		if (JomiageID == null || J == null) {
@@ -91,7 +92,7 @@ public class Jomiage {
 		}
 
 		//BOTではないことを確認する
-		if (e.GetDiscordMember().getUser().isBot()) {
+		if (e.get_discord().getAuthor().isBot()) {
 			return;
 		}
 
@@ -99,17 +100,17 @@ public class Jomiage {
 		AudioPlayerManager APM = J.get_apm();
 		AudioPlayer AP = J.getAP();
 		int VoiceSpeakers = 0;
-		String Text = e.GetMessage().GetText();
+		String Text = e.get_discord().getMessage().getContentRaw();
 
 		//話者を選ぶ
-		if (J.UserVoiceIsNone(e.GetDiscordMember().getUser().getId())) {
-			HashMap<String, Object> SelectedSpeakers = J.getUserVoice(e.GetDiscordMember().getUser().getId());
+		if (J.UserVoiceIsNone(e.get_discord().getMember().getUser().getId())) {
+			HashMap<String, Object> SelectedSpeakers = J.getUserVoice(e.get_discord().getMember().getUser().getId());
 			VoiceSpeakers = (int)SelectedSpeakers.get("SPEAKERS");
 
-			Text = "「" + new NameParse(e.GetDiscordMember()).getDisplayName() + "」が会話に参加しました。" + Text;
-			e.GetMessage().Reply("貴様の声：" + (String)SelectedSpeakers.get("NAME"));
+			Text = "「" + new NameParse(e.get_discord().getMember()).getDisplayName() + "」が会話に参加しました。" + Text;
+			e.get_discord().getMessage().reply("貴様の声：" + (String)SelectedSpeakers.get("NAME"));
 		} else {
-			VoiceSpeakers = (int)J.getUserVoice(e.GetDiscordMember().getUser().getId()).get("SPEAKERS");
+			VoiceSpeakers = (int)J.getUserVoice(e.get_discord().getMember().getUser().getId()).get("SPEAKERS");
 		}
 
 		//NullPointerException
@@ -124,7 +125,7 @@ public class Jomiage {
 		}
 
 		//追加
-		J.addMessage(e.GetDiscordMember().getId(), Text);
+		J.addMessage(e.get_discord().getMember().getId(), Text);
 	}
 
 	public static void DisconnectVC(String ID) {
