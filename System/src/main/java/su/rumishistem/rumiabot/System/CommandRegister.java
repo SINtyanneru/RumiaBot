@@ -1,15 +1,19 @@
 package su.rumishistem.rumiabot.System;
 
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.Command.Type;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumiabot.System.Type.CommandData;
 import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
 import su.rumishistem.rumiabot.System.Type.DiscordMessageContext;
@@ -50,7 +54,11 @@ public class CommandRegister {
 
 	public static void discord_regist() {
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(discord_temp).queue();
+			for (Guild guild:bot.getGuilds()) {
+				guild.updateCommands().addCommands(discord_temp).queue();
+				LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを登録:"+guild.getId());
+			}
+			//bot.updateCommands().addCommands(discord_temp).complete();
 		}
 	}
 
