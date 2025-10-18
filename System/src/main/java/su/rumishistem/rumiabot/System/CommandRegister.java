@@ -35,7 +35,7 @@ public class CommandRegister {
 			sl.addOptions(od);
 		}
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(sl);
+			bot.updateCommands().addCommands(sl).queue();
 		}
 	}
 
@@ -43,7 +43,7 @@ public class CommandRegister {
 		discord_message_context_table.put(name.toUpperCase(), new DiscordMessageContext(name.toUpperCase(), private_command, task));
 
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(Commands.context(Type.MESSAGE, name.toLowerCase()));
+			bot.updateCommands().addCommands(Commands.context(Type.MESSAGE, name.toLowerCase())).queue();
 		}
 	}
 
