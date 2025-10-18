@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import su.rumishistem.rumiabot.System.Module.NameParse;
 import su.rumishistem.rumiabot.System.Type.CommandInteraction;
 import su.rumishistem.rumiabot.System.Type.ReceiveMessageEvent;
+import su.rumishistem.rumiabot.System.Type.SourceType;
 
 public class Jomiage {
 	private static final HashMap<String, String> ConvertDict = new HashMap<String, String>(){
@@ -84,6 +85,7 @@ public class Jomiage {
 	}
 
 	public static void ReceiveMessage(ReceiveMessageEvent e) {
+		if (e.get_source() != SourceType.Discord) return;
 		String JomiageID = TextChannelIDToJomiageID(e.get_discord().getChannel().getId());
 		JomiageData J = JomiageDataTable.get(JomiageID);
 
