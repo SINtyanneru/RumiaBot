@@ -79,9 +79,6 @@ public class Main {
 
 			//色々起動
 			http_server.start();
-
-			//Discordコマンド登録
-			CommandRegister.discord_regist();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.exit(1);
