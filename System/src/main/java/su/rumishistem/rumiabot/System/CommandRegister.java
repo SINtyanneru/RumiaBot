@@ -54,11 +54,12 @@ public class CommandRegister {
 
 	public static void discord_regist() {
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			for (Guild guild:bot.getGuilds()) {
+			/*for (Guild guild:bot.getGuilds()) {
 				guild.updateCommands().addCommands(discord_temp).queue();
 				LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを登録:"+guild.getId());
-			}
-			//bot.updateCommands().addCommands(discord_temp).complete();
+			}*/
+			bot.updateCommands().addCommands(discord_temp).complete();
+			LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを登録");
 		}
 	}
 
