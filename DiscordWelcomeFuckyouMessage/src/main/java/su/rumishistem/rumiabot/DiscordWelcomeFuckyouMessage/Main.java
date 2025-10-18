@@ -42,6 +42,7 @@ public class Main implements FunctionClass{
 	protected static void invite_sync(Guild g) {
 		if (!g.getSelfMember().hasPermission(Permission.MANAGE_SERVER) ) {
 			LOG(LOG_TYPE.INFO, "[DiscordWelcomeFuckyouMessage] 招待コード取得、ただし権限なしのため無視：" + g.getId());
+			return;
 		}
 
 		g.retrieveInvites().queue(invite_list->{
