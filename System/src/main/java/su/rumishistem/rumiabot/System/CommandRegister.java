@@ -1,6 +1,8 @@
 package su.rumishistem.rumiabot.System;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -18,6 +20,9 @@ public class CommandRegister {
 	private static HashMap<String, CommandData> command_table = new HashMap<>();
 	private static HashMap<String, DiscordMessageContext> discord_message_context_table = new HashMap<>();
 
+	//Discord用
+	private static List<net.dv8tion.jda.api.interactions.commands.build.CommandData> discord_temp = new ArrayList<>();
+
 	public static void add_command(String name, CommandOptionRegist[] option_list, boolean private_command, RunCommand task) {
 		command_table.put(name.toUpperCase(), new CommandData(name.toUpperCase(), option_list, private_command, task));
 
@@ -34,16 +39,18 @@ public class CommandRegister {
 			OptionData od = new OptionData(type, option.get_name(), "説明", option.is_require());
 			sl.addOptions(od);
 		}
-		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(sl).queue();
-		}
+		discord_temp.add(sl);
 	}
 
 	public static void add_message_contextmenu(String name, boolean private_command, RunDiscordMessageContext task) {
 		discord_message_context_table.put(name.toUpperCase(), new DiscordMessageContext(name.toUpperCase(), private_command, task));
 
+		discord_temp.add(Commands.context(Type.MESSAGE, name.toLowerCase()));
+	}
+
+	public static void discord_regist() {
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(Commands.context(Type.MESSAGE, name.toLowerCase())).queue();
+			bot.updateCommands().addCommands(discord_temp).queue();
 		}
 	}
 
