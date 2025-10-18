@@ -61,8 +61,10 @@ public class Admin {
 
 						case "Update": {
 							if (V.GetObject().equals("cmd")) {
-								CommandRegister.discord_regist();
-								return "登録しました";
+								int length = CommandRegister.discord_regist();
+								return length + "件登録しました";
+							} else {
+								return "ない";
 							}
 						}
 
