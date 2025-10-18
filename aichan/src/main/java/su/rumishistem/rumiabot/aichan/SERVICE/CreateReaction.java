@@ -10,7 +10,7 @@ public class CreateReaction {
 	public static void Create(String Reaction, String NoteID) throws IOException {
 		if (NoteID.startsWith("M-")) {
 			NoteID = NoteID.replace("M-", "");
-			get_misskey_bot().get_client().create_reaction(get_misskey_bot().get_client().get_note_from_id(NoteID), Reaction);
+			get_misskey_bot().get_client().create_reaction(get_misskey_bot().get_client().get_note_from_id(NoteID), Reaction.replace(":", ""));
 		} else if (NoteID.startsWith("D-")) {
 			Message MSG = GetDiscordMessage.Get(NoteID);
 			if (MSG != null) {
