@@ -1,1 +1,1 @@
-java -jar ./System/target/System-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar ./System/target/System-1.0-jar-with-dependencies.jar 
