@@ -32,6 +32,10 @@ public class MisskeyBot {
 			@Override
 			public void Ready() {
 				cdl.countDown();
+
+				NoteBuilder nb = new NoteBuilder();
+				nb.set_text("接続しました。");
+				mk.create_note(nb);
 			}
 
 			@Override
