@@ -6,6 +6,8 @@ import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
 import java.sql.*;
 import java.time.*;
 import java.util.HashMap;
+import java.util.function.Consumer;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -61,8 +63,6 @@ public class Main implements FunctionClass{
 		try {
 			if (e.get_type() == EventReceiveType.DiscordGuildMemberJoin) {
 				//参加
-				Invite use_invite_code = JoinLog.join(e.get_as_discord_guild_member_join());
-
 				GuildMemberJoinEvent JE = e.get_as_discord_guild_member_join();
 				TextChannel Ch = GetChannel(JE.getGuild(), DiscordChannelFunction.welcomemessage);
 				if (Ch != null) {
@@ -72,10 +72,15 @@ public class Main implements FunctionClass{
 					EB.setThumbnail(JE.getUser().getAvatarUrl());
 					Ch.sendMessageEmbeds(EB.build()).queue();
 
-					//送信
-					EmbedBuilder EB2 = new EmbedBuilder();
-					EB2.addField("使用された招待コード", use_invite_code.getCode(), false);
-					Ch.sendMessageEmbeds(EB2.build()).queue();
+					JoinLog.join(e.get_as_discord_guild_member_join(), new Consumer<Invite>() {
+						@Override
+						public void accept(Invite inv) {
+							//送信
+							EmbedBuilder EB2 = new EmbedBuilder();
+							EB2.addField("使用された招待コード", inv.getCode(), false);
+							Ch.sendMessageEmbeds(EB2.build()).queue();
+						}
+					});
 				}
 			} else if (e.get_type() == EventReceiveType.DiscordGuildMemberLeave) {
 				//脱退

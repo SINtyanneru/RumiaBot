@@ -2,7 +2,7 @@ package su.rumishistem.rumiabot.DiscordWelcomeFuckyouMessage;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Invite;
@@ -11,10 +11,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import su.rumishistem.rumi_java_lib.SQL;
 
 public class JoinLog {
-	public static Invite join(GuildMemberJoinEvent e) throws SQLException, InterruptedException {
-		Invite[] invite_code = {null};
-		CountDownLatch cdl = new CountDownLatch(1);
-
+	public static void join(GuildMemberJoinEvent e, Consumer<Invite> callback) throws SQLException, InterruptedException {
 		//記録
 		try {
 			SQL.UP_RUN("INSERT INTO `DISCORD_USER_JOIN` (`GID`, `UID`, `DATE`, `INVITE_CODE`, `INVITE_UID`) VALUES (?, ?, NOW(), NULL, NULL)", new Object[] {
@@ -28,7 +25,8 @@ public class JoinLog {
 		}
 
 		if (!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_SERVER)) {
-			return null;
+			callback.accept(null);
+			return;
 		}
 
 		e.getGuild().retrieveInvites().queue(InvList->{
@@ -68,17 +66,12 @@ public class JoinLog {
 						e.getUser().getId()
 					});
 
-					invite_code[0] = UseInvCode;
+					callback.accept(UseInvCode);
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
 			}
-
-			cdl.countDown();
 		});
-
-		cdl.await();
-		return invite_code[0];
 	}
 
 	public static void leave(GuildMemberRemoveEvent e) throws SQLException {
