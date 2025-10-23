@@ -39,6 +39,13 @@ public class MisskeyBot {
 			}
 
 			@Override
+			public void Disconnected() {
+				NoteBuilder nb = new NoteBuilder();
+				nb.set_text("切断されました...");
+				mk.create_note(nb);
+			}
+
+			@Override
 			public void NewFollow(NewFollowEvent e) {
 				try {
 					mk.follow(e.get_user());
