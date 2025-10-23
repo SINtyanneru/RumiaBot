@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>su.rumishistem</groupId>
 			<artifactId>rumi_java_lib</artifactId>
-			<version>13.74</version>
+			<version>13.75</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>
