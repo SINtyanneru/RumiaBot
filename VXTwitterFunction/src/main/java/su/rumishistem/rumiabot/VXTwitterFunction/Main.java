@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -37,6 +38,10 @@ public class Main implements FunctionClass {
 		if (e.get_source() != SourceType.Discord) return;
 		if (e.get_discord().getAuthor().isBot()) return;
 		if (e.get_discord().getChannel().getType() != ChannelType.TEXT) return;
+
+		if (!e.get_discord().getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+			return;
+		}
 
 		try {
 			//WebHook用意
