@@ -51,7 +51,7 @@ public class MisskeyBot {
 					mk.follow(e.get_user());
 
 					NoteBuilder nb = new NoteBuilder();
-					nb.set_text("@"+e.get_user().get_username()+"さんにフォローされました！ありがと！");
+					nb.set_text("@"+e.get_user().get_username()+"@"+e.get_user().get_host()+"さんにフォローされました！ありがと！");
 					mk.create_note(nb);
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -64,7 +64,7 @@ public class MisskeyBot {
 					mk.unfollow(e.get_user());
 
 					NoteBuilder nb = new NoteBuilder();
-					nb.set_text("@"+e.get_user().get_username()+"さんにフォロー解除されちゃいました...");
+					nb.set_text("@"+e.get_user().get_username()+"@"+e.get_user().get_host()+"さんにフォロー解除されちゃいました...");
 					mk.create_note(nb);
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -75,7 +75,7 @@ public class MisskeyBot {
 			public void NewBlock(NewBlockEvent e) {
 				try {
 					NoteBuilder nb = new NoteBuilder();
-					nb.set_text("@"+e.get_user().get_username()+"さんにブロックされちゃいました...");
+					nb.set_text("@"+e.get_user().get_username()+"@"+e.get_user().get_host()+"さんにブロックされちゃいました...");
 					mk.create_note(nb);
 				} catch (Exception ex) {
 					ex.printStackTrace();
