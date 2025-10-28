@@ -48,7 +48,7 @@ public class Main implements FunctionClass {
 			}
 		});
 
-		CommandRegister.add_command("play", new CommandOptionRegist[] {}, false, new RunCommand() {
+		CommandRegister.add_command("stop", new CommandOptionRegist[] {}, false, new RunCommand() {
 			@Override
 			public void run(CommandInteraction e) throws Exception {
 				RunCommand(e, "stop");

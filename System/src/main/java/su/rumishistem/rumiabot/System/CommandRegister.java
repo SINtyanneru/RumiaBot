@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.Command.Type;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -28,6 +29,14 @@ public class CommandRegister {
 	private static List<net.dv8tion.jda.api.interactions.commands.build.CommandData> discord_temp = new ArrayList<>();
 
 	public static void add_command(String name, CommandOptionRegist[] option_list, boolean private_command, RunCommand task) {
+		if (command_table.get(name.toUpperCase()) != null) {
+			LOG(LOG_TYPE.FAILED, "コマンド登録：" + name.toUpperCase());
+			throw new RuntimeException("同名のコマンドがあります：" + name.toUpperCase());
+		} else {
+			LOG(LOG_TYPE.INFO, "コマンド登録：" + name.toUpperCase());
+		}
+
+		//テーブルへ
 		command_table.put(name.toUpperCase(), new CommandData(name.toUpperCase(), option_list, private_command, task));
 
 		//Discord
@@ -52,12 +61,12 @@ public class CommandRegister {
 		discord_temp.add(Commands.context(Type.MESSAGE, name.toLowerCase()));
 	}
 
-	public static int discord_regist() {
+	public static int discord_regist() throws RateLimitedException {
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(discord_temp).complete();
+			bot.updateCommands().addCommands(discord_temp).queue();
 		}
 
-		LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを登録");
+		LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを"+Main.get_discord_bot().get_bot_list().length+"体に登録");
 		return discord_temp.size();
 	}
 

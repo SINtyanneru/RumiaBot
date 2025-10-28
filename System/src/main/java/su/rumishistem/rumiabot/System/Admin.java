@@ -1,5 +1,7 @@
 package su.rumishistem.rumiabot.System;
 
+import static su.rumishistem.rumi_java_lib.LOG_PRINT.Main.LOG;
+
 import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 
@@ -7,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import su.rumishistem.rumi_java_lib.LOG_PRINT.LOG_TYPE;
 import su.rumishistem.rumi_java_lib.REON4213.REON4213Parser;
 import su.rumishistem.rumi_java_lib.REON4213.Type.VBlock;
 import su.rumishistem.rumiabot.System.Module.AdminManager;
@@ -60,9 +63,16 @@ public class Admin {
 						}
 
 						case "Update": {
-							if (V.GetObject().equals("cmd")) {
-								int length = CommandRegister.discord_regist();
-								return length + "件登録しました";
+							if (V.GetObject().equals("cmdb")) {
+								LOG(LOG_TYPE.INFO, "コマンド再登録中...");
+								try {
+									int length = CommandRegister.discord_regist();
+									LOG(LOG_TYPE.OK, length + "件のコマンドを再登録しました");
+									return length + "件登録しました";
+								} catch (Exception ex) {
+									ex.printStackTrace();
+									return "タイムアウトしました";
+								}
 							} else {
 								return "ない";
 							}
