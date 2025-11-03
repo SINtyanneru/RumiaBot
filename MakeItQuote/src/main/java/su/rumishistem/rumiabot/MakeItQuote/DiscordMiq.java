@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu.Builder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
@@ -28,15 +29,23 @@ import su.rumishistem.rumiabot.System.Module.NameParse;
 public class DiscordMiq {
 	public static void RunMessageContext(MessageContextInteractionEvent Interaction) throws MalformedURLException, IOException, FontFormatException {
 		Message MSG = Interaction.getTarget();
-		Member MEM = MSG.getMember();
-		User U = MEM.getUser();
-		BufferedImage IconImage = ImageIO.read(ResolveIconURL(U));
-
 		MakeItQuote miq = new MakeItQuote();
-		miq.setUserID(U.getName());
-		miq.setUserName(new NameParse(MEM).getDisplayName());
-		miq.setIcon(IconImage);
-		miq.setText(MSG.getContentRaw());
+
+		if (!MSG.isWebhookMessage()) {
+			Member MEM = MSG.getMember();
+			User U = MEM.getUser();
+			BufferedImage IconImage = ImageIO.read(ResolveIconURL(U));
+
+			miq.setUserID(U.getName());
+			miq.setUserName(new NameParse(MEM).getDisplayName());
+			miq.setIcon(IconImage);
+			miq.setText(MSG.getContentRaw());
+		} else {
+			miq.setUserID(MSG.getAuthor().getName());
+			miq.setUserName(MSG.getAuthor().getName());
+			miq.setIcon(ImageIO.read(ResolveIconURL(MSG.getAuthor())));
+			miq.setText(MSG.getContentRaw());
+		}
 
 		//ファイルをアップロード
 		File F = miq.Gen();
