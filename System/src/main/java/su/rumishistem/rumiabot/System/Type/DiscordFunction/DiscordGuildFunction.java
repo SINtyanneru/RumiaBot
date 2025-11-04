@@ -4,5 +4,15 @@ public enum DiscordGuildFunction {
 	vxtwitter,
 	fxtwitter,
 	aichan,
-	Joke
+	Joke;
+
+	public static DiscordGuildFunction get_from_name(String name) {
+		for (DiscordGuildFunction f:DiscordGuildFunction.values()) {
+			if (f.name().equalsIgnoreCase(name)) {
+				return f;
+			}
+		}
+
+		throw new RuntimeException("ない");
+	}
 }

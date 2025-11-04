@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import su.rumishistem.rumi_java_lib.ArrayNode;
 import su.rumishistem.rumi_java_lib.SQL;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordChannelFunction;
 import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordGuildFunction;
 
 public class DiscordFunctionCheck {
@@ -11,6 +12,19 @@ public class DiscordFunctionCheck {
 		ArrayNode SQL_RESULT = SQL.RUN("SELECT * FROM `CONFIG` WHERE `GID` = ? AND `FUNC_ID` = ? AND `CID` = '';", new Object[] {
 			guild_id,
 			function.name()
+		});
+		if (SQL_RESULT.asArrayList().size() == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean channel(String guild_id, String channel_id, DiscordChannelFunction function) throws SQLException {
+		ArrayNode SQL_RESULT = SQL.RUN("SELECT * FROM `CONFIG` WHERE `GID` = ? AND `FUNC_ID` = ? AND `CID` = ?;", new Object[] {
+			guild_id,
+			function.name(),
+			channel_id
 		});
 		if (SQL_RESULT.asArrayList().size() == 1) {
 			return true;

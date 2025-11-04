@@ -98,6 +98,16 @@ public class DiscordEventListener extends ListenerAdapter{
 			return;
 		}
 
+		if (e.getName().equals("setting")) {
+			e.deferReply().queue();
+			FunctionSetting.guild_setting(e);
+			return;
+		} else if (e.getName().equals("channel-setting")) {
+			e.deferReply().queue();
+			FunctionSetting.channel_setting(e);
+			return;
+		}
+
 		CommandData command = CommandRegister.get(e.getName());
 		HashMap<String, Object> option = new HashMap<>();
 

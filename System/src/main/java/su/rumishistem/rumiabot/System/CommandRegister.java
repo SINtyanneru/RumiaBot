@@ -20,6 +20,8 @@ import su.rumishistem.rumiabot.System.Type.CommandOptionRegist;
 import su.rumishistem.rumiabot.System.Type.DiscordMessageContext;
 import su.rumishistem.rumiabot.System.Type.RunCommand;
 import su.rumishistem.rumiabot.System.Type.RunDiscordMessageContext;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordChannelFunction;
+import su.rumishistem.rumiabot.System.Type.DiscordFunction.DiscordGuildFunction;
 
 public class CommandRegister {
 	private static HashMap<String, CommandData> command_table = new HashMap<>();
@@ -62,8 +64,24 @@ public class CommandRegister {
 	}
 
 	public static int discord_regist() throws RateLimitedException {
+		//鯖の機能
+		SlashCommandData guild_setting = Commands.slash("setting", "設定");
+		OptionData guild_select_option = new OptionData(OptionType.STRING, "function", "機能", true);
+		for (DiscordGuildFunction f:DiscordGuildFunction.values()) {
+			guild_select_option.addChoice(f.name(), f.name());
+		}
+		guild_setting.addOptions(guild_select_option, new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true));
+
+		//チャンネルの機能
+		SlashCommandData channel_setting = Commands.slash("channel-setting", "設定");
+		OptionData channel_select_option = new OptionData(OptionType.STRING, "function", "機能", true);
+		for (DiscordChannelFunction f:DiscordChannelFunction.values()) {
+			channel_select_option.addChoice(f.name(), f.name());
+		}
+		channel_setting.addOptions(channel_select_option, new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true));
+
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(discord_temp).queue();
+			bot.updateCommands().addCommands(discord_temp).addCommands(guild_setting).addCommands(channel_setting).queue();
 		}
 
 		LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを"+Main.get_discord_bot().get_bot_list().length+"体に登録");
