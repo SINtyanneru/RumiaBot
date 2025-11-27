@@ -80,9 +80,29 @@ public class MisskeyMiq {
 			Files.delete(Path.of(IconPath));
 		}
 
+		//TODO:これは応急処理
+		String host = "eth.rumiserver.com";
+		try {
+			host = target_user.get_host();
+		} catch (NullPointerException ex) {
+			//こんなエラーが出る
+			/*
+			 	java.lang.NullPointerException: Cannot invoke "su.rumishistem.rumi_java_lib.MisskeyBot.MisskeyClient.get_host()" because "this.client" is null
+				at su.rumishistem.rumi_java_lib.MisskeyBot.Type.User.get_host(User.java:61)
+				at su.rumishistem.rumiabot.MakeItQuote.MisskeyMiq.Run(MisskeyMiq.java:85)
+				at su.rumishistem.rumiabot.MakeItQuote.Main$1.run(Main.java:46)
+				at su.rumishistem.rumiabot.System.Misskey.MisskeyBot$1$1.run(MisskeyBot.java:167)
+				at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+				at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+				at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+				at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+				at java.base/java.lang.Thread.run(Thread.java:1583)
+			*/
+		}
+
 		//生成
 		MakeItQuote miq = new MakeItQuote();
-		miq.setUserID(target_user.get_username() + "@" + target_user.get_host());
+		miq.setUserID(target_user.get_username() + "@" + host);
 		miq.setUserName(target_user.get_name());
 		miq.setIcon(IconImage);
 		if (Target.get_text() != null) {
