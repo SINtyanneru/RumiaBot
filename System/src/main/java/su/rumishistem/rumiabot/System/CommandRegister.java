@@ -80,8 +80,11 @@ public class CommandRegister {
 		}
 		channel_setting.addOptions(channel_select_option, new OptionData(OptionType.BOOLEAN, "enable", "有効化無効化", true));
 
+		//脱退コマンド
+		SlashCommandData dattai_command = Commands.slash("dattai", "BOTを脱退させます。");
+
 		for (JDA bot:Main.get_discord_bot().get_bot_list()) {
-			bot.updateCommands().addCommands(discord_temp).addCommands(guild_setting).addCommands(channel_setting).queue();
+			bot.updateCommands().addCommands(discord_temp).addCommands(guild_setting).addCommands(channel_setting).addCommands(dattai_command).queue();
 		}
 
 		LOG(LOG_TYPE.OK, "[Discord] "+discord_temp.size()+"個のコマンドを"+Main.get_discord_bot().get_bot_list().length+"体に登録");

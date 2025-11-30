@@ -106,6 +106,10 @@ public class DiscordEventListener extends ListenerAdapter{
 			e.deferReply().queue();
 			FunctionSetting.channel_setting(e);
 			return;
+		} else if (e.getName().equals("dattai")) {
+			e.reply("さいなら").queue();
+			e.getGuild().leave().queue();
+			return;
 		}
 
 		CommandData command = CommandRegister.get(e.getName());
