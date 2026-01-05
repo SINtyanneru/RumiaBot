@@ -10,6 +10,7 @@ public class cam {
 	public static void Command(CommandInteraction e) throws Exception {
 		Member M = (Member) e.get_option("user");
 		String Text = e.get_option_as_string("text");
+		Text = Text.replace("@", "[AD]");
 
 		DiscordWebHook WH = new DiscordWebHook(e.get_discprd_event().getChannel().asTextChannel());
 
