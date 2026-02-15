@@ -19,8 +19,10 @@ public class Bot {
 			public void run() {
 				try {
 					discord_bot = new DiscordBot(Config.Discord.token);
-				} catch (InterruptedException e) {
-					return;
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					Main.logger.print(SeverityLevel.Critical, "Discordへのログインに失敗しました");
+					System.exit(1);
 				}
 			}
 		});
@@ -28,7 +30,13 @@ public class Bot {
 		misskey_thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				misskey_bot = new MisskeyBot(Config.Misskey.host, Config.Misskey.token, Config.Misskey.admin_token);
+				try {
+					misskey_bot = new MisskeyBot(Config.Misskey.host, Config.Misskey.token, Config.Misskey.admin_token);
+				} catch (RuntimeException ex) {
+					ex.printStackTrace();
+					Main.logger.print(SeverityLevel.Critical, "Misskeyへのログインに失敗しました");
+					System.exit(1);
+				}
 			}
 		});
 
@@ -40,11 +48,8 @@ public class Bot {
 			Thread.sleep(1000);
 		}
 
+		//OK
 		Main.logger.print(SeverityLevel.Ok, "BOT Ready");
-
-		//ステータス
-		//discord_bot.get_jda().getPresence().setActivity(Activity.watching("貴様"));
-		//discord_bot.get_jda().getPresence().setStatus(OnlineStatus.ONLINE);
 	}
 
 	public static DiscordBot get_discord() {

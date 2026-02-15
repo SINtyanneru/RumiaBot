@@ -1,7 +1,9 @@
 package su.rumishistem.rumisanbot.Misskey;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -13,8 +15,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okio.ByteString;
 import su.rumishistem.rumi_java_logger.SeverityLevel;
+import su.rumishistem.rumisanbot.BaseSystem;
 import su.rumishistem.rumisanbot.Bot;
 import su.rumishistem.rumisanbot.Main;
 
@@ -38,6 +40,21 @@ public class MisskeyBot {
 		this.token = token;
 		this.admin_token = admin_token;
 
+		API.set_host(host);
+		API.set_token(token);
+		API.set_admin_token(admin_token);
+
+		//ログイン
+		try {
+			JsonNode login = API.run("i", null);
+			if (login.get("error") != null) {
+				System.out.println(login);
+				throw new RuntimeException("ログインできません");
+			}
+		} catch (Exception e) {
+			return;
+		}
+
 		//WebSocket
 		ws_connect();
 		admin_ws_connect();
@@ -46,8 +63,12 @@ public class MisskeyBot {
 		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				ws.send("h");
-				admin_ws.send("h");
+				try {
+					ws.send("h");
+					admin_ws.send("h");
+				} catch (Exception e) {
+					//無視
+				}
 			}
 		}, 30, 30, TimeUnit.SECONDS);
 
@@ -124,25 +145,43 @@ public class MisskeyBot {
 						switch (Integer.parseInt(body.get("body").get("id").asText())) {
 							case STREAM_CHANNNEL_JOBQUEUE: {
 								JsonNode jq = body.get("body").get("body");
-								System.out.println("Deliver");
-								System.out.println("  Process : " + jq.get("deliver").get("activeSincePrevTick").asInt());
-								System.out.println("  Active  : " + jq.get("deliver").get("active").asInt());
-								System.out.println("  Waiting : " + jq.get("deliver").get("waiting").asInt());
-								System.out.println("  Delayed : " + jq.get("deliver").get("delayed").asInt());
+								int deliver_process = jq.get("deliver").get("activeSincePrevTick").asInt();
+								int deliver_active = jq.get("deliver").get("active").asInt();
+								int deliver_waiting = jq.get("deliver").get("waiting").asInt();
+								int deliver_delayed = jq.get("deliver").get("delayed").asInt();
 
-								System.out.println("Inbox");
-								System.out.println("  Process : " + jq.get("inbox").get("activeSincePrevTick").asInt());
-								System.out.println("  Active  : " + jq.get("inbox").get("active").asInt());
-								System.out.println("  Waiting : " + jq.get("inbox").get("waiting").asInt());
-								System.out.println("  Delayed : " + jq.get("inbox").get("delayed").asInt());
+								int inbox_process = jq.get("inbox").get("activeSincePrevTick").asInt();
+								int inbox_active = jq.get("inbox").get("active").asInt();
+								int inbox_waiting = jq.get("inbox").get("waiting").asInt();
+								int inbox_delayed = jq.get("inbox").get("delayed").asInt();
+
+								BaseSystem.send_basesystem("@MISSKEY JOBQUEUE " + new ObjectMapper().writeValueAsString(new HashMap<String, Integer>(){{
+									put("DELIVER_PROCESS", deliver_process);
+									put("DELIVER_ACTIVE", deliver_active);
+									put("DELIVER_WAITING", deliver_waiting);
+									put("DELIVER_DELAYED", deliver_delayed);
+									put("INBOX_PROCESS", inbox_process);
+									put("INBOX_ACTIVE", inbox_active);
+									put("INBOX_WAITING", inbox_waiting);
+									put("INBOX_DELAYED", inbox_delayed);
+								}}));
 								return;
 							}
 							case STREAM_CHANNNEL_STATS: {
 								JsonNode stats = body.get("body").get("body");
-								System.out.println("CPU: " + Math.round(stats.get("cpu").asDouble() * 100));
-								System.out.println("MEM: " + (stats.get("mem").get("used").asInt() + stats.get("mem").get("active").asInt()) + "\\" + stats.get("mem").get("used").asInt());
-								System.out.println("NET: RX[" + Math.round(stats.get("net").get("rx").asDouble()) + "]");
-								System.out.println("NET: TX[" + Math.round(stats.get("net").get("tx").asDouble()) + "]");
+								int cpu_use = (int)Math.round(stats.get("cpu").asDouble() * 100);
+								long memory_use = stats.get("mem").get("used").asLong();
+								long memory_free = stats.get("mem").get("active").asLong();
+								int net_rx = (int)Math.round(stats.get("net").get("rx").asDouble());
+								int net_tx = (int)Math.round(stats.get("net").get("tx").asDouble());
+
+								BaseSystem.send_basesystem("@MISSKEY STATS " + new ObjectMapper().writeValueAsString(new HashMap<String, Object>(){{
+									put("CPU_USE", cpu_use);
+									put("MEM_USE", memory_use);
+									put("MEM_FREE", memory_free);
+									put("NET_RX", net_rx);
+									put("NET_TX", net_tx);
+								}}));
 								return;
 							}
 						}
