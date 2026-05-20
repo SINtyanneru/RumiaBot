@@ -1,7 +1,6 @@
 package su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type;
 
-public class CommandOption {
-	public final String name;
+public class CommandOptionValue {
 	private final Object value;
 	public final Type type;
 
@@ -12,8 +11,7 @@ public class CommandOption {
 		User
 	}
 
-	public CommandOption(String name, Object value, Type type) {
-		this.name = name;
+	public CommandOptionValue(Object value, Type type) {
 		this.value = value;
 		this.type = type;
 	}
