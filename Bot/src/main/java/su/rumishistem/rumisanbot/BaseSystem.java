@@ -16,6 +16,8 @@ public class BaseSystem {
 	private static ArrayBlockingQueue<String> bw_queue = new ArrayBlockingQueue<>(100);
 	private static CountDownLatch shutdown_cdl = new CountDownLatch(1);
 
+	//TODO:BaseSystemがエラー落ちしたら自動的に再起動をかけるべき
+
 	public static void boot() throws IOException {
 		Main.logger.print(SeverityLevel.Notice, "ﾍﾞｰｽｼｽﾃﾑを起動しています...");
 
