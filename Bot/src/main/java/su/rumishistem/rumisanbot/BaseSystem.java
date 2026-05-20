@@ -199,9 +199,11 @@ public class BaseSystem {
 					}
 				} else if (cmd[1].equals("INTERACTION")) {
 					String interaction_id = cmd[3];
+					interaction_id = interaction_id.substring(3);
 					SlashCommandInteraction interaction = Bot.get_discord().get_interaction(interaction_id);
 
 					if (interaction == null) {
+						System.out.println("インタラクションがありません: " + interaction_id);
 						send_basesystem("<"+cmd_id+"> 0x4000");
 						return;
 					}

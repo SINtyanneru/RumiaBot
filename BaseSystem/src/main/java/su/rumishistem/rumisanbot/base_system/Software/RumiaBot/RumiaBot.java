@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import su.rumishistem.rumisanbot.base_system.Command;
 import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.CommandOptionValue;
 import su.rumishistem.rumisanbot.base_system.Type.ContentsSource;
+import su.rumishistem.rumisanbot.base_system.Type.NotePublicSetting;
 import su.rumishistem.rumisanbot.base_system.Type.Event.ReceiveMessageEvent;
 
 public class RumiaBot {
@@ -47,6 +49,7 @@ public class RumiaBot {
 			Map<String, CommandOptionValue> option_list = new HashMap<>();
 			for (String option_text: option_temp) {
 				int index = option_text.indexOf('=');
+				if (index == -1) continue;
 				String name = option_text.substring(0, index);
 				String value_string = option_text.substring(index + 1);
 				CommandOptionValue value;
@@ -75,6 +78,19 @@ public class RumiaBot {
 				System.out.println("├> "+option.getKey()+" => "+option.getValue());
 			}
 			System.out.println("└────> Runing...");
+
+			if (command_name.equals("test")) {
+				String return_text = "こにゃん";
+				//Discordのインタラクションか？
+				if (e.get_message().id.startsWith("!IT")) {
+					Command.discord_interaction_defer(e.get_message().id, false);
+					Command.discord_interaction_reply(e.get_message().id, true, return_text);
+				} else if (e.get_message().source == ContentsSource.Misskey) {
+					Command.misskey_create_note(return_text, e.get_message().id, null, NotePublicSetting.Home, false);
+				} else if (e.get_message().source == ContentsSource.Discord) {
+					//作る
+				}
+			}
 
 			return true;
 		}
