@@ -1,16 +1,23 @@
 package su.rumishistem.rumisanbot.Discord;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.SelfUser;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class DiscordBot {
 	private JDA bot;
+	protected Map<String, SlashCommandInteraction> command_interaction = new HashMap<>();
+
+	public final String self_id;
 
 	public DiscordBot(String token) throws InterruptedException {
 		JDALogger.setFallbackLoggerEnabled(false);
@@ -47,6 +54,8 @@ public class DiscordBot {
 
 		bot = b.build();
 		bot.awaitReady();
+
+		self_id = get_self().getId();
 	}
 
 	public JDA get_jda() {
@@ -55,5 +64,9 @@ public class DiscordBot {
 
 	public SelfUser get_self() {
 		return bot.getSelfUser();
+	}
+
+	public SlashCommandInteraction get_interaction(String id) {
+		return command_interaction.get(id);
 	}
 }

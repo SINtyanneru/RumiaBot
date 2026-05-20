@@ -35,6 +35,9 @@ public class MisskeyBot {
 	private final String token;
 	private final String admin_token;
 
+	public final String self_user_id;
+	public final String self_uid;
+
 	public MisskeyBot(String host, String token, String admin_token) {
 		this.host = host;
 		this.token = token;
@@ -51,8 +54,11 @@ public class MisskeyBot {
 				System.out.println(login);
 				throw new RuntimeException("ログインできません");
 			}
+
+			self_user_id = login.get("id").asText();
+			self_uid = login.get("username").asText();
 		} catch (Exception e) {
-			return;
+			throw new RuntimeException("ログインできません");
 		}
 
 		//WebSocket
@@ -83,8 +89,8 @@ public class MisskeyBot {
 			public void onOpen(WebSocket s, Response response) {
 				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"main\",\"id\":\""+STREAM_CHANNNEL_MAIN+"\"}}");
 
-				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"homeTimeline\",\"id\":\""+STREAM_CHANNNEL_TL+"\",\"params\":{\"withRenotes\":true,\"withReplies\":false}}}");
-				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"localTimeline\",\"id\":\""+STREAM_CHANNNEL_LOCAL_TL+"\",\"params\":{\"withRenotes\":true,\"withReplies\":false}}}");
+				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"homeTimeline\",\"id\":\""+STREAM_CHANNNEL_TL+"\",\"params\":{\"withRenotes\":true,\"withReplies\":true}}}");
+				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"localTimeline\",\"id\":\""+STREAM_CHANNNEL_LOCAL_TL+"\",\"params\":{\"withRenotes\":true,\"withReplies\":true}}}");
 
 				Main.logger.print(SeverityLevel.Notice, "MisskeyのWebSocketへ接続しました。");
 			}
@@ -96,16 +102,70 @@ public class MisskeyBot {
 					JsonNode body = new ObjectMapper().readTree(text);
 
 					if (body.get("type").asText().equals("channel")) {
-						switch (Integer.parseInt(body.get("body").get("id").asText())) {
+						JsonNode data = body.get("body");
+						switch (Integer.parseInt(data.get("id").asText())) {
 							case STREAM_CHANNNEL_MAIN: {
+								if (data.get("type").asText().equals("mention")) {
+									JsonNode note = data.get("body");
+									BaseSystem.send_event("MISSKEY", "MENTION", new HashMap<>(){{
+										put("NOTE_ID", note.get("id").asText());
+										put("NOTE_TEXT", note.get("text").asText());
+
+										put("USER_ID", note.get("userId").asText());
+										put("USER_UID", note.get("user").get("username").asText());
+										if (note.get("user").get("host").isNull()) {
+											put("USER_HOST", host);
+										} else {
+											put("USER_HOST", note.get("user").get("host").asText());
+										}
+
+										put("USER_NAME", note.get("user").get("name").asText());
+										put("USER_ICON", note.get("user").get("avatarUrl").asText());
+									}});
+								}
 								return;
 							}
 
 							case STREAM_CHANNNEL_TL: {
+								if (data.get("type").asText().equals("note")) {
+									JsonNode note = data.get("body");
+									BaseSystem.send_event("MISSKEY", "NOTE", new HashMap<>(){{
+										put("NOTE_ID", note.get("id").asText());
+										put("NOTE_TEXT", note.get("text").asText());
+
+										put("USER_ID", note.get("userId").asText());
+										put("USER_UID", note.get("user").get("username").asText());
+										if (note.get("user").get("host").isNull()) {
+											put("USER_HOST", host);
+											put("IS_LOCAL", true);
+										} else {
+											put("USER_HOST", note.get("user").get("host").asText());
+											put("IS_LOCAL", false);
+										}
+
+										put("USER_NAME", note.get("user").get("name").asText());
+										put("USER_ICON", note.get("user").get("avatarUrl").asText());
+									}});
+								}
 								return;
 							}
 
 							case STREAM_CHANNNEL_LOCAL_TL: {
+								if (data.get("type").asText().equals("note")) {
+									JsonNode note = data.get("body");
+									BaseSystem.send_event("MISSKEY", "LOCAL_NOTE", new HashMap<>(){{
+										put("NOTE_ID", note.get("id").asText());
+										put("NOTE_TEXT", note.get("text").asText());
+
+										put("USER_ID", note.get("userId").asText());
+										put("USER_UID", note.get("user").get("username").asText());
+										put("USER_HOST", host);
+										put("IS_LOCAL", true);
+
+										put("USER_NAME", note.get("user").get("name").asText());
+										put("USER_ICON", note.get("user").get("avatarUrl").asText());
+									}});
+								}
 								return;
 							}
 						}
@@ -155,7 +215,7 @@ public class MisskeyBot {
 								int inbox_waiting = jq.get("inbox").get("waiting").asInt();
 								int inbox_delayed = jq.get("inbox").get("delayed").asInt();
 
-								BaseSystem.send_basesystem("@MISSKEY JOBQUEUE " + new ObjectMapper().writeValueAsString(new HashMap<String, Integer>(){{
+								BaseSystem.send_event("MISSKEY", "JOBQUEUE", new HashMap<String, Object>(){{
 									put("DELIVER_PROCESS", deliver_process);
 									put("DELIVER_ACTIVE", deliver_active);
 									put("DELIVER_WAITING", deliver_waiting);
@@ -164,7 +224,7 @@ public class MisskeyBot {
 									put("INBOX_ACTIVE", inbox_active);
 									put("INBOX_WAITING", inbox_waiting);
 									put("INBOX_DELAYED", inbox_delayed);
-								}}));
+								}});
 								return;
 							}
 							case STREAM_CHANNNEL_STATS: {
@@ -175,13 +235,13 @@ public class MisskeyBot {
 								int net_rx = (int)Math.round(stats.get("net").get("rx").asDouble());
 								int net_tx = (int)Math.round(stats.get("net").get("tx").asDouble());
 
-								BaseSystem.send_basesystem("@MISSKEY STATS " + new ObjectMapper().writeValueAsString(new HashMap<String, Object>(){{
+								BaseSystem.send_event("MISSKEY", "STATS", new HashMap<String, Object>(){{
 									put("CPU_USE", cpu_use);
 									put("MEM_USE", memory_use);
 									put("MEM_FREE", memory_free);
 									put("NET_RX", net_rx);
 									put("NET_TX", net_tx);
-								}}));
+								}});
 								return;
 							}
 						}

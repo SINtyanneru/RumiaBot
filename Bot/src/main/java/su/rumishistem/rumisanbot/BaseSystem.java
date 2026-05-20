@@ -1,17 +1,14 @@
 package su.rumishistem.rumisanbot;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
-
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import su.rumishistem.rsdf_java.*;
 import su.rumishistem.rumi_java_logger.SeverityLevel;
 import su.rumishistem.rumisanbot.Misskey.API;
 
@@ -50,6 +47,21 @@ public class BaseSystem {
 			}
 		}).start();
 
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+					String line;
+					while ((line = br.readLine()) != null) {
+						Main.logger.print(SeverityLevel.Error, "[ BaseSystem ] " + line);
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}).start();
+
 		//読む
 		new Thread(new Runnable() {
 			@Override
@@ -71,17 +83,21 @@ public class BaseSystem {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					send_basesystem("@SYSTEM_EXIT");
-					shutdown_cdl.await();
-				} catch (InterruptedException ex) {
-					System.out.println("異常終了");
-					return;
-				}
+				p.destroy();
+				Main.logger.print(SeverityLevel.Ok, "ﾍﾞｰｽｼｽﾃﾑをｼｬｯﾄﾀﾞｳﾝしました");
 			}
 		}));
 
 		Main.logger.print(SeverityLevel.Ok, "ﾍﾞｰｽｼｽﾃﾑが起動しました、BOTは正常です。");
+
+		send_event("MISSKEY", "SELF_USER", new HashMap<>(){{
+			put("ID", Bot.get_misskey().self_user_id);
+			put("UID", Bot.get_misskey().self_uid);
+		}});
+
+		send_event("DISCORD", "SELF_USER", new HashMap<>(){{
+			put("ID", Bot.get_discord().self_id);
+		}});
 	}
 
 	private static void receive_event(String arg) {
@@ -157,6 +173,45 @@ public class BaseSystem {
 							Bot.get_discord().get_jda().getPresence().setActivity(Activity.streaming(text, new String(Base64.getDecoder().decode(cmd[4]), StandardCharsets.UTF_8)));
 							return;
 					}
+				} else if (cmd[1].equals("INTERACTION")) {
+					String interaction_id = cmd[3];
+					SlashCommandInteraction interaction = Bot.get_discord().get_interaction(interaction_id);
+
+					if (interaction == null) {
+						send_basesystem("<"+cmd_id+"> 0x4000");
+						return;
+					}
+
+					switch (cmd[2]) {
+						case "PUBLIC_DEFER": {
+							interaction.deferReply().setEphemeral(false).queue();
+							return;
+						}
+
+						case "PRIVATE_DEFER": {
+							interaction.deferReply().setEphemeral(true).queue();
+							return;
+						}
+
+						case "REPLY": {
+							Map<String, Object> data = RSDFDecoder.decode(Base64.getDecoder().decode(cmd[5])).get_dict();
+							String text = null;
+							if (data.get("TEXT") != null) text = (String)data.get("TEXT");
+
+							switch (cmd[4]) {
+								case "DEFER_REPLY": {
+									interaction.getHook().editOriginal(text).queue();
+									return;
+								}
+
+								case "REPLY": {
+									boolean ephemeral = (boolean)data.get("PRIVATE");
+									interaction.reply(text).setEphemeral(ephemeral).queue();
+									return;
+								}
+							}
+						}
+					}
 				}
 			}
 
@@ -168,5 +223,12 @@ public class BaseSystem {
 
 	public static void send_basesystem(String message) {
 		bw_queue.offer(message);
+	}
+
+	public static void send_event(String genre, String name, Map<String, Object> data) {
+		try {
+			send_basesystem("@"+genre+" "+name+" "+Base64.getEncoder().encodeToString(RSDFEncoder.encode(data)));
+		} catch (IOException ex) {
+		}
 	}
 }
