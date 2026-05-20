@@ -74,4 +74,44 @@ public class API {
 			throw new RuntimeException("エラー: " + r);
 		}
 	}
+
+	public static void follow(String user_id) throws IOException, InterruptedException {
+		JsonNode r = run("following/create", new HashMap<>(){{
+			put("userId", user_id);
+		}});
+
+		if (r.get("error") != null) {
+			throw new RuntimeException("エラー: " + r);
+		}
+	}
+
+	public static void unfollow(String user_id) throws IOException, InterruptedException {
+		JsonNode r = run("following/delete", new HashMap<>(){{
+			put("userId", user_id);
+		}});
+
+		if (r.get("error") != null) {
+			throw new RuntimeException("エラー: " + r);
+		}
+	}
+
+	public static void block(String user_id) throws IOException, InterruptedException {
+		JsonNode r = run("blocking/create", new HashMap<>(){{
+			put("userId", user_id);
+		}});
+
+		if (r.get("error") != null) {
+			throw new RuntimeException("エラー: " + r);
+		}
+	}
+
+	public static void unblock(String user_id) throws IOException, InterruptedException {
+		JsonNode r = run("blocking/delete", new HashMap<>(){{
+			put("userId", user_id);
+		}});
+
+		if (r.get("error") != null) {
+			throw new RuntimeException("エラー: " + r);
+		}
+	}
 }

@@ -44,10 +44,22 @@ public class Command {
 				}
 			}
 		}).start();
+
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					out_pis.close();
+				} catch (Exception e) {
+					return;
+				}
+			}
+		}));
 	}
 
 	public static void print_debug(String message) {
 		stdout.println(">" + message);
+		stdout.flush();
 	}
 
 	public static void misskey_create_note(String text, String reply, String quote, NotePublicSetting public_setting, boolean local_only) {
@@ -83,6 +95,27 @@ public class Command {
 		sb.append("<"+UUID.randomUUID().toString()+">");
 
 		stdout.println(sb.toString());
+		stdout.flush();
+	}
+
+	public static void misskey_follow_user(String user_id) {
+		stdout.println("/MISSKEY FOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.flush();
+	}
+
+	public static void misskey_unfollow_user(String user_id) {
+		stdout.println("/MISSKEY UNFOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.flush();
+	}
+
+	public static void misskey_block_user(String user_id) {
+		stdout.println("/MISSKEY BLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.flush();
+	}
+
+	public static void misskey_unblock_user(String user_id) {
+		stdout.println("/MISSKEY UNBLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.flush();
 	}
 
 	public static void discord_change_status(DiscordStatus status) {
@@ -103,18 +136,22 @@ public class Command {
 		}
 
 		stdout.println("/DISCORD STATUS "+name+" <"+UUID.randomUUID().toString()+">");
+		stdout.flush();
 	}
 
 	public static void discord_change_activity_playing(String text) {
 		stdout.println("/DISCORD ACTIVITY PLAYING "+Base64.getEncoder().encodeToString(text.getBytes())+" <"+UUID.randomUUID().toString()+">");
+		stdout.flush();
 	}
 
 	public static void discord_change_activity_watching(String text) {
 		stdout.println("/DISCORD ACTIVITY WATCHING "+Base64.getEncoder().encodeToString(text.getBytes())+" <"+UUID.randomUUID().toString()+">");
+		stdout.flush();
 	}
 
 	public static void discord_change_activity_streaming(String text, String url) {
 		stdout.println("/DISCORD ACTIVITY STREAMING "+Base64.getEncoder().encodeToString(text.getBytes())+" "+Base64.getEncoder().encodeToString(url.getBytes())+" <"+UUID.randomUUID().toString()+">");
+		stdout.flush();
 	}
 
 	public static void discord_interaction_defer(String id, boolean is_private) {
@@ -133,6 +170,7 @@ public class Command {
 
 		sb.append(" <"+UUID.randomUUID().toString()+">");
 		stdout.println(sb.toString());
+		stdout.flush();
 	}
 
 	public static void discord_interaction_reply(String id, boolean is_defer, String text) {
@@ -162,5 +200,6 @@ public class Command {
 
 		sb.append(" <"+UUID.randomUUID().toString()+">");
 		stdout.println(sb.toString());
+		stdout.flush();
 	}
 }

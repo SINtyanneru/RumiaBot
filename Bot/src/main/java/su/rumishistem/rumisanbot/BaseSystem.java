@@ -109,7 +109,7 @@ public class BaseSystem {
 
 	private static void receive_command(String[] cmd) throws IOException, InterruptedException {
 		String cmd_id = cmd[cmd.length - 1].substring(1, cmd[cmd.length - 1].length() -1);
-		System.out.println("[ BaseSystem ] Command:" + cmd_id);
+		//System.out.println("[ BaseSystem ] Command:" + cmd_id);
 
 		switch (cmd[0]) {
 			case "MISSKEY": {
@@ -136,6 +136,30 @@ public class BaseSystem {
 					if (quote_id.equals("null")) quote_id = null;
 
 					API.create_note(note_text, reply_id, quote_id, public_setting, local_only);
+					return;
+				}
+
+				if (cmd[1].equals("FOLLOW")) {
+					String user_id = new String(Base64.getDecoder().decode(cmd[2]), StandardCharsets.UTF_8);
+					API.follow(user_id);
+					return;
+				}
+
+				if (cmd[1].equals("UNFOLLOW")) {
+					String user_id = new String(Base64.getDecoder().decode(cmd[2]), StandardCharsets.UTF_8);
+					API.unfollow(user_id);
+					return;
+				}
+
+				if (cmd[1].equals("BLOCK")) {
+					String user_id = new String(Base64.getDecoder().decode(cmd[2]), StandardCharsets.UTF_8);
+					API.block(user_id);
+					return;
+				}
+
+				if (cmd[1].equals("UNBLOCK")) {
+					String user_id = new String(Base64.getDecoder().decode(cmd[2]), StandardCharsets.UTF_8);
+					API.unblock(user_id);
 					return;
 				}
 			}

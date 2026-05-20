@@ -53,7 +53,7 @@ public class RumiaBot {
 
 				if (value_string.startsWith("\"") && value_string.endsWith("\"")) {
 					//「"」で囲まれているなら文字列
-					value = new CommandOptionValue(value_string.subSequence(1, value_string.length() - 1), CommandOptionValue.Type.String);
+					value = new CommandOptionValue(value_string.subSequence(1, value_string.length() - 2), CommandOptionValue.Type.String);
 				} else if (value_string.matches("\\d+")) {
 					//数字のみなら数値
 					value = new CommandOptionValue(Integer.parseInt(value_string), CommandOptionValue.Type.Int);

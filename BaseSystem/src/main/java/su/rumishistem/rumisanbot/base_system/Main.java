@@ -102,6 +102,30 @@ public class Main {
 								));
 								break;
 							}
+
+							//フォロー
+							case "FOLLOW": {
+								String user_id = (String)event_data.get("USER_ID");
+								String user_uid = (String)event_data.get("USER_UID");
+								String user_host = (String)event_data.get("USER_HOST");
+								System.out.println("@" + user_uid + "@" + user_host + "にフォローされました、フォロバします。");
+
+								Command.misskey_create_note("@" + user_uid + "@" + user_host + "にフォローされました！", null, null, NotePublicSetting.Home, false);
+								Command.misskey_follow_user(user_id);
+								break;
+							}
+
+							//フォロー解除
+							case "UNFOLLOW": {
+								String user_id = (String)event_data.get("USER_ID");
+								String user_uid = (String)event_data.get("USER_UID");
+								String user_host = (String)event_data.get("USER_HOST");
+								System.out.println("@" + user_uid + "@" + user_host + "にフォロ解されました...ブロックしてやる");
+
+								Command.misskey_create_note("@" + user_uid + "@" + user_host + "にフォロ解されました；；\n悲しいのでブロックします。", null, null, NotePublicSetting.Home, false);
+								Command.misskey_block_user(user_id);
+								break;
+							}
 						}
 					}
 
@@ -198,6 +222,8 @@ public class Main {
 								}
 
 								String text = sb.toString();
+								if (text.endsWith(" ")) text = text.substring(0, text.length() - 1);
+
 								System.out.println("Discordｽﾗｯｼｭｺﾏﾝﾄﾞをﾒｯｾｰｼﾞｺﾏﾝﾄﾞに変換: ["+sb.toString()+"]");
 
 								receive_message(ContentsSource.Discord, true, new Message(

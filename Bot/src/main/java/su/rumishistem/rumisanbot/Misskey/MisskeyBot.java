@@ -122,6 +122,34 @@ public class MisskeyBot {
 										put("USER_NAME", note.get("user").get("name").asText());
 										put("USER_ICON", note.get("user").get("avatarUrl").asText());
 									}});
+								} else if (data.get("type").asText().equals("followed")) {
+									JsonNode user = data.get("body");
+									BaseSystem.send_event("MISSKEY", "FOLLOW", new HashMap<>(){{
+										put("USER_ID", user.get("id").asText());
+										put("USER_UID", user.get("username").asText());
+										if (user.get("host").isNull()) {
+											put("USER_HOST", host);
+										} else {
+											put("USER_HOST", user.get("host").asText());
+										}
+
+										put("USER_NAME", user.get("name").asText());
+										put("USER_ICON", user.get("avatarUrl").asText());
+									}});
+								} else if (data.get("type").asText().equals("notification") && data.get("body").get("type").asText().equals("unfollow")) {
+									JsonNode user = data.get("body").get("user");
+									BaseSystem.send_event("MISSKEY", "UNFOLLOW", new HashMap<>(){{
+										put("USER_ID", user.get("id").asText());
+										put("USER_UID", user.get("username").asText());
+										if (user.get("host").isNull()) {
+											put("USER_HOST", host);
+										} else {
+											put("USER_HOST", user.get("host").asText());
+										}
+
+										put("USER_NAME", user.get("name").asText());
+										put("USER_ICON", user.get("avatarUrl").asText());
+									}});
 								}
 								return;
 							}
