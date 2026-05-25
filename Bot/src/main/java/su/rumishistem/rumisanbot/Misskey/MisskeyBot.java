@@ -36,10 +36,12 @@ public class MisskeyBot {
 	private final String admin_token;
 
 	public final String self_user_id;
+	public final String self_host;
 	public final String self_uid;
 
 	public MisskeyBot(String host, String token, String admin_token) {
 		this.host = host;
+		this.self_host = host;
 		this.token = token;
 		this.admin_token = admin_token;
 

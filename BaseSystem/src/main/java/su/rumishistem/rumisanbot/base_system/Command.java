@@ -155,6 +155,8 @@ public class Command {
 	}
 
 	public static void discord_interaction_defer(String id, boolean is_private) {
+		if (id.startsWith("!IT")) id = id.substring(3);
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("/DISCORD INTERACTION");
 
@@ -174,6 +176,8 @@ public class Command {
 	}
 
 	public static void discord_interaction_reply(String id, boolean is_defer, String text) {
+		if (id.startsWith("!IT")) id = id.substring(3);
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("/DISCORD INTERACTION");
 
@@ -199,6 +203,36 @@ public class Command {
 		}
 
 		sb.append(" <"+UUID.randomUUID().toString()+">");
+		stdout.println(sb.toString());
+		stdout.flush();
+	}
+
+	public static void discord_send_message(String channel_id, String text) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/DISCORD MESSAGE SEND");
+
+		sb.append(" ");
+		sb.append(channel_id);
+		sb.append(" ");
+		sb.append(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
+		sb.append(" ");
+		sb.append("null");
+
+		stdout.println(sb.toString());
+		stdout.flush();
+	}
+
+		public static void discord_reply_message(String channel_id, String reply_target, String text) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/DISCORD MESSAGE SEND");
+
+		sb.append(" ");
+		sb.append(channel_id);
+		sb.append(" ");
+		sb.append(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
+		sb.append(" ");
+		sb.append(reply_target);
+
 		stdout.println(sb.toString());
 		stdout.flush();
 	}

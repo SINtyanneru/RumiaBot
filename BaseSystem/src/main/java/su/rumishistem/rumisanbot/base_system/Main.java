@@ -21,6 +21,7 @@ import su.rumishistem.rumisanbot.base_system.Type.Event.ReceiveMessageEvent;
 public class Main {
 	public static String self_misskey_id = null;
 	public static String self_misskey_uid = null;
+	public static String self_misskey_host = null;
 	public static String self_discord_id = null;
 
 	public static RumiaBot rumiabot;
@@ -58,6 +59,7 @@ public class Main {
 							case "SELF_USER": {
 								self_misskey_id = (String)event_data.get("ID");
 								self_misskey_uid = (String)event_data.get("UID");
+								self_misskey_host = (String)event_data.get("HOST");
 								break;
 							}
 
@@ -82,7 +84,11 @@ public class Main {
 
 								boolean is_mention = false;
 
-								if (text.contains("@"+self_misskey_uid)) {
+								if (text.contains("@"+self_misskey_uid+"@"+self_misskey_host)) {
+									is_mention = true;
+									text = text.replaceFirst("@"+self_misskey_uid+"@"+self_misskey_host, "");
+									text = text.trim();
+								} else if (text.contains("@"+self_misskey_uid)) {
 									is_mention = true;
 									text = text.replaceFirst("@"+self_misskey_uid, "");
 									text = text.trim();
@@ -139,6 +145,8 @@ public class Main {
 							case "MESSAGE_RECEIVE": {
 								String id = (String)event_data.get("MESSAGE_ID");
 								String text = (String)event_data.get("MESSAGE_TEXT");
+								String guild_id = (String)event_data.get("GUILD_ID");
+								String channel_id = (String)event_data.get("CHANNEL_ID");
 								String user_id = (String)event_data.get("USER_ID");
 								String user_uid = (String)event_data.get("USER_UID");
 								String user_name = (String)event_data.get("USER_NAME");
@@ -153,7 +161,7 @@ public class Main {
 
 								receive_message(ContentsSource.Discord, is_mention, new Message(
 									ContentsSource.Discord,
-									id,
+									"!DS"+id+"::"+guild_id+"::"+channel_id,
 									text,
 									new User(
 										user_id,

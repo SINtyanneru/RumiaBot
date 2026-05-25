@@ -7,9 +7,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import su.rumishistem.rsdf_java.*;
 import su.rumishistem.rumi_java_logger.SeverityLevel;
+import su.rumishistem.rumisanbot.Discord.DiscordBot;
 import su.rumishistem.rumisanbot.Misskey.API;
 
 public class BaseSystem {
@@ -95,6 +98,7 @@ public class BaseSystem {
 		send_event("MISSKEY", "SELF_USER", new HashMap<>(){{
 			put("ID", Bot.get_misskey().self_user_id);
 			put("UID", Bot.get_misskey().self_uid);
+			put("HOST", Bot.get_misskey().self_host);
 		}});
 
 		send_event("DISCORD", "SELF_USER", new HashMap<>(){{
@@ -201,7 +205,6 @@ public class BaseSystem {
 					}
 				} else if (cmd[1].equals("INTERACTION")) {
 					String interaction_id = cmd[3];
-					interaction_id = interaction_id.substring(3);
 					SlashCommandInteraction interaction = Bot.get_discord().get_interaction(interaction_id);
 
 					if (interaction == null) {
@@ -238,6 +241,28 @@ public class BaseSystem {
 									return;
 								}
 							}
+						}
+					}
+				} else if (cmd[1].equals("MESSAGE")) {
+					switch (cmd[2]) {
+						//メッセージ送信
+						case "SEND": {
+							String channel_id = cmd[3];
+							String text = new String(Base64.getDecoder().decode(cmd[4]), StandardCharsets.UTF_8);
+							String reply_id = null;
+
+							if (cmd[5].equals("null") == false) reply_id = cmd[5];
+
+							//チャンネルを取得
+							TextChannel channel = Bot.get_discord().get_jda().getTextChannelById(channel_id);
+							if (channel == null) return;
+
+							if (reply_id == null) {
+								channel.sendMessage(text).queue();
+							} else {
+								channel.sendMessage(text).setMessageReference(reply_id).queue();
+							}
+							return;
 						}
 					}
 				}

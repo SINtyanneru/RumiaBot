@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import su.rumishistem.rumisanbot.base_system.Command;
 import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.CommandOptionValue;
+import su.rumishistem.rumisanbot.base_system.Tool.DiscordMessageID;
 import su.rumishistem.rumisanbot.base_system.Type.ContentsSource;
 import su.rumishistem.rumisanbot.base_system.Type.NotePublicSetting;
 import su.rumishistem.rumisanbot.base_system.Type.Event.ReceiveMessageEvent;
@@ -88,7 +89,9 @@ public class RumiaBot {
 				} else if (e.get_message().source == ContentsSource.Misskey) {
 					Command.misskey_create_note(return_text, e.get_message().id, null, NotePublicSetting.Home, false);
 				} else if (e.get_message().source == ContentsSource.Discord) {
-					//作る
+					String channel_id = DiscordMessageID.parse(e.get_message().id)[1];
+					String message_id = DiscordMessageID.parse(e.get_message().id)[2];
+					Command.discord_reply_message(channel_id, message_id, return_text);
 				}
 			}
 
