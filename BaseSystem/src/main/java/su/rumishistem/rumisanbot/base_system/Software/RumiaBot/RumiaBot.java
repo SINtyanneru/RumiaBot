@@ -3,6 +3,7 @@ package su.rumishistem.rumisanbot.base_system.Software.RumiaBot;
 import java.util.*;
 import java.util.Map.Entry;
 import su.rumishistem.rumisanbot.base_system.Command;
+import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Runer.HelpCommand;
 import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Runer.TestCommand;
 import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.*;
 import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.Event.CommandEvent;
@@ -11,10 +12,11 @@ import su.rumishistem.rumisanbot.base_system.Type.*;
 import su.rumishistem.rumisanbot.base_system.Type.Event.*;
 
 public class RumiaBot {
-	private final CommandData[] command_list;
+	public final CommandData[] command_list;
 
 	public RumiaBot() {
 		command_list = new CommandData[] {
+			new CommandData("help", "ヘルプコマンド", new CommandOptionData[0], false, new HelpCommand()),
 			new CommandData("test", "テストコマンドだお", new CommandOptionData[0], false, new TestCommand())
 		};
 	}
