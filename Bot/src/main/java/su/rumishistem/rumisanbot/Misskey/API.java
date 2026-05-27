@@ -75,6 +75,17 @@ public class API {
 		}
 	}
 
+	public static void create_reaction(String note_id, String reaction_id) throws IOException, InterruptedException {
+		JsonNode r = run("notes/reactions/create", new HashMap<>(){{
+			put("noteId", note_id);
+			put("reaction", reaction_id);
+		}});
+
+		if (r.get("error") != null) {
+			throw new RuntimeException("エラー: " + r);
+		}
+	}
+
 	public static void follow(String user_id) throws IOException, InterruptedException {
 		JsonNode r = run("following/create", new HashMap<>(){{
 			put("userId", user_id);

@@ -118,6 +118,11 @@ public class Command {
 		stdout.flush();
 	}
 
+	public static void misskey_note_reaction(String note_id, String reaction_id) {
+		stdout.println("/MISSKEY NOTE_REACTION " + Base64.getEncoder().encodeToString(note_id.getBytes()) + " " + Base64.getEncoder().encodeToString(reaction_id.getBytes()));
+		stdout.flush();
+	}
+
 	public static void discord_change_status(DiscordStatus status) {
 		String name = "";
 		switch (status) {
@@ -232,6 +237,23 @@ public class Command {
 		sb.append(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
 		sb.append(" ");
 		sb.append(reply_target);
+
+		stdout.println(sb.toString());
+		stdout.flush();
+	}
+
+	public static void discord_reaction(String channel_id, String message_id, String emoji_name, String emoji_id) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/DISCORD MESSAGE REACTION");
+
+		sb.append(" ");
+		sb.append(channel_id);
+		sb.append(" ");
+		sb.append(message_id);
+		sb.append(" ");
+		sb.append(emoji_name);
+		sb.append(" ");
+		sb.append(emoji_id);
 
 		stdout.println(sb.toString());
 		stdout.flush();

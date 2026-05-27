@@ -1,18 +1,26 @@
 package su.rumishistem.rumisanbot;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
+
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
-import su.rumishistem.rsdf_java.*;
+import su.rumishistem.rsdf_java.RSDFDecoder;
+import su.rumishistem.rsdf_java.RSDFEncoder;
 import su.rumishistem.rumi_java_logger.SeverityLevel;
-import su.rumishistem.rumisanbot.Discord.DiscordBot;
 import su.rumishistem.rumisanbot.Misskey.API;
 
 public class BaseSystem {
@@ -168,6 +176,13 @@ public class BaseSystem {
 					API.unblock(user_id);
 					return;
 				}
+
+				if (cmd[1].equals("NOTE_REACTION")) {
+					String note_id = new String(Base64.getDecoder().decode(cmd[2]), StandardCharsets.UTF_8);
+					String reaction_id = new String(Base64.getDecoder().decode(cmd[3]), StandardCharsets.UTF_8);
+					API.create_reaction(note_id, reaction_id);
+					return;
+				}
 			}
 
 			case "DISCORD": {
@@ -262,6 +277,25 @@ public class BaseSystem {
 							} else {
 								channel.sendMessage(text).setMessageReference(reply_id).queue();
 							}
+							return;
+						}
+
+
+						//リアクション
+						case "REACTION": {
+							String channel_id = cmd[3];
+							String message_id = cmd[4];
+							String emoji_name = cmd[5];
+							String emoji_id = cmd[6];
+
+							//チャンネルを取得
+							TextChannel channel = Bot.get_discord().get_jda().getTextChannelById(channel_id);
+							if (channel == null) return;
+							channel.retrieveMessageById(message_id).queue(msg->{
+								CustomEmoji emoji = Emoji.fromCustom(emoji_name, Long.parseLong(emoji_id), false);
+								msg.addReaction(emoji).queue();
+							});
+
 							return;
 						}
 					}

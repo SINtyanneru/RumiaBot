@@ -1,21 +1,22 @@
 package su.rumishistem.rumisanbot.base_system.Software.RumiaBot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-
 import su.rumishistem.rumisanbot.base_system.Command;
-import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.CommandOptionValue;
-import su.rumishistem.rumisanbot.base_system.Tool.DiscordMessageID;
-import su.rumishistem.rumisanbot.base_system.Type.ContentsSource;
-import su.rumishistem.rumisanbot.base_system.Type.NotePublicSetting;
-import su.rumishistem.rumisanbot.base_system.Type.Event.ReceiveMessageEvent;
+import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Runer.TestCommand;
+import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.*;
+import su.rumishistem.rumisanbot.base_system.Software.RumiaBot.Type.Event.CommandEvent;
+import su.rumishistem.rumisanbot.base_system.Tool.*;
+import su.rumishistem.rumisanbot.base_system.Type.*;
+import su.rumishistem.rumisanbot.base_system.Type.Event.*;
 
 public class RumiaBot {
-	public RumiaBot() {
+	private final CommandData[] command_list;
 
+	public RumiaBot() {
+		command_list = new CommandData[] {
+			new CommandData("test", "テストコマンドだお", new CommandOptionData[0], false, new TestCommand())
+		};
 	}
 
 	/**
@@ -72,28 +73,36 @@ public class RumiaBot {
 				option_list.put(name, value);
 			}
 
+			//コマンド一覧から探す
+			CommandData cmd = get_command_from_name(command_name);
+			if (cmd == null) {
+				command_error_reply(e, "コマンドが見つかりませんでした💀");
+				return true;
+			}
+
+			if (e.get_message().source == ContentsSource.Discord && !e.get_message().id.startsWith("!IT")) {
+				String channel_id = DiscordMessageID.parse(e.get_message().id)[1];
+				String message_id = DiscordMessageID.parse(e.get_message().id)[2];
+				Command.discord_reaction(channel_id, message_id, "1039992459209490513", "1508072889566367886");
+				Command.discord_reaction(channel_id, message_id, "1039992459209490513", "1509009044025638993");
+			} else if (e.get_message().source == ContentsSource.Misskey) {
+				Command.misskey_note_reaction(e.get_message().id, ":1039992459209490513:");
+			}
+
+			//実行
+			try {
+				cmd.runer.run(new CommandEvent(e, option_list));
+			} catch (Exception ex) {
+				command_error_reply(e, "エラー: `"+ex.getMessage()+"`");
+			}
+
+			//ログ
 			System.out.println("┌─("+e.get_user().uid+"@"+e.get_user().host+")-["+e.get_message().source.name()+"]");
 			System.out.println("├──> "+command_name);
-
 			for (Entry<String, CommandOptionValue> option:option_list.entrySet()) {
 				System.out.println("├> "+option.getKey()+" => "+option.getValue());
 			}
 			System.out.println("└────> Runing...");
-
-			if (command_name.equals("test")) {
-				String return_text = "こにゃん";
-				//Discordのインタラクションか？
-				if (e.get_message().id.startsWith("!IT")) {
-					Command.discord_interaction_defer(e.get_message().id, false);
-					Command.discord_interaction_reply(e.get_message().id, true, return_text);
-				} else if (e.get_message().source == ContentsSource.Misskey) {
-					Command.misskey_create_note(return_text, e.get_message().id, null, NotePublicSetting.Home, false);
-				} else if (e.get_message().source == ContentsSource.Discord) {
-					String channel_id = DiscordMessageID.parse(e.get_message().id)[1];
-					String message_id = DiscordMessageID.parse(e.get_message().id)[2];
-					Command.discord_reply_message(channel_id, message_id, return_text);
-				}
-			}
 
 			return true;
 		}
@@ -101,7 +110,26 @@ public class RumiaBot {
 		return false;
 	}
 
-	public void run_command() {
+	private CommandData get_command_from_name(String name) {
+		for (CommandData cmd:command_list) {
+			if (cmd.name.equalsIgnoreCase(name)) {
+				return cmd;
+			}
+		}
 
+		return null;
+	}
+
+	private void command_error_reply(ReceiveMessageEvent e, String text) {
+		if (e.get_message().id.startsWith("!IT")) {
+			Command.discord_interaction_defer(e.get_message().id, true);
+			Command.discord_interaction_reply(e.get_message().id, true, text);
+		} else if (e.get_message().source == ContentsSource.Misskey) {
+			Command.misskey_create_note(text, e.get_message().id, null, NotePublicSetting.Home, false);
+		} else if (e.get_message().source == ContentsSource.Discord) {
+			String channel_id = DiscordMessageID.parse(e.get_message().id)[1];
+			String message_id = DiscordMessageID.parse(e.get_message().id)[2];
+			Command.discord_reply_message(channel_id, message_id, text);
+		}
 	}
 }
