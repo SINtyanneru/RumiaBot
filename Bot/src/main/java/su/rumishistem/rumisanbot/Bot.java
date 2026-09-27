@@ -2,6 +2,7 @@ package su.rumishistem.rumisanbot;
 
 import su.rumishistem.rumi_java_logger.SeverityLevel;
 import su.rumishistem.rumisanbot.Discord.DiscordBot;
+import su.rumishistem.rumisanbot.Fluxer.FluxerBot;
 import su.rumishistem.rumisanbot.Misskey.MisskeyBot;
 
 public class Bot {
@@ -12,6 +13,10 @@ public class Bot {
 	private static Thread misskey_thread = null;
 	private static MisskeyBot misskey_bot;
 	public static boolean misskey_ready = false;
+
+	private static Thread fluxer_thread = null;
+	private static FluxerBot fluxer_bot;
+	public static boolean fluxer_ready = false;
 
 	public static void start() throws InterruptedException {
 		discord_thread = new Thread(new Runnable() {
@@ -40,7 +45,21 @@ public class Bot {
 			}
 		});
 
+		fluxer_thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					fluxer_bot = new FluxerBot(Config.Fluxer.token);
+				} catch (RuntimeException ex) {
+					ex.printStackTrace();
+					Main.logger.print(SeverityLevel.Critical, "Fluxerへのログインに失敗しました");
+					System.exit(1);
+				}
+			}
+		});
+
 		discord_thread.start();
+		fluxer_thread.start();
 		misskey_thread.start();
 
 		//Ready待機
@@ -54,6 +73,10 @@ public class Bot {
 
 	public static DiscordBot get_discord() {
 		return discord_bot;
+	}
+
+	public static FluxerBot get_fluxer() {
+		return fluxer_bot;
 	}
 
 	public static MisskeyBot get_misskey() {

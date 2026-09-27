@@ -112,6 +112,10 @@ public class BaseSystem {
 		send_event("DISCORD", "SELF_USER", new HashMap<>(){{
 			put("ID", Bot.get_discord().self_id);
 		}});
+
+		send_event("FLUXER", "SELF_USER", new HashMap<>(){{
+			put("ID", Bot.get_fluxer().get_self_id());
+		}});
 	}
 
 	private static void receive_event(String arg) {

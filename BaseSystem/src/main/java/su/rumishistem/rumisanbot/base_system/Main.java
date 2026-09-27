@@ -23,6 +23,7 @@ public class Main {
 	public static String self_misskey_uid = null;
 	public static String self_misskey_host = null;
 	public static String self_discord_id = null;
+	public static String self_fluxer_id = null;
 
 	public static RumiaBot rumiabot;
 	public static Rumina rumina;
@@ -242,6 +243,49 @@ public class Main {
 										user_id,
 										user_uid,
 										"dicord.com",
+										user_name,
+										user_icon
+									)
+								));
+								break;
+							}
+						}
+					}
+
+					case "FLUXER": {
+						switch (event_name) {
+							case "SELF_USER": {
+								self_fluxer_id = (String)event_data.get("ID");
+								break;
+							}
+
+							case "MESSAGE_RECEIVE": {
+								String id = (String)event_data.get("MESSAGE_ID");
+								String text = (String)event_data.get("MESSAGE_TEXT");
+								String guild_id = (String)event_data.get("GUILD_ID");
+								String channel_id = (String)event_data.get("CHANNEL_ID");
+								String user_id = (String)event_data.get("USER_ID");
+								String user_uid = (String)event_data.get("USER_UID");
+								String user_name = (String)event_data.get("USER_NAME");
+								String user_icon = (String)event_data.get("USER_ICON");
+								boolean is_mention = false;
+
+								if (text.contains("<@"+self_discord_id+">")) {
+									is_mention = true;
+									text = text.replaceFirst("<@"+self_discord_id+">", "");
+									text = text.trim();
+								}
+
+								System.out.println("Fluxer");
+
+								receive_message(ContentsSource.Fluxer, is_mention, new Message(
+									ContentsSource.Fluxer,
+									"!FX"+id+"::"+guild_id+"::"+channel_id,
+									text,
+									new User(
+										user_id,
+										user_uid,
+										"fluxer.app",
 										user_name,
 										user_icon
 									)

@@ -22,6 +22,10 @@
 			<id>rumi</id>
 			<url>https://repo.rumia.me/maven2/</url>
 		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -71,10 +75,11 @@
 			<version>2.2</version>
 		</dependency>
 
+		<!--Fluxer-->
 		<dependency>
-			<groupId>net.astr4y</groupId>
-			<artifactId>JFA</artifactId>
-			<version>0.0.4-alpha_DEV</version> 
+			<groupId>com.github.why-shiro</groupId>
+			<artifactId>J4Fluxer</artifactId>
+			<version>alpha-0.1.6</version>
 		</dependency>
 	</dependencies>
 

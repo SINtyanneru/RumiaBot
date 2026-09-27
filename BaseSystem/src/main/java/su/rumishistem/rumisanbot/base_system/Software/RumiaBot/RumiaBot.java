@@ -87,6 +87,10 @@ public class RumiaBot {
 				String message_id = DiscordMessageID.parse(e.get_message().id)[2];
 				Command.discord_reaction(channel_id, message_id, "1039992459209490513", "1508072889566367886");
 				Command.discord_reaction(channel_id, message_id, "1039992459209490513", "1509009044025638993");
+			} else if (e.get_message().source == ContentsSource.Fluxer) {
+				//TODO:Fluxer
+				System.out.println("Fluxerは未実装");
+				return true;
 			} else if (e.get_message().source == ContentsSource.Misskey) {
 				Command.misskey_note_reaction(e.get_message().id, ":1039992459209490513:");
 			}

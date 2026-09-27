@@ -41,12 +41,22 @@ public class Config {
 
 		Discord.token = (String)config.get("DISCORD.TOKEN");
 
+		Fluxer.host = (String)config.get("FLUXER.HOST");
+		Fluxer.client = (String)config.get("FLUXER.CLIENT");
+		Fluxer.token = (String)config.get("FLUXER.TOKEN");
+
 		Misskey.host = (String)config.get("MISSKEY.DOMAIN");
 		Misskey.token = (String)config.get("MISSKEY.TOKEN");
 		Misskey.admin_token = (String)config.get("MISSKEY.ADMINTOKEN");
 	}
 
 	public class Discord {
+		public static String token = null;
+	}
+
+	public class Fluxer {
+		public static String host = null;
+		public static String client = null;
 		public static String token = null;
 	}
 
