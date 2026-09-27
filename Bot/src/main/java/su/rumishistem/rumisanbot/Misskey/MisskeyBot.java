@@ -1,24 +1,13 @@
 package su.rumishistem.rumisanbot.Misskey;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
+import java.util.concurrent.*;
+import com.fasterxml.jackson.databind.*;
+import okhttp3.*;
 import su.rumishistem.rumi_java_logger.SeverityLevel;
-import su.rumishistem.rumisanbot.BaseSystem;
-import su.rumishistem.rumisanbot.Bot;
-import su.rumishistem.rumisanbot.Main;
+import su.rumishistem.rumisanbot.*;
 
 public class MisskeyBot {
 	private static final int STREAM_CHANNNEL_MAIN = 100;
@@ -220,6 +209,7 @@ public class MisskeyBot {
 			@Override
 			public void onOpen(WebSocket s, Response response) {
 				//↓なぜadminじゃないと流れてこない？？(Firefox/Chromeで見ると一般ユーザーでも流れる)
+				//			↑いや、お前使ってるアカウント@rumisanだから管理者じゃねーの？
 				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"queueStats\",\"id\":\""+STREAM_CHANNNEL_JOBQUEUE+"\"}}");
 				s.send("{\"type\":\"connect\",\"body\":{\"channel\":\"serverStats\",\"id\":\""+STREAM_CHANNNEL_STATS+"\"}}");
 				Main.logger.print(SeverityLevel.Notice, "管理者としてMisskeyのWebSocketへ接続しました。");
