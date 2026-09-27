@@ -20,8 +20,10 @@ import su.rumishistem.rumisanbot.base_system.Type.NotePublicSetting;
 public class Ishitegawa {
 	private static final String DAM_ID = "1368080150020";
 	private static final String BASE_URL = "http://www1.river.go.jp";
+	private static final int[] UPDATE_MIN = { 0, 30 };
 
 	private static HttpClient ajax = HttpClient.newHttpClient();
+	private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 	private static LocalDateTime 時刻 = LocalDateTime.of(-659, 2, 11, 0, 0);
 	private static double 流域平均雨量 = -1;
@@ -31,36 +33,7 @@ public class Ishitegawa {
 	private static double 貯水率 = -1;
 
 	public static void init() {
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-		LocalDateTime now = LocalDateTime.now();
-		int min = now.getMinute();
-		LocalDateTime target;
-		if (min < 10) {
-			target = now.withMinute(10).withSecond(0).withNano(0);
-		} else if (min < 40) {
-			target = now.withMinute(40).withSecond(0).withNano(0);
-		} else {
-			target = now.plusHours(1).withMinute(10).withSecond(0).withNano(0);
-		}
-		long initial_delay = ChronoUnit.SECONDS.between(now, target);
-		scheduler.scheduleAtFixedRate(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					update();
-				} catch (InterruptedException ex) {
-					return;
-				} catch (Exception ex) {
-					StringBuilder sb = new StringBuilder();
-					sb.append("#石手川ダム 貯水率の取得に失敗しました。\n");
-					sb.append("```\n");
-					sb.append(ex.getMessage() + "\n");
-					sb.append("```");
-					note(sb.toString());
-					return;
-				}
-			}
-		}, initial_delay, 1800, TimeUnit.SECONDS);
+		next_schedule();
 	}
 
 	public  static String dam_format() {
@@ -79,6 +52,47 @@ public class Ishitegawa {
 		sb.append("\n");
 		sb.append("#石手川ダム\n");
 		return sb.toString();
+	}
+
+	private static void next_schedule() {
+		long delay = calc_delay();
+
+		scheduler.schedule(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					update();
+				} catch (InterruptedException ex) {
+					return;
+				} catch (Exception ex) {
+					StringBuilder sb = new StringBuilder();
+					sb.append("#石手川ダム 貯水率の取得に失敗しました。\n");
+					sb.append("```\n");
+					sb.append(ex.getMessage() + "\n");
+					sb.append("```");
+					note(sb.toString());
+					return;
+				} finally {
+					next_schedule();
+				}
+			}
+		}, delay, TimeUnit.SECONDS);
+	}
+
+	private static long calc_delay() {
+		LocalDateTime now = LocalDateTime.now();
+		int min = now.getMinute();
+		int sec = now.getSecond();
+
+		for (int m:UPDATE_MIN) {
+			if (min < m || (min == m && sec < 10)) {
+				LocalDateTime target = now.withMinute(m).withSecond(10).withNano(0);
+				return ChronoUnit.SECONDS.between(now, target);
+			}
+		}
+
+		LocalDateTime target = now.plusHours(1).withMinute(0).withSecond(10).withNano(0);
+		return ChronoUnit.SECONDS.between(now, target);
 	}
 
 	private static void note(String text) {
