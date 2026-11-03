@@ -63,7 +63,7 @@ public class Bot {
 		misskey_thread.start();
 
 		//Ready待機
-		while (!discord_ready || !misskey_ready) {
+		while (!discord_ready || !misskey_ready || !fluxer_ready) {
 			Thread.sleep(1000);
 		}
 

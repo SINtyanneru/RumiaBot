@@ -55,7 +55,7 @@ public class DiscordEventListener extends ListenerAdapter{
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent e) {
 		try {
-			BaseSystem.send_event("DISCORD", "GUILD_MEMBER_LEAVE", new HashMap<String, Object>(){{
+			BaseSystem.send_event("DISCORD", "GUILD_MEMBER_JOIN", new HashMap<String, Object>(){{
 				put("GUILD_ID", e.getGuild().getId());
 				put("USER_ID", e.getMember().getId());
 			}});
@@ -81,14 +81,19 @@ public class DiscordEventListener extends ListenerAdapter{
 	@Override
 	public void onMessageReceived(MessageReceivedEvent e) {
 		try {
+			//DMではGuild/Memberがnullになる
+			String guild_id = (e.getGuild() == null) ? "" : e.getGuild().getId();
+			String user_name = (e.getMember() == null) ? e.getAuthor().getName() : e.getMember().getEffectiveName();
+			String user_icon = (e.getMember() == null) ? e.getAuthor().getEffectiveAvatarUrl() : e.getMember().getEffectiveAvatarUrl();
+
 			BaseSystem.send_event("DISCORD", "MESSAGE_RECEIVE", new HashMap<String, Object>(){{
-				put("GUILD_ID", e.getGuild().getId());
+				put("GUILD_ID", guild_id);
 				put("CHANNEL_ID", e.getChannel().getId());
 
-				put("USER_ID", e.getMember().getId());
-				put("USER_UID", e.getMember().getUser().getName());
-				put("USER_NAME", e.getMember().getEffectiveName());
-				put("USER_ICON", e.getMember().getEffectiveAvatarUrl());
+				put("USER_ID", e.getAuthor().getId());
+				put("USER_UID", e.getAuthor().getName());
+				put("USER_NAME", user_name);
+				put("USER_ICON", user_icon);
 
 				put("MESSAGE_ID", e.getMessage().getId());
 				put("MESSAGE_TEXT", e.getMessage().getContentRaw());
@@ -178,16 +183,21 @@ public class DiscordEventListener extends ListenerAdapter{
 			String id = UUID.randomUUID().toString();
 			bot.command_interaction.put(id, e.getInteraction());
 
+			//DMではGuild/Memberがnullになる
+			String guild_id = (e.getGuild() == null) ? "" : e.getGuild().getId();
+			String user_name = (e.getMember() == null) ? e.getUser().getName() : e.getMember().getEffectiveName();
+			String user_icon = (e.getMember() == null) ? e.getUser().getEffectiveAvatarUrl() : e.getMember().getEffectiveAvatarUrl();
+
 			BaseSystem.send_event("DISCORD", "COMMAND_INTERACTION", new HashMap<String, Object>(){{
 				put("ID", id);
 
-				put("GUILD_ID", e.getGuild().getId());
+				put("GUILD_ID", guild_id);
 				put("CHANNEL_ID", e.getChannel().getId());
 
-				put("USER_ID", e.getMember().getId());
-				put("USER_UID", e.getMember().getUser().getName());
-				put("USER_NAME", e.getMember().getEffectiveName());
-				put("USER_ICON", e.getMember().getEffectiveAvatarUrl());
+				put("USER_ID", e.getUser().getId());
+				put("USER_UID", e.getUser().getName());
+				put("USER_NAME", user_name);
+				put("USER_ICON", user_icon);
 
 				put("COMMAND_NAME", e.getName());
 				put("COMMAND_OPTION", option_list);
