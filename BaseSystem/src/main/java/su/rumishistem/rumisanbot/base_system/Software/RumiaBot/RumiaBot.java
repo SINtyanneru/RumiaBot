@@ -62,12 +62,17 @@ public class RumiaBot {
 				String value_string = option_text.substring(index + 1);
 				CommandOptionValue value;
 
-				if (value_string.startsWith("\"") && value_string.endsWith("\"")) {
+				if (value_string.startsWith("\"") && value_string.endsWith("\"") && value_string.length() >= 2) {
 					//「"」で囲まれているなら文字列
-					value = new CommandOptionValue(value_string.subSequence(1, value_string.length() - 2), CommandOptionValue.Type.String);
+					value = new CommandOptionValue(value_string.substring(1, value_string.length() - 1), CommandOptionValue.Type.String);
 				} else if (value_string.matches("\\d+")) {
 					//数字のみなら数値
-					value = new CommandOptionValue(Integer.parseInt(value_string), CommandOptionValue.Type.Int);
+					try {
+						value = new CommandOptionValue(Integer.parseInt(value_string), CommandOptionValue.Type.Int);
+					} catch (NumberFormatException ex) {
+						//intに収まらない数値は拒否(例外で落とさない)
+						return true;
+					}
 				} else if (value_string.equals("true") || value_string.equals("false")) {
 					//「true」か「false」ならブール
 					value = new CommandOptionValue(value_string.equals("true"), CommandOptionValue.Type.Boolean);

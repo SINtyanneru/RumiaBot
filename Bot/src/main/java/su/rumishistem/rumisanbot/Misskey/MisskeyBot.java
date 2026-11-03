@@ -196,9 +196,9 @@ public class MisskeyBot {
 
 			//切断
 			@Override
-			public void onClosed(WebSocket s, int code, String reason) { admin_ws_connect(); }
+			public void onClosed(WebSocket s, int code, String reason) { ws_connect(); }
 			@Override
-			public void onFailure(WebSocket s, Throwable t, Response response) { admin_ws_connect(); }
+			public void onFailure(WebSocket s, Throwable t, Response response) { ws_connect(); }
 		});
 	}
 

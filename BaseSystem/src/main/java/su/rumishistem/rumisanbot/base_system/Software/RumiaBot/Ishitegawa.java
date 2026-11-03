@@ -25,6 +25,7 @@ public class Ishitegawa {
 	private static HttpClient ajax = HttpClient.newHttpClient();
 	private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+	private static boolean 取得済み = false;
 	private static LocalDateTime 時刻 = LocalDateTime.of(-659, 2, 11, 0, 0);
 	private static double 流域平均雨量 = -1;
 	private static int 貯水量 = -1;
@@ -37,6 +38,10 @@ public class Ishitegawa {
 	}
 
 	public  static String dam_format() {
+		if (取得済み == false) {
+			return "石手川ダムの状況はまだ取得できていません。しばらくしてからもう一度お試しください。\n";
+		}
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(時刻.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 a hh時mm分")));
 		sb.append(" 現在の石手川ダムの状況です。\n");
@@ -120,6 +125,7 @@ public class Ishitegawa {
 		流入量 = Double.parseDouble(splited[6]);
 		放流量 = Double.parseDouble(splited[8]);
 		貯水率 = Double.parseDouble(splited[10]);
+		取得済み = true;
 
 		System.out.println("[石手川] 更新しました。");
 		System.out.println("[石手川]     時刻" + 時刻.toString());

@@ -270,9 +270,9 @@ public class Main {
 								String user_icon = (String)event_data.get("USER_ICON");
 								boolean is_mention = false;
 
-								if (text.contains("<@"+self_discord_id+">")) {
+								if (self_fluxer_id != null && text.contains("<@"+self_fluxer_id+">")) {
 									is_mention = true;
-									text = text.replaceFirst("<@"+self_discord_id+">", "");
+									text = text.replaceFirst("<@"+self_fluxer_id+">", "");
 									text = text.trim();
 								}
 

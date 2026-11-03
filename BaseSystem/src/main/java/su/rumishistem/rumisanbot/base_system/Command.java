@@ -92,34 +92,34 @@ public class Command {
 			sb.append("false");
 		}
 
-		sb.append("<"+UUID.randomUUID().toString()+">");
+		sb.append(" <"+UUID.randomUUID().toString()+">");
 
 		stdout.println(sb.toString());
 		stdout.flush();
 	}
 
 	public static void misskey_follow_user(String user_id) {
-		stdout.println("/MISSKEY FOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.println("/MISSKEY FOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()) + " <"+UUID.randomUUID().toString()+">");
 		stdout.flush();
 	}
 
 	public static void misskey_unfollow_user(String user_id) {
-		stdout.println("/MISSKEY UNFOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.println("/MISSKEY UNFOLLOW " + Base64.getEncoder().encodeToString(user_id.getBytes()) + " <"+UUID.randomUUID().toString()+">");
 		stdout.flush();
 	}
 
 	public static void misskey_block_user(String user_id) {
-		stdout.println("/MISSKEY BLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.println("/MISSKEY BLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()) + " <"+UUID.randomUUID().toString()+">");
 		stdout.flush();
 	}
 
 	public static void misskey_unblock_user(String user_id) {
-		stdout.println("/MISSKEY UNBLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()));
+		stdout.println("/MISSKEY UNBLOCK " + Base64.getEncoder().encodeToString(user_id.getBytes()) + " <"+UUID.randomUUID().toString()+">");
 		stdout.flush();
 	}
 
 	public static void misskey_note_reaction(String note_id, String reaction_id) {
-		stdout.println("/MISSKEY NOTE_REACTION " + Base64.getEncoder().encodeToString(note_id.getBytes()) + " " + Base64.getEncoder().encodeToString(reaction_id.getBytes()));
+		stdout.println("/MISSKEY NOTE_REACTION " + Base64.getEncoder().encodeToString(note_id.getBytes()) + " " + Base64.getEncoder().encodeToString(reaction_id.getBytes()) + " <"+UUID.randomUUID().toString()+">");
 		stdout.flush();
 	}
 
@@ -222,6 +222,7 @@ public class Command {
 		sb.append(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
 		sb.append(" ");
 		sb.append("null");
+		sb.append(" <"+UUID.randomUUID().toString()+">");
 
 		stdout.println(sb.toString());
 		stdout.flush();
@@ -237,6 +238,7 @@ public class Command {
 		sb.append(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
 		sb.append(" ");
 		sb.append(reply_target);
+		sb.append(" <"+UUID.randomUUID().toString()+">");
 
 		stdout.println(sb.toString());
 		stdout.flush();
@@ -254,6 +256,7 @@ public class Command {
 		sb.append(emoji_name);
 		sb.append(" ");
 		sb.append(emoji_id);
+		sb.append(" <"+UUID.randomUUID().toString()+">");
 
 		stdout.println(sb.toString());
 		stdout.flush();
