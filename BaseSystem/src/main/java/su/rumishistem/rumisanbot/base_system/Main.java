@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -72,9 +73,16 @@ public class Main {
 								break;
 							}
 
-							//case "MENTION":
+							case "MENTION":
+							case "LOCAL_NOTE":
 							case "NOTE": {
 								String id = (String)event_data.get("NOTE_ID");
+
+								//同じノートがNOTE/MENTION/LOCAL_NOTEの複数経路で届くことがあるので、二重に処理しない
+								if (is_processed_note(id)) {
+									break;
+								}
+
 								String text = (String)event_data.get("NOTE_TEXT");
 
 								String user_id = (String)event_data.get("USER_ID");
@@ -297,6 +305,23 @@ public class Main {
 				}
 			}
 		}
+	}
+
+	//処理済みノートID（NOTE/MENTION/LOCAL_NOTEの重複排除用）
+	private static final Map<String, Long> processed_note_map = new HashMap<>();
+
+	private static boolean is_processed_note(String note_id) {
+		long now = System.currentTimeMillis();
+
+		//10分より前の記録は捨てる
+		processed_note_map.values().removeIf(time -> now - time > 10 * 60 * 1000);
+
+		if (processed_note_map.containsKey(note_id)) {
+			return true;
+		}
+
+		processed_note_map.put(note_id, now);
+		return false;
 	}
 
 	private static void receive_message(ContentsSource source, boolean is_mention, Message message) {

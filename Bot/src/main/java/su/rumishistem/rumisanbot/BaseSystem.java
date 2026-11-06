@@ -251,12 +251,16 @@ public class BaseSystem {
 							switch (cmd[4]) {
 								case "DEFER_REPLY": {
 									interaction.getHook().editOriginal(text).queue();
+									//最終応答が済んだのでインタラクションを掃除する
+									Bot.get_discord().remove_interaction(interaction_id);
 									return;
 								}
 
 								case "REPLY": {
 									boolean ephemeral = (boolean)data.get("PRIVATE");
 									interaction.reply(text).setEphemeral(ephemeral).queue();
+									//最終応答が済んだのでインタラクションを掃除する
+									Bot.get_discord().remove_interaction(interaction_id);
 									return;
 								}
 							}
