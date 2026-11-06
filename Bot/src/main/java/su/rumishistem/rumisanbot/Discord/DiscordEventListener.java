@@ -181,7 +181,7 @@ public class DiscordEventListener extends ListenerAdapter{
 			}
 
 			String id = UUID.randomUUID().toString();
-			bot.command_interaction.put(id, e.getInteraction());
+			bot.put_interaction(id, e.getInteraction());
 
 			//DMではGuild/Memberがnullになる
 			String guild_id = (e.getGuild() == null) ? "" : e.getGuild().getId();

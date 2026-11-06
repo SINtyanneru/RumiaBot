@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.*;
 import java.util.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 
 public class API {
@@ -38,18 +37,22 @@ public class API {
 		if (body == null) body = new HashMap<>();
 		body.put("i", token);
 
-		try {
-			HttpRequest.Builder builder = HttpRequest.newBuilder();
-			builder.POST(HttpRequest.BodyPublishers.ofString(om.writeValueAsString(body)));
-			builder.uri(URI.create("https://"+host+"/api/"+path));
-			builder.header("Content-Type", "application/json; charset=UTF-8");
-			builder.header("Accept", "application/json; charset=UTF-8");
+		HttpRequest.Builder builder = HttpRequest.newBuilder();
+		builder.POST(HttpRequest.BodyPublishers.ofString(om.writeValueAsString(body)));
+		builder.uri(URI.create("https://"+host+"/api/"+path));
+		builder.header("Content-Type", "application/json; charset=UTF-8");
+		builder.header("Accept", "application/json; charset=UTF-8");
 
-			HttpResponse<String> response = http.send(builder.build(), HttpResponse.BodyHandlers.ofString());
-			return om.readTree(response.body());
-		} catch (JsonProcessingException ex) {
-			return null;
+		HttpResponse<String> response = http.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+		JsonNode result = om.readTree(response.body());
+
+		//空の応答（204 No Content等）だとreadTreeがnullを返すので、エラー無しの空オブジェクトとして扱う
+		//（nullをそのまま返すと、呼び出し側が全部NullPointerExceptionで死ぬ）
+		if (result == null) {
+			return om.createObjectNode();
 		}
+
+		return result;
 	}
 
 	public static String create_note(String text, String reply, String quote, String public_setting, boolean local_only) throws IOException, InterruptedException {
